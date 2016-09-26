@@ -1,0 +1,19 @@
+$flex-directions: (top: column, right: row-reverse, bottom: column-reverse, left: row);
+
+@mixin dock($align) {
+
+  // display: flex;
+  // position: fixed;
+  //
+  // width: if(isVertical($align), 100vw, null);
+  // height: if(isHorizontal($align), 100vh, null);
+  //
+  // top: if($align != bottom, 0, null);
+  // bottom: if($align == bottom, 0, null);
+  //
+  // left: if($align != right, 0, null);
+  // right: if($align == right, 0, null);
+  //
+  // flex-direction: map-get($flex-directions, $align);
+
+}

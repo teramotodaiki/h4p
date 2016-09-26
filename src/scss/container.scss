@@ -1,0 +1,43 @@
+// generals
+.#{$container} {
+
+  &-container {
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    left: 0px;
+    top: 0px;
+    width: 0px;
+    height: 0px;
+  }
+
+  &-screen {
+    // visibility: hidden;
+    z-index: $z-index-screen;
+    left: 0px;
+    top: 0px;
+  }
+
+  &-show {
+    visibility: visible;
+  }
+
+}
+
+
+// each of aligns
+.#{$container} {
+  @each $align in $aligns {
+
+    &-dock_#{$align} {
+      @include dock($align);
+
+      .#{$prefix}frame_resizer {
+        @include resizer($align, false);
+      }
+      .#{$prefix}frame_resizer-active {
+        @include resizer($align, true);
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
+
+export default class Sizer extends Component {
+
+  static Width = 14;
+
+  static propTypes = {
+    handleResize: PropTypes.func.isRequired,
+    primaryWidth: PropTypes.number.isRequired,
+    secondaryHeight: PropTypes.number.isRequired
+  };
+
+  state = {
+    isActive: false
+  };
+
+  handleMouseDown = () => {
+    this.setState({ isActive: true });
+  };
+
+  handleMouseUp = () => {
+    this.setState({ isActive: false });
+  };
+
+  handleMouseMove = (nativeEvent) => {
+    if (!this.state.isActive) return;
+    const primaryWidth = this.props.primaryWidth - nativeEvent.movementX;
+    const secondaryHeight = this.props.secondaryHeight - nativeEvent.movementY;
+    this.props.handleResize(primaryWidth, secondaryHeight);
+  };
+
+  componentDidMount() {
+    window.addEventListener('mousemove', this.handleMouseMove);
+    window.addEventListener('mouseup', this.handleMouseUp);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('mouseup', this.handleMouseUp);
+  }
+
+  render() {
+
+    const className = classNames(CSS_PREFIX + 'frame_resizer', {
+      [`${CSS_PREFIX}frame_resizer-active`]: this.state.isActive
+    });
+
+    return (
+      <div
+        className={className}
+        style={this.props.style}
+        onMouseDown={this.handleMouseDown}
+      />
+    );
+  }
+}

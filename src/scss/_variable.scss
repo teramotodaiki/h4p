@@ -1,0 +1,21 @@
+$container: #{$prefix}frame_container !default;
+
+
+$aligns: (top, right, bottom, left);
+
+@function isHorizontal($align) {
+  @return $align == left or $align == right;
+}
+
+@function isVertical($align) {
+  @return $align == top or $align == bottom;
+}
+
+
+$resizer-narrow-width: 20px !default;
+$resizer-cursor: (top: row-resize, right: col-resize, bottom: row-resize, left: col-resize) !default;
+
+
+$z-index-screen: 1 !default;
+$z-index-editor: 2 !default;
+$z-index-resizer: 3 !default;

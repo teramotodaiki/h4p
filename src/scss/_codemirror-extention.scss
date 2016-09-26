@@ -1,0 +1,32 @@
+.ReactCodeMirror {
+
+  & {
+    position: absolute;
+  }
+
+  .CodeMirror {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  }
+
+  .cm-tab:before {
+      content: '----';
+      position: absolute;
+      color: #ccc;
+      border-left: solid 1px;
+      visibility: hidden;
+  }
+
+  .ReactCodeMirror__tab-visible .cm-tab:before {
+      visibility: visible;
+  }
+
+  li.CodeMirror-hint-snippet {
+    font-style: italic;
+  }
+
+  .CodeMirror .CodeMirror-matchingbracket {
+  	color: inherit;
+  	border-bottom: 1px solid black;
+  }
+
+}
