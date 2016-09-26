@@ -12,10 +12,13 @@ export default class Sizer extends Component {
   };
 
   state = {
-    isActive: false
+    isActive: false,
   };
 
-  handleMouseDown = () => {
+  prevent = {};
+  handleMouseDown = ({ nativeEvent }) => {
+    const { clientX, clientY } = nativeEvent;
+    this.prevent = { clientX, clientY };
     this.setState({ isActive: true });
   };
 
@@ -23,10 +26,16 @@ export default class Sizer extends Component {
     this.setState({ isActive: false });
   };
 
-  handleMouseMove = (nativeEvent) => {
+  handleMouseMove = (event) => {
     if (!this.state.isActive) return;
-    const primaryWidth = this.props.primaryWidth - nativeEvent.movementX;
-    const secondaryHeight = this.props.secondaryHeight - nativeEvent.movementY;
+    const { clientX, clientY } = event;
+    const movementX = clientX - this.prevent.clientX;
+    const movementY = clientY - this.prevent.clientY;
+    this.prevent = { clientX, clientY };
+
+    const primaryWidth = this.props.primaryWidth - movementX;
+    const secondaryHeight = this.props.secondaryHeight - movementY;
+
     this.props.handleResize(primaryWidth, secondaryHeight);
   };
 

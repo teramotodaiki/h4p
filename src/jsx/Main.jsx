@@ -40,7 +40,7 @@ export default class Main extends Component {
       flexDirection: 'column'
     },
 
-    app: this.props.config,
+    app: {},
     files: [],
 
     tabContextMenu: {},
@@ -58,12 +58,15 @@ export default class Main extends Component {
 
   static fileIndex = 0;
   componentDidMount() {
-    const files = this.props.config.files.map(file => {
+    const { config } = this.props;
+
+    const files = config.files.map(file => {
       const key = ++Main.fileIndex;
       return Object.assign({}, file, { key });
     });
+    const app = Object.assign({}, config, { model: { files } });
 
-    this.setState({ files });
+    this.setState({ files, app });
   }
 
   updateFile = (file, updated) => {
@@ -95,7 +98,8 @@ export default class Main extends Component {
 
   handleRun = () => {
     const files = this.state.files.map((item) => Object.assign({}, item));
-    this.setState({ app: { files } });
+    const app = Object.assign({}, this.state.app, { model: { files } });
+    this.setState({ app });
   };
 
   toggleTabVisible = () => {

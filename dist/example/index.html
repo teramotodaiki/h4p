@@ -10,7 +10,14 @@
     <div class="h4p__app" data-target=".example1" data-main="main"></div>
     <!-- File as a <script> -->
     <script class="example1" name="main" type="hack">
-    console.log("It's fine! :-)");
+    var sub = require('sub');
+    var body = document.body;
+
+    body.style.color = 'white';
+    body.textContent = sub;
+    </script>
+    <script class="example1" name="sub" type="hack">
+    module.exports = "It's fine! :-)";
     </script>
   </body>
 </html>

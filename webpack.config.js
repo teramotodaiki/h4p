@@ -44,7 +44,8 @@ const config = {
     data: `$prefix: ${cssPrefix};`
   },
   devServer: {
-    contentBase: 'dist'
+    contentBase: 'dist',
+    port: process.env.PORT
   },
 };
 

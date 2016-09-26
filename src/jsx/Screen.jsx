@@ -8,7 +8,8 @@ export default class Screen extends Component {
 
   static propTypes = {
     player: PropTypes.object.isRequired,
-    app: PropTypes.object.isRequired
+    app: PropTypes.object.isRequired,
+    style: PropTypes.any
   };
 
   state = {
@@ -17,18 +18,20 @@ export default class Screen extends Component {
     frame: null
   };
 
-  url = 'https://embed.hackforplay.xyz/open-source/screen/alpha-3.html';
-
   componentWillReceiveProps(nextProps) {
-    if (this.props.app === nextProps.app) return;
+    if (this.props.app !== nextProps.app) {
+      // Only iframe mode
+      this.start(nextProps.app);
+    }
+    if (this.props.style !== nextProps.style) {
+      this.handleResize();
+    }
 
-    // Only iframe mode
-    this.start(nextProps.app);
   }
 
   prevent = null;
   start(app) {
-    const { player, screen } = this.props;
+    const { player } = this.props;
 
     this.prevent =
       (this.prevent || Promise.resolve())
@@ -37,15 +40,15 @@ export default class Screen extends Component {
 
         return new Postmate({
           container: this.container,
-          url: this.url,
-          model: app
+          url: app.url,
+          model: app.model
         });
       })
       .then(child => {
         this.setState({ frame: child.frame });
 
         const resized = (view) => player.emit('screen.resize', view);
-        child.get('size').then(resized);
+        child.on('load', () => child.get('size').then(resized));
         child.on('resize', resized);
         player.once('screen.beforeunload', () => child.destroy());
 
@@ -89,14 +92,10 @@ export default class Screen extends Component {
 
 
   render() {
-    const style = Object.assign({
-      backgroundColor: 'black',
-    }, this.props.style);
-
     return (
       <div
         ref={(container) => this.container = container}
-        style={style}
+        style={this.props.style}
         className={CSS_PREFIX + 'frame_container-screen'}
       />
     );

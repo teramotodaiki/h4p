@@ -25,10 +25,6 @@ export default class EditorPane extends Component {
     style: PropTypes.object
   };
 
-  state = {
-    codemirrorInstances: []
-  };
-
   componentDidMount() {
     window.addEventListener('resize', this.setEnoughHeight);
   }
@@ -43,16 +39,17 @@ export default class EditorPane extends Component {
   }
 
   setEnoughHeight = () => {
-    this.state.codemirrorInstances.forEach(cm => {
+    this.codemirrorInstances.forEach(cm => {
       cm.setSize(this.getStyle().width, this.getStyle().height);
     });
   };
 
+  codemirrorInstances = [];
   handleCodemirror = (ref) => {
     const cm = ref.getCodeMirror();
     this.showHint(cm);
-    const codemirrorInstances = this.state.codemirrorInstances.concat(cm);
-    this.setState({ codemirrorInstances }, this.setEnoughHeight);
+    this.codemirrorInstances = this.codemirrorInstances.concat(cm);
+    this.setEnoughHeight();
   };
 
   showHint(cm) {
