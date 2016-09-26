@@ -22,6 +22,8 @@ import SaveDialog from './SaveDialog';
 import RenameDialog from './RenameDialog';
 import DeleteDialog from './DeleteDialog';
 
+import download from '../html/download';
+
 export default class Main extends Component {
 
   static propTypes = {
@@ -37,14 +39,13 @@ export default class Main extends Component {
     secondaryStyle: {
       height: 400,
       zIndex: 100,
-      flexDirection: 'column'
     },
 
     app: {},
     files: [],
 
     tabContextMenu: {},
-    saveFile: null,
+    dialogContent: null,
     renameFile: null,
     deleteFile: null,
 
@@ -106,8 +107,18 @@ export default class Main extends Component {
       this.setState({ tabVisible: !this.state.tabVisible });
   };
 
+  handleDownload = () => {
+    const { files } = this.state;
+    const html = download({ CORE_CDN_URL, CSS_PREFIX, files });
+    const dialogContent = {
+      placeholder: 'download.html',
+      text: html
+    };
+    this.setState({ dialogContent });
+  };
+
   closeSaveDialog = () => {
-    this.setState({ saveFile: null });
+    this.setState({ dialogContent: null });
   };
 
   closeRenameDialog = () => {
@@ -127,9 +138,13 @@ export default class Main extends Component {
   }
 
   handleSave = () => {
-    const saveFile = this.state.tabContextMenu.file;
-    if (!saveFile) return;
-    this.setState({ saveFile, tabContextMenu: {} });
+    const file = this.state.tabContextMenu.file;
+    if (!file) return;
+    const dialogContent = {
+      placeholder: file.filename,
+      text: file.code
+    };
+    this.setState({ dialogContent, tabContextMenu: {} });
   };
 
   handleRename = () => {
@@ -152,7 +167,7 @@ export default class Main extends Component {
   };
 
   render() {
-    const { files, saveFile, renameFile, deleteFile, tabContextMenu, tabVisible, primaryStyle, secondaryStyle, app } = this.state;
+    const { files, dialogContent, renameFile, deleteFile, tabContextMenu, tabVisible, primaryStyle, app } = this.state;
     const { player, config } = this.props;
 
     const menuList = [
@@ -173,6 +188,12 @@ export default class Main extends Component {
         onTouchTap: this.handleDelete
       }
     ];
+
+    const secondaryStyle = Object.assign({
+      flexDirection: 'column',
+      boxSizing: 'border-box',
+      paddingRight: primaryStyle.width,
+    }, this.state.secondaryStyle);
 
     const inlineScreenStyle = {
       boxSizing: 'border-box',
@@ -204,6 +225,7 @@ export default class Main extends Component {
             <Menu
               files={files}
               handleRun={this.handleRun}
+              handleDownload={this.handleDownload}
               toggleTabVisible={this.toggleTabVisible}
               style={{ flex: '0 0 auto' }}
             />
@@ -224,8 +246,8 @@ export default class Main extends Component {
             onClose={this.handleContextMenuClose}
           />
           <SaveDialog
-            open={!!saveFile}
-            file={saveFile}
+            open={!!dialogContent}
+            content={dialogContent}
             onRequestClose={this.closeSaveDialog}
           />
           <RenameDialog

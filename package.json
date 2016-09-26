@@ -38,6 +38,7 @@
     "classnames": "^2.2.5",
     "eventemitter2": "^2.1.3",
     "material-ui": "^0.15.4",
+    "mustache-loader": "^0.3.3",
     "postmate": "^1.0.3",
     "react": "^15.3.2",
     "react-codemirror": "^0.2.6",

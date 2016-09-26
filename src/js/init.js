@@ -5,16 +5,14 @@ export default () =>
   Array.from(
     document.querySelectorAll(`.${CSS_PREFIX}app`)
   ).map(elem => {
-    const entryPoint = elem.getAttribute('data-main');
     const scripts = document.querySelectorAll(elem.getAttribute('data-target'));
     return {
       files: Array.from(scripts).map(script => {
         const name = script.getAttribute('name');
-        const alias = name;
         const filename = name + '.js';
         const code = indent(script.textContent);
-        const isEntryPoint = name === entryPoint;
-        return { name, alias, filename, code, isEntryPoint };
+        const isEntryPoint = script.hasAttribute('is-entry-point');
+        return { name, filename, code, isEntryPoint };
       })
     };
   })
