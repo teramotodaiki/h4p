@@ -10,8 +10,10 @@ require('codemirror/addon/edit/matchbrackets');
 require('../js/codemirror-hint-extension');
 
 require('codemirror/lib/codemirror.css');
-require('codemirror/addon/hint/show-hint.css')
+require('codemirror/addon/hint/show-hint.css');
 
+
+import EditorMenu from './EditorMenu';
 
 const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER'; // classname
 
@@ -21,7 +23,9 @@ export default class EditorPane extends Component {
     files: PropTypes.array.isRequired,
     updateFile: PropTypes.func.isRequired,
     onTabContextMenu: PropTypes.func.isRequired,
-    tabVisible: PropTypes.bool.isRequired,
+    editorOptions: PropTypes.object.isRequired,
+    handleEditorOptionChange: PropTypes.func.isRequired,
+    handleOpenDialog: PropTypes.func.isRequired,
     style: PropTypes.object
   };
 
@@ -34,8 +38,15 @@ export default class EditorPane extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.style === nextProps.style) return;
-    this.setEnoughHeight();
+    const { style, files } = this.props;
+    if (style !== nextProps.style) {
+      this.setEnoughHeight();
+    }
+    if (files !== nextProps.files) {
+      files
+        .filter(file => nextProps.files.every(next => file.key !== next.key))
+        .map(file => this.removeCodemirror(file.key));
+    }
   }
 
   setEnoughHeight = () => {
@@ -45,12 +56,23 @@ export default class EditorPane extends Component {
   };
 
   codemirrorInstances = [];
-  handleCodemirror = (ref) => {
+  handleCodemirror (ref, key) {
+    if (!ref || this.hasCodemirror(key)) return;
     const cm = ref.getCodeMirror();
+    cm.key = key;
     this.showHint(cm);
     this.codemirrorInstances = this.codemirrorInstances.concat(cm);
     this.setEnoughHeight();
-  };
+  }
+
+  removeCodemirror (key) {
+    this.codemirrorInstances =
+      this.codemirrorInstances.filter(cm => cm.key !== key);
+  }
+
+  hasCodemirror (key) {
+    return this.codemirrorInstances.some(cm => cm.key === key);
+  }
 
   showHint(cm) {
     cm.on('change', (_cm, change) => {
@@ -78,20 +100,30 @@ export default class EditorPane extends Component {
   }
 
   render() {
-    const { files, updateFile, tabVisible } = this.props;
-    const options = {
+    const { files, updateFile, editorOptions, handleEditorOptionChange, handleOpenDialog } = this.props;
+    const options = Object.assign({
       lineNumbers: true,
       mode: 'javascript',
       indentUnit: 4,
       indentWithTabs: true,
       matchBrackets: true,
       autoCloseBrackets: true,
-    };
+    }, editorOptions);
 
     const style = Object.assign({
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     }, this.props.style);
+
+    const menuStyle = {
+      flex: '0 0 auto',
+    };
+
+    const tabsStyle = {
+      display: 'flex',
+      flexDirection: 'column',
+      flex: '1 1 auto',
+    };
 
     const tabLabels = files.map(file => file.isEntryPoint ? (
       <span>
@@ -103,8 +135,15 @@ export default class EditorPane extends Component {
     ) : file.filename);
 
     return (
+    <div style={style}>
+      <EditorMenu
+        editorOptions={editorOptions}
+        handleEditorOptionChange={handleEditorOptionChange}
+        handleOpenDialog={handleOpenDialog}
+        style={menuStyle}
+      />
       <Tabs
-        style={style}
+        style={tabsStyle}
         tabItemContainerStyle={{ flex: '0 0 auto' }}
         contentContainerStyle={{ flex: '1 1 auto' }}
         contentContainerClassName={PANE_CONTENT_CONTAINER}
@@ -117,8 +156,8 @@ export default class EditorPane extends Component {
           onContextMenu={(e) => this.handleContextMenu(e, file)}
         >
           <CodeMirror
-            className={tabVisible ? 'ReactCodeMirror__tab-visible' : ''}
-            ref={this.handleCodemirror}
+            className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
+            ref={(cm) => this.handleCodemirror(cm, file.key)}
             value={file.code}
             onChange={(code) => updateFile(file, { code })}
             options={options}
@@ -126,6 +165,7 @@ export default class EditorPane extends Component {
         </Tab>
       ))}
       </Tabs>
+    </div>
     );
   }
 }
