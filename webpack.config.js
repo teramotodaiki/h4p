@@ -8,11 +8,13 @@ const CORE_NAME = 'h4p-alpha-2';
 
 const config = {
   entry: {
-    [CORE_NAME]: './src/main'
+    h4p: './src/main', // for npm
   },
   output: {
     path: __dirname + '/dist/',
-    filename: '[name].js'
+    filename: '[name].js',
+    library: exportVarName,
+    libraryTarget: 'umd',
   },
   module: {
     loaders: [
@@ -40,9 +42,7 @@ const config = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      EXPORT_VAR_NAME: JSON.stringify(exportVarName),
       CSS_PREFIX: JSON.stringify(cssPrefix),
-      CORE_NAME: JSON.stringify(CORE_NAME),
       CORE_CDN_URL: JSON.stringify(`https://embed.hackforplay.xyz/open-source/core/${CORE_NAME}.js`),
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
@@ -64,6 +64,10 @@ const config = {
 };
 
 if (process.env.NODE_ENV === 'production') {
+
+  // for browser (& upload CDN)
+  config.entry[CORE_NAME] = config.entry.h4p;
+
   const uglify = new webpack.optimize.UglifyJsPlugin({
     compress: {
       warnings: false

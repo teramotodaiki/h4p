@@ -15,5 +15,5 @@ const h4p = (...args) =>
 h4p.init = init;
 h4p.Player = Player;
 
-// export global
-window[EXPORT_VAR_NAME] = h4p;
+// export
+module.exports = h4p;
