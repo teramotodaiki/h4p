@@ -16,7 +16,7 @@
       visibility: hidden;
   }
 
-  .ReactCodeMirror__tab-visible .cm-tab:before {
+  & .cm-tab:before {
       visibility: visible;
   }
 
