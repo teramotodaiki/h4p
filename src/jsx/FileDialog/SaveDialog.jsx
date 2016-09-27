@@ -1,6 +1,9 @@
-import React, {PropTypes, Component} from 'react';
-import {Dialog, FlatButton, TextField, RaisedButton} from 'material-ui';
+import React, { PropTypes, Component } from 'react';
+import { Dialog, FlatButton, RaisedButton } from 'material-ui';
 import Save from 'material-ui/svg-icons/content/save';
+
+
+import FilenameInput from './FilenameInput';
 
 export default class SaveDialog extends Component {
 
@@ -11,7 +14,6 @@ export default class SaveDialog extends Component {
   };
 
   state = {
-    value: null,
     fallbackHref: null
   };
 
@@ -23,13 +25,8 @@ export default class SaveDialog extends Component {
 
   get blob() {
     const { content } = this.props;
-    return new Blob([content.text]);
+    return new Blob([content.code]);
   }
-
-  handleChange = (event) => {
-    const value = event.target.value;
-    this.setState({ value });
-  };
 
   handleSave = () => {
     const { content, onRequestClose } = this.props;
@@ -37,7 +34,7 @@ export default class SaveDialog extends Component {
     var event = document.createEvent("MouseEvents");
     event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     const elem = document.createElement('a');
-    elem.download = this.state.value || content.placeholder;
+    elem.download = this.input.value || content.filename;
     elem.href = URL.createObjectURL(this.blob);
     elem.dispatchEvent(event);
 
@@ -45,7 +42,7 @@ export default class SaveDialog extends Component {
   };
 
   handleClose = () => {
-    this.setState({ value: null, fallbackHref: null });
+    this.setState({ fallbackHref: null });
     this.props.onRequestClose();
   };
 
@@ -58,19 +55,17 @@ export default class SaveDialog extends Component {
 
   render() {
     const { open, content, onRequestClose } = this.props;
-    const { value, fallbackHref } = this.state;
+    const { fallbackHref } = this.state;
 
-    const filename = value !== null ? value : content && content.placeholder;
     const actions = [
       <FlatButton
         label="Cancel"
         primary={true}
         onTouchTap={this.handleClose}
       />,
-      <FlatButton
+      <RaisedButton
         label="Save"
         primary={true}
-        keyboardFocused={true}
         onTouchTap={this.handleSave}
         disabled={this.isFallback}
       />
@@ -96,9 +91,10 @@ export default class SaveDialog extends Component {
         open={open}
         onRequestClose={this.handleClose}
       >
-        <TextField
-          value={filename}
-          onChange={this.handleChange}
+        <FilenameInput
+          ref={(input) => this.input = input}
+          defaultName={content.name}
+          defaultExt={content.ext}
           disabled={this.isFallback}
         />
       </Dialog>

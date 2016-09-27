@@ -18,9 +18,7 @@ import Screen from './Screen';
 import Sizer from './Sizer';
 
 import ContextMenu from './ContextMenu';
-import SaveDialog from './SaveDialog';
-import RenameDialog from './RenameDialog';
-import DeleteDialog from './DeleteDialog';
+import FileDialog, { DialogTypes } from './FileDialog/';
 
 import download from '../html/download';
 
@@ -45,11 +43,12 @@ export default class Main extends Component {
     files: [],
 
     tabContextMenu: {},
+    openDialogType: null,
     dialogContent: null,
-    renameFile: null,
-    deleteFile: null,
 
-    tabVisible: false
+    editorOptions: {
+      tabVisibility: false,
+    }
 
   };
 
@@ -70,13 +69,20 @@ export default class Main extends Component {
     this.setState({ files, app });
   }
 
+  addFile = (file) => {
+    const key = ++Main.fileIndex;
+    const add = Object.assign({}, file, { key, code: '' });
+    const files = this.state.files.concat(add);
+    this.setState({ files });
+  };
+
   updateFile = (file, updated) => {
     const nextFile = Object.assign({}, file, updated);
     const files = this.state.files.map((item) => item === file ? nextFile : item);
     this.setState({ files });
   };
 
-  removeFile = (file) => {
+  deleteFile = (file) => {
     const files = this.state.files.filter((item) => item !== file);
     this.setState({ files });
   };
@@ -103,30 +109,15 @@ export default class Main extends Component {
     this.setState({ app });
   };
 
-  toggleTabVisible = () => {
-      this.setState({ tabVisible: !this.state.tabVisible });
-  };
-
   handleDownload = () => {
     const { files } = this.state;
     const html = download({ CORE_CDN_URL, CSS_PREFIX, files });
-    const dialogContent = {
-      placeholder: 'download.html',
-      text: html
+    const content = {
+      name: 'download',
+      ext: '.html',
+      code: html,
     };
-    this.setState({ dialogContent });
-  };
-
-  closeSaveDialog = () => {
-    this.setState({ dialogContent: null });
-  };
-
-  closeRenameDialog = () => {
-    this.setState({ renameFile: null });
-  };
-
-  closeDeleteDialog = () => {
-    this.setState({ deleteFile: null });
+    this.handleOpenDialog(DialogTypes.Save, content);
   };
 
   handleTabContextMenu = (tabContextMenu) => {
@@ -137,55 +128,64 @@ export default class Main extends Component {
     this.setState({ tabContextMenu: {} });
   }
 
-  handleSave = () => {
+  handleContextSave = () => {
     const file = this.state.tabContextMenu.file;
     if (!file) return;
-    const dialogContent = {
-      placeholder: file.filename,
-      text: file.code
-    };
-    this.setState({ dialogContent, tabContextMenu: {} });
+    this.handleOpenDialog(DialogTypes.Save, file);
   };
 
-  handleRename = () => {
-    const renameFile = this.state.tabContextMenu.file;
-    if (!renameFile) return;
-    this.setState({ renameFile, tabContextMenu: {} });
+  handleContextRename = () => {
+    const file = this.state.tabContextMenu.file;
+    if (!file) return;
+    this.handleOpenDialog(DialogTypes.Rename, file);
   };
 
-  handleSwitch = () => {
+  handleContextSwitch = () => {
     const switchFile = this.state.tabContextMenu.file;
     if (!switchFile) return;
     this.switchEntryPoint(switchFile);
     this.setState({ tabContextMenu: {} });
-  }
+  };
 
-  handleDelete = () => {
-    const deleteFile = this.state.tabContextMenu.file;
-    if (!deleteFile) return;
-    this.setState({ deleteFile, tabContextMenu: {} });
+  handleContextDelete = () => {
+    const file = this.state.tabContextMenu.file;
+    if (!file) return;
+    this.handleOpenDialog(DialogTypes.Delete, file);
+  };
+
+  handleOpenDialog = (openDialogType, dialogContent) => {
+    this.setState({ openDialogType, dialogContent, tabContextMenu: {} });
+  };
+
+  handleCloseDialog = () => {
+    this.setState({ openDialogType: null, dialogContent: null });
+  };
+
+  handleEditorOptionChange = (change) => {
+    const editorOptions = Object.assign({}, this.state.editorOptions, change);
+    this.setState({ editorOptions });
   };
 
   render() {
-    const { files, dialogContent, renameFile, deleteFile, tabContextMenu, tabVisible, primaryStyle, app } = this.state;
+    const { files, dialogContent, openDialogType, tabContextMenu, primaryStyle, app, editorOptions } = this.state;
     const { player, config } = this.props;
 
     const menuList = [
       {
         primaryText: 'Save as',
-        onTouchTap: this.handleSave
+        onTouchTap: this.handleContextSave
       },
       {
         primaryText: 'Rename',
-        onTouchTap: this.handleRename
+        onTouchTap: this.handleContextRename
       },
       {
         primaryText: 'Switch entry point',
-        onTouchTap: this.handleSwitch
+        onTouchTap: this.handleContextSwitch
       },
       {
         primaryText: 'Delete',
-        onTouchTap: this.handleDelete
+        onTouchTap: this.handleContextDelete
       }
     ];
 
@@ -217,7 +217,9 @@ export default class Main extends Component {
               files={files}
               updateFile={this.updateFile}
               onTabContextMenu={this.handleTabContextMenu}
-              tabVisible={tabVisible}
+              editorOptions={editorOptions}
+              handleEditorOptionChange={this.handleEditorOptionChange}
+              handleOpenDialog={this.handleOpenDialog}
               style={{ flex: '1 1 auto' }}
             />
           </Dock>
@@ -226,7 +228,6 @@ export default class Main extends Component {
               files={files}
               handleRun={this.handleRun}
               handleDownload={this.handleDownload}
-              toggleTabVisible={this.toggleTabVisible}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -245,22 +246,14 @@ export default class Main extends Component {
             openEvent={tabContextMenu.event}
             onClose={this.handleContextMenuClose}
           />
-          <SaveDialog
-            open={!!dialogContent}
+          <FileDialog
+            open={!!openDialogType}
+            type={openDialogType}
             content={dialogContent}
-            onRequestClose={this.closeSaveDialog}
-          />
-          <RenameDialog
-            open={!!renameFile}
-            file={renameFile}
-            updateFilename={(filename) => this.updateFile(renameFile, { filename })}
-            onRequestClose={this.closeRenameDialog}
-          />
-          <DeleteDialog
-            open={!!deleteFile}
-            file={deleteFile}
-            deleteFile={this.removeFile}
-            onRequestClose={this.closeDeleteDialog}
+            addFile={this.addFile}
+            updateFile={this.updateFile}
+            deleteFile={this.deleteFile}
+            onRequestClose={this.handleCloseDialog}
           />
         </div>
       </MuiThemeProvider>

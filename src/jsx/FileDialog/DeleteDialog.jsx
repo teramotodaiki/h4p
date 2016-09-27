@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog, FlatButton, TextField } from 'material-ui';
+import { Dialog, FlatButton, RaisedButton } from 'material-ui';
 
 export default class DeleteDialog extends Component {
 
@@ -7,7 +7,7 @@ export default class DeleteDialog extends Component {
     open: PropTypes.bool.isRequired,
     deleteFile: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    file: PropTypes.object
+    content: PropTypes.any
   };
 
   constructor(props) {
@@ -15,14 +15,14 @@ export default class DeleteDialog extends Component {
   }
 
   handleDelete = () => {
-    const { file, deleteFile, onRequestClose } = this.props;
-    deleteFile(file);
+    const { content, deleteFile, onRequestClose } = this.props;
+    deleteFile(content);
     onRequestClose();
   }
 
   render() {
-    const { open, file, onRequestClose } = this.props;
-    const filename = file && file.filename;
+    const { open, content, onRequestClose } = this.props;
+    const filename = content && content.filename;
 
     const actions = [
       <FlatButton
@@ -30,12 +30,10 @@ export default class DeleteDialog extends Component {
         primary={true}
         onTouchTap={onRequestClose}
       />,
-      <FlatButton
+      <RaisedButton
         label="Delete"
         primary={true}
-        keyboardFocused={true}
         onTouchTap={this.handleDelete}
-        disabled={false}
       />
     ];
 
