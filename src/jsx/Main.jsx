@@ -45,6 +45,7 @@ export default class Main extends Component {
     tabContextMenu: {},
     openDialogType: null,
     dialogContent: null,
+    selectedFile: null,
 
     editorOptions: {
       tabVisibility: false,
@@ -66,12 +67,16 @@ export default class Main extends Component {
     });
     const app = Object.assign({}, config, { model: { files } });
 
-    this.setState({ files, app });
+    this.setState({ files, app }, () => {
+      if (files.length > 0) {
+        this.handleSelectFile(files[0]);
+      }
+    });
   }
 
   addFile = (file) => {
     const key = ++Main.fileIndex;
-    const add = Object.assign({}, file, { key, code: '' });
+    const add = Object.assign({}, file, { key });
     const files = this.state.files.concat(add);
     this.setState({ files });
   };
@@ -79,12 +84,18 @@ export default class Main extends Component {
   updateFile = (file, updated) => {
     const nextFile = Object.assign({}, file, updated);
     const files = this.state.files.map((item) => item === file ? nextFile : item);
-    this.setState({ files });
+    this.setState({ files }, () => {
+      this.handleSelectFile(nextFile);
+    });
   };
 
   deleteFile = (file) => {
     const files = this.state.files.filter((item) => item !== file);
     this.setState({ files });
+  };
+
+  handleSelectFile = (selectedFile) => {
+    this.setState({ selectedFile });
   };
 
   switchEntryPoint = (file) => {
@@ -167,7 +178,16 @@ export default class Main extends Component {
   };
 
   render() {
-    const { files, dialogContent, openDialogType, tabContextMenu, primaryStyle, app, editorOptions } = this.state;
+    const {
+      files,
+      dialogContent,
+      openDialogType,
+      tabContextMenu,
+      selectedFile,
+      primaryStyle,
+      app,
+      editorOptions
+    } = this.state;
     const { player, config } = this.props;
 
     const menuList = [
@@ -216,6 +236,8 @@ export default class Main extends Component {
             <EditorPane
               files={files}
               updateFile={this.updateFile}
+              handleSelectFile={this.handleSelectFile}
+              selectedFile={selectedFile}
               onTabContextMenu={this.handleTabContextMenu}
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
@@ -231,7 +253,10 @@ export default class Main extends Component {
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
-
+              files={files}
+              addFile={this.addFile}
+              handleSelectFile={this.handleSelectFile}
+              style={{ flex: '1 1 auto' }}
             />
           </Dock>
           <Dock config={config} align="left" style={inlineScreenStyle}>

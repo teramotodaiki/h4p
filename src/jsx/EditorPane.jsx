@@ -22,6 +22,8 @@ export default class EditorPane extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     updateFile: PropTypes.func.isRequired,
+    handleSelectFile: PropTypes.func.isRequired,
+    selectedFile: PropTypes.object,
     onTabContextMenu: PropTypes.func.isRequired,
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
@@ -100,7 +102,16 @@ export default class EditorPane extends Component {
   }
 
   render() {
-    const { files, updateFile, editorOptions, handleEditorOptionChange, handleOpenDialog } = this.props;
+    const {
+      files,
+      updateFile,
+      handleSelectFile,
+      selectedFile,
+      editorOptions,
+      handleEditorOptionChange,
+      handleOpenDialog,
+    } = this.props;
+
     const options = Object.assign({
       lineNumbers: true,
       mode: 'javascript',
@@ -129,10 +140,10 @@ export default class EditorPane extends Component {
       <span>
         <PlayCircleOutline color="white" style={{ position: 'absolute', marginLeft: '-1rem', marginTop: -4 }} />
           <span style={{ marginLeft: '1rem' }}>
-            {file.filename}
+            {file.name}
           </span>
       </span>
-    ) : file.filename);
+    ) : file.name);
 
     return (
     <div style={style}>
@@ -147,10 +158,13 @@ export default class EditorPane extends Component {
         tabItemContainerStyle={{ flex: '0 0 auto' }}
         contentContainerStyle={{ flex: '1 1 auto' }}
         contentContainerClassName={PANE_CONTENT_CONTAINER}
+        onChange={this.handleSelectFile}
+        value={selectedFile}
       >
       {files.map((file, index) => (
         <Tab
-          key={file.filename}
+          key={file.key}
+          value={file}
           label={tabLabels[index]}
           style={{ textTransform: 'none' }}
           onContextMenu={(e) => this.handleContextMenu(e, file)}

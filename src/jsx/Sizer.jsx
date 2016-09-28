@@ -55,10 +55,14 @@ export default class Sizer extends Component {
       [`${CSS_PREFIX}frame_resizer-active`]: this.state.isActive
     });
 
+    const style = Object.assign({
+      backgroundColor: 'rgb(255,255,255)',
+    }, this.props.style);
+
     return (
       <div
         className={className}
-        style={this.props.style}
+        style={style}
         onMouseDown={this.handleMouseDown}
       />
     );
