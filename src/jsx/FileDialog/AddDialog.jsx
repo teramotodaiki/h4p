@@ -15,7 +15,7 @@ export default class AddDialog extends Component {
   handleAdd = () => {
     const { addFile, onRequestClose } = this.props;
 
-    addFile({ name: this.input.name, filename: this.input.value });
+    addFile({ name: this.input.name, filename: this.input.value, code: '' });
     onRequestClose();
   };
 

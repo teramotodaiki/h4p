@@ -11,7 +11,7 @@ export default class Player extends EventEmitter2 {
   static defaultConfig = {
     width: '100vw',
     height: '100vh',
-    url: 'https://embed.hackforplay.xyz/open-source/screen/alpha-5.html',
+    url: 'https://embed.hackforplay.xyz/open-source/screen/alpha-6.html',
   };
 
   constructor(config = {}) {

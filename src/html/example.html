@@ -18,13 +18,32 @@
     <!-- File as a <script> -->
     <script class="example1" name="main" is-entry-point type="hack">
     var sub = require('sub');
-    var body = document.body;
+    var logo = require('logo');
 
+    var body = document.body;
     body.style.color = 'white';
     body.textContent = sub;
+
+    var img = new Image();
+    img.src = logo;
+    body.appendChild(img);
+
     </script>
     <script class="example1" name="sub" type="hack">
     module.exports = "It's fine! :-)";
+    </script>
+
+    <script class="example1" name="logo" type="hack">
+    module.exports = (function (options, base64) {
+      var bin = atob(base64);
+      var byteArray = new Uint8Array(bin.length);
+      for (var i = bin.length - 1; i >= 0; i--) {
+        byteArray[i] = bin.charCodeAt(i);
+      }
+      var blob = new Blob([byteArray.buffer], options);
+      return URL.createObjectURL(blob);
+    })({"type":"image/png"}, "iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgAQMAAADg7OJmAAAABlBMVEX///////9VfPVsAAAAAnRSTlMK4sJ4puYAAAElSURBVHheZc4xasNAEIbRMYKMC6O5wKC9hiGLdCW5iowJUkjhLr6A0ElMcJcuewETZFyo1AoXUSHszK4TY5S/2IXHVwzcbwqjzcbAY4j9W88BEGQ4/EIGQB4uHiYO8B526V+xfndfsLOuIAfVDQiUwGt5hdoVfAN8OVq1oSuoNQk0fWIi7SH5EJiY7cpwrjZP6/K5eQMKDC9anSfm+1JmHj65azO9Ms2F02MFYVBEXWt5YXBgOFUQYaEtCbRY8ORYOjhb7K+Apz0wBoMlASOgDnvQhJXFrS9i3TkgtiRgBLJDD/OQoq5hX0zTrocsCuWOyBeztHZA8UJg6WBpe0iZzrkJ+VFgmtcWrMavxBAnAhxbgXlQKURWDwisBUYbQ1CPAP9B8QOpQ4wW9lhC+wAAAABJRU5ErkJggg==");
+
     </script>
 
   </body>
