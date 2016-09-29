@@ -47,11 +47,6 @@ const config = {
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }
-    }),
-    new HtmlWebpackPlugin({
-      title: 'HackforPlay Example',
-      CSS_PREFIX: cssPrefix,
-      template: './src/html/example'
     })
   ],
   sassLoader: {
