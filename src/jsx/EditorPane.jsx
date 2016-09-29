@@ -158,7 +158,7 @@ export default class EditorPane extends Component {
         tabItemContainerStyle={{ flex: '0 0 auto' }}
         contentContainerStyle={{ flex: '1 1 auto' }}
         contentContainerClassName={PANE_CONTENT_CONTAINER}
-        onChange={this.handleSelectFile}
+        onChange={handleSelectFile}
         value={selectedFile}
       >
       {files.map((file, index) => (

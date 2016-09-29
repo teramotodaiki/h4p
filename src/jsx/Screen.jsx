@@ -1,8 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import Postmate from 'postmate/build/postmate.min';
+import Postmate from '../js/LoosePostmate';
 
 Postmate.debug = process.env.NODE_ENV !== 'production';
 
+
+import template from '../html/screen';
+import screenJs from '../js/screen';
 
 export default class Screen extends Component {
 
@@ -33,6 +36,10 @@ export default class Screen extends Component {
   start(app) {
     const { player } = this.props;
 
+    const title = 'h4p';
+    const html = template({ title, screenJs });
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => {
@@ -40,7 +47,7 @@ export default class Screen extends Component {
 
         return new Postmate({
           container: this.container,
-          url: app.url,
+          url,
           model: app.model
         });
       })
