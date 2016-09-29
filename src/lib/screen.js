@@ -1,5 +1,25 @@
 ;!function () {
 
+// Un-checked parent origin
+const _addEventListener = window.addEventListener;
+window.addEventListener = (...args) => {
+  if (args[0] === 'message' && typeof args[1] === 'function') {
+    const _listener = args[1];
+    args[1] = (...eArgs) => {
+      const {data, source} = eArgs[0];
+      if (source === parent) {
+        eArgs[0] = {
+          origin: '*', // Ignore origin check
+          data, source
+        };
+      }
+      return _listener.apply(window, eArgs);
+    };
+  }
+  return _addEventListener.apply(window, args);
+};
+
+
 const getComputedStyle = (elem) => elem.currentStyle || document.defaultView.getComputedStyle(elem);
 
 const Hack = new EventEmitter2();
