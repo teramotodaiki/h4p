@@ -43,6 +43,7 @@ const config = {
   plugins: [
     new webpack.DefinePlugin({
       CSS_PREFIX: JSON.stringify(cssPrefix),
+      EXPORT_VAR_NAME: JSON.stringify(exportVarName),
       CORE_CDN_URL: JSON.stringify(`https://embed.hackforplay.xyz/open-source/core/${CORE_NAME}.js`),
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)

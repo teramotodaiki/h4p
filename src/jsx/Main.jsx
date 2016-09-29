@@ -20,8 +20,6 @@ import Sizer from './Sizer';
 import ContextMenu from './ContextMenu';
 import FileDialog, { DialogTypes } from './FileDialog/';
 
-import download from '../html/download';
-
 export default class Main extends Component {
 
   static propTypes = {
@@ -118,17 +116,6 @@ export default class Main extends Component {
     const files = this.state.files.map((item) => Object.assign({}, item));
     const app = Object.assign({}, this.state.app, { model: { files } });
     this.setState({ app });
-  };
-
-  handleDownload = () => {
-    const { files } = this.state;
-    const html = download({ CORE_CDN_URL, CSS_PREFIX, files });
-    const content = {
-      name: 'download',
-      ext: '.html',
-      code: html,
-    };
-    this.handleOpenDialog(DialogTypes.Save, content);
   };
 
   handleTabContextMenu = (tabContextMenu) => {
@@ -249,7 +236,7 @@ export default class Main extends Component {
             <Menu
               files={files}
               handleRun={this.handleRun}
-              handleDownload={this.handleDownload}
+              handleOpenDialog={this.handleOpenDialog}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane

@@ -2,8 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>HackforPlay Example</title>
-    <script async src="{{CORE_CDN_URL}}" onload="h4p()"></script>
+    <title>HackforPlay</title>
   </head>
   <body>
     <!-- Config of the app -->
@@ -19,5 +18,13 @@
 {{& code}}
 </script>
 {{/files}}
+
+<!-- h4p.js -->
+<script type="text/javascript">
+var script = document.createElement('script');
+script.textContent = decodeURIComponent("{{& h4pJs}}")
+  + '; {{EXPORT_VAR_NAME}}();';
+document.body.appendChild(script);
+</script>
   </body>
 </html>
