@@ -1,5 +1,5 @@
 import CodeMirror from 'codemirror';
-require('codemirror/addon/hint/javascript-hint');
+import 'codemirror/addon/hint/javascript-hint';
 
 
 import Snippet from './Snippet';

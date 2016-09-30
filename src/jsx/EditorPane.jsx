@@ -1,21 +1,22 @@
 import React, { PropTypes, Component } from 'react';
-import CodeMirror from 'react-codemirror';
+import ReactCodeMirror from 'react-codemirror';
 import { Tabs, Tab } from 'material-ui';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 
-require('codemirror/mode/javascript/javascript');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/edit/closebrackets');
-require('codemirror/addon/edit/matchbrackets');
-require('../js/codemirror-hint-extension');
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/addon/hint/show-hint';
+import '../js/closebrackets';
+// import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/addon/hint/show-hint.css';
 
-require('codemirror/lib/codemirror.css');
-require('codemirror/addon/hint/show-hint.css');
 
-
+import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
 
-const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER'; // classname
+const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
+const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
 
 export default class EditorPane extends Component {
 
@@ -78,10 +79,10 @@ export default class EditorPane extends Component {
 
   showHint(cm) {
     cm.on('change', (_cm, change) => {
-      if (change.origin === 'setValue') return;
+      if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
       if (token.type !== null) {
-        cm.showHint({ completeSingle: false });
+        cm.showHint({ completeSingle: false, container: this.hints });
       }
     });
   }
@@ -169,7 +170,7 @@ export default class EditorPane extends Component {
           style={{ textTransform: 'none' }}
           onContextMenu={(e) => this.handleContextMenu(e, file)}
         >
-          <CodeMirror
+          <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
             ref={(cm) => this.handleCodemirror(cm, file.key)}
             value={file.code}
@@ -179,6 +180,7 @@ export default class EditorPane extends Component {
         </Tab>
       ))}
       </Tabs>
+      <div className={CODEMIRROR_HINT_CONTAINER} ref={(div) => this.hints = div}></div>
     </div>
     );
   }

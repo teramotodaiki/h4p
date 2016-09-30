@@ -16,7 +16,7 @@
       visibility: hidden;
   }
 
-  & .cm-tab:before {
+  &.ReactCodeMirror__tab-visible .cm-tab:before {
       visibility: visible;
   }
 
@@ -29,4 +29,11 @@
   	border-bottom: 1px solid black;
   }
 
+}
+
+.CodeMirror-hint_container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
