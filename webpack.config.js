@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const exportVarName = process.env.EXPORT_VAR_NAME || "h4p";
 const cssPrefix = process.env.CSS_PREFIX || (exportVarName + "__");
 
-const CORE_NAME = 'h4p-alpha-6';
+const CORE_NAME = 'h4p-alpha-7';
 
 const config = {
   entry: {
