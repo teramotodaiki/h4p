@@ -1,8 +1,0 @@
-@mixin resizer($align, $active) {
-
-  z-index: $z-index-resizer;
-  cursor: map-get($resizer-cursor, $align);
-  width: if(isHorizontal($align), $resizer-narrow-width, 100%);
-  height: if(isVertical($align), $resizer-narrow-width, 100%);
-
-}

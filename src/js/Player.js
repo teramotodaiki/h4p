@@ -4,7 +4,6 @@ import classNames from 'classnames';
 
 import render from '../jsx/render';
 
-const getClassName = (componentName) => CSS_PREFIX + 'frame_container-' + componentName;
 
 export default class Player extends EventEmitter2 {
 
@@ -22,6 +21,7 @@ export default class Player extends EventEmitter2 {
   }
 
   start() {
+    this.open();
     return render(this, this.config);
   }
 
@@ -33,7 +33,7 @@ export default class Player extends EventEmitter2 {
 
   createRootElement(config) {
     const elem = document.createElement('div');
-    elem.classList.add(classNames(config.className, getClassName('container')));
+    elem.classList.add(classNames(config.className, CSS_PREFIX + 'container'));
     document.body.appendChild(elem);
     return elem;
   }
@@ -43,8 +43,8 @@ export default class Player extends EventEmitter2 {
     return element.currentStyle || document.defaultView.getComputedStyle(element);
   }
 
-  show() { this.config.rootElement.style.visibility = 'visible'; }
-  hide() { this.config.rootElement.style.visibility = 'hidden'; }
-  toggle() { this.computedStyle.visibility === 'visible' ? this.hide() : this.show(); }
+  open() { this.config.rootElement.classList.add(CSS_PREFIX + 'container-open'); }
+  close() { this.config.rootElement.classList.remove(CSS_PREFIX + 'container-open'); }
+  toggle() { this.config.rootElement.classList.toggle(CSS_PREFIX + 'container-open'); }
 
 }

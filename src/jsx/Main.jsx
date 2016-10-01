@@ -57,7 +57,7 @@ export default class Main extends Component {
 
   static fileIndex = 0;
   componentDidMount() {
-    const { config } = this.props;
+    const { player, config } = this.props;
 
     const files = config.files.map(file => {
       const key = ++Main.fileIndex;
@@ -106,7 +106,7 @@ export default class Main extends Component {
 
   switchEntryPoint = (file) => {
     const nextSelectFile = Object.assign({}, file, { isEntryPoint: true });
-    const files = this.state.files.map(item => 
+    const files = this.state.files.map(item =>
       item === file ? nextSelectFile : Object.assign({}, item, { isEntryPoint: false }));
     this.setState({ files }, () => this.selectFile(nextSelectFile));
   };
@@ -243,6 +243,7 @@ export default class Main extends Component {
           </Dock>
           <Dock config={config} align="bottom" style={secondaryStyle}>
             <Menu
+              player={player}
               files={files}
               handleRun={this.handleRun}
               handleOpenDialog={this.handleOpenDialog}

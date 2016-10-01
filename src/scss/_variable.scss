@@ -1,4 +1,7 @@
-$container: #{$prefix}frame_container !default;
+$container: #{$prefix}container !default;
+$screen: #{$prefix}screen !default;
+$dock: #{$prefix}dock !default;
+$sizer: #{$prefix}sizer !default;
 
 
 $aligns: (top, right, bottom, left);
@@ -12,10 +15,10 @@ $aligns: (top, right, bottom, left);
 }
 
 
-$resizer-narrow-width: 20px !default;
-$resizer-cursor: (top: row-resize, right: col-resize, bottom: row-resize, left: col-resize) !default;
+$sizer-narrow-width: 20px !default;
+$sizer-cursor: (top: row-resize, right: col-resize, bottom: row-resize, left: col-resize) !default;
 
 
 $z-index-screen: 1 !default;
 $z-index-editor: 2 !default;
-$z-index-resizer: 3 !default;
+$z-index-sizer: 3 !default;

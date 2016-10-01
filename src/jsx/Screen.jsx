@@ -103,7 +103,7 @@ export default class Screen extends Component {
       <div
         ref={(container) => this.container = container}
         style={this.props.style}
-        className={CSS_PREFIX + 'frame_container-screen'}
+        className={CSS_PREFIX + 'screen'}
       />
     );
   }

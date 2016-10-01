@@ -1,14 +1,10 @@
-@mixin reset-frame-element {
-  border: 0 none;
-  margin: 0px;
-  padding: 0px;
-}
+.#{$screen} {
 
-.#{$container} {
-
-  &-screen>iframe {
-    @include reset-frame-element();
+  &>iframe {
     position: absolute;
+    border: 0 none;
+    margin: 0px;
+    padding: 0px;
     top: 0px;
     left: 0px;
   }

@@ -1,28 +1,24 @@
 // generals
 .#{$container} {
 
-  &-container {
-    position: absolute;
-    padding: 0px;
-    margin: 0px;
-    left: 0px;
-    top: 0px;
-    width: 0px;
-    height: 0px;
+  display: none;
+  position: absolute;
+  padding: 0px;
+  margin: 0px;
+  left: 0px;
+  top: 0px;
+  width: 0px;
+  height: 0px;
+
+  &-open {
+    display: block;
   }
 
-  &-screen {
-    // visibility: hidden;
-    z-index: $z-index-screen;
-    left: 0px;
-    top: 0px;
-    background: linear-gradient(gray, black);
-  }
+}
 
-  &-show {
-    visibility: visible;
-  }
-
+// screen
+.#{$screen} {
+  @include screen();
 }
 
 
@@ -30,15 +26,16 @@
 .#{$container} {
   @each $align in $aligns {
 
-    &-dock_#{$align} {
+    & .#{$dock}-#{$align} {
       @include dock($align);
 
-      .#{$prefix}frame_resizer {
-        @include resizer($align, false);
+      & .#{$sizer} {
+        @include sizer($align, false);
       }
-      .#{$prefix}frame_resizer-active {
-        @include resizer($align, true);
+      & .#{$sizer}-active {
+        @include sizer($align, true);
       }
     }
+
   }
 }

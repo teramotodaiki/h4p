@@ -51,8 +51,8 @@ export default class Sizer extends Component {
 
   render() {
 
-    const className = classNames(CSS_PREFIX + 'frame_resizer', {
-      [`${CSS_PREFIX}frame_resizer-active`]: this.state.isActive
+    const className = classNames(CSS_PREFIX + 'sizer', {
+      [`${CSS_PREFIX}sizer-active`]: this.state.isActive
     });
 
     const style = Object.assign({
