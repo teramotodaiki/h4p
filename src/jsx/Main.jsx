@@ -67,7 +67,7 @@ export default class Main extends Component {
 
     this.setState({ files, app }, () => {
       if (files.length > 0) {
-        this.handleSelectFile(files[0]);
+        this.selectFile(files[0]);
       }
     });
   }
@@ -80,10 +80,13 @@ export default class Main extends Component {
   };
 
   updateFile = (file, updated) => {
+    const isSelected = file === this.state.selectedFile;
     const nextFile = Object.assign({}, file, updated);
     const files = this.state.files.map((item) => item === file ? nextFile : item);
     this.setState({ files }, () => {
-      this.handleSelectFile(nextFile);
+      if (isSelected) {
+        this.selectFile(nextFile);
+      }
     });
   };
 
@@ -92,14 +95,20 @@ export default class Main extends Component {
     this.setState({ files });
   };
 
-  handleSelectFile = (selectedFile) => {
-    this.setState({ selectedFile });
+  selectFile = (file) => {
+    // Select and open the file
+    this.setState({ selectedFile: file }, () => {
+      if (!file.isOpened) {
+        this.updateFile(this.state.selectedFile, { isOpened: true });
+      }
+    });
   };
 
   switchEntryPoint = (file) => {
-    const files = this.state.files.map((item) =>
-      Object.assign({}, item, { isEntryPoint: item === file }));
-    this.setState({ files });
+    const nextSelectFile = Object.assign({}, file, { isEntryPoint: true });
+    const files = this.state.files.map(item => 
+      item === file ? nextSelectFile : Object.assign({}, item, { isEntryPoint: false }));
+    this.setState({ files }, () => this.selectFile(nextSelectFile));
   };
 
   handleResize = (primaryWidth, secondaryHeight) => {
@@ -221,9 +230,9 @@ export default class Main extends Component {
               style={{ flex: '0 0 auto' }}
             />
             <EditorPane
-              files={files}
+              files={files.filter(file => file.isOpened)}
               updateFile={this.updateFile}
-              handleSelectFile={this.handleSelectFile}
+              selectFile={this.selectFile}
               selectedFile={selectedFile}
               onTabContextMenu={this.handleTabContextMenu}
               editorOptions={editorOptions}
@@ -242,7 +251,7 @@ export default class Main extends Component {
             <ResourcePane
               files={files}
               addFile={this.addFile}
-              handleSelectFile={this.handleSelectFile}
+              selectFile={this.selectFile}
               style={{ flex: '1 1 auto' }}
             />
           </Dock>

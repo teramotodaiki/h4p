@@ -9,7 +9,7 @@ export default class ResourcePane extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
-    handleSelectFile: PropTypes.func.isRequired,
+    selectFile: PropTypes.func.isRequired,
     selectedFile: PropTypes.object,
   };
 
@@ -35,9 +35,13 @@ export default class ResourcePane extends Component {
   handleDragOver = (event) => {
     event.preventDefault();
   };
-  
+
+  handleSelectFile = (file) => {
+    this.props.selectFile(file);
+  };
+
   render() {
-    const { files, handleSelectFile } = this.props;
+    const { files, selectFile } = this.props;
 
     const style = Object.assign({
       backgroundColor: 'rgb(247,247,247)',
@@ -55,7 +59,7 @@ export default class ResourcePane extends Component {
             key={file.key}
             primaryText={file.name}
             disableKeyboardFocus={true}
-            onTouchTap={() => handleSelectFile(file)}
+            onTouchTap={() => this.handleSelectFile(file)}
           />
         ))}
         </List>

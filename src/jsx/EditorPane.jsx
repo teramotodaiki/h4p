@@ -1,7 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
-import { Tabs, Tab } from 'material-ui';
+import { Tabs, Tab, IconButton } from 'material-ui';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/hint/show-hint';
@@ -22,7 +23,7 @@ export default class EditorPane extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     updateFile: PropTypes.func.isRequired,
-    handleSelectFile: PropTypes.func.isRequired,
+    selectFile: PropTypes.func.isRequired,
     selectedFile: PropTypes.object,
     onTabContextMenu: PropTypes.func.isRequired,
     editorOptions: PropTypes.object.isRequired,
@@ -105,7 +106,7 @@ export default class EditorPane extends Component {
     const {
       files,
       updateFile,
-      handleSelectFile,
+      selectFile,
       selectedFile,
       editorOptions,
       handleEditorOptionChange,
@@ -121,10 +122,10 @@ export default class EditorPane extends Component {
       autoCloseBrackets: true,
     }, editorOptions);
 
-    const readOnlyOptions = Object.assign(options, {
+    const readOnlyOptions = Object.assign({}, options, {
       readOnly: true,
     });
-    
+
     const style = Object.assign({
       display: 'flex',
       flexDirection: 'column',
@@ -140,14 +141,16 @@ export default class EditorPane extends Component {
       flex: '1 1 auto',
     };
 
-    const tabLabels = files.map(file => file.isEntryPoint ? (
+    const tabLabels = files.map(file =>
       <span>
+      {file.isEntryPoint ? (
         <PlayCircleOutline color="white" style={{ position: 'absolute', marginLeft: '-1rem', marginTop: -4 }} />
-          <span style={{ marginLeft: '1rem' }}>
-            {file.name}
-          </span>
+      ) : null}
+        <span style={{ marginLeft: '1rem' }}>
+          {file.name}
+        </span>
       </span>
-    ) : file.name);
+    );
 
     return (
     <div style={style}>
@@ -162,7 +165,7 @@ export default class EditorPane extends Component {
         tabItemContainerStyle={{ flex: '0 0 auto' }}
         contentContainerStyle={{ flex: '1 1 auto' }}
         contentContainerClassName={PANE_CONTENT_CONTAINER}
-        onChange={handleSelectFile}
+        onChange={selectFile}
         value={selectedFile}
       >
       {files.map((file, index) => (

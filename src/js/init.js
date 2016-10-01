@@ -13,7 +13,8 @@ export default () =>
         const code = indent(script.textContent);
         const isEntryPoint = script.hasAttribute('is-entry-point');
         const isReadOnly = script.hasAttribute('is-read-only');
-        return { name, filename, code, isEntryPoint, isReadOnly };
+        const isOpened = script.hasAttribute('is-opened');
+        return { name, filename, code, isEntryPoint, isReadOnly, isOpened };
       })
     };
   })
