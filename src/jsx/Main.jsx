@@ -41,8 +41,6 @@ export default class Main extends Component {
     files: [],
 
     tabContextMenu: {},
-    openDialogType: null,
-    dialogContent: null,
     selectedFile: null,
 
     editorOptions: {
@@ -76,15 +74,18 @@ export default class Main extends Component {
     const key = ++Main.fileIndex;
     const add = Object.assign({}, file, { key });
     const files = this.state.files.concat(add);
-    this.setState({ files });
+    this.setState({ files }, () => {
+      if (file.isOpened) {
+        this.selectFile(add);
+      }
+    });
   };
 
   updateFile = (file, updated) => {
-    const isSelected = file === this.state.selectedFile;
     const nextFile = Object.assign({}, file, updated);
     const files = this.state.files.map((item) => item === file ? nextFile : item);
     this.setState({ files }, () => {
-      if (isSelected) {
+      if (file === this.state.selectedFile) {
         this.selectFile(nextFile);
       }
     });
@@ -136,15 +137,18 @@ export default class Main extends Component {
   }
 
   handleContextSave = () => {
-    const file = this.state.tabContextMenu.file;
-    if (!file) return;
-    this.handleOpenDialog(DialogTypes.Save, file);
+    const content = this.state.tabContextMenu.file;
+    if (!content) return;
+    this.openFileDialog(DialogTypes.Save, { content });
+    this.setState({ tabContextMenu: {} });
   };
 
   handleContextRename = () => {
-    const file = this.state.tabContextMenu.file;
-    if (!file) return;
-    this.handleOpenDialog(DialogTypes.Rename, file);
+    const content = this.state.tabContextMenu.file;
+    if (!content) return;
+    this.openFileDialog(DialogTypes.Rename, { content })
+      .then((updated) => this.updateFile(content, updated));
+    this.setState({ tabContextMenu: {} });
   };
 
   handleContextSwitch = () => {
@@ -155,23 +159,20 @@ export default class Main extends Component {
   };
 
   handleContextDelete = () => {
-    const file = this.state.tabContextMenu.file;
-    if (!file) return;
-    this.handleOpenDialog(DialogTypes.Delete, file);
-  };
-
-  handleOpenDialog = (openDialogType, dialogContent) => {
-    this.setState({ openDialogType, dialogContent, tabContextMenu: {} });
-  };
-
-  handleCloseDialog = () => {
-    this.setState({ openDialogType: null, dialogContent: null });
+    const content = this.state.tabContextMenu.file;
+    if (!content) return;
+    this.openFileDialog(DialogTypes.Delete, { content })
+      .then(this.deleteFile);
+    this.setState({ tabContextMenu: {} });
   };
 
   handleEditorOptionChange = (change) => {
     const editorOptions = Object.assign({}, this.state.editorOptions, change);
     this.setState({ editorOptions });
   };
+
+  openFileDialog = () => console.error('openFileDialog has not be created');
+  handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
   render() {
     const {
@@ -231,13 +232,14 @@ export default class Main extends Component {
             />
             <EditorPane
               files={files.filter(file => file.isOpened)}
+              addFile={this.addFile}
               updateFile={this.updateFile}
               selectFile={this.selectFile}
               selectedFile={selectedFile}
               onTabContextMenu={this.handleTabContextMenu}
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
-              handleOpenDialog={this.handleOpenDialog}
+              openFileDialog={this.openFileDialog}
               style={{ flex: '1 1 auto' }}
             />
           </Dock>
@@ -246,7 +248,7 @@ export default class Main extends Component {
               player={player}
               files={files}
               handleRun={this.handleRun}
-              handleOpenDialog={this.handleOpenDialog}
+              openFileDialog={this.openFileDialog}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -268,15 +270,7 @@ export default class Main extends Component {
             openEvent={tabContextMenu.event}
             onClose={this.handleContextMenuClose}
           />
-          <FileDialog
-            open={!!openDialogType}
-            type={openDialogType}
-            content={dialogContent}
-            addFile={this.addFile}
-            updateFile={this.updateFile}
-            deleteFile={this.deleteFile}
-            onRequestClose={this.handleCloseDialog}
-          />
+          <FileDialog ref={this.handleFileDialog} />
         </div>
       </MuiThemeProvider>
     );

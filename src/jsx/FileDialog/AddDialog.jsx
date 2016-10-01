@@ -7,20 +7,19 @@ import FilenameInput from './FilenameInput';
 export default class AddDialog extends Component {
 
   static propTypes = {
-    open: PropTypes.bool.isRequired,
-    addFile: PropTypes.func.isRequired,
-    onRequestClose: PropTypes.func.isRequired,
+    resolve: PropTypes.func.isRequired,
+    onRequestClose: PropTypes.func.isRequired
   };
 
   handleAdd = () => {
-    const { addFile, onRequestClose } = this.props;
+    const { resolve, onRequestClose } = this.props;
 
-    addFile({ name: this.input.name, filename: this.input.value, code: '' });
+    resolve({ name: this.input.name, filename: this.input.value, code: '', isOpened: true });
     onRequestClose();
   };
 
   render() {
-    const { open, onRequestClose } = this.props;
+    const { onRequestClose } = this.props;
 
     const actions = [
       <FlatButton
@@ -40,7 +39,7 @@ export default class AddDialog extends Component {
         title="Add new file"
         actions={actions}
         modal={false}
-        open={open}
+        open={true}
         onRequestClose={onRequestClose}
       >
         <FilenameInput ref={(input) => this.input = input} />

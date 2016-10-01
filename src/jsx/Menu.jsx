@@ -14,7 +14,7 @@ export default class Menu extends Component {
     player: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
     handleRun: PropTypes.func.isRequired,
-    handleOpenDialog: PropTypes.func.isRequired,
+    openFileDialog: PropTypes.func.isRequired,
   };
 
   handlePowerOff = () => {
@@ -22,7 +22,7 @@ export default class Menu extends Component {
   };
 
   handleDownload = () => {
-    const { files, handleOpenDialog } = this.props;
+    const { files, openFileDialog } = this.props;
 
     fetch(CORE_CDN_URL, { mode: 'cors' })
       .then(result => result.text())
@@ -34,7 +34,7 @@ export default class Menu extends Component {
           ext: '.html',
           code: html,
         };
-        handleOpenDialog(DialogTypes.Save, content);
+        openFileDialog(DialogTypes.Save, { content });
       });
   };
 

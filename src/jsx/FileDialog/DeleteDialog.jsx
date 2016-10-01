@@ -4,8 +4,7 @@ import { Dialog, FlatButton, RaisedButton } from 'material-ui';
 export default class DeleteDialog extends Component {
 
   static propTypes = {
-    open: PropTypes.bool.isRequired,
-    deleteFile: PropTypes.func.isRequired,
+    resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     content: PropTypes.any
   };
@@ -15,13 +14,13 @@ export default class DeleteDialog extends Component {
   }
 
   handleDelete = () => {
-    const { content, deleteFile, onRequestClose } = this.props;
-    deleteFile(content);
+    const { resolve, onRequestClose, content } = this.props;
+    resolve(content);
     onRequestClose();
   }
 
   render() {
-    const { open, content, onRequestClose } = this.props;
+    const { onRequestClose, content } = this.props;
     const filename = content && content.filename;
 
     const actions = [
@@ -42,7 +41,7 @@ export default class DeleteDialog extends Component {
         title={`Do you really want to delete ${filename} ?`}
         actions={actions}
         modal={false}
-        open={open}
+        open={true}
         onRequestClose={onRequestClose}
       >
         <div>This operation can not be undone.</div>

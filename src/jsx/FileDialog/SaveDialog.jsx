@@ -8,7 +8,6 @@ import FilenameInput from './FilenameInput';
 export default class SaveDialog extends Component {
 
   static propTypes = {
-    open: PropTypes.bool.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     content: PropTypes.any
   };
@@ -16,12 +15,6 @@ export default class SaveDialog extends Component {
   state = {
     fallbackHref: null
   };
-
-  constructor(props) {
-    super(props);
-
-    this.isFallback = (typeof document.createElement('a').download === 'undefined');
-  }
 
   get blob() {
     const { content } = this.props;
@@ -38,12 +31,7 @@ export default class SaveDialog extends Component {
     elem.href = URL.createObjectURL(this.blob);
     elem.dispatchEvent(event);
 
-    this.handleClose();
-  };
-
-  handleClose = () => {
-    this.setState({ fallbackHref: null });
-    this.props.onRequestClose();
+    onRequestClose();
   };
 
   setFallbackHref = () => {
@@ -53,6 +41,7 @@ export default class SaveDialog extends Component {
     reader.readAsDataURL(this.blob);
   };
 
+  isFallback = (typeof document.createElement('a').download === 'undefined');
   render() {
     const { open, content, onRequestClose } = this.props;
     const { fallbackHref } = this.state;
@@ -61,7 +50,7 @@ export default class SaveDialog extends Component {
       <FlatButton
         label="Cancel"
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={onRequestClose}
       />,
       <RaisedButton
         label="Save"
@@ -88,8 +77,8 @@ export default class SaveDialog extends Component {
         title="Save as"
         actions={actions}
         modal={false}
-        open={open}
-        onRequestClose={this.handleClose}
+        open={true}
+        onRequestClose={onRequestClose}
       >
         <FilenameInput
           ref={(input) => this.input = input}

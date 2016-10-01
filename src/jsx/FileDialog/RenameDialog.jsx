@@ -7,22 +7,21 @@ import FilenameInput from './FilenameInput';
 export default class RenameDialog extends Component {
 
   static propTypes = {
-    open: PropTypes.bool.isRequired,
-    updateFile: PropTypes.func.isRequired,
+    resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     content: PropTypes.any
   };
 
   handleRename = (event) => {
-    const { content, updateFile, onRequestClose } = this.props;
+    const { onRequestClose, resolve } = this.props;
     const name = this.input.name;
     const filename = this.input.value;
-    updateFile(content, { name, filename });
+    resolve({ name, filename });
     onRequestClose();
   }
 
   render() {
-    const { open, content, onRequestClose } = this.props;
+    const { onRequestClose, content } = this.props;
 
     const actions = [
       <FlatButton
@@ -42,7 +41,7 @@ export default class RenameDialog extends Component {
         title="Enter the new filename for the file"
         actions={actions}
         modal={false}
-        open={open}
+        open={true}
         onRequestClose={onRequestClose}
       >
         <FilenameInput

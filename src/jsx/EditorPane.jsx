@@ -25,14 +25,14 @@ export default class EditorPane extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
+    addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     selectedFile: PropTypes.object,
     onTabContextMenu: PropTypes.func.isRequired,
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
-    handleOpenDialog: PropTypes.func.isRequired,
-    style: PropTypes.object
+    openFileDialog: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -62,10 +62,11 @@ export default class EditorPane extends Component {
   };
 
   codemirrorInstances = [];
-  handleCodemirror (ref, key) {
-    if (!ref || this.hasCodemirror(key)) return;
+  handleCodemirror (ref, file) {
+    if (!ref || this.hasCodemirror(file.key)) return;
     const cm = ref.getCodeMirror();
-    cm.key = key;
+    cm.key = file.key;
+    cm.setValue(file.code);
     this.showHint(cm);
     this.codemirrorInstances = this.codemirrorInstances.concat(cm);
     this.setEnoughHeight();
@@ -106,7 +107,9 @@ export default class EditorPane extends Component {
   }
 
   handleAdd = () => {
-    this.props.handleOpenDialog(DialogTypes.Add);
+    const { openFileDialog, addFile } = this.props;
+    openFileDialog(DialogTypes.Add)
+      .then(addFile);
   };
 
   render() {
@@ -117,7 +120,7 @@ export default class EditorPane extends Component {
       selectedFile,
       editorOptions,
       handleEditorOptionChange,
-      handleOpenDialog,
+      openFileDialog,
     } = this.props;
 
     const options = Object.assign({
@@ -170,7 +173,6 @@ export default class EditorPane extends Component {
       <EditorMenu
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
-        handleOpenDialog={handleOpenDialog}
         style={menuStyle}
       />
       <Tabs
@@ -191,7 +193,7 @@ export default class EditorPane extends Component {
         >
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
-            ref={(cm) => this.handleCodemirror(cm, file.key)}
+            ref={(cm) => this.handleCodemirror(cm, file)}
             value={file.code}
             onChange={(code) => updateFile(file, { code })}
             options={file.isReadOnly ? readOnlyOptions: options}
