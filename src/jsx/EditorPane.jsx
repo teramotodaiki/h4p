@@ -1,8 +1,10 @@
 import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
-import { Tabs, Tab, IconButton } from 'material-ui';
+import { Tabs, Tab, FloatingActionButton } from 'material-ui';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+
 
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/hint/show-hint';
@@ -14,6 +16,7 @@ import 'codemirror/addon/hint/show-hint.css';
 
 import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
+import { DialogTypes } from './FileDialog/';
 
 const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
@@ -102,6 +105,10 @@ export default class EditorPane extends Component {
     this.props.onTabContextMenu({ file, event: { absX: clientX, absY: clientY } });
   }
 
+  handleAdd = () => {
+    this.props.handleOpenDialog(DialogTypes.Add);
+  };
+
   render() {
     const {
       files,
@@ -152,6 +159,12 @@ export default class EditorPane extends Component {
       </span>
     );
 
+    const addButtonStyle = {
+      position: 'absolute',
+      right: 23,
+      bottom: 23,
+    };
+
     return (
     <div style={style}>
       <EditorMenu
@@ -187,6 +200,12 @@ export default class EditorPane extends Component {
       ))}
       </Tabs>
       <div className={CODEMIRROR_HINT_CONTAINER} ref={(div) => this.hints = div}></div>
+      <FloatingActionButton
+        style={addButtonStyle}
+        onClick={this.handleAdd}
+      >
+        <ContentAdd />
+      </FloatingActionButton>
     </div>
     );
   }
