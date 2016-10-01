@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog, FlatButton, RaisedButton } from 'material-ui';
+import { Dialog } from 'material-ui';
 
 
+import { Confirm, Abort } from './Buttons';
 import FilenameInput from './FilenameInput';
 
 export default class AddDialog extends Component {
@@ -22,16 +23,8 @@ export default class AddDialog extends Component {
     const { onRequestClose } = this.props;
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={onRequestClose}
-      />,
-      <RaisedButton
-        label="Add"
-        primary={true}
-        onTouchTap={this.handleAdd}
-      />
+      <Abort onTouchTap={onRequestClose} />,
+      <Confirm label="Add" onTouchTap={this.handleAdd} />
     ];
 
     return (

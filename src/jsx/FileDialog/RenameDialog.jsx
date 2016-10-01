@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog, FlatButton, RaisedButton } from 'material-ui';
+import { Dialog } from 'material-ui';
 
 
+import { Confirm, Abort } from './Buttons';
 import FilenameInput from './FilenameInput';
 
 export default class RenameDialog extends Component {
@@ -24,16 +25,8 @@ export default class RenameDialog extends Component {
     const { onRequestClose, content } = this.props;
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={onRequestClose}
-      />,
-      <RaisedButton
-        label="Rename"
-        primary={true}
-        onTouchTap={this.handleRename}
-      />
+      <Abort onTouchTap={onRequestClose} />,
+      <Confirm label="Rename" onTouchTap={this.handleRename} />
     ];
 
     return (

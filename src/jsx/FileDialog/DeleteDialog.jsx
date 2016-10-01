@@ -1,5 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog, FlatButton, RaisedButton } from 'material-ui';
+import { Dialog } from 'material-ui';
+import AlertError from 'material-ui/svg-icons/alert/error';
+import { redA400 } from 'material-ui/styles/colors';
+
+
+import { Confirm, Abort } from './Buttons';
 
 export default class DeleteDialog extends Component {
 
@@ -21,30 +26,32 @@ export default class DeleteDialog extends Component {
 
   render() {
     const { onRequestClose, content } = this.props;
-    const filename = content && content.filename;
+
+    const style = {
+      textAlign: 'center'
+    };
+
+    const iconStyle = {
+      marginRight: 10,
+      marginBottom: -6,
+    };
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={onRequestClose}
-      />,
-      <RaisedButton
-        label="Delete"
-        primary={true}
-        onTouchTap={this.handleDelete}
-      />
+      <Abort onTouchTap={onRequestClose} />,
+      <Confirm label="Delete" onTouchTap={this.handleDelete} />,
     ];
 
     return (
       <Dialog
-        title={`Do you really want to delete ${filename} ?`}
+        title={<h3>Do you really want to delete <b>{content && content.name}</b>?</h3>}
         actions={actions}
         modal={false}
         open={true}
         onRequestClose={onRequestClose}
+        bodyStyle={style}
       >
-        <div>This operation can not be undone.</div>
+        <AlertError color={redA400} style={iconStyle} />
+        This operation can not be undone.
       </Dialog>
     );
   }

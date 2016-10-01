@@ -1,5 +1,5 @@
-import React, {PropTypes, Component} from 'react';
-import {FlatButton, DropDownMenu, MenuItem} from 'material-ui';
+import React, { PropTypes, Component } from 'react';
+import { IconButton } from 'material-ui';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
@@ -46,11 +46,21 @@ export default class Menu extends Component {
       flexDirection: 'row-reverse',
     }, this.props.style);
 
+    const iconStyle = {
+      marginRight: 20
+    };
+
     return (
       <div style={style}>
-        <FlatButton icon={<PlayCircleOutline />} onClick={handleRun} />
-        <FlatButton icon={<PowerSettingsNew />} onClick={this.handlePowerOff} />
-        <FlatButton icon={<FileDownload />} onClick={this.handleDownload} />
+        <IconButton tooltip="RUN" onClick={handleRun} style={iconStyle}>
+          <PlayCircleOutline />
+        </IconButton>
+        <IconButton tooltip="Shut down" onClick={this.handlePowerOff} style={iconStyle}>
+          <PowerSettingsNew />
+        </IconButton>
+        <IconButton tooltip="Download" onClick={this.handleDownload} style={iconStyle}>
+          <FileDownload />
+        </IconButton>
       </div>
     );
   }

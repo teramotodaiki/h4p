@@ -1,8 +1,9 @@
 import React, { PropTypes, Component } from 'react';
-import { Dialog, FlatButton, RaisedButton } from 'material-ui';
+import { Dialog, RaisedButton } from 'material-ui';
 import Save from 'material-ui/svg-icons/content/save';
 
 
+import { Confirm, Abort } from './Buttons';
 import FilenameInput from './FilenameInput';
 
 export default class SaveDialog extends Component {
@@ -47,14 +48,9 @@ export default class SaveDialog extends Component {
     const { fallbackHref } = this.state;
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={onRequestClose}
-      />,
-      <RaisedButton
+      <Abort onTouchTap={onRequestClose} />,
+      <Confirm
         label="Save"
-        primary={true}
         onTouchTap={this.handleSave}
         disabled={this.isFallback}
       />

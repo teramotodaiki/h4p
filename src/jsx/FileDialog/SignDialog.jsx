@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog, FlatButton, RaisedButton, TextField } from 'material-ui';
+import { Dialog, TextField } from 'material-ui';
 
+
+import { Confirm, Abort } from './Buttons';
 
 export default class SignDialog extends Component {
 
@@ -23,16 +25,8 @@ export default class SignDialog extends Component {
     const { open, onRequestClose, content } = this.props;
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={onRequestClose}
-      />,
-      <RaisedButton
-        label="OK"
-        primary={true}
-        onTouchTap={this.handleSign}
-      />
+      <Abort onTouchTap={onRequestClose} />,
+      <Confirm label="OK" onTouchTap={this.handleSign} />
     ];
 
     return (
