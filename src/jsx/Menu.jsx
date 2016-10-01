@@ -6,7 +6,6 @@ import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import 'whatwg-fetch';
 
 import { DialogTypes } from './FileDialog/';
-import download from '../html/download';
 
 export default class Menu extends Component {
 
@@ -24,18 +23,11 @@ export default class Menu extends Component {
   handleDownload = () => {
     const { files, openFileDialog } = this.props;
 
-    fetch(CORE_CDN_URL, { mode: 'cors' })
-      .then(result => result.text())
-      .then(h4pJs => {
-        h4pJs = encodeURIComponent(h4pJs);
-        const html = download({ EXPORT_VAR_NAME, CSS_PREFIX, files, h4pJs });
-        const content = {
-          name: 'download',
-          ext: '.html',
-          code: html,
-        };
+    openFileDialog(DialogTypes.Download, { files })
+      .then(content => {
         openFileDialog(DialogTypes.Save, { content });
-      });
+      })
+      .catch((err) => alert(err.message));
   };
 
   render() {

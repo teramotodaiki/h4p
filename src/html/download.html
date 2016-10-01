@@ -3,11 +3,16 @@
   <head>
     <meta charset="utf-8">
     <title>HackforPlay</title>
+    {{#useCDN}}
+    <!-- h4p.js -->
+    <script src="{{CORE_CDN_URL}}" onload="{{EXPORT_VAR_NAME}}();"></script>
+    {{/useCDN}}
   </head>
   <body>
     <!-- Config of the app -->
     <div class="{{CSS_PREFIX}}app" data-target=".download_content"></div>
-    <!-- File as a <script> -->
+
+<!-- File as a <script> -->
 {{#files}}
 <script
   class="download_content"
@@ -25,12 +30,14 @@
 </script>
 {{/files}}
 
-<!-- h4p.js -->
-<script type="text/javascript">
-var script = document.createElement('script');
-script.textContent = decodeURIComponent("{{& h4pJs}}")
-  + '; {{EXPORT_VAR_NAME}}();';
-document.body.appendChild(script);
-</script>
+  {{^useCDN}}
+  <!-- h4p.js -->
+  <script type="text/javascript">
+  var script = document.createElement('script');
+  script.textContent = decodeURIComponent("{{& raw}}")
+    + '; {{EXPORT_VAR_NAME}}();';
+  document.body.appendChild(script);
+  </script>
+  {{/useCDN}}
   </body>
 </html>

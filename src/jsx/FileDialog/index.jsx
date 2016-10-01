@@ -7,6 +7,7 @@ const DialogTypes = {
   Rename: 'Rename',
   Delete: 'Delete',
   Sign: 'Sign',
+  Download: 'Download',
 };
 
 import AddDialog from './AddDialog';
@@ -14,6 +15,7 @@ import SaveDialog from './SaveDialog';
 import RenameDialog from './RenameDialog';
 import DeleteDialog from './DeleteDialog';
 import SignDialog from './SignDialog';
+import DownloadDialog from './DownloadDialog';
 
 export default class FileDialog extends Component {
 
@@ -56,6 +58,9 @@ const getDialogInstance = (type, props) => {
 
     case DialogTypes.Sign:
       return (<SignDialog {...props} />);
+
+    case DialogTypes.Download:
+      return (<DownloadDialog {...props} />);
 
     default: return null;
   }

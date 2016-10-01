@@ -17,6 +17,13 @@ export default class SaveDialog extends Component {
     fallbackHref: null
   };
 
+  isFallback = (typeof document.createElement('a').download === 'undefined');
+  componentDidMount() {
+    if (this.isFallback) {
+      this.setFallbackHref();
+    }
+  }
+
   get blob() {
     const { content } = this.props;
     return new Blob([content.code]);
@@ -42,7 +49,6 @@ export default class SaveDialog extends Component {
     reader.readAsDataURL(this.blob);
   };
 
-  isFallback = (typeof document.createElement('a').download === 'undefined');
   render() {
     const { open, content, onRequestClose } = this.props;
     const { fallbackHref } = this.state;
@@ -60,7 +66,6 @@ export default class SaveDialog extends Component {
       actions.push(
         <RaisedButton
           label="Right click to download"
-          ref={this.setFallbackHref}
           href={fallbackHref}
           icon={<Save />}
           primary={true}
