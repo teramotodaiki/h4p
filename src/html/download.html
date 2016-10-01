@@ -13,6 +13,12 @@
   class="download_content"
   name="{{name}}"
   {{#isEntryPoint}}is-entry-point{{/isEntryPoint}}
+  {{#isReadOnly}}is-read-only{{/isReadOnly}}
+  {{#isOpened}}is-opened{{/isOpened}}
+  {{#author}}
+  author-name="{{name}}"
+  author-url="{{url}}"
+  {{/author}}
   type="hack"
 >
 {{& code}}

@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui';
 
 
+import { DialogTypes } from './FileDialog/';
 import blobUrlLoader from '../js/blobUrlLoader';
 
 export default class ResourcePane extends Component {
@@ -11,6 +12,7 @@ export default class ResourcePane extends Component {
     addFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     selectedFile: PropTypes.object,
+    openFileDialog: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -18,17 +20,29 @@ export default class ResourcePane extends Component {
   }
 
   handleDrop = (event) => {
+    const { addFile, openFileDialog } = this.props;
     event.preventDefault();
-    const files = Array.from(event.dataTransfer.files);
-    files.map(file => {
+
+    Array.from(event.dataTransfer.files)
+    .map(file => {
       const mimeType = file.type;
       const filename = file.name;
       const extBegin = filename.lastIndexOf('.');
       const name = extBegin > 0 ? filename.substr(0, extBegin) : filename;
+      const content = { name };
 
-      blobUrlLoader(file)
-      .then(code => this.props.addFile({ name, filename, code }))
-      .catch((err) => alert(`Failed to load the file ${file.name}!`));
+      return () => Promise.resolve()
+        .then(() => openFileDialog(DialogTypes.Sign, { content }))
+        .then(author => {
+          blobUrlLoader(file)
+            .then(code => addFile({ name, filename, code, author }));
+        });
+    })
+    .reduce((p, c) => {
+      return p.then(c);
+    }, Promise.resolve())
+    .catch(err => {
+      console.error(err);
     });
   };
 

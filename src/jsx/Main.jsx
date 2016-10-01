@@ -255,6 +255,7 @@ export default class Main extends Component {
               files={files}
               addFile={this.addFile}
               selectFile={this.selectFile}
+              openFileDialog={this.openFileDialog}
               style={{ flex: '1 1 auto' }}
             />
           </Dock>

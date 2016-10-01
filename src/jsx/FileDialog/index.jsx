@@ -6,13 +6,14 @@ const DialogTypes = {
   Save: 'Save',
   Rename: 'Rename',
   Delete: 'Delete',
+  Sign: 'Sign',
 };
 
 import AddDialog from './AddDialog';
 import SaveDialog from './SaveDialog';
 import RenameDialog from './RenameDialog';
 import DeleteDialog from './DeleteDialog';
-
+import SignDialog from './SignDialog';
 
 export default class FileDialog extends Component {
 
@@ -53,15 +54,14 @@ const getDialogInstance = (type, props) => {
     case DialogTypes.Delete:
       return (<DeleteDialog {...props} />);
 
+    case DialogTypes.Sign:
+      return (<SignDialog {...props} />);
+
     default: return null;
   }
 };
 
 export {
   DialogTypes,
-  AddDialog,
-  SaveDialog,
-  RenameDialog,
-  DeleteDialog,
   getDialogInstance,
 };
