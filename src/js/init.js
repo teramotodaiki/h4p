@@ -12,7 +12,8 @@ export default () =>
         const filename = name + '.js';
         const code = indent(script.textContent);
         const isEntryPoint = script.hasAttribute('is-entry-point');
-        return { name, filename, code, isEntryPoint };
+        const isReadOnly = script.hasAttribute('is-read-only');
+        return { name, filename, code, isEntryPoint, isReadOnly };
       })
     };
   })

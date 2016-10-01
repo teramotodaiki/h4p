@@ -121,6 +121,10 @@ export default class EditorPane extends Component {
       autoCloseBrackets: true,
     }, editorOptions);
 
+    const readOnlyOptions = Object.assign(options, {
+      readOnly: true,
+    });
+    
     const style = Object.assign({
       display: 'flex',
       flexDirection: 'column',
@@ -174,7 +178,7 @@ export default class EditorPane extends Component {
             ref={(cm) => this.handleCodemirror(cm, file.key)}
             value={file.code}
             onChange={(code) => updateFile(file, { code })}
-            options={options}
+            options={file.isReadOnly ? readOnlyOptions: options}
           />
         </Tab>
       ))}
