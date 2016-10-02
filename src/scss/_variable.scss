@@ -2,6 +2,9 @@ $container: #{$prefix}container !default;
 $screen: #{$prefix}screen !default;
 $dock: #{$prefix}dock !default;
 $sizer: #{$prefix}sizer !default;
+$menu: #{$prefix}menu !default;
+$tab_container: #{$prefix}tab_container !default;
+$tab: #{$prefix}tab !default;
 
 
 $aligns: (top, right, bottom, left);
@@ -15,9 +18,13 @@ $aligns: (top, right, bottom, left);
 }
 
 
-$sizer-narrow-width: 20px !default;
+$sizer-narrow-width: 1rem !default;
 $sizer-cursor: (top: row-resize, right: col-resize, bottom: row-resize, left: col-resize) !default;
 
+$menu-height: 2.5rem !default;
+
+$tab-max-width: 8rem !default;
+$tab-height: 2rem !default;
 
 $z-index-screen: 1 !default;
 $z-index-editor: 2 !default;

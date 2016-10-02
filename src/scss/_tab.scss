@@ -1,0 +1,34 @@
+@mixin tab_container {
+
+  width: 100%;
+  height: 100%;
+
+  &>div:first-child {
+    background-color: transparent !important;
+    width: auto !important;
+    overflow-x: scroll;
+    padding-left: $tab-height/4;
+    padding-right: $tab-height/4;
+    border-width: 0 0 4px 0;
+    border-style: solid;
+    border-color: inherit;
+  }
+}
+
+@mixin tab {
+  position: relative;
+  text-transform: none !important;
+  height: 0 !important;
+  max-width: $tab-max-width !important;
+  width: 100% !important;
+  border-width: 0 $tab-height/2 $tab-height $tab-height/2 !important;
+  border-style: solid !important;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  margin-left: -$tab-height/4 !important;
+  margin-right: -$tab-height/4 !important;
+
+  &>div:first-child {
+    margin-top: -6px;
+  }
+}

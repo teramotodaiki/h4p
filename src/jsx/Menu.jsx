@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { IconButton } from 'material-ui';
+import { darkBlack } from 'material-ui/styles/colors';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
@@ -33,25 +34,20 @@ export default class Menu extends Component {
   render() {
     const { handleRun } = this.props;
 
-    const style = Object.assign({
-      display: 'flex',
-      flexDirection: 'row-reverse',
-    }, this.props.style);
-
     const iconStyle = {
       marginRight: 20
     };
 
     return (
-      <div style={style}>
+      <div className={CSS_PREFIX + 'menu'} style={this.props.style}>
         <IconButton tooltip="RUN" onClick={handleRun} style={iconStyle}>
-          <PlayCircleOutline />
+          <PlayCircleOutline color={darkBlack} />
         </IconButton>
         <IconButton tooltip="Shut down" onClick={this.handlePowerOff} style={iconStyle}>
-          <PowerSettingsNew />
+          <PowerSettingsNew color={darkBlack} />
         </IconButton>
         <IconButton tooltip="Download" onClick={this.handleDownload} style={iconStyle}>
-          <FileDownload />
+          <FileDownload color={darkBlack} />
         </IconButton>
       </div>
     );

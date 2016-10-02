@@ -1,0 +1,9 @@
+@mixin menu {
+
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+
+  height: $menu-height;
+
+}

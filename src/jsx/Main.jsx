@@ -222,7 +222,7 @@ export default class Main extends Component {
 
     return (
       <MuiThemeProvider>
-        <div>
+        <div style={{ backgroundColor: 'inherit' }}>
           <Dock config={config} align="right" style={primaryStyle}>
             <Sizer
               handleResize={this.handleResize}

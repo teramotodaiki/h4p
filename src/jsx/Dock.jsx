@@ -7,12 +7,14 @@ const Dock = ({ config, align, children, containerStyle, style }) => {
     left: config.width,
     top: config.height,
     width: 0,
-    height: 0
+    height: 0,
+    backgroundColor: 'inherit',
   }, containerStyle);
 
   style = Object.assign({
     width: config.width,
-    height: config.height
+    height: config.height,
+    backgroundColor: 'inherit',
   }, style);
 
   return (

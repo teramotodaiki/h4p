@@ -1,38 +1,51 @@
 import React, { Component, PropTypes } from 'react';
-import { Checkbox } from 'material-ui';
+import { IconMenu, IconButton, MenuItem } from 'material-ui';
+import { minBlack } from 'material-ui/styles/colors';
 import HardwareKeyboardTab from 'material-ui/svg-icons/hardware/keyboard-tab';
+import ActionSettings from 'material-ui/svg-icons/action/settings';
 
 
 export default class EditorMenu extends Component {
 
   static propTypes = {
     editorOptions: PropTypes.object.isRequired,
+    handleEditorOptionChange: PropTypes.func.isRequired,
   };
 
-  toggleTabVisibility = (event, tabVisibility) => {
-    this.props.handleEditorOptionChange({ tabVisibility });
+  toggleTabVisibility = () => {
+    const { tabVisibility } = this.props.editorOptions;
+    this.props.handleEditorOptionChange({ tabVisibility: !tabVisibility });
   };
 
   render() {
+    const { tabVisibility } = this.props.editorOptions;
+
     const style = Object.assign({
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      minHeight: 20,
-      zIndex: 1,
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      zIndex: 100
     }, this.props.style);
 
+    const iconStyle = {
+      margin: -10,
+      padding: 0,
+    };
+
     return (
-      <div style={style}>
-        <div>
-          <Checkbox
-            checkedIcon={<HardwareKeyboardTab />}
-            uncheckedIcon={<HardwareKeyboardTab />}
-            onCheck={this.toggleTabVisibility}
-            style={{ width: 'auto' }}
+        <IconMenu
+          iconButtonElement={<IconButton style={iconStyle}><ActionSettings color={minBlack} /></IconButton>}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          style={style}
+        >
+          <MenuItem
+            rightIcon={<HardwareKeyboardTab />}
+            primaryText="Tab Visibility"
+            onTouchTap={this.toggleTabVisibility}
+            checked={tabVisibility}
           />
-        </div>
-      </div>
+        </IconMenu>
     );
   }
 }

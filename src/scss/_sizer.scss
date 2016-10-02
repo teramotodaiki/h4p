@@ -1,8 +1,21 @@
 @mixin sizer($align, $active) {
 
+  position: relative;
   z-index: $z-index-sizer;
   cursor: map-get($sizer-cursor, $align);
   width: if(isHorizontal($align), $sizer-narrow-width, 100%);
   height: if(isVertical($align), $sizer-narrow-width, 100%);
+  border-width: 0;
+
+  &>div:first-child {
+
+    position: absolute;
+    bottom: 0;
+    box-sizing: border-box;
+    border-width: $menu-height $sizer-narrow-width 0 0;
+    border-style: solid;
+    border-color: transparent;
+
+  }
 
 }

@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+import { faintBlack, transparent } from 'material-ui/styles/colors';
 import classNames from 'classnames';
 
 export default class Sizer extends Component {
-
-  static Width = 14;
 
   static propTypes = {
     handleResize: PropTypes.func.isRequired,
@@ -50,21 +49,25 @@ export default class Sizer extends Component {
   }
 
   render() {
+    const { secondaryHeight } = this.props;
 
     const className = classNames(CSS_PREFIX + 'sizer', {
       [`${CSS_PREFIX}sizer-active`]: this.state.isActive
     });
 
-    const style = Object.assign({
-      backgroundColor: 'rgb(255,255,255)',
-    }, this.props.style);
+    const bladeStyle = {
+      height: secondaryHeight,
+      borderRightColor: faintBlack,
+    };
 
     return (
       <div
         className={className}
-        style={style}
+        style={this.props.style}
         onMouseDown={this.handleMouseDown}
-      />
+      >
+        <div style={bladeStyle}></div>
+      </div>
     );
   }
 }

@@ -4,6 +4,7 @@ import { Tabs, Tab, FloatingActionButton } from 'material-ui';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import { darkWhite, faintBlack, darkBlack } from 'material-ui/styles/colors';
 
 
 import 'codemirror/mode/javascript/javascript';
@@ -137,29 +138,40 @@ export default class EditorPane extends Component {
     });
 
     const style = Object.assign({
-      display: 'flex',
-      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
     }, this.props.style);
-
-    const menuStyle = {
-      flex: '0 0 auto',
-    };
 
     const tabsStyle = {
       display: 'flex',
       flexDirection: 'column',
-      flex: '1 1 auto',
+      borderBottomColor: darkWhite,
+      marginTop: 10,
+    };
+
+    const tabStyle = {
+      borderBottomColor: faintBlack,
+      color: darkBlack,
+      zIndex: 1,
+    };
+
+    const tabActiveStyle = {
+      borderBottomColor: darkWhite,
+      color: darkBlack,
+      zIndex: 2,
+    };
+
+    const entryPointStyle = {
+      position: 'absolute',
+      left: 0,
+      width: 16,
     };
 
     const tabLabels = files.map(file =>
-      <span>
-      {file.isEntryPoint ? (
-        <PlayCircleOutline color="white" style={{ position: 'absolute', marginLeft: '-1rem', marginTop: -4 }} />
-      ) : null}
-        <span style={{ marginLeft: '1rem' }}>
-          {file.name}
-        </span>
-      </span>
+      file.isEntryPoint ? ([
+        <PlayCircleOutline color={darkBlack} style={entryPointStyle} key={1} />,
+        <span key={2}>{file.name}</span>
+      ]) : file.name
     );
 
     const addButtonStyle = {
@@ -173,23 +185,25 @@ export default class EditorPane extends Component {
       <EditorMenu
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
-        style={menuStyle}
       />
       <Tabs
         style={tabsStyle}
+        className={CSS_PREFIX + 'tab_container'}
         tabItemContainerStyle={{ flex: '0 0 auto' }}
         contentContainerStyle={{ flex: '1 1 auto' }}
         contentContainerClassName={PANE_CONTENT_CONTAINER}
         onChange={selectFile}
         value={selectedFile}
+        inkBarStyle={{ display: 'none' }}
       >
       {files.map((file, index) => (
         <Tab
           key={file.key}
           value={file}
           label={tabLabels[index]}
-          style={{ textTransform: 'none' }}
           onContextMenu={(e) => this.handleContextMenu(e, file)}
+          className={CSS_PREFIX + 'tab'}
+          style={selectedFile === file ? tabActiveStyle : tabStyle}
         >
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}

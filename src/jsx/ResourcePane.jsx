@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui';
+import { faintBlack } from 'material-ui/styles/colors';
 
 
 import { DialogTypes } from './FileDialog/';
@@ -58,7 +59,7 @@ export default class ResourcePane extends Component {
     const { files, selectFile } = this.props;
 
     const style = Object.assign({
-      backgroundColor: 'rgb(247,247,247)',
+      backgroundColor: faintBlack,
     }, this.props.style);
 
     return (
