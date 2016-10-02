@@ -32,8 +32,12 @@ export default class Sizer extends Component {
     const movementY = clientY - this.prevent.clientY;
     this.prevent = { clientX, clientY };
 
-    const primaryWidth = this.props.primaryWidth - movementX;
-    const secondaryHeight = this.props.secondaryHeight - movementY;
+    const primaryWidth = Math.min(window.innerWidth, Math.max(0,
+      this.props.primaryWidth - movementX
+    ));
+    const secondaryHeight = Math.min(window.innerHeight, Math.max(0,
+      this.props.secondaryHeight - movementY
+    ));
 
     this.props.handleResize(primaryWidth, secondaryHeight);
   };

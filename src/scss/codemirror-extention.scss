@@ -1,18 +1,50 @@
+// material colors
+$full-black: rgba(0, 0, 0, 1);
+$dark-black: rgba(0, 0, 0, 0.87);
+$light-black: rgba(0, 0, 0, 0.54);
+$min-black: rgba(0, 0, 0, 0.26);
+$faint-black: rgba(0, 0, 0, 0.12);
+$full-white: rgba(255, 255, 255, 1);
+$dark-white: rgba(255, 255, 255, 0.87);
+$light-white: rgba(255, 255, 255, 0.54);
+
 .ReactCodeMirror {
 
   & {
     position: absolute;
   }
 
+  // colors
   .CodeMirror {
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+    & {
+      font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      background-color: $light-white;
+    }
+
+    .CodeMirror-matchingbracket {
+    	color: inherit;
+    	border-bottom: 1px solid $dark-black;
+    }
+
+    .CodeMirror-gutters {
+      background-color: $dark-white;
+      border-color: $faint-black;
+    }
+
+    .CodeMirror-sizer>div:first-child {
+      border-top: 1px solid $faint-black;
+    }
+
   }
 
+  // options
+
   .cm-tab:before {
-      content: '----';
+      content: '••••';
       position: absolute;
-      color: #ccc;
-      border-left: solid 1px;
+      color: $min-black;
+      border-left: 1px solid $min-black;
       visibility: hidden;
   }
 
@@ -22,11 +54,6 @@
 
   li.CodeMirror-hint-snippet {
     font-style: italic;
-  }
-
-  .CodeMirror .CodeMirror-matchingbracket {
-  	color: inherit;
-  	border-bottom: 1px solid black;
   }
 
 }

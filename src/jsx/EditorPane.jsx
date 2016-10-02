@@ -146,7 +146,6 @@ export default class EditorPane extends Component {
       display: 'flex',
       flexDirection: 'column',
       borderBottomColor: darkWhite,
-      marginTop: 10,
     };
 
     const tabStyle = {
@@ -163,6 +162,7 @@ export default class EditorPane extends Component {
 
     const entryPointStyle = {
       position: 'absolute',
+      top: 6,
       left: 0,
       width: 16,
     };
@@ -170,8 +170,8 @@ export default class EditorPane extends Component {
     const tabLabels = files.map(file =>
       file.isEntryPoint ? ([
         <PlayCircleOutline color={darkBlack} style={entryPointStyle} key={1} />,
-        <span key={2}>{file.name}</span>
-      ]) : file.name
+        <span style={{ position: 'relative' }} key={2}>{file.name}</span>
+      ]) : <span style={{ position: 'relative' }}>{file.name}</span>
     );
 
     const addButtonStyle = {

@@ -6,6 +6,8 @@
   &>div:first-child {
     background-color: transparent !important;
     width: auto !important;
+    height: $tab-height !important;
+    padding-top: $tab-top;
     overflow-x: scroll;
     padding-left: $tab-height/4;
     padding-right: $tab-height/4;
