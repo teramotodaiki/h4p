@@ -70,40 +70,48 @@ export default class Main extends Component {
     });
   }
 
-  addFile = (file) => {
+  addFile = (file) => new Promise((resolve, reject) => {
     const key = ++Main.fileIndex;
     const add = Object.assign({}, file, { key });
     const files = this.state.files.concat(add);
     this.setState({ files }, () => {
       if (file.isOpened) {
-        this.selectFile(add);
+        this.selectFile(add, (lastFile) => resolve(lastFile));
+      } else {
+        resolve(add);
       }
     });
-  };
+  });
 
-  updateFile = (file, updated) => {
+  updateFile = (file, updated) => new Promise((resolve, reject) => {
     const nextFile = Object.assign({}, file, updated);
     const files = this.state.files.map((item) => item === file ? nextFile : item);
     this.setState({ files }, () => {
-      if (file === this.state.selectedFile) {
-        this.selectFile(nextFile);
+      if (file === this.state.selectedFile && nextFile.isOpened) {
+        this.selectFile(nextFile)
+          .then(lastFile => resolve(lastFile));
+      } else {
+        resolve(nextFile);
       }
     });
-  };
+  });
 
-  deleteFile = (file) => {
+  deleteFile = (file) => new Promise((resolve, reject) => {
     const files = this.state.files.filter((item) => item !== file);
-    this.setState({ files });
-  };
+    this.setState({ files }, resolve);
+  });
 
-  selectFile = (file) => {
+  selectFile = (file) => new Promise((resolve, reject) => {
     // Select and open the file
     this.setState({ selectedFile: file }, () => {
       if (!file.isOpened) {
-        this.updateFile(this.state.selectedFile, { isOpened: true });
+        this.updateFile(this.state.selectedFile, { isOpened: true })
+          .then(lastFile => resolve(lastFile));
+      } else {
+        resolve(file);
       }
     });
-  };
+  });
 
   switchEntryPoint = (file) => {
     const nextSelectFile = Object.assign({}, file, { isEntryPoint: true });
@@ -236,6 +244,7 @@ export default class Main extends Component {
               updateFile={this.updateFile}
               selectFile={this.selectFile}
               selectedFile={selectedFile}
+              handleRun={this.handleRun}
               onTabContextMenu={this.handleTabContextMenu}
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}

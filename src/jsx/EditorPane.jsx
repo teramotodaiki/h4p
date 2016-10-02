@@ -1,8 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import { Tabs, Tab, FloatingActionButton } from 'material-ui';
-import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { darkWhite, faintBlack, darkBlack } from 'material-ui/styles/colors';
 
@@ -18,6 +16,7 @@ import 'codemirror/addon/hint/show-hint.css';
 import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
 import { DialogTypes } from './FileDialog/';
+import TabLabel from './TabLabel';
 
 const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
@@ -30,6 +29,7 @@ export default class EditorPane extends Component {
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     selectedFile: PropTypes.object,
+    handleRun: PropTypes.func.isRequired,
     onTabContextMenu: PropTypes.func.isRequired,
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
@@ -46,9 +46,11 @@ export default class EditorPane extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { style, files } = this.props;
+    // Optimize styles when size changed
     if (style !== nextProps.style) {
       this.setEnoughHeight();
     }
+    // Destruct codemirror instance
     if (files !== nextProps.files) {
       files
         .filter(file => nextProps.files.every(next => file.key !== next.key))
@@ -113,12 +115,21 @@ export default class EditorPane extends Component {
       .then(addFile);
   };
 
+  handleClose = (file) => {
+    const { updateFile, selectFile, selectedFile, files } = this.props;
+
+    const nextSelect = files.find((item) => item !== file);
+    updateFile(file, { isOpened: false })
+      .then(() => nextSelect && selectFile(nextSelect));
+  };
+
   render() {
     const {
       files,
       updateFile,
       selectFile,
       selectedFile,
+      handleRun,
       editorOptions,
       handleEditorOptionChange,
       openFileDialog,
@@ -143,8 +154,6 @@ export default class EditorPane extends Component {
     }, this.props.style);
 
     const tabsStyle = {
-      display: 'flex',
-      flexDirection: 'column',
       borderBottomColor: darkWhite,
     };
 
@@ -160,25 +169,12 @@ export default class EditorPane extends Component {
       zIndex: 2,
     };
 
-    const entryPointStyle = {
-      position: 'absolute',
-      top: 6,
-      left: 0,
-      width: 16,
-    };
-
-    const tabLabels = files.map(file =>
-      file.isEntryPoint ? ([
-        <PlayCircleOutline color={darkBlack} style={entryPointStyle} key={1} />,
-        <span style={{ position: 'relative' }} key={2}>{file.name}</span>
-      ]) : <span style={{ position: 'relative' }}>{file.name}</span>
-    );
-
     const addButtonStyle = {
       position: 'absolute',
       right: 23,
       bottom: 23,
     };
+
 
     return (
     <div style={style}>
@@ -200,7 +196,7 @@ export default class EditorPane extends Component {
         <Tab
           key={file.key}
           value={file}
-          label={tabLabels[index]}
+          label={<TabLabel handleRun={handleRun} handleClose={this.handleClose} file={file} />}
           onContextMenu={(e) => this.handleContextMenu(e, file)}
           className={CSS_PREFIX + 'tab'}
           style={selectedFile === file ? tabActiveStyle : tabStyle}
