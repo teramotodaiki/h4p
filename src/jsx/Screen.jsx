@@ -13,13 +13,13 @@ export default class Screen extends Component {
     player: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
-    style: PropTypes.any
+    isPopup: PropTypes.bool.isRequired,
+    style: PropTypes.object.isRequired,
   };
 
   state = {
     width: 300,
     height: 150,
-    frame: null
   };
 
   componentWillReceiveProps(nextProps) {
@@ -29,28 +29,31 @@ export default class Screen extends Component {
   }
 
   prevent = null;
-  start = () => {
+  start = (isPopup) => {
+    isPopup = typeof isPopup === 'boolean' ? isPopup : this.props.isPopup;
+
     const { player, config, files } = this.props;
+    const { width, height } = this.state;
     const model = Object.assign({}, config, { files });
 
     const title = 'h4p';
     const html = template({ title, screenJs });
     const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    const frame = isPopup ?
+      window.open(url, '_blank', `width=${width},height=${height}`) :
+      this.iframe;
 
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => {
         player.emit('screen.beforeunload'); // call beforeunload
-
         return new Postmate({
-          container: this.container,
           url,
-          model
+          model,
+          frame
         });
       })
       .then(child => {
-        this.setState({ frame: child.frame });
-
         const resized = (view) => player.emit('screen.resize', view);
         child.on('load', () => child.get('size').then(resized));
         child.on('resize', resized);
@@ -58,7 +61,7 @@ export default class Screen extends Component {
 
         player.emit('screen.load', { child });
       })
-      .catch((err) => err);
+      .catch((err) => console.error(err) || err);
   };
 
   componentDidMount() {
@@ -77,12 +80,12 @@ export default class Screen extends Component {
   };
 
   handleResize = () => {
-    const { frame, width, height } = this.state;
-    if (!frame) return;
+    const { width, height } = this.state;
+    if (!this.iframe || !this.container) return;
     const screenRect = this.container.getBoundingClientRect();
 
-    frame.width = width;
-    frame.height = height;
+    this.iframe.width = width;
+    this.iframe.height = height;
 
     const translate = {
       x: (screenRect.width - width) / 2,
@@ -92,17 +95,33 @@ export default class Screen extends Component {
     const scale = ratio(screenRect) > ratio({ width, height }) ?
       screenRect.width / width : screenRect.height / height;
 
-    frame.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
+    this.iframe.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
   };
 
-
   render() {
+    const { isPopup } = this.props;
+
+    const containerStyle = {
+      position: 'absolute',
+      width: 0,
+      height: 0
+    };
+
+    const style = Object.assign({}, this.props.style, isPopup ? {
+      display: 'none'
+    } : null);
+
     return (
-      <div
-        ref={(container) => this.container = container}
-        style={this.props.style}
-        className={CSS_PREFIX + 'screen'}
-      />
+      <div style={containerStyle}>
+        <div style={style}>
+          <div
+            ref={ref => ref && (this.container = ref)}
+            className={CSS_PREFIX + 'screen'}
+          >
+            <iframe ref={ref => ref && (this.iframe = ref)}></iframe>
+          </div>
+        </div>
+      </div>
     );
   }
 }

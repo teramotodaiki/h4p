@@ -38,6 +38,7 @@ export default class Main extends Component {
     },
 
     files: [],
+    isPopup: false,
 
     tabContextMenu: {},
     selectedFile: null,
@@ -133,6 +134,12 @@ export default class Main extends Component {
     this.launchApp();
   };
 
+  handleTogglePopup = () => {
+    const isPopup = !this.state.isPopup;
+    this.launchApp(isPopup);
+    this.setState({ isPopup });
+  };
+
   handleTabContextMenu = (tabContextMenu) => {
     this.setState({ tabContextMenu })
   };
@@ -190,7 +197,8 @@ export default class Main extends Component {
       tabContextMenu,
       selectedFile,
       primaryStyle,
-      editorOptions
+      editorOptions,
+      isPopup,
     } = this.state;
     const { player, config } = this.props;
 
@@ -257,6 +265,7 @@ export default class Main extends Component {
               files={files}
               handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
+              handleTogglePopup={this.handleTogglePopup}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -267,15 +276,14 @@ export default class Main extends Component {
               style={{ flex: '1 1 auto' }}
             />
           </Dock>
-          <Dock config={config} align="left" style={inlineScreenStyle}>
-            <Screen
-              ref={this.handleScreen}
-              player={player}
-              config={config}
-              files={files}
-              style={{ flex: '1 1 auto' }}
-            />
-          </Dock>
+          <Screen
+            ref={this.handleScreen}
+            player={player}
+            config={config}
+            files={files}
+            isPopup={isPopup}
+            style={inlineScreenStyle}
+          />
           <ContextMenu
             menuList={menuList}
             openEvent={tabContextMenu.event}

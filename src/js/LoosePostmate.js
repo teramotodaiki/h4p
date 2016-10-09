@@ -31,24 +31,43 @@ export default class _Postmate {
     const _this = {};
 
     // base constructor
-    const { container, url, model } = userOptions;
+    const { url, model, frame } = userOptions;
 
     _this.parent = window;
-    _this.frame = document.createElement('iframe');
-    (container || document.body).appendChild(_this.frame);
-    _this.child = _this.frame.contentWindow;
+    _this.frame = frame;
+    _this.child = _this.frame.contentWindow || frame;
     _this.model = model || {};
 
     const handshake = Postmate.prototype.sendHandshake.call(_this, url);
 
-    _this.frame.onload = function () {
-      return _this.child.postMessage({
+    const handleLoad = () => {
+      _this.child.postMessage({
         postmate: 'handshake',
         type: MESSAGE_TYPE,
         model: _this.model,
       }, '*');
     };
 
-    return handshake.then(parent => { parent.childOrigin = '*'; return parent; });
+    if (_this.child.document.readyState === 'complete') {
+      handleLoad();
+    } else {
+      _this.child.onload = handleLoad;
+    }
+
+    return handshake.then(parent => {
+       parent.childOrigin = '*';
+       parent.destroy = function () {
+          if (this.frame && this.frame.parentNode) {
+            // iframe
+            this.frame.src = '';
+          } else if (typeof this.frame.close === 'function') {
+            // window.open (external window)
+            this.frame.close();
+          }
+          window.removeEventListener('message', this.listener, false);
+       };
+       return parent;
+     })
+     .catch((err) => console.error(err));
   }
 }
