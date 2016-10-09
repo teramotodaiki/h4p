@@ -2,6 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { faintBlack, transparent } from 'material-ui/styles/colors';
 import classNames from 'classnames';
 
+
+const isTouchEnabled = 'ontouchend' in document;
+const MOVE_EVENT = isTouchEnabled ? 'touchmove' : 'mousemove';
+const END_EVENT = isTouchEnabled ? 'touchend' : 'mouseup';
+
 export default class Sizer extends Component {
 
   static propTypes = {
@@ -43,13 +48,13 @@ export default class Sizer extends Component {
   };
 
   componentDidMount() {
-    window.addEventListener('mousemove', this.handleMouseMove);
-    window.addEventListener('mouseup', this.handleMouseUp);
+    window.addEventListener(MOVE_EVENT, this.handleMouseMove);
+    window.addEventListener(END_EVENT, this.handleMouseUp);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('mousemove', this.handleMouseMove);
-    window.removeEventListener('mouseup', this.handleMouseUp);
+    window.removeEventListener(MOVE_EVENT, this.handleMouseMove);
+    window.removeEventListener(END_EVENT, this.handleMouseUp);
   }
 
   render() {
@@ -64,11 +69,17 @@ export default class Sizer extends Component {
       borderRightColor: faintBlack,
     };
 
+    const events = isTouchEnabled ? {
+      onTouchStart: this.handleMouseDown
+    } : {
+      onMouseDown: this.handleMouseDown
+    };
+
     return (
       <div
         className={className}
         style={this.props.style}
-        onMouseDown={this.handleMouseDown}
+        {...events}
       >
         <div style={bladeStyle}></div>
       </div>
