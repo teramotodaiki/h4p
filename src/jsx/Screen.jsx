@@ -11,7 +11,8 @@ export default class Screen extends Component {
 
   static propTypes = {
     player: PropTypes.object.isRequired,
-    app: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    files: PropTypes.array.isRequired,
     style: PropTypes.any
   };
 
@@ -22,19 +23,15 @@ export default class Screen extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.app !== nextProps.app) {
-      // Only iframe mode
-      this.start(nextProps.app);
-    }
     if (this.props.style !== nextProps.style) {
       this.handleResize();
     }
-
   }
 
   prevent = null;
-  start(app) {
-    const { player } = this.props;
+  start = () => {
+    const { player, config, files } = this.props;
+    const model = Object.assign({}, config, { files });
 
     const title = 'h4p';
     const html = template({ title, screenJs });
@@ -48,7 +45,7 @@ export default class Screen extends Component {
         return new Postmate({
           container: this.container,
           url,
-          model: app.model
+          model
         });
       })
       .then(child => {
@@ -60,8 +57,9 @@ export default class Screen extends Component {
         player.once('screen.beforeunload', () => child.destroy());
 
         player.emit('screen.load', { child });
-      });
-  }
+      })
+      .catch((err) => err);
+  };
 
   componentDidMount() {
     this.props.player.on('screen.resize', this.handleScreenSizeChange);

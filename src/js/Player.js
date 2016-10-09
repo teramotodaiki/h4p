@@ -9,20 +9,22 @@ export default class Player extends EventEmitter2 {
 
   static defaultConfig = {
     width: '100vw',
-    height: '100vh',
-    url: 'https://embed.hackforplay.xyz/open-source/screen/alpha-6.html',
+    height: '100vh'
   };
 
-  constructor(config = {}) {
+  constructor(config = {}, rootElement) {
     super();
 
-    config.rootElement = config.rootElement || this.createRootElement(config);
     this.config = Object.assign({}, Player.defaultConfig, config);
+    this.rootElement = rootElement || this.createRootElement(config);
   }
 
   start() {
     this.open();
-    return render(this, this.config);
+    return render({
+      player: this,
+      config: this.config
+    }, this.rootElement);
   }
 
   destroy() {
@@ -39,12 +41,12 @@ export default class Player extends EventEmitter2 {
   }
 
   get computedStyle() {
-    const element = this.config.rootElement;
+    const element = this.rootElement;
     return element.currentStyle || document.defaultView.getComputedStyle(element);
   }
 
-  open() { this.config.rootElement.classList.add(CSS_PREFIX + 'container-open'); }
-  close() { this.config.rootElement.classList.remove(CSS_PREFIX + 'container-open'); }
-  toggle() { this.config.rootElement.classList.toggle(CSS_PREFIX + 'container-open'); }
+  open() { this.rootElement.classList.add(CSS_PREFIX + 'container-open'); }
+  close() { this.rootElement.classList.remove(CSS_PREFIX + 'container-open'); }
+  toggle() { this.rootElement.classList.toggle(CSS_PREFIX + 'container-open'); }
 
 }

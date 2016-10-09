@@ -37,7 +37,6 @@ export default class Main extends Component {
       zIndex: 100,
     },
 
-    app: {},
     files: [],
 
     tabContextMenu: {},
@@ -61,12 +60,12 @@ export default class Main extends Component {
       const key = ++Main.fileIndex;
       return Object.assign({}, file, { key });
     });
-    const app = Object.assign({}, config, { model: { files } });
 
-    this.setState({ files, app }, () => {
+    this.setState({ files }, () => {
       if (files.length > 0) {
         this.selectFile(files[0]);
       }
+      this.launchApp();
     });
   }
 
@@ -131,9 +130,7 @@ export default class Main extends Component {
   };
 
   handleRun = () => {
-    const files = this.state.files.map((item) => Object.assign({}, item));
-    const app = Object.assign({}, this.state.app, { model: { files } });
-    this.setState({ app });
+    this.launchApp();
   };
 
   handleTabContextMenu = (tabContextMenu) => {
@@ -179,8 +176,11 @@ export default class Main extends Component {
     this.setState({ editorOptions });
   };
 
-  openFileDialog = () => console.error('openFileDialog has not be created');
+  openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
+
+  launchApp = () => console.error('launchApp has not be declared');
+  handleScreen = (ref) => this.launchApp = ref.start;
 
   render() {
     const {
@@ -190,7 +190,6 @@ export default class Main extends Component {
       tabContextMenu,
       selectedFile,
       primaryStyle,
-      app,
       editorOptions
     } = this.state;
     const { player, config } = this.props;
@@ -270,8 +269,10 @@ export default class Main extends Component {
           </Dock>
           <Dock config={config} align="left" style={inlineScreenStyle}>
             <Screen
+              ref={this.handleScreen}
               player={player}
-              app={app}
+              config={config}
+              files={files}
               style={{ flex: '1 1 auto' }}
             />
           </Dock>
