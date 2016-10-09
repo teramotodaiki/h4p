@@ -26,7 +26,8 @@ const jsOptions = {
   globalScope: {
     require: {},
     exports: {},
-    module: { exports: {} }
+    module: { exports: {} },
+    console: { log: {}, info: {}, warn: {}, error: {}, time: {}, timeEnd: {} },
   }
 };
 
@@ -40,6 +41,14 @@ const jsSnippets = {
       anchor: { line: from.line, ch: from.ch + 21 }
     }]
   }),
+  "f": new Snippet({
+    text: "function () {}",
+    displayText: '[anonymous function]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 13 },
+      anchor: { line: from.line, ch: from.ch + 13 }
+    }]
+  }),
   "if": new Snippet({
     text: "if (true) {\n\t// \n}",
     displayText: '[if]',
@@ -51,5 +60,29 @@ const jsSnippets = {
   "else": new Snippet({
     text: "else {\n\t// \n}",
     displayText: '[else]'
+  }),
+  "try": new Snippet({
+    text: "try {} catch (e) {}",
+    displayText: '[try-catch]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 5 },
+      anchor: { line: from.line, ch: from.ch + 5 }
+    }]
+  }),
+  "log": new Snippet({
+    text: "console.log();",
+    displayText: '[console.log]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 12 },
+      anchor: { line: from.line, ch: from.ch + 12 }
+    }]
+  }),
+  "error": new Snippet({
+    text: "console.error();",
+    displayText: '[console.error]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 14 },
+      anchor: { line: from.line, ch: from.ch + 14 }
+    }]
   })
 };
