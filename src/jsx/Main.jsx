@@ -263,6 +263,7 @@ export default class Main extends Component {
             <Menu
               player={player}
               files={files}
+              isPopup={isPopup}
               handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
               handleTogglePopup={this.handleTogglePopup}
