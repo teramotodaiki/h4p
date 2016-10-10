@@ -51,7 +51,7 @@ export default class _Postmate {
     if (_this.child.document.readyState === 'complete') {
       handleLoad();
     } else {
-      _this.child.onload = handleLoad;
+      frame.onload = handleLoad;
     }
 
     return handshake.then(parent => {
