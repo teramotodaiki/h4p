@@ -55,7 +55,6 @@ export default class Screen extends Component {
         const resized = (view) => player.emit('screen.resize', view);
         child.on('load', () => child.get('size').then(resized));
         child.on('resize', resized);
-        child.on('load', () => console.log('load!'));
 
         player.once('screen.beforeunload', () => child.destroy());
         player.emit('screen.load', { child });
