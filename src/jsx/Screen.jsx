@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Popout from 'react-popout';
 import Postmate from '../js/LoosePostmate';
 
 Postmate.debug = process.env.NODE_ENV !== 'production';
@@ -6,9 +7,14 @@ Postmate.debug = process.env.NODE_ENV !== 'production';
 
 import template from '../html/screen';
 import screenJs from '../js/screen';
+import popout from '../html/popout';
 
 const frameURL = URL.createObjectURL(
   new Blob([template({ title: 'app', screenJs })], { type: 'text/html' })
+);
+
+const popoutURL = URL.createObjectURL(
+  new Blob([popout()], { type: 'text/html' })
 );
 
 export default class Screen extends Component {
@@ -18,6 +24,7 @@ export default class Screen extends Component {
     config: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
     isPopup: PropTypes.bool.isRequired,
+    handlePopoutClose: PropTypes.func.isRequired,
     style: PropTypes.object.isRequired,
   };
 
@@ -33,13 +40,9 @@ export default class Screen extends Component {
   }
 
   prevent = null;
-  start = (isPopup) => {
-    isPopup = typeof isPopup === 'boolean' ? isPopup : this.props.isPopup;
-
+  start = () => {
     const { player, config, files } = this.props;
     const model = Object.assign({}, config, { files });
-
-    const frame = isPopup ? this.openNewWindow() : this.iframe;
 
     this.prevent =
       (this.prevent || Promise.resolve())
@@ -48,7 +51,7 @@ export default class Screen extends Component {
         return new Postmate({
           url: frameURL,
           model,
-          frame
+          frame: this.iframe
         });
       })
       .then(child => {
@@ -60,6 +63,24 @@ export default class Screen extends Component {
         player.emit('screen.load', { child });
       })
       .catch((err) => console.error(err) || err);
+  };
+
+  handleFrameLoad = (ref) => {
+    if (!ref) return;
+    this.iframe = ref;
+    this.start();
+  };
+
+  handlePopoutOpen = (...args) => {
+    this.parent = window.open.apply(window, args);
+    this.parent.addEventListener('resize', this.handleResize);
+    return this.parent;
+  };
+
+  handlePopoutClose = () => {
+    if (!this.props.isPopup) return;
+    this.parent.removeEventListener('resize', this.handleResize);
+    this.props.handlePopoutClose();
   };
 
   componentDidMount() {
@@ -79,8 +100,10 @@ export default class Screen extends Component {
 
   handleResize = () => {
     const { width, height } = this.state;
-    if (!this.iframe || !this.container || this.props.isPopup) return;
-    const screenRect = this.container.getBoundingClientRect();
+    if (!this.iframe || !this.iframe.parentNode) return;
+    const screenRect = this.props.isPopup ?
+      { width: this.parent.innerWidth, height: this.parent.innerHeight } :
+      this.iframe.parentNode.getBoundingClientRect();
 
     this.iframe.width = width;
     this.iframe.height = height;
@@ -96,25 +119,8 @@ export default class Screen extends Component {
     this.iframe.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
   };
 
-
-  openNewWindow() {
-    const { width, height } = this.state;
-    const popup =
-      window.open(frameURL, '_blank', `
-        width=${width},
-        height=${height},
-        resizable=yes,
-        scrollbars=yes,
-        status=no,
-        toolbar=no,
-        left=${window.screenX + 25},
-        top=${window.screenY + 25}`
-      );
-    window.addEventListener('beforeunload', () => popup.close());
-    return popup;
-  }
-
   render() {
+    const { width, height } = this.state;
     const { isPopup } = this.props;
 
     const containerStyle = {
@@ -127,15 +133,63 @@ export default class Screen extends Component {
       display: 'none'
     } : null);
 
+    const screenStyle = {
+      left: 0,
+      top: 0,
+      width: '100%',
+      height: '100%',
+      background: 'linear-gradient(gray, black)',
+    };
+
+    const frameStyle = {
+      position: 'absolute',
+      border: '0 none',
+      margin: 0,
+      padding: 0,
+      top: 0,
+      left: 0,
+    };
+
+    const popoutOptions = {
+      width: width,
+      height: height,
+      left: window.screenX + 25,
+      top: window.screenY + 25
+    };
+
+    const screen = (
+      <div style={screenStyle}>
+        <iframe
+          sandbox="allow-scripts allow-same-origin"
+          style={frameStyle}
+          ref={this.handleFrameLoad}
+        ></iframe>
+      </div>
+    );
+
+    if (isPopup) {
+      const fakeOwner = {
+        open: this.handlePopoutOpen,
+        addEventListener: window.addEventListener.bind(window),
+        removeEventListener: window.removeEventListener.bind(window),
+      };
+      return (
+        <Popout
+          url={popoutURL}
+          title='app'
+          options={popoutOptions}
+          window={fakeOwner}
+          onClosing={this.handlePopoutClose}
+        >
+          {screen}
+        </Popout>
+      );
+    }
+
     return (
       <div style={containerStyle}>
         <div style={style}>
-          <div
-            ref={ref => ref && (this.container = ref)}
-            className={CSS_PREFIX + 'screen'}
-          >
-            <iframe ref={ref => ref && (this.iframe = ref)}></iframe>
-          </div>
+          {screen}
         </div>
       </div>
     );

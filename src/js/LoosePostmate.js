@@ -35,12 +35,12 @@ export default class _Postmate {
 
     _this.parent = window;
     _this.frame = frame;
-    _this.child = _this.frame.contentWindow || frame;
+    _this.child = _this.frame.contentWindow;
     _this.model = model || {};
 
     const handshake = Postmate.prototype.sendHandshake.call(_this, url);
 
-    const handleLoad = () => {
+    frame.onload = () => {
       _this.child.postMessage({
         postmate: 'handshake',
         type: MESSAGE_TYPE,
@@ -48,22 +48,9 @@ export default class _Postmate {
       }, '*');
     };
 
-    if (_this.child.document.readyState === 'complete') {
-      handleLoad();
-    } else {
-      frame.onload = handleLoad;
-    }
-
     return handshake.then(parent => {
        parent.childOrigin = '*';
        parent.destroy = function () {
-          if (this.frame && this.frame.parentNode) {
-            // iframe
-            this.frame.src = '';
-          } else if (typeof this.frame.close === 'function') {
-            // window.open (external window)
-            this.frame.close();
-          }
           window.removeEventListener('message', this.listener, false);
        };
        return parent;

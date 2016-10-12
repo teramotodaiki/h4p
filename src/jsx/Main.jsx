@@ -136,7 +136,6 @@ export default class Main extends Component {
 
   handleTogglePopup = () => {
     const isPopup = !this.state.isPopup;
-    this.launchApp(isPopup);
     this.setState({ isPopup });
   };
 
@@ -283,6 +282,7 @@ export default class Main extends Component {
             config={config}
             files={files}
             isPopup={isPopup}
+            handlePopoutClose={this.handleTogglePopup}
             style={inlineScreenStyle}
           />
           <ContextMenu
