@@ -61,6 +61,7 @@ export default class Screen extends Component {
 
         player.once('screen.beforeunload', () => child.destroy());
         player.emit('screen.load', { child });
+        this.handleResize();
       })
       .catch((err) => console.error(err) || err);
   };
@@ -68,7 +69,6 @@ export default class Screen extends Component {
   handleFrameLoad = (ref) => {
     if (!ref) return;
     this.iframe = ref;
-    this.start();
   };
 
   handlePopoutOpen = (...args) => {

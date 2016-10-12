@@ -136,7 +136,12 @@ export default class Main extends Component {
 
   handleTogglePopup = () => {
     const isPopup = !this.state.isPopup;
-    this.setState({ isPopup });
+    this.setState({ isPopup }, () => {
+      // temporary bug fix
+      setTimeout(() => {
+        this.launchApp();
+      }, 500);
+    });
   };
 
   handleTabContextMenu = (tabContextMenu) => {

@@ -95,7 +95,7 @@ function loadAsync(files) {
 
   const config = {
     // alias
-    map: { '*': Object.assign.apply(null, [].concat(paths)) }
+    map: { '*': Object.assign.apply(null, [{}].concat(paths)) }
   };
 
   const entryPoins = files
