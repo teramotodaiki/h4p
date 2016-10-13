@@ -65,7 +65,7 @@ handshake.then(parent => {
   loadAsync(parent.model.files);
 
   // resizing
-  addEventListener('resize', () => parent.emit('resize', Hack.view));
+  window.addEventListener('resize', () => parent.emit('resize', Hack.view));
   Hack.on('viewchange', () => parent.emit('resize', Hack.view));
   Hack.on('load', () => parent.emit('load'));
 });
@@ -95,7 +95,7 @@ function loadAsync(files) {
 
   const config = {
     // alias
-    map: { '*': Object.assign.apply(null, [].concat(paths)) }
+    map: { '*': Object.assign.apply(null, [{}].concat(paths)) }
   };
 
   const entryPoins = files

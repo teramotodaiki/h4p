@@ -14,7 +14,7 @@ import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
 import EditorPane from './EditorPane';
 import ResourcePane from './ResourcePane';
-import Screen from './Screen';
+import ScreenPane from './ScreenPane';
 import Sizer from './Sizer';
 
 import ContextMenu from './ContextMenu';
@@ -37,8 +37,9 @@ export default class Main extends Component {
       zIndex: 100,
     },
 
-    app: {},
     files: [],
+    isPopout: false,
+    reboot: false,
 
     tabContextMenu: {},
     selectedFile: null,
@@ -61,13 +62,18 @@ export default class Main extends Component {
       const key = ++Main.fileIndex;
       return Object.assign({}, file, { key });
     });
-    const app = Object.assign({}, config, { model: { files } });
 
-    this.setState({ files, app }, () => {
+    this.setState({ files, reboot: true }, () => {
       if (files.length > 0) {
         this.selectFile(files[0]);
       }
     });
+  }
+
+  componentDidUpdate() {
+    if (this.state.reboot) {
+      this.setState({ reboot: false });
+    }
   }
 
   addFile = (file) => new Promise((resolve, reject) => {
@@ -131,9 +137,12 @@ export default class Main extends Component {
   };
 
   handleRun = () => {
-    const files = this.state.files.map((item) => Object.assign({}, item));
-    const app = Object.assign({}, this.state.app, { model: { files } });
-    this.setState({ app });
+    this.setState({ reboot: true });
+  };
+
+  handleTogglePopout = () => {
+    const isPopout = !this.state.isPopout;
+    this.setState({ isPopout, reboot: true });
   };
 
   handleTabContextMenu = (tabContextMenu) => {
@@ -179,7 +188,7 @@ export default class Main extends Component {
     this.setState({ editorOptions });
   };
 
-  openFileDialog = () => console.error('openFileDialog has not be created');
+  openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
   render() {
@@ -190,8 +199,9 @@ export default class Main extends Component {
       tabContextMenu,
       selectedFile,
       primaryStyle,
-      app,
-      editorOptions
+      editorOptions,
+      isPopout,
+      reboot,
     } = this.state;
     const { player, config } = this.props;
 
@@ -256,8 +266,10 @@ export default class Main extends Component {
             <Menu
               player={player}
               files={files}
+              isPopout={isPopout}
               handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
+              handleTogglePopout={this.handleTogglePopout}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -268,13 +280,15 @@ export default class Main extends Component {
               style={{ flex: '1 1 auto' }}
             />
           </Dock>
-          <Dock config={config} align="left" style={inlineScreenStyle}>
-            <Screen
-              player={player}
-              app={app}
-              style={{ flex: '1 1 auto' }}
-            />
-          </Dock>
+          <ScreenPane
+            player={player}
+            config={config}
+            files={files}
+            isPopout={isPopout}
+            reboot={reboot}
+            handlePopoutClose={this.handleTogglePopout}
+            style={inlineScreenStyle}
+          />
           <ContextMenu
             menuList={menuList}
             openEvent={tabContextMenu.event}

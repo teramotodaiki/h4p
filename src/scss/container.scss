@@ -31,11 +31,6 @@
 
 }
 
-// screen
-.#{$screen} {
-  @include screen();
-}
-
 
 // each of aligns
 .#{$container} {

@@ -1,5 +1,4 @@
 $container: #{$prefix}container !default;
-$screen: #{$prefix}screen !default;
 $dock: #{$prefix}dock !default;
 $sizer: #{$prefix}sizer !default;
 $menu: #{$prefix}menu !default;
@@ -27,6 +26,5 @@ $tab-max-width: 8rem !default;
 $tab-height: 2rem !default;
 $tab-top: .5rem;
 
-$z-index-screen: 1 !default;
 $z-index-editor: 2 !default;
 $z-index-sizer: 3 !default;
