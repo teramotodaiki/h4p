@@ -123,15 +123,11 @@ export default class Screen extends Component {
     this.iframe.width = width;
     this.iframe.height = height;
 
-    const translate = {
-      x: (screenRect.width - width) / 2,
-      y: (screenRect.height - height) / 2
-    };
     const ratio = (size) => Math.max(size.height, 1) / Math.max(size.width, 1);
     const scale = ratio(screenRect) > ratio({ width, height }) ?
       screenRect.width / width : screenRect.height / height;
 
-    this.iframe.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
+    this.iframe.style.transform = `scale(${scale})`;
   };
 
   render() {
@@ -149,20 +145,17 @@ export default class Screen extends Component {
     };
 
     const screenStyle = {
-      left: 0,
-      top: 0,
       width: '100%',
       height: '100%',
       background: 'linear-gradient(gray, black)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
     };
 
     const frameStyle = {
-      position: 'absolute',
       border: '0 none',
-      margin: 0,
-      padding: 0,
-      top: 0,
-      left: 0,
+      flex: '0 0 auto'
     };
 
     const popoutOptions = {
