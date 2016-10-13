@@ -14,7 +14,7 @@ import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
 import EditorPane from './EditorPane';
 import ResourcePane from './ResourcePane';
-import Screen from './Screen';
+import ScreenPane from './ScreenPane';
 import Sizer from './Sizer';
 
 import ContextMenu from './ContextMenu';
@@ -39,6 +39,7 @@ export default class Main extends Component {
 
     files: [],
     isPopout: false,
+    reboot: false,
 
     tabContextMenu: {},
     selectedFile: null,
@@ -62,12 +63,17 @@ export default class Main extends Component {
       return Object.assign({}, file, { key });
     });
 
-    this.setState({ files }, () => {
+    this.setState({ files, reboot: true }, () => {
       if (files.length > 0) {
         this.selectFile(files[0]);
       }
-      this.launchApp();
     });
+  }
+
+  componentDidUpdate() {
+    if (this.state.reboot) {
+      this.setState({ reboot: false });
+    }
   }
 
   addFile = (file) => new Promise((resolve, reject) => {
@@ -131,17 +137,12 @@ export default class Main extends Component {
   };
 
   handleRun = () => {
-    this.launchApp();
+    this.setState({ reboot: true });
   };
 
   handleTogglePopout = () => {
     const isPopout = !this.state.isPopout;
-    this.setState({ isPopout }, () => {
-      // temporary bug fix
-      setTimeout(() => {
-        this.launchApp();
-      }, 300);
-    });
+    this.setState({ isPopout, reboot: true });
   };
 
   handleTabContextMenu = (tabContextMenu) => {
@@ -190,9 +191,6 @@ export default class Main extends Component {
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
-  launchApp = () => console.error('launchApp has not be declared');
-  handleScreen = (ref) => this.launchApp = ref.start;
-
   render() {
     const {
       files,
@@ -203,6 +201,7 @@ export default class Main extends Component {
       primaryStyle,
       editorOptions,
       isPopout,
+      reboot,
     } = this.state;
     const { player, config } = this.props;
 
@@ -281,12 +280,12 @@ export default class Main extends Component {
               style={{ flex: '1 1 auto' }}
             />
           </Dock>
-          <Screen
-            ref={this.handleScreen}
+          <ScreenPane
             player={player}
             config={config}
             files={files}
             isPopout={isPopout}
+            reboot={reboot}
             handlePopoutClose={this.handleTogglePopout}
             style={inlineScreenStyle}
           />
