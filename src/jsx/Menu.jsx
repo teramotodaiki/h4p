@@ -14,10 +14,10 @@ export default class Menu extends Component {
   static propTypes = {
     player: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
-    isPopup: PropTypes.bool.isRequired,
+    isPopout: PropTypes.bool.isRequired,
     handleRun: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
-    handleTogglePopup: PropTypes.func.isRequired,
+    handleTogglePopout: PropTypes.func.isRequired,
   };
 
   handlePowerOff = () => {
@@ -35,7 +35,7 @@ export default class Menu extends Component {
   };
 
   render() {
-    const { isPopup, handleRun, handleTogglePopup } = this.props;
+    const { isPopout, handleRun, handleTogglePopout } = this.props;
 
     const iconStyle = {
       marginRight: 20
@@ -53,10 +53,10 @@ export default class Menu extends Component {
           <FileDownload color={darkBlack} />
         </IconButton>
         <IconButton
-          tooltip={isPopup ? "Inside" : "New window"}
-          onTouchTap={handleTogglePopup}
+          tooltip={isPopout ? "Inside" : "New window"}
+          onTouchTap={handleTogglePopout}
           style={iconStyle}
-          iconStyle={isPopup ? { transform: 'rotate(180deg)' } : null}
+          iconStyle={isPopout ? { transform: 'rotate(180deg)' } : null}
         >
           <OpenInBrowser color={darkBlack} />
         </IconButton>

@@ -38,7 +38,7 @@ export default class Main extends Component {
     },
 
     files: [],
-    isPopup: false,
+    isPopout: false,
 
     tabContextMenu: {},
     selectedFile: null,
@@ -134,13 +134,13 @@ export default class Main extends Component {
     this.launchApp();
   };
 
-  handleTogglePopup = () => {
-    const isPopup = !this.state.isPopup;
-    this.setState({ isPopup }, () => {
+  handleTogglePopout = () => {
+    const isPopout = !this.state.isPopout;
+    this.setState({ isPopout }, () => {
       // temporary bug fix
       setTimeout(() => {
         this.launchApp();
-      }, 500);
+      }, 300);
     });
   };
 
@@ -202,7 +202,7 @@ export default class Main extends Component {
       selectedFile,
       primaryStyle,
       editorOptions,
-      isPopup,
+      isPopout,
     } = this.state;
     const { player, config } = this.props;
 
@@ -267,10 +267,10 @@ export default class Main extends Component {
             <Menu
               player={player}
               files={files}
-              isPopup={isPopup}
+              isPopout={isPopout}
               handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
-              handleTogglePopup={this.handleTogglePopup}
+              handleTogglePopout={this.handleTogglePopout}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -286,8 +286,8 @@ export default class Main extends Component {
             player={player}
             config={config}
             files={files}
-            isPopup={isPopup}
-            handlePopoutClose={this.handleTogglePopup}
+            isPopout={isPopout}
+            handlePopoutClose={this.handleTogglePopout}
             style={inlineScreenStyle}
           />
           <ContextMenu

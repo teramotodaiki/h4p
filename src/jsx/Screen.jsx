@@ -23,7 +23,7 @@ export default class Screen extends Component {
     player: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
-    isPopup: PropTypes.bool.isRequired,
+    isPopout: PropTypes.bool.isRequired,
     handlePopoutClose: PropTypes.func.isRequired,
     style: PropTypes.object.isRequired,
   };
@@ -31,6 +31,7 @@ export default class Screen extends Component {
   state = {
     width: 300,
     height: 150,
+    reboot: false
   };
 
   componentWillReceiveProps(nextProps) {
@@ -39,14 +40,26 @@ export default class Screen extends Component {
     }
   }
 
+  didPopout = false;
   prevent = null;
   start = () => {
-    const { player, config, files } = this.props;
+    const { player, config, files, isPopout } = this.props;
     const model = Object.assign({}, config, { files });
 
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => {
+        return isPopout && this.didPopout ? new Promise((resolve, reject) => {
+          // reboot
+          this.setState({ reboot: true }, () => {
+            this.setState({ reboot: false }, () => {
+              setTimeout(() => resolve(), 300);
+            });
+          });
+        }) : Promise.resolve();
+      })
+      .then(() => {
+        this.didPopout = isPopout;
         player.emit('screen.beforeunload'); // call beforeunload
         return new Postmate({
           url: frameURL,
@@ -78,9 +91,11 @@ export default class Screen extends Component {
   };
 
   handlePopoutClose = () => {
-    if (!this.props.isPopup) return;
+    if (!this.props.isPopout) return;
     this.parent.removeEventListener('resize', this.handleResize);
-    this.props.handlePopoutClose();
+    if (!this.state.reboot) {
+      this.props.handlePopoutClose();
+    }
   };
 
   componentDidMount() {
@@ -101,7 +116,7 @@ export default class Screen extends Component {
   handleResize = () => {
     const { width, height } = this.state;
     if (!this.iframe || !this.iframe.parentNode) return;
-    const screenRect = this.props.isPopup ?
+    const screenRect = this.props.isPopout ?
       { width: this.parent.innerWidth, height: this.parent.innerHeight } :
       this.iframe.parentNode.getBoundingClientRect();
 
@@ -120,18 +135,18 @@ export default class Screen extends Component {
   };
 
   render() {
-    const { width, height } = this.state;
-    const { isPopup } = this.props;
+    const { width, height, reboot } = this.state;
+    const { isPopout } = this.props;
+
+    if (reboot) {
+      return <div></div>;
+    }
 
     const containerStyle = {
       position: 'absolute',
       width: 0,
       height: 0
     };
-
-    const style = Object.assign({}, this.props.style, isPopup ? {
-      display: 'none'
-    } : null);
 
     const screenStyle = {
       left: 0,
@@ -167,7 +182,7 @@ export default class Screen extends Component {
       </div>
     );
 
-    if (isPopup) {
+    if (isPopout) {
       const fakeOwner = {
         open: this.handlePopoutOpen,
         addEventListener: window.addEventListener.bind(window),
@@ -188,7 +203,7 @@ export default class Screen extends Component {
 
     return (
       <div style={containerStyle}>
-        <div style={style}>
+        <div style={this.props.style}>
           {screen}
         </div>
       </div>
