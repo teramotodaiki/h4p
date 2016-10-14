@@ -20,6 +20,7 @@ import TabLabel from './TabLabel';
 
 const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
+const SIZER_BLANK = CSS_PREFIX + 'sizer_blank';
 
 export default class EditorPane extends Component {
 
@@ -149,8 +150,9 @@ export default class EditorPane extends Component {
     });
 
     const style = Object.assign({
-      width: '100%',
-      height: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'stretch',
     }, this.props.style);
 
     const tabsStyle = {
@@ -182,6 +184,7 @@ export default class EditorPane extends Component {
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
       />
+      <div className={SIZER_BLANK}><div></div></div>
       <Tabs
         style={tabsStyle}
         className={CSS_PREFIX + 'tab_container'}

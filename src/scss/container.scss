@@ -42,8 +42,13 @@
       & .#{$sizer} {
         @include sizer($align, false);
       }
-      & .#{$sizer}-active {
+      & .#{$sizer}-active,
+      & .#{$sizer}:hover {
         @include sizer($align, true);
+      }
+
+      & .#{$sizer}_blank {
+        @include sizer_blank;
       }
     }
 
