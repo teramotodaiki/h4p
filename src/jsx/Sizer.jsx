@@ -45,6 +45,8 @@ export default class Sizer extends Component {
     ));
 
     this.props.handleResize(primaryWidth, secondaryHeight);
+
+    getSelection().removeAllRanges();
   };
 
   componentDidMount() {
@@ -64,10 +66,9 @@ export default class Sizer extends Component {
       [`${CSS_PREFIX}sizer-active`]: this.state.isActive
     });
 
-    const bladeStyle = {
-      height: secondaryHeight,
-      borderRightColor: faintBlack,
-    };
+    const style = Object.assign({}, this.props.style, {
+      paddingBottom: secondaryHeight
+    });
 
     const events = isTouchEnabled ? {
       onTouchStart: this.handleMouseDown
@@ -78,10 +79,10 @@ export default class Sizer extends Component {
     return (
       <div
         className={className}
-        style={this.props.style}
+        style={style}
         {...events}
       >
-        <div style={bladeStyle}></div>
+        <div></div>
       </div>
     );
   }

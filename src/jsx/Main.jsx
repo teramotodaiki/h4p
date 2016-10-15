@@ -246,7 +246,6 @@ export default class Main extends Component {
               handleResize={this.handleResize}
               primaryWidth={primaryStyle.width}
               secondaryHeight={secondaryStyle.height}
-              style={{ flex: '0 0 auto' }}
             />
             <EditorPane
               files={files.filter(file => file.isOpened)}

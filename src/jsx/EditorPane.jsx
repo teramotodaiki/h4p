@@ -149,8 +149,9 @@ export default class EditorPane extends Component {
     });
 
     const style = Object.assign({
-      width: '100%',
-      height: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'stretch',
     }, this.props.style);
 
     const tabsStyle = {

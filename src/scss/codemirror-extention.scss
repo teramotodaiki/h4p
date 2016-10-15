@@ -1,13 +1,3 @@
-// material colors
-$full-black: rgba(0, 0, 0, 1);
-$dark-black: rgba(0, 0, 0, 0.87);
-$light-black: rgba(0, 0, 0, 0.54);
-$min-black: rgba(0, 0, 0, 0.26);
-$faint-black: rgba(0, 0, 0, 0.12);
-$full-white: rgba(255, 255, 255, 1);
-$dark-white: rgba(255, 255, 255, 0.87);
-$light-white: rgba(255, 255, 255, 0.54);
-
 .ReactCodeMirror {
 
   & {
@@ -28,7 +18,7 @@ $light-white: rgba(255, 255, 255, 0.54);
     }
 
     .CodeMirror-gutters {
-      background-color: $dark-white;
+      background-color: $editor-frame-color;
       border-color: $faint-black;
     }
 

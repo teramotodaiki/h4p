@@ -28,7 +28,8 @@ export default class EditorMenu extends Component {
     }, this.props.style);
 
     const iconStyle = {
-      margin: -10,
+      marginLeft: -12,
+      marginTop: -6,
       padding: 0,
     };
 

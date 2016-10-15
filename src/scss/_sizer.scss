@@ -1,21 +1,28 @@
-@mixin sizer($align, $active) {
+@mixin sizer($active) {
 
-  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: $sizer-narrow-width;
+  margin-top: $tab-top + $tab-height;
+  cursor: map-get($sizer-cursor, right);
+  background-color: $editor-frame-color;
   z-index: $z-index-sizer;
-  cursor: map-get($sizer-cursor, $align);
-  width: if(isHorizontal($align), $sizer-narrow-width, 100%);
-  height: if(isVertical($align), $sizer-narrow-width, 100%);
-  border-width: 0;
+  transition: box-shadow .2s linear;
 
-  &>div:first-child {
-
-    position: absolute;
-    bottom: 0;
-    box-sizing: border-box;
-    border-width: $menu-height $sizer-narrow-width 0 0;
-    border-style: solid;
-    border-color: transparent;
-
+  @if $active {
+    box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;
   }
 
+  &>div:first-child {
+    margin-top: -$tab-top - $tab-height;
+    border-width: 0 0 $menu-height $sizer-narrow-width;
+    border-style: solid;
+    border-color: transparent;
+    height: 100%;
+    border-left-color: $sizer-color;
+    transition: margin-top .2s linear;
+    @if $active {
+      margin-top: 0;
+    }
+  }
 }
