@@ -1,52 +1,52 @@
 import React, { Component, PropTypes } from 'react';
 import { TextField, DropDownMenu, MenuItem } from 'material-ui';
 
-const defaultName = 'filename';
 
-const extensions = [
-  '.js',
-  '.html',
-];
+const extensions = {
+  'text/javascript': '.js',
+  'text/html': '.html',
+};
+
+const getUniqueId = (i => () => ++i)(0);
 
 export default class FilenameInput extends Component {
 
   static propTypes = {
     defaultName: PropTypes.string,
-    defaultExt: PropTypes.string,
+    defaultType: PropTypes.string,
     disabled: PropTypes.bool,
   };
 
   state = {
-    name: this.props.defaultName || defaultName,
-    ext: this.props.defaultExt || extensions[0]
+    name: this.props.defaultName || 'filename',
+    type: this.props.defaultType || 'text/javascript'
   };
 
-  static index = 0;
   constructor(props) {
     super(props);
 
-    this.id = 'FILENAME_INPUT_' + (++FilenameInput.index);
+    this.id = 'FILENAME_INPUT_' + getUniqueId();
   }
 
   get value() {
-    const { name, ext } = this.state;
-    return name + ext;
+    const { name, type } = this.state;
+    return name + extensions[type];
   }
 
   get name() {
     return this.state.name;
   }
 
-  get ext() {
-    return this.state.name;
+  get type() {
+    return this.state.type;
   }
 
-  handleFilenameChange = (event) => {
+  handleNameChange = (event) => {
     this.setState({ name: event.target.value });
   };
 
-  handleExtChange = (event, index, value) => {
-    this.setState({ ext: value });
+  handleTypeChange = (event, index, value) => {
+    this.setState({ type: value });
   };
 
   componentDidMount() {
@@ -65,7 +65,7 @@ export default class FilenameInput extends Component {
   }
 
   render() {
-    const { name, ext } = this.state;
+    const { name, type } = this.state;
     const { defaultName, disabled } = this.props;
 
     const style = this.props.style;
@@ -84,17 +84,17 @@ export default class FilenameInput extends Component {
             autoFocus={true}
             defaultValue={name}
             disabled={disabled}
-            onChange={this.handleFilenameChange}
+            onChange={this.handleNameChange}
           />
         </TextField>
         <DropDownMenu
-          value={ext}
+          value={type}
           disabled={disabled}
-          onChange={this.handleExtChange}
+          onChange={this.handleTypeChange}
           style={dropDownStyle}
         >
-        {extensions.map(item => (
-          <MenuItem key={item} value={item} primaryText={item} />
+        {Object.keys(extensions).map(type => (
+          <MenuItem key={type} value={type} primaryText={extensions[type]} />
         ))}
         </DropDownMenu>
       </div>

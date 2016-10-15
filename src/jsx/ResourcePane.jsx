@@ -4,7 +4,7 @@ import { faintBlack } from 'material-ui/styles/colors';
 
 
 import { DialogTypes } from './FileDialog/';
-import blobUrlLoader from '../js/blobUrlLoader';
+import { makeFromFile } from '../js/files';
 
 export default class ResourcePane extends Component {
 
@@ -25,26 +25,18 @@ export default class ResourcePane extends Component {
     event.preventDefault();
 
     Array.from(event.dataTransfer.files)
-    .map(file => {
-      const mimeType = file.type;
-      const filename = file.name;
-      const extBegin = filename.lastIndexOf('.');
-      const name = extBegin > 0 ? filename.substr(0, extBegin) : filename;
-      const content = { name };
-
-      return () => Promise.resolve()
-        .then(() => openFileDialog(DialogTypes.Sign, { content }))
-        .then(author => {
-          blobUrlLoader(file)
-            .then(code => addFile({ name, filename, code, author }));
-        });
+    .map(file => () => {
+      const content = { name: file.name };
+      return Promise.all([
+        makeFromFile(file),
+        openFileDialog(DialogTypes.Sign, { content })
+      ])
+      .then(([file, author]) => Object.assign({}, file, { author }))
+      .then(addFile);
     })
     .reduce((p, c) => {
       return p.then(c);
-    }, Promise.resolve())
-    .catch(err => {
-      console.error(err);
-    });
+    }, Promise.resolve());
   };
 
   handleDragOver = (event) => {

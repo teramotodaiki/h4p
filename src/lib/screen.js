@@ -71,27 +71,19 @@ handshake.then(parent => {
 });
 
 
-// Exprerimental stage
-// _loader(file) => Blob Scheme URL
-const _loader = (file) => {
+const scriptLoader = (file) => {
   const content =
-    file.loader === 'url' ?
-    // Blob URL Scheme
-    `define(function (require, exports, module) {
-      module.exports = "${URL.createObjectURL(file.blob)}";
-    });` :
     // AMD definision
-    `define(function (require, exports, module) {${file.code}});`;
+    `define(function (require, exports, module) {${file.text}});`;
 
   return URL.createObjectURL(new Blob([content]));
 };
 
-
 function loadAsync(files) {
 
   const paths = files
-    .filter(file => typeof file.name === 'string')
-    .map(file => ({ [file.name]: _loader(file) }));
+    .filter(file => file.type === 'text/javascript')
+    .map(file => ({ [file.name]: scriptLoader(file) }));
 
   const config = {
     // alias
@@ -99,7 +91,7 @@ function loadAsync(files) {
   };
 
   const entryPoins = files
-    .filter(file => file.isEntryPoint)
+    .filter(file => file.options.isEntryPoint)
     .map(file => file.name);
 
   // config, deps, callback

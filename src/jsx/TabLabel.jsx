@@ -53,7 +53,7 @@ export default class TabLabel extends Component {
       overflowX: 'hidden'
     };
 
-    const playIcon = file.isEntryPoint ? (
+    const playIcon = file.options.isEntryPoint ? (
       <IconButton onTouchTap={handleRun} style={playIconStyle}>
         <PlayCircleOutline color={darkBlack} />
       </IconButton>

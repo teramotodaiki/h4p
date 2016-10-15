@@ -17,16 +17,19 @@
 <script
   class="download_content"
   name="{{name}}"
+  data-type="{{type}}"
+{{#options}}
   {{#isEntryPoint}}is-entry-point{{/isEntryPoint}}
   {{#isReadOnly}}is-read-only{{/isReadOnly}}
   {{#isOpened}}is-opened{{/isOpened}}
-  {{#author}}
+{{/options}}
+{{#author}}
   author-name="{{name}}"
   author-url="{{url}}"
-  {{/author}}
+{{/author}}
   type="hack"
 >
-{{& code}}
+{{& composed}}
 </script>
 {{/files}}
 

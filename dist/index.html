@@ -12,7 +12,7 @@
     <div class= "h4p__app" data-target=".example1"></div>
 
     <!-- Files as a <script> -->
-    <script class="example1" name="main" is-entry-point is-opened type="hack">
+    <script class="example1" name="main" data-type="text/javascript" is-entry-point is-opened type="hack">
     var sub = require('sub');
 
     var body = document.body;
@@ -22,7 +22,7 @@
     body.textContent = sub;
 
     </script>
-    <script class="example1" name="sub" type="hack">
+    <script class="example1" name="sub" data-type="text/javascript" type="hack">
     module.exports = "It's fine! :-)";
 
     </script>

@@ -9,6 +9,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
+import { makeFromFile, makeFromType } from '../js/files';
 import Dock from './Dock';
 import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
@@ -54,14 +55,8 @@ export default class Main extends Component {
     super(props);
   }
 
-  static fileIndex = 0;
   componentDidMount() {
-    const { player, config } = this.props;
-
-    const files = config.files.map(file => {
-      const key = ++Main.fileIndex;
-      return Object.assign({}, file, { key });
-    });
+    const { player, config: { files } } = this.props;
 
     this.setState({ files, reboot: true }, () => {
       if (files.length > 0) {
@@ -77,14 +72,12 @@ export default class Main extends Component {
   }
 
   addFile = (file) => new Promise((resolve, reject) => {
-    const key = ++Main.fileIndex;
-    const add = Object.assign({}, file, { key });
-    const files = this.state.files.concat(add);
+    const files = this.state.files.concat(file);
     this.setState({ files }, () => {
-      if (file.isOpened) {
-        this.selectFile(add, (lastFile) => resolve(lastFile));
+      if (file.options.isOpened) {
+        this.selectFile(file, (lastFile) => resolve(lastFile));
       } else {
-        resolve(add);
+        resolve(file);
       }
     });
   });
@@ -93,9 +86,8 @@ export default class Main extends Component {
     const nextFile = Object.assign({}, file, updated);
     const files = this.state.files.map((item) => item === file ? nextFile : item);
     this.setState({ files }, () => {
-      if (file === this.state.selectedFile && nextFile.isOpened) {
-        this.selectFile(nextFile)
-          .then(lastFile => resolve(lastFile));
+      if (file === this.state.selectedFile && nextFile.options.isOpened) {
+        this.selectFile(nextFile).then(resolve);
       } else {
         resolve(nextFile);
       }
@@ -110,8 +102,9 @@ export default class Main extends Component {
   selectFile = (file) => new Promise((resolve, reject) => {
     // Select and open the file
     this.setState({ selectedFile: file }, () => {
-      if (!file.isOpened) {
-        this.updateFile(this.state.selectedFile, { isOpened: true })
+      if (!file.options.isOpened) {
+        const options = Object.assign({}, file.options, { isOpened: true });
+        this.updateFile(this.state.selectedFile, { options })
           .then(lastFile => resolve(lastFile));
       } else {
         resolve(file);
@@ -120,10 +113,11 @@ export default class Main extends Component {
   });
 
   switchEntryPoint = (file) => {
-    const nextSelectFile = Object.assign({}, file, { isEntryPoint: true });
-    const files = this.state.files.map(item =>
-      item === file ? nextSelectFile : Object.assign({}, item, { isEntryPoint: false }));
-    this.setState({ files }, () => this.selectFile(nextSelectFile));
+    const files = this.state.files.map(item => {
+      const options = Object.assign({}, item.options, { isEntryPoint: item === file });
+      return Object.assign({}, item, options);
+    });
+    this.setState({ files });
   };
 
   handleResize = (primaryWidth, secondaryHeight) => {
@@ -248,7 +242,7 @@ export default class Main extends Component {
               secondaryHeight={secondaryStyle.height}
             />
             <EditorPane
-              files={files.filter(file => file.isOpened)}
+              files={files.filter(file => file.options.isOpened)}
               addFile={this.addFile}
               updateFile={this.updateFile}
               selectFile={this.selectFile}
