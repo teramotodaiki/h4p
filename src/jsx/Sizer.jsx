@@ -67,11 +67,8 @@ export default class Sizer extends Component {
     });
 
     const style = Object.assign({}, this.props.style, {
-      paddingBottom: secondaryHeight,
+      paddingBottom: secondaryHeight
     });
-
-    const bladeStyle = {
-    };
 
     const events = isTouchEnabled ? {
       onTouchStart: this.handleMouseDown
@@ -85,7 +82,7 @@ export default class Sizer extends Component {
         style={style}
         {...events}
       >
-        <div style={bladeStyle}></div>
+        <div></div>
       </div>
     );
   }

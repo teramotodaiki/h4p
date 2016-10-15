@@ -20,7 +20,6 @@ import TabLabel from './TabLabel';
 
 const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
-const SIZER_BLANK = CSS_PREFIX + 'sizer_blank';
 
 export default class EditorPane extends Component {
 
@@ -184,7 +183,6 @@ export default class EditorPane extends Component {
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
       />
-      <div className={SIZER_BLANK}><div></div></div>
       <Tabs
         style={tabsStyle}
         className={CSS_PREFIX + 'tab_container'}

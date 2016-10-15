@@ -34,23 +34,18 @@
 
 // each of aligns
 .#{$container} {
-  @each $align in $aligns {
 
+  @each $align in $aligns {
     & .#{$dock}-#{$align} {
       @include dock($align);
-
-      & .#{$sizer} {
-        @include sizer($align, false);
-      }
-      & .#{$sizer}-active,
-      & .#{$sizer}:hover {
-        @include sizer($align, true);
-      }
-
-      & .#{$sizer}_blank {
-        @include sizer_blank;
-      }
     }
+  }
 
+  & .#{$sizer} {
+    @include sizer(false);
+  }
+  & .#{$sizer}-active,
+  & .#{$sizer}:hover {
+    @include sizer(true);
   }
 }
