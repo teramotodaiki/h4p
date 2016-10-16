@@ -79,7 +79,22 @@ const scriptLoader = (file) => {
   return URL.createObjectURL(new Blob([content]));
 };
 
-function loadAsync(files) {
+
+const loadAsync = (files) => {
+
+  const _fetch = window.fetch;
+  window.fetch = function (...args) {
+    const fetched = files.find(file => file.name === args[0]);
+    if (!fetched) {
+      return _fetch.apply(this, args);
+    }
+    return new Promise((resolve, reject) => {
+      const blob = fetched.isText ?
+        new Blob([fetched.text], { type: fetched.type }) :
+        fetched.blob.slice(0, fetched.blob.size, fetched.blob.type);
+      resolve(new Response(blob));
+    });
+  };
 
   const paths = files
     .filter(file => file.type === 'text/javascript')
@@ -98,7 +113,7 @@ function loadAsync(files) {
   requirejs(config, entryPoins, () => {
     Hack.emit('load');
   });
-}
+};
 
 // Export
 window.Hack = Hack;
