@@ -17,6 +17,7 @@ import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
 import { DialogTypes } from './FileDialog/';
 import TabLabel from './TabLabel';
+import Preview from './Preview';
 import { makeFromType } from '../js/files';
 
 const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
@@ -196,7 +197,7 @@ export default class EditorPane extends Component {
         value={selectedFile}
         inkBarStyle={{ display: 'none' }}
       >
-      {files.filter(file => file.isText).map((file, index) => (
+      {files.map((file, index) => (
         <Tab
           key={file.key}
           value={file}
@@ -205,6 +206,7 @@ export default class EditorPane extends Component {
           className={CSS_PREFIX + 'tab'}
           style={selectedFile === file ? tabActiveStyle : tabStyle}
         >
+        {file.isText ? (
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
             ref={(cm) => this.handleCodemirror(cm, file)}
@@ -212,6 +214,9 @@ export default class EditorPane extends Component {
             onChange={(code) => updateFile(file, { code })}
             options={file.options.isReadOnly ? readOnlyOptions: options}
           />
+        ) : (
+          <Preview containerStyle={this.style} file={file} />
+        )}
         </Tab>
       ))}
       </Tabs>
