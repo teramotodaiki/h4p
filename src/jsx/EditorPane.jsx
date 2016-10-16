@@ -17,6 +17,8 @@ import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
 import { DialogTypes } from './FileDialog/';
 import TabLabel from './TabLabel';
+import Preview from './Preview';
+import { makeFromType } from '../js/files';
 
 const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
@@ -69,7 +71,7 @@ export default class EditorPane extends Component {
     if (!ref || this.hasCodemirror(file.key)) return;
     const cm = ref.getCodeMirror();
     cm.key = file.key;
-    cm.setValue(file.code);
+    cm.setValue(file.text);
     this.showHint(cm);
     this.codemirrorInstances = this.codemirrorInstances.concat(cm);
     this.setEnoughHeight();
@@ -112,14 +114,16 @@ export default class EditorPane extends Component {
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(DialogTypes.Add)
-      .then(addFile);
+      .then(seed => makeFromType('text/javascript', seed))
+      .then(file => addFile(file));
   };
 
   handleClose = (file) => {
     const { updateFile, selectFile, selectedFile, files } = this.props;
 
     const nextSelect = files.find((item) => item !== file);
-    updateFile(file, { isOpened: false })
+    const options = Object.assign({}, file.options, { isOpened: false });
+    updateFile(file, { options })
       .then(() => nextSelect && selectFile(nextSelect));
   };
 
@@ -202,13 +206,17 @@ export default class EditorPane extends Component {
           className={CSS_PREFIX + 'tab'}
           style={selectedFile === file ? tabActiveStyle : tabStyle}
         >
+        {file.isText ? (
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
             ref={(cm) => this.handleCodemirror(cm, file)}
-            value={file.code}
-            onChange={(code) => updateFile(file, { code })}
-            options={file.isReadOnly ? readOnlyOptions: options}
+            value={file.text}
+            onChange={(text) => updateFile(file, { text })}
+            options={file.options.isReadOnly ? readOnlyOptions: options}
           />
+        ) : (
+          <Preview containerStyle={this.style} file={file} />
+        )}
         </Tab>
       ))}
       </Tabs>

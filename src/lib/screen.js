@@ -71,27 +71,34 @@ handshake.then(parent => {
 });
 
 
-// Exprerimental stage
-// _loader(file) => Blob Scheme URL
-const _loader = (file) => {
+const scriptLoader = (file) => {
   const content =
-    file.loader === 'url' ?
-    // Blob URL Scheme
-    `define(function (require, exports, module) {
-      module.exports = "${URL.createObjectURL(file.blob)}";
-    });` :
     // AMD definision
-    `define(function (require, exports, module) {${file.code}});`;
+    `define(function (require, exports, module) {${file.text}});`;
 
   return URL.createObjectURL(new Blob([content]));
 };
 
 
-function loadAsync(files) {
+const loadAsync = (files) => {
+
+  const _fetch = window.fetch;
+  window.fetch = function (...args) {
+    const fetched = files.find(file => file.name === args[0]);
+    if (!fetched) {
+      return _fetch.apply(this, args);
+    }
+    return new Promise((resolve, reject) => {
+      const blob = fetched.isText ?
+        new Blob([fetched.text], { type: fetched.type }) :
+        fetched.blob.slice(0, fetched.blob.size, fetched.blob.type);
+      resolve(new Response(blob));
+    });
+  };
 
   const paths = files
-    .filter(file => typeof file.name === 'string')
-    .map(file => ({ [file.name]: _loader(file) }));
+    .filter(file => file.type === 'text/javascript')
+    .map(file => ({ [file.name]: scriptLoader(file) }));
 
   const config = {
     // alias
@@ -99,14 +106,14 @@ function loadAsync(files) {
   };
 
   const entryPoins = files
-    .filter(file => file.isEntryPoint)
+    .filter(file => file.options.isEntryPoint)
     .map(file => file.name);
 
   // config, deps, callback
   requirejs(config, entryPoins, () => {
     Hack.emit('load');
   });
-}
+};
 
 // Export
 window.Hack = Hack;

@@ -15,9 +15,8 @@ export default class RenameDialog extends Component {
 
   handleRename = (event) => {
     const { onRequestClose, resolve } = this.props;
-    const name = this.input.name;
-    const filename = this.input.value;
-    resolve({ name, filename });
+    const { name, type } = this.input;
+    resolve({ name, type });
     onRequestClose();
   }
 

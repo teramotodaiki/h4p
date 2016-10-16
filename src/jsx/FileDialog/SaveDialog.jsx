@@ -25,8 +25,8 @@ export default class SaveDialog extends Component {
   }
 
   get blob() {
-    const { content } = this.props;
-    return new Blob([content.code]);
+    const { content: { type, isText, blob, text } } = this.props;
+    return isText ? new Blob([text], { type }) : blob;
   }
 
   handleSave = () => {
@@ -35,7 +35,7 @@ export default class SaveDialog extends Component {
     var event = document.createEvent("MouseEvents");
     event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     const elem = document.createElement('a');
-    elem.download = this.input.value || content.filename;
+    elem.download = this.input.value;
     elem.href = URL.createObjectURL(this.blob);
     elem.dispatchEvent(event);
 
@@ -84,7 +84,7 @@ export default class SaveDialog extends Component {
         <FilenameInput
           ref={(input) => this.input = input}
           defaultName={content.name}
-          defaultExt={content.ext}
+          defaultType={content.type}
           disabled={this.isFallback}
         />
       </Dialog>

@@ -5,6 +5,7 @@ import {
 } from 'material-ui';
 
 
+import { compose } from '../../js/files';
 import download from '../../html/download';
 
 export default class DownloadDialog extends Component {
@@ -15,12 +16,6 @@ export default class DownloadDialog extends Component {
     files: PropTypes.array.isRequired
   };
 
-  static defaultProps = {
-    EXPORT_VAR_NAME,
-    CSS_PREFIX,
-    CORE_CDN_URL,
-  };
-
   state = {
     bundleWithURL: null,
     bundleWithRaw: null,
@@ -28,33 +23,42 @@ export default class DownloadDialog extends Component {
   };
 
   componentDidMount() {
-
-    this.setState({ bundleWithURL: this.bundle({ useCDN: true }) });
-
-    fetch(CORE_CDN_URL, { mode: 'cors' })
+    Promise.all(this.props.files.map(compose))
+    .then(files => {
+      const bundleWithURL = this.bundle({ files, useCDN: true });
+      this.setState({ bundleWithURL });
+      return files;
+    })
+    .then(files => fetch(CORE_CDN_URL, { mode: 'cors' })
       .then(response => {
         if (!response.ok) {
           throw response.error ? response.error() : new Error(response.statusText);
         }
         return response.text();
       })
-      .then(code => {
-        const raw = encodeURIComponent(code);
-        const bundleWithRaw = this.bundle({ raw });
-        this.setState({ bundleWithRaw });
+      .then(lib => {
+        const raw = encodeURIComponent(lib);
+        const bundleWithRaw = this.bundle({ files, raw });
+        this.setState({ bundleWithRaw});
       })
-      .catch(err => {
-        console.error(err);
-        this.setState({ errorInFetch: err });
-      });
+    )
+    .catch(err => {
+      console.error(err);
+      this.setState({ errorInFetch: err });
+    });
   }
 
   bundle(config) {
-    const html = download(Object.assign({}, this.props, config));
+    const props = Object.assign({}, config, {
+      EXPORT_VAR_NAME,
+      CSS_PREFIX,
+      CORE_CDN_URL,
+    });
     return {
       name: 'download',
-      ext: '.html',
-      code: html,
+      type: 'text/html',
+      isText: true,
+      text: download(props)
     };
   }
 
