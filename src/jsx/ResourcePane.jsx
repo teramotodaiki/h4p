@@ -21,7 +21,7 @@ export default class ResourcePane extends Component {
   }
 
   handleDrop = (event) => {
-    const { addFile, openFileDialog } = this.props;
+    const { addFile, selectFile, openFileDialog } = this.props;
     event.preventDefault();
 
     Array.from(event.dataTransfer.files)
@@ -32,7 +32,8 @@ export default class ResourcePane extends Component {
         openFileDialog(DialogTypes.Sign, { content })
       ])
       .then(([file, author]) => Object.assign({}, file, { author }))
-      .then(addFile);
+      .then(addFile)
+      .then(selectFile);
     })
     .reduce((p, c) => {
       return p.then(c);
