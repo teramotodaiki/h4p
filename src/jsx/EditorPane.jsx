@@ -210,8 +210,8 @@ export default class EditorPane extends Component {
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
             ref={(cm) => this.handleCodemirror(cm, file)}
-            value={file.code}
-            onChange={(code) => updateFile(file, { code })}
+            value={file.text}
+            onChange={(text) => updateFile(file, { text })}
             options={file.options.isReadOnly ? readOnlyOptions: options}
           />
         ) : (
