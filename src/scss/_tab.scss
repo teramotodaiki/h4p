@@ -6,6 +6,8 @@
   box-sizing: border-box;
   padding: $tab-top $tab-height / 4 0 $tab-height / 4;
   margin-left: $sizer-narrow-width;
+  overflow-x: scroll;
+  overflow-y: hidden;
 
 }
 
@@ -49,6 +51,7 @@
 
 @mixin tab_content {
 
+  position: relative;
   border-top: .35rem solid $editor-frame-color;
   border-left: $sizer-narrow-width solid $editor-frame-color;
 

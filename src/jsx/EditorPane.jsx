@@ -171,7 +171,7 @@ export default class EditorPane extends Component {
     const tabStyle = (selected) => ({
       width: '100%',
       height: '100%',
-      position: selected ? 'relative' : 'absolute',
+      position: 'absolute',
       visibility: selected ? 'visible' : 'hidden',
     });
 
@@ -198,13 +198,10 @@ export default class EditorPane extends Component {
             value={file.text}
             onChange={(text) => updateFile(file, { text })}
             options={file.options.isReadOnly ? readOnlyOptions: options}
-            style={{ visibility: file.isOpened ? 'visible' : 'collapse' }}
           />
         ) : (
           <Preview
             file={file}
-            containerStyle={this.style}
-            style={{ visibility: file.isOpened ? 'visible' : 'collapse' }}
           />
         )}
         </div>
