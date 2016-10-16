@@ -22,14 +22,14 @@ export default class EditorMenu extends Component {
 
     const style = Object.assign({
       position: 'absolute',
-      left: 0,
+      right: 0,
       top: 0,
       zIndex: 100
     }, this.props.style);
 
     const iconStyle = {
       marginLeft: -12,
-      marginTop: -6,
+      marginTop: -4,
       padding: 0,
     };
 
