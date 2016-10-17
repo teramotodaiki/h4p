@@ -267,6 +267,7 @@ export default class Main extends Component {
             />
             <ResourcePane
               files={files}
+              selectedFile={selectedFile}
               addFile={this.addFile}
               selectFile={this.selectFile}
               openFileDialog={this.openFileDialog}
