@@ -1,40 +1,58 @@
 @mixin tab_container {
 
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+  flex-direction: row;
+  align-items: flex-end;
+  box-sizing: border-box;
+  padding: $tab-top $tab-height / 4 0 $tab-height / 4;
+  margin-left: $sizer-narrow-width;
+  overflow-x: scroll;
+  overflow-y: hidden;
 
-
-  &>div:first-child {
-    display: flex;
-    background-color: transparent !important;
-    width: auto !important;
-    height: $tab-height !important;
-    padding-top: $tab-top;
-    overflow-x: scroll;
-    padding-left: $tab-height/4;
-    padding-right: $tab-height/4;
-    border-width: 0 0 4px 0;
-    border-style: solid;
-    border-color: inherit;
-  }
 }
 
-@mixin tab {
-  position: relative;
-  text-transform: none !important;
-  height: 0 !important;
-  max-width: $tab-max-width !important;
-  width: 100% !important;
-  border-width: 0 $tab-height/2 $tab-height $tab-height/2 !important;
-  border-style: solid !important;
-  border-left-color: transparent !important;
-  border-right-color: transparent !important;
-  margin-left: -$tab-height/4 !important;
-  margin-right: -$tab-height/4 !important;
+@mixin tab ($active: false) {
 
-  &>div:first-child {
-    margin-top: -6px;
+  height: 0;
+  margin-left: -$tab-height/4;
+  margin-right: -$tab-height/4;
+  border-width: 0 $tab-height/2 $tab-height $tab-height/2;
+  border-style: solid;
+  border-color: if($active, $editor-frame-color, $faint-black);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  z-index: if($active, 2, 1);
+
+  &>*:first-child {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: -$tab-height/4 $tab-height/4 0 $tab-height/4;
+
+    &>* {
+      flex: 0 0 auto;
+    }
+
+    &>a {
+      text-decoration: none;
+      color: inherit;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      max-width: $tab-max-length;
+      min-width: $tab-min-length;
+      white-space: nowrap;
+      font-size: .8rem;
+      cursor: default;
+    }
   }
+
+}
+
+@mixin tab_content {
+
+  position: relative;
+  border-top: .35rem solid $editor-frame-color;
+  border-left: $sizer-narrow-width solid $editor-frame-color;
+
 }

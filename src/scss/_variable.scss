@@ -4,6 +4,7 @@ $sizer: #{$prefix}sizer !default;
 $menu: #{$prefix}menu !default;
 $tab_container: #{$prefix}tab_container !default;
 $tab: #{$prefix}tab !default;
+$tab_content: #{$prefix}tab_content !default;
 
 
 $aligns: (top, right, bottom, left);
@@ -22,7 +23,8 @@ $sizer-cursor: (top: row-resize, right: col-resize, bottom: row-resize, left: co
 
 $menu-height: 2.5rem !default;
 
-$tab-max-width: 8rem !default;
+$tab-max-length: 6rem !default;
+$tab-min-length: 2rem !default;
 $tab-height: 2rem !default;
 $tab-top: .5rem;
 

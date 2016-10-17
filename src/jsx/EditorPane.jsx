@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
-import { Tabs, Tab, FloatingActionButton } from 'material-ui';
+import { FloatingActionButton } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { darkWhite, faintBlack, darkBlack } from 'material-ui/styles/colors';
 
@@ -16,11 +16,11 @@ import 'codemirror/addon/hint/show-hint.css';
 import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
 import { DialogTypes } from './FileDialog/';
-import TabLabel from './TabLabel';
+import ChromeTabs from './ChromeTabs';
 import Preview from './Preview';
 import { makeFromType } from '../js/files';
 
-const PANE_CONTENT_CONTAINER = 'PANE_CONTENT_CONTAINER';
+const TAB_CONTENT_CONTAINER = CSS_PREFIX + 'tab_content';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
 
 export default class EditorPane extends Component {
@@ -98,7 +98,7 @@ export default class EditorPane extends Component {
 
   getStyle() {
     if (!this.style) {
-      const ref = document.querySelector('.' + PANE_CONTENT_CONTAINER);
+      const ref = document.querySelector('.' + TAB_CONTENT_CONTAINER);
       if (!ref) return { width: '100%', height: 300 };
       this.style = ref.currentStyle || document.defaultView.getComputedStyle(ref);
     }
@@ -123,8 +123,11 @@ export default class EditorPane extends Component {
 
     const nextSelect = files.find((item) => item !== file);
     const options = Object.assign({}, file.options, { isOpened: false });
-    updateFile(file, { options })
-      .then(() => nextSelect && selectFile(nextSelect));
+
+    setTimeout(() => {
+      updateFile(file, { options })
+        .then(() => nextSelect && selectFile(nextSelect));
+    }, 200);
   };
 
   render() {
@@ -154,25 +157,10 @@ export default class EditorPane extends Component {
 
     const style = Object.assign({
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       alignItems: 'stretch',
+      overflow: 'hidden',
     }, this.props.style);
-
-    const tabsStyle = {
-      borderBottomColor: darkWhite,
-    };
-
-    const tabStyle = {
-      borderBottomColor: faintBlack,
-      color: darkBlack,
-      zIndex: 1,
-    };
-
-    const tabActiveStyle = {
-      borderBottomColor: darkWhite,
-      color: darkBlack,
-      zIndex: 2,
-    };
 
     const addButtonStyle = {
       position: 'absolute',
@@ -180,6 +168,12 @@ export default class EditorPane extends Component {
       bottom: 23,
     };
 
+    const tabStyle = (selected) => ({
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+      visibility: selected ? 'visible' : 'hidden',
+    });
 
     return (
     <div style={style}>
@@ -187,25 +181,16 @@ export default class EditorPane extends Component {
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
       />
-      <Tabs
-        style={tabsStyle}
-        className={CSS_PREFIX + 'tab_container'}
-        tabItemContainerStyle={{ flex: '0 0 auto' }}
-        contentContainerStyle={{ flex: '1 1 auto' }}
-        contentContainerClassName={PANE_CONTENT_CONTAINER}
-        onChange={selectFile}
-        value={selectedFile}
-        inkBarStyle={{ display: 'none' }}
-      >
+      <ChromeTabs
+        files={files}
+        selectedFile={selectedFile}
+        handleSelect={(file) => selectFile(file)}
+        handleRun={handleRun}
+        handleClose={this.handleClose}
+      />
+      <div className={TAB_CONTENT_CONTAINER} style={{ flex: '1 1 auto' }}>
       {files.map((file, index) => (
-        <Tab
-          key={file.key}
-          value={file}
-          label={<TabLabel handleRun={handleRun} handleClose={this.handleClose} file={file} />}
-          onContextMenu={(e) => this.handleContextMenu(e, file)}
-          className={CSS_PREFIX + 'tab'}
-          style={selectedFile === file ? tabActiveStyle : tabStyle}
-        >
+        <div key={file.key} style={tabStyle(file === selectedFile)}>
         {file.isText ? (
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
@@ -215,11 +200,13 @@ export default class EditorPane extends Component {
             options={file.options.isReadOnly ? readOnlyOptions: options}
           />
         ) : (
-          <Preview containerStyle={this.style} file={file} />
+          <Preview
+            file={file}
+          />
         )}
-        </Tab>
+        </div>
       ))}
-      </Tabs>
+      </div>
       <div className={CODEMIRROR_HINT_CONTAINER} ref={(div) => this.hints = div}></div>
       <FloatingActionButton
         style={addButtonStyle}

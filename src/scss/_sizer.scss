@@ -1,28 +1,25 @@
 @mixin sizer($active) {
 
+  position: absolute;
   box-sizing: border-box;
-  flex: 0 0 auto;
+  height: 100%;
   width: $sizer-narrow-width;
-  margin-top: $tab-top + $tab-height;
   cursor: map-get($sizer-cursor, right);
-  background-color: $editor-frame-color;
   z-index: $z-index-sizer;
-  transition: box-shadow .2s linear;
+  padding-top: 0;
+  transition: box-shadow .2s linear, padding-top .2s linear;
 
   @if $active {
     box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;
+    padding-top: $tab-top + $tab-height;
   }
 
   &>div:first-child {
-    margin-top: -$tab-top - $tab-height;
+    margin-top: 0;
     border-width: 0 0 $menu-height $sizer-narrow-width;
     border-style: solid;
     border-color: transparent;
     height: 100%;
     border-left-color: $sizer-color;
-    transition: margin-top .2s linear;
-    @if $active {
-      margin-top: 0;
-    }
   }
 }
