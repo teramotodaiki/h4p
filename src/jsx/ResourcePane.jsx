@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { Paper } from 'material-ui';
-import { faintBlack, white, darkWhite } from 'material-ui/styles/colors';
+import { faintBlack } from 'material-ui/styles/colors';
 
 
 import { DialogTypes } from './FileDialog/';
 import { makeFromFile } from '../js/files';
+import DirCard, { getHierarchy } from './DirCard';
+
 
 export default class ResourcePane extends Component {
 
@@ -17,20 +18,9 @@ export default class ResourcePane extends Component {
   };
 
   state = {
-    selections: []
+    selectedKeys: [],
+    openedPaths: ['']
   };
-
-  constructor(props) {
-    super(props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { selectedFile } = nextProps;
-    if (this.props.selectedFile !== selectedFile && selectedFile) {
-      const selections = this.state.selections.concat(selectedFile.key);
-      this.setState({ selections });
-    }
-  }
 
   handleDrop = (event) => {
     const { addFile, selectFile, openFileDialog } = this.props;
@@ -57,48 +47,52 @@ export default class ResourcePane extends Component {
   };
 
   handleSelectFile = (file) => {
-    const { selections } = this.state;
-    if (this.state.selections.indexOf(file.key) > -1) {
-      this.setState({
-        selections: selections.filter(key => key !== file.key)
-      });
+    if (this.isSelected(file, true)) {
+      const selectedKeys = this.state.selectedKeys.filter(key => key !== file.key);
+      this.setState({ selectedKeys });
     } else {
-      this.setState({
-        selections: selections.concat(file.key)
-      })
+      const selectedKeys = this.state.selectedKeys.concat(file.key);
+      this.setState({ selectedKeys });
+      this.props.selectFile(file);
     }
-    this.props.selectFile(file);
+  };
+
+  handleDirToggle = (dir) => {
+    const openedPaths = this.isDirOpened(dir,
+      this.state.openedPaths.filter(path => path !== dir.path),
+      this.state.openedPaths.concat(dir.path)
+    );
+    this.setState({ openedPaths });
+  };
+
+  isSelected = (file, passed, abort) => {
+    return this.state.selectedKeys.indexOf(file.key) > -1 ? passed : abort;
+  }
+
+  isSelectedOne = (file, passed, abort) => {
+    return this.props.selectedFile === file ? passed : abort;
+  };
+
+  isDirOpened = (dir, passed, abort) => {
+    return this.state.openedPaths.indexOf(dir.path) > -1 ? passed : abort;
   };
 
   render() {
-    const { files, selectFile, selectedFile } = this.props;
-    const { selections } = this.state;
+    const { files, selectFile } = this.props;
 
     const style = Object.assign({
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
       backgroundColor: faintBlack,
       padding: '3rem 0',
+      overflowY: 'scroll',
     }, this.props.style);
 
-    const selectOne = (file, passed, abort) => selectedFile === file ? passed : abort;
-    const select = (file, passed, abort) => selections.indexOf(file.key) > -1 ? passed : abort;
-
-    const itemStyle = (file) => Object.assign({
-      boxSizing: 'border-box',
-      marginTop: '.8rem',
-      marginRight: selectOne(file, 0, '1rem'),
-      marginLeft: '1rem',
-      padding: '.25rem',
-      height: '2.5rem',
-      borderTopRightRadius: selectOne(file, 0, 2),
-      borderBottomRightRadius: selectOne(file, 0, 2),
-      backgroundColor: select(file, white, darkWhite),
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center'
-    });
+    const transfer = {
+      isSelectedOne: this.isSelectedOne,
+      isSelected: this.isSelected,
+      handleSelectFile: this.handleSelectFile,
+      isDirOpened: this.isDirOpened,
+      handleDirToggle: this.handleDirToggle,
+    };
 
     return (
       <div
@@ -106,16 +100,7 @@ export default class ResourcePane extends Component {
         onDrop={this.handleDrop}
         style={style}
       >
-        {files.map(file => (
-          <Paper
-            key={file.key}
-            zDepth={select(file, 2, 0)}
-            onTouchTap={() => this.handleSelectFile(file)}
-            style={itemStyle(file)}
-          >
-          {file.name}
-          </Paper>
-        ))}
+        <DirCard dir={getHierarchy(files)} {...transfer} isRoot />
         <div>Drag and Drop here.</div>
       </div>
     );
