@@ -22,28 +22,23 @@ export default class ResourcePane extends Component {
     openedPaths: ['']
   };
 
-  handleDrop = (event) => {
+  handleNativeDrop = (files, dir) => {
     const { addFile, selectFile, openFileDialog } = this.props;
-    event.preventDefault();
 
-    Array.from(event.dataTransfer.files)
-    .map(file => () => {
+    files.map(file => () => {
       const content = { name: file.name };
       return Promise.all([
         makeFromFile(file),
         openFileDialog(DialogTypes.Sign, { content })
       ])
       .then(([file, author]) => Object.assign({}, file, { author }))
+      .then(file => Object.assign({}, file, { name: dir.path + file.name }))
       .then(addFile)
       .then(selectFile);
     })
     .reduce((p, c) => {
       return p.then(c);
     }, Promise.resolve());
-  };
-
-  handleDragOver = (event) => {
-    event.preventDefault();
   };
 
   handleSelectFile = (file) => {
@@ -99,6 +94,7 @@ export default class ResourcePane extends Component {
       isDirOpened: this.isDirOpened,
       handleDirToggle: this.handleDirToggle,
       handleFileMove: this.handleFileMove,
+      handleNativeDrop: this.handleNativeDrop,
     };
 
     const style = Object.assign({}, this.props.style, {
@@ -108,11 +104,7 @@ export default class ResourcePane extends Component {
     });
 
     return (
-      <div
-        style={style}
-        onDragOver={this.handleDragOver}
-        onDrop={this.handleDrop}
-      >
+      <div style={style}>
         <Hierarchy files={files} {...transfer} />
       </div>
     );

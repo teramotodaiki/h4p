@@ -17,7 +17,6 @@ class FileCard extends Component {
     isSelected: PropTypes.func.isRequired,
     isSelectedOne: PropTypes.func.isRequired,
     handleSelectFile: PropTypes.func.isRequired,
-    handleFileMove: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
@@ -66,14 +65,7 @@ class FileCard extends Component {
 
 const spec = {
   beginDrag(props) {
-    return props.file;
-  },
-  endDrag(props, monitor, component) {
-    const result = monitor.getDropResult();
-    if (result && !result.files.includes(props.file)) {
-      props.handleFileMove(props.file, result)
-        .catch(err => alert(err.message));
-    }
+    return { files: [props.file] };
   }
 };
 

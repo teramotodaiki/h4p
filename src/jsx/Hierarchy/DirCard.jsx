@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import { transparent } from 'material-ui/styles/colors';
+import { NativeTypes } from 'react-dnd-html5-backend';
 
 
 import FileCard from './FileCard';
@@ -20,6 +21,7 @@ class _DirCard extends Component {
     isDirOpened: PropTypes.func.isRequired,
     handleDirToggle: PropTypes.func.isRequired,
     handleFileMove: PropTypes.func.isRequired,
+    handleNativeDrop: PropTypes.func.isRequired,
     isRoot: PropTypes.bool,
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -32,12 +34,16 @@ class _DirCard extends Component {
 
   render() {
     const {
-      isSelected, isSelectedOne, handleSelectFile, isDirOpened, handleDirToggle, handleFileMove, isRoot,
+      isSelected, isSelectedOne, handleSelectFile, isDirOpened,
+      handleDirToggle, handleFileMove, handleNativeDrop, isRoot,
       connectDropTarget, isOver, dragSource,
     } = this.props;
     const cd = this.props.dir;
 
-    const transfer = { isSelected, isSelectedOne, handleSelectFile, isDirOpened, handleDirToggle, handleFileMove };
+    const transfer = {
+      isSelected, isSelectedOne, handleSelectFile, isDirOpened,
+      handleDirToggle, handleFileMove, handleNativeDrop,
+    };
 
     const dashed = isOver && !cd.files.includes(dragSource);
 
@@ -96,7 +102,18 @@ const spec = {
     if (monitor.getDropResult()) {
       return;
     }
-    return props.dir;
+    const { files } = monitor.getItem();
+    switch (monitor.getItemType()) {
+      case Types.FILE:
+        files
+          .filter(file => !props.dir.files.includes(file))
+          .forEach(file => props.handleFileMove(file, props.dir));
+        break;
+      case NativeTypes.FILE:
+        props.handleNativeDrop(files, props.dir);
+        break;
+    }
+    return {};
   }
 };
 
@@ -106,7 +123,7 @@ const collect = (connect, monitor) => ({
   dragSource: monitor.getItem(),
 });
 
-const DirCard = DropTarget(Types.FILE, spec, collect)(_DirCard);
+const DirCard = DropTarget([Types.FILE, NativeTypes.FILE], spec, collect)(_DirCard);
 export default DirCard;
 
 

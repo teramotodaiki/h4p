@@ -12,6 +12,7 @@ export default class Hierarchy extends Component {
     handleSelectFile: PropTypes.func.isRequired,
     isDirOpened: PropTypes.func.isRequired,
     handleDirToggle: PropTypes.func.isRequired,
+    handleNativeDrop: PropTypes.func.isRequired,
   };
 
   render() {
@@ -23,6 +24,7 @@ export default class Hierarchy extends Component {
       isDirOpened: this.props.isDirOpened,
       handleDirToggle: this.props.handleDirToggle,
       handleFileMove: this.props.handleFileMove,
+      handleNativeDrop: this.props.handleNativeDrop,
     };
 
     const style = {
