@@ -22,11 +22,11 @@ export default class Hierarchy extends Component {
       handleSelectFile: this.props.handleSelectFile,
       isDirOpened: this.props.isDirOpened,
       handleDirToggle: this.props.handleDirToggle,
+      handleFileMove: this.props.handleFileMove,
     };
 
     const style = {
       boxSizing: 'border-box',
-      padding: '3rem 0 3rem 1rem',
       width: '100%',
     };
 

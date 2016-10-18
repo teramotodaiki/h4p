@@ -11,6 +11,7 @@ export default class ResourcePane extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
+    updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     selectedFile: PropTypes.object,
     openFileDialog: PropTypes.func.isRequired,
@@ -64,6 +65,18 @@ export default class ResourcePane extends Component {
     this.setState({ openedPaths });
   };
 
+  handleFileMove = (file, dir) => {
+    const { updateFile } = this.props;
+
+    if (file.name.includes('/')) {
+      const name = file.name.replace(/.*\//, dir.path);
+      return updateFile(file, { name });
+    } else {
+      const name = dir.path + file.name;
+      return updateFile(file, { name });
+    }
+  };
+
   isSelected = (file, passed, abort) => {
     return this.state.selectedKeys.indexOf(file.key) > -1 ? passed : abort;
   }
@@ -85,6 +98,7 @@ export default class ResourcePane extends Component {
       handleSelectFile: this.handleSelectFile,
       isDirOpened: this.isDirOpened,
       handleDirToggle: this.handleDirToggle,
+      handleFileMove: this.handleFileMove,
     };
 
     const style = Object.assign({}, this.props.style, {

@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { DropTarget } from 'react-dnd';
 import { transparent } from 'material-ui/styles/colors';
 
 
@@ -9,7 +10,7 @@ import {
   labelColor, borderColor, backgroundColor, selectedColor,
 } from './constants';
 
-export default class DirCard extends Component {
+class _DirCard extends Component {
 
   static propTypes = {
     dir: PropTypes.object.isRequired,
@@ -18,7 +19,11 @@ export default class DirCard extends Component {
     handleSelectFile: PropTypes.func.isRequired,
     isDirOpened: PropTypes.func.isRequired,
     handleDirToggle: PropTypes.func.isRequired,
+    handleFileMove: PropTypes.func.isRequired,
     isRoot: PropTypes.bool,
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool.isRequired,
+    dragSource: PropTypes.object,
   };
 
   static defaultProps = {
@@ -26,10 +31,15 @@ export default class DirCard extends Component {
   };
 
   render() {
-    const { isSelected, isSelectedOne, handleSelectFile, isDirOpened, handleDirToggle, isRoot } = this.props;
+    const {
+      isSelected, isSelectedOne, handleSelectFile, isDirOpened, handleDirToggle, handleFileMove, isRoot,
+      connectDropTarget, isOver, dragSource,
+    } = this.props;
     const cd = this.props.dir;
 
-    const transfer = { isSelected, isSelectedOne, handleSelectFile, isDirOpened, handleDirToggle };
+    const transfer = { isSelected, isSelectedOne, handleSelectFile, isDirOpened, handleDirToggle, handleFileMove };
+
+    const dashed = isOver && !cd.files.includes(dragSource);
 
     const dirStyle = {
       display: 'flex',
@@ -40,7 +50,7 @@ export default class DirCard extends Component {
       height: isDirOpened(cd, 'auto', CardHeight),
       marginTop: BlankWidth,
       borderColor: borderColor,
-      borderStyle: 'solid',
+      borderStyle: dashed ? 'dashed' : 'solid',
       borderTopWidth: BorderWidth,
       borderRightWidth: isDirOpened(cd, 0, BorderWidth),
       borderBottomWidth: BorderWidth,
@@ -53,6 +63,10 @@ export default class DirCard extends Component {
       paddingLeft: isDirOpened(cd, StepWidth, 0),
       backgroundColor: isDirOpened(cd, transparent, backgroundColor),
       transition: 'margin .2s ease, padding-bottom .2s ease, border .2s ease',
+    };
+
+    const rootStyle = {
+      padding: '3rem 0 3rem 1rem',
     };
 
     const closedStyle = {
@@ -69,13 +83,31 @@ export default class DirCard extends Component {
       <div style={closedStyle} onTouchTap={() => handleDirToggle(cd)}>{cd.path}</div>
     );
 
-    return (
-      <div style={isRoot ? {} : dirStyle}>
+    return connectDropTarget(
+      <div style={isRoot ? rootStyle : dirStyle}>
       {hierarchy}
       </div>
     );
   }
 }
+
+const spec = {
+  drop(props, monitor, component) {
+    if (monitor.getDropResult()) {
+      return;
+    }
+    return props.dir;
+  }
+};
+
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver({ shallow: true }),
+  dragSource: monitor.getItem(),
+});
+
+const DirCard = DropTarget(Types.FILE, spec, collect)(_DirCard);
+export default DirCard;
 
 
 export const DirCloser = (props) => {

@@ -132,7 +132,6 @@ export default class EditorPane extends Component {
 
   render() {
     const {
-      files,
       updateFile,
       selectFile,
       selectedFile,
@@ -141,6 +140,7 @@ export default class EditorPane extends Component {
       handleEditorOptionChange,
       openFileDialog,
     } = this.props;
+    const files = this.props.files.filter(file => file.options.isOpened)
 
     const options = Object.assign({
       lineNumbers: true,

@@ -17,12 +17,17 @@ class FileCard extends Component {
     isSelected: PropTypes.func.isRequired,
     isSelectedOne: PropTypes.func.isRequired,
     handleSelectFile: PropTypes.func.isRequired,
+    handleFileMove: PropTypes.func.isRequired,
+
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
   };
 
   render() {
-    const { file, isSelected, isSelectedOne, handleSelectFile, connectDragSource, isDragging } = this.props;
+    const {
+      file, isSelected, isSelectedOne, handleSelectFile, handleFileMove,
+      connectDragSource, isDragging,
+    } = this.props;
 
     const style = {
       boxSizing: 'border-box',
@@ -59,19 +64,22 @@ class FileCard extends Component {
   }
 }
 
-const cardSource = {
+const spec = {
   beginDrag(props) {
-    return {
-      text: props.file.name
-    };
+    return props.file;
+  },
+  endDrag(props, monitor, component) {
+    const result = monitor.getDropResult();
+    if (result && !result.files.includes(props.file)) {
+      props.handleFileMove(props.file, result)
+        .catch(err => alert(err.message));
+    }
   }
 };
 
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  };
-}
+const collect = (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging()
+});
 
-export default DragSource(Types.FILE, cardSource, collect)(FileCard)
+export default DragSource(Types.FILE, spec, collect)(FileCard)

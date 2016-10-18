@@ -53,10 +53,6 @@ class Main extends Component {
 
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const { player, config: { files } } = this.props;
 
@@ -75,6 +71,10 @@ class Main extends Component {
 
   addFile = (file) => new Promise((resolve, reject) => {
     const files = this.state.files.concat(file);
+    if (this.inspection(file, reject)) {
+      resolve(file);
+      return;
+    }
     this.setState({ files }, () => {
       if (file.options.isOpened) {
         this.selectFile(file, (lastFile) => resolve(lastFile));
@@ -86,6 +86,10 @@ class Main extends Component {
 
   updateFile = (file, updated) => new Promise((resolve, reject) => {
     const nextFile = Object.assign({}, file, updated);
+    if (this.inspection(nextFile)) {
+      resolve(file);
+      return;
+    }
     const files = this.state.files.map((item) => item === file ? nextFile : item);
     this.setState({ files }, () => {
       if (file === this.state.selectedFile && nextFile.options.isOpened) {
@@ -120,6 +124,15 @@ class Main extends Component {
       return Object.assign({}, item, options);
     });
     this.setState({ files });
+  };
+
+  inspection = (newFile, reject) => {
+    const { files } = this.state;
+    // file.name should be unique
+    if (files.some(file => file.name === newFile.name && file.key !== newFile.key)) {
+      return true;
+    }
+    return false;
   };
 
   handleResize = (primaryWidth, secondaryHeight) => {
@@ -244,7 +257,7 @@ class Main extends Component {
               secondaryHeight={secondaryStyle.height}
             />
             <EditorPane
-              files={files.filter(file => file.options.isOpened)}
+              files={files}
               addFile={this.addFile}
               updateFile={this.updateFile}
               selectFile={this.selectFile}
@@ -271,6 +284,7 @@ class Main extends Component {
               files={files}
               selectedFile={selectedFile}
               addFile={this.addFile}
+              updateFile={this.updateFile}
               selectFile={this.selectFile}
               openFileDialog={this.openFileDialog}
               style={{ flex: '1 1 auto' }}
