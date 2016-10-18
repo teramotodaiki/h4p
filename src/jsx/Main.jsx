@@ -1,7 +1,9 @@
 import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
@@ -21,7 +23,7 @@ import Sizer from './Sizer';
 import ContextMenu from './ContextMenu';
 import FileDialog, { DialogTypes } from './FileDialog/';
 
-export default class Main extends Component {
+class Main extends Component {
 
   static propTypes = {
     player: PropTypes.object.isRequired,
@@ -294,3 +296,5 @@ export default class Main extends Component {
     );
   }
 }
+
+export default DragDropContext(HTML5Backend)(Main);

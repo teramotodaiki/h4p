@@ -1,23 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import { Paper } from 'material-ui';
-import { white, lightWhite, faintBlack, lightBlack, darkBlack, transparent } from 'material-ui/styles/colors';
+import { transparent } from 'material-ui/styles/colors';
 
 
-const StepWidth = 14;
-const BorderWidth = 4;
-const CardHeight = 40;
-const BlankWidth = 12;
-
-const backwordColor = white;
-const linkColor = white;
-const labelColor = darkBlack;
-const dirColor = lightBlack;
-
-
-const DIR = CSS_PREFIX + 'hierarchy_dir';
-const DIR_OPEN = CSS_PREFIX + 'hierarchy_dir-open';
-const FILE = CSS_PREFIX + 'hierarchy_file';
-const FILE_ACTIVE = CSS_PREFIX + 'hierarchy_file-active';
+import FileCard from './FileCard';
+import {
+  Types,
+  CardHeight, BlankWidth, StepWidth, BorderWidth,
+  labelColor, borderColor, backgroundColor, selectedColor,
+} from './constants';
 
 export default class DirCard extends Component {
 
@@ -49,30 +39,30 @@ export default class DirCard extends Component {
       boxSizing: 'border-box',
       height: isDirOpened(cd, 'auto', CardHeight),
       marginTop: BlankWidth,
-      marginLeft: StepWidth,
-      borderColor: dirColor,
+      borderColor: borderColor,
       borderStyle: 'solid',
-      borderTopWidth: isDirOpened(cd, BorderWidth, 0),
-      borderRightWidth: 0,
-      borderBottomWidth: isDirOpened(cd, BorderWidth, 0),
-      borderLeftWidth: isDirOpened(cd, BorderWidth, 0),
+      borderTopWidth: BorderWidth,
+      borderRightWidth: isDirOpened(cd, 0, BorderWidth),
+      borderBottomWidth: BorderWidth,
+      borderLeftWidth: BorderWidth,
       borderRadius: 2,
       borderTopRightRadius: isDirOpened(cd, 0, 2),
       borderBottomRightRadius: isDirOpened(cd, 0, 2),
       marginRight: isDirOpened(cd, 0, StepWidth),
       paddingBottom: isDirOpened(cd, BlankWidth, 0),
-      backgroundColor: isDirOpened(cd, transparent, dirColor),
-      transition: 'margin .2s ease, padding .2s ease-in',
+      paddingLeft: isDirOpened(cd, StepWidth, 0),
+      backgroundColor: isDirOpened(cd, transparent, backgroundColor),
+      transition: 'margin .2s ease, padding-bottom .2s ease, border .2s ease',
     };
 
     const closedStyle = {
-      color: linkColor,
+      color: labelColor,
       paddingLeft: StepWidth,
     };
 
     const hierarchy =
       isDirOpened(cd, [].concat(
-        isRoot ? null : <Closer key="closer" path={cd.path} onTouchTap={() => handleDirToggle(cd)} />,
+        isRoot ? null : <DirCloser key="closer" onTouchTap={() => handleDirToggle(cd)} />,
         cd.dirs.map(dir => <DirCard key={dir.path} dir={dir} {...transfer} />),
         cd.files.map(file =><FileCard key={file.key} file={file} {...transfer}  />)
       ),
@@ -87,67 +77,21 @@ export default class DirCard extends Component {
   }
 }
 
-export class FileCard extends Component {
 
-  static propTypes = {
-    file: PropTypes.object.isRequired,
-    isSelected: PropTypes.func.isRequired,
-    isSelectedOne: PropTypes.func.isRequired,
-    handleSelectFile: PropTypes.func.isRequired,
-  };
-
-  render() {
-    const { file, isSelected, isSelectedOne, handleSelectFile } = this.props;
-
-    const style = (file) => Object.assign({
-      boxSizing: 'border-box',
-      height: CardHeight,
-      marginTop: BlankWidth,
-      marginRight: isSelectedOne(file, 0, StepWidth),
-      marginLeft: StepWidth,
-      padding: '.25rem',
-      paddingLeft: StepWidth,
-      borderTopRightRadius: isSelectedOne(file, 0, 2),
-      borderBottomRightRadius: isSelectedOne(file, 0, 2),
-      backgroundColor: isSelected(file, white, lightWhite),
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      color: labelColor,
-      transition: 'all .2s ease',
-    });
-
-    return (
-      <Paper
-        key={file.key}
-        zDepth={isSelected(file, 2, 0)}
-        onTouchTap={() => handleSelectFile(file)}
-        style={style(file)}
-      >
-      {file.name}
-      </Paper>
-    );
-  }
-}
-
-export const Closer = (props) => {
+export const DirCloser = (props) => {
   const style = {
-    backgroundColor: dirColor,
-  };
-
-  const pathStyle = {
-    color: labelColor,
+    marginLeft: -StepWidth,
+    backgroundColor: borderColor,
   };
 
   const backwordStyle = {
-    color: linkColor,
-    fontWeight: 'bold',
     paddingLeft: StepWidth,
+    fontWeight: 'bold',
+    color: labelColor,
   };
 
   return (
     <div style={style} onTouchTap={props.onTouchTap}>
-      <span style={pathStyle}>{props.path}</span>
       <span style={backwordStyle}>../</span>
     </div>
   )

@@ -4,8 +4,7 @@ import { faintBlack } from 'material-ui/styles/colors';
 
 import { DialogTypes } from './FileDialog/';
 import { makeFromFile } from '../js/files';
-import DirCard, { getHierarchy } from './DirCard';
-
+import Hierarchy from './Hierarchy/';
 
 export default class ResourcePane extends Component {
 
@@ -80,12 +79,6 @@ export default class ResourcePane extends Component {
   render() {
     const { files, selectFile } = this.props;
 
-    const style = Object.assign({
-      backgroundColor: faintBlack,
-      padding: '3rem 0',
-      overflowY: 'scroll',
-    }, this.props.style);
-
     const transfer = {
       isSelectedOne: this.isSelectedOne,
       isSelected: this.isSelected,
@@ -94,14 +87,18 @@ export default class ResourcePane extends Component {
       handleDirToggle: this.handleDirToggle,
     };
 
+    const style = Object.assign({}, this.props.style, {
+      backgroundColor: faintBlack,
+      overflowY: 'scroll',
+    });
+
     return (
       <div
+        style={style}
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
-        style={style}
       >
-        <DirCard dir={getHierarchy(files)} {...transfer} isRoot />
-        <div>Drag and Drop here.</div>
+        <Hierarchy files={files} {...transfer} />
       </div>
     );
   }
