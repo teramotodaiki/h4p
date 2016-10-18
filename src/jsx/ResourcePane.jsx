@@ -104,6 +104,7 @@ export default class ResourcePane extends Component {
     const style = Object.assign({}, this.props.style, {
       backgroundColor: faintBlack,
       overflowY: 'scroll',
+      boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px inset, rgba(0, 0, 0, 0.227451) 0px 3px 10px inset',
     });
 
     return (
