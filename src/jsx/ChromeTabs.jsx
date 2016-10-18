@@ -23,8 +23,12 @@ export default class ChromeTabs extends Component {
   render() {
     const { files, selectedFile, handleSelect, handleRun, handleClose } = this.props;
 
+    const style = {
+      height: 40,
+    };
+
     return (
-      <div className={TAB_CONTAINER}>
+      <div style={style} className={TAB_CONTAINER}>
       {files
         .map(file => (
         <ChromeTab

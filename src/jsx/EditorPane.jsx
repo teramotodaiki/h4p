@@ -121,7 +121,7 @@ export default class EditorPane extends Component {
   handleClose = (file) => {
     const { updateFile, selectFile, selectedFile, files } = this.props;
 
-    const nextSelect = files.find((item) => item !== file);
+    const nextSelect = files.find((item) => item.options.isOpened && item !== file);
     const options = Object.assign({}, file.options, { isOpened: false });
 
     setTimeout(() => {
