@@ -13,15 +13,15 @@ const TAB_ACTIVE = CSS_PREFIX + 'tab-active';
 export default class ChromeTabs extends Component {
 
   static propTypes = {
-    files: PropTypes.array.isRequired,
     selectedFile: PropTypes.object,
+    tabbedFiles: PropTypes.array.isRequired,
     handleSelect: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
+    handleRun: PropTypes.func.isRequired,
   };
 
   render() {
-    const { files, selectedFile, handleSelect, handleRun, handleClose } = this.props;
+    const { selectedFile, tabbedFiles, handleSelect, handleClose, handleRun } = this.props;
 
     const style = {
       height: 40,
@@ -29,17 +29,17 @@ export default class ChromeTabs extends Component {
 
     return (
       <div style={style} className={TAB_CONTAINER}>
-      {files
+      {tabbedFiles
         .map(file => (
         <ChromeTab
           key={file.key}
           active={selectedFile === file}
           label={file.name}
           leftIcon={file.options.isEntryPoint ? (<PlayCircleOutline color={darkBlack} />) : null}
-          onLeftTouchTap={(e) => handleRun()}
+          onLeftTouchTap={() => handleRun()}
           rightIcon={<NavigationClose color={darkBlack} />}
-          onRightTouchTap={(e) => handleClose(file)}
-          onTouchTap={(e) => handleSelect(file)}
+          onRightTouchTap={() => handleClose(file)}
+          onTouchTap={() => handleSelect(file)}
         />
       ))}
       </div>

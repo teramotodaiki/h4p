@@ -27,7 +27,6 @@ export const defaultValue = {
   blobURL: null,
   options: {
     isEntryPoint: false,
-    isOpened: false,
     isReadOnly: false,
   },
   author: {

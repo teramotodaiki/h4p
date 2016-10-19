@@ -14,9 +14,9 @@ class FileCard extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
-    isSelected: PropTypes.func.isRequired,
-    isSelectedOne: PropTypes.func.isRequired,
-    handleSelectFile: PropTypes.func.isRequired,
+    selectedFile: PropTypes.object,
+    tabbedFiles: PropTypes.array.isRequired,
+    handleFileSelect: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
@@ -24,23 +24,26 @@ class FileCard extends Component {
 
   render() {
     const {
-      file, isSelected, isSelectedOne, handleSelectFile, handleFileMove,
+      file, selectedFile, tabbedFiles, handleFileSelect, handleFileMove,
       connectDragSource, isDragging,
     } = this.props;
+
+    const isSelected = (file, passed, failed) => selectedFile === file ? passed : failed;
+    const isTabbed = (file, passed, failed) => tabbedFiles.includes(file) ? passed : failed;
 
     const style = {
       boxSizing: 'border-box',
       height: CardHeight,
       marginTop: BlankWidth,
-      marginRight: isSelectedOne(file, 0, StepWidth),
+      marginRight: isSelected(file, 0, StepWidth),
       padding: '.25rem',
       paddingLeft: StepWidth,
       borderWidth: BorderWidth,
       borderStyle: 'solid',
       borderColor: transparent,
-      borderTopRightRadius: isSelectedOne(file, 0, 2),
-      borderBottomRightRadius: isSelectedOne(file, 0, 2),
-      backgroundColor: isSelected(file, selectedColor, backgroundColor),
+      borderTopRightRadius: isSelected(file, 0, 2),
+      borderBottomRightRadius: isSelected(file, 0, 2),
+      backgroundColor: isTabbed(file, selectedColor, backgroundColor),
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
@@ -53,7 +56,7 @@ class FileCard extends Component {
       <div>
         <Paper
           zDepth={isSelected(file, 2, 0)}
-          onTouchTap={() => handleSelectFile(file)}
+          onTouchTap={() => handleFileSelect(file)}
           style={style}
         >
         {file.name}
@@ -65,7 +68,7 @@ class FileCard extends Component {
 
 const spec = {
   beginDrag(props) {
-    return { files: [props.file] };
+    return { files: props.tabbedFiles };
   }
 };
 

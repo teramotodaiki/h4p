@@ -15,14 +15,15 @@ class _DirCard extends Component {
 
   static propTypes = {
     dir: PropTypes.object.isRequired,
-    isSelected: PropTypes.func.isRequired,
-    isSelectedOne: PropTypes.func.isRequired,
-    handleSelectFile: PropTypes.func.isRequired,
+    selectedFile: PropTypes.object,
+    tabbedFiles: PropTypes.array.isRequired,
     isDirOpened: PropTypes.func.isRequired,
+    handleFileSelect: PropTypes.func.isRequired,
     handleDirToggle: PropTypes.func.isRequired,
     handleFileMove: PropTypes.func.isRequired,
     handleNativeDrop: PropTypes.func.isRequired,
     isRoot: PropTypes.bool,
+
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
     dragSource: PropTypes.object,
@@ -34,15 +35,19 @@ class _DirCard extends Component {
 
   render() {
     const {
-      isSelected, isSelectedOne, handleSelectFile, isDirOpened,
-      handleDirToggle, handleFileMove, handleNativeDrop, isRoot,
+      isDirOpened, handleDirToggle, handleFileMove, handleNativeDrop, isRoot,
       connectDropTarget, isOver, dragSource,
     } = this.props;
     const cd = this.props.dir;
 
     const transfer = {
-      isSelected, isSelectedOne, handleSelectFile, isDirOpened,
-      handleDirToggle, handleFileMove, handleNativeDrop,
+      selectedFile: this.props.selectedFile,
+      tabbedFiles: this.props.tabbedFiles,
+      isDirOpened: this.props.isDirOpened,
+      handleFileSelect: this.props.handleFileSelect,
+      handleDirToggle: this.props.handleDirToggle,
+      handleFileMove: this.props.handleFileMove,
+      handleNativeDrop: this.props.handleNativeDrop,
     };
 
     const dashed = isOver && !cd.files.includes(dragSource);

@@ -10,15 +10,16 @@ export default class ResourcePane extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
+    selectedFile: PropTypes.object,
+    tabbedFiles: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
-    selectedFile: PropTypes.object,
+    closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
   };
 
   state = {
-    selectedKeys: [],
     openedPaths: ['']
   };
 
@@ -41,17 +42,6 @@ export default class ResourcePane extends Component {
     }, Promise.resolve());
   };
 
-  handleSelectFile = (file) => {
-    if (this.isSelected(file, true)) {
-      const selectedKeys = this.state.selectedKeys.filter(key => key !== file.key);
-      this.setState({ selectedKeys });
-    } else {
-      const selectedKeys = this.state.selectedKeys.concat(file.key);
-      this.setState({ selectedKeys });
-      this.props.selectFile(file);
-    }
-  };
-
   handleDirToggle = (dir) => {
     const openedPaths = this.isDirOpened(dir,
       this.state.openedPaths.filter(path => path !== dir.path),
@@ -63,35 +53,34 @@ export default class ResourcePane extends Component {
   handleFileMove = (file, dir) => {
     const { updateFile } = this.props;
 
-    if (file.name.includes('/')) {
-      const name = file.name.replace(/.*\//, dir.path);
-      return updateFile(file, { name });
+    const name = file.name.includes('/') ?
+      file.name.replace(/.*\//, dir.path) :
+      dir.path + file.name;
+    return updateFile(file, { name });
+  };
+
+  handleFileSelect = (file) => {
+    const { selectFile, closeTab, selectedFile } = this.props;
+
+    if (file === selectedFile) {
+      closeTab(file);
     } else {
-      const name = dir.path + file.name;
-      return updateFile(file, { name });
+      selectFile(file);
     }
   };
 
-  isSelected = (file, passed, abort) => {
-    return this.state.selectedKeys.indexOf(file.key) > -1 ? passed : abort;
-  }
-
-  isSelectedOne = (file, passed, abort) => {
-    return this.props.selectedFile === file ? passed : abort;
-  };
-
-  isDirOpened = (dir, passed, abort) => {
-    return this.state.openedPaths.indexOf(dir.path) > -1 ? passed : abort;
+  isDirOpened = (dir, passed, failed) => {
+    return this.state.openedPaths.includes(dir.path) ? passed : failed;
   };
 
   render() {
-    const { files, selectFile } = this.props;
+    const { files, selectFile, selectedFile, tabbedFiles } = this.props;
 
     const transfer = {
-      isSelectedOne: this.isSelectedOne,
-      isSelected: this.isSelected,
-      handleSelectFile: this.handleSelectFile,
+      selectedFile,
+      tabbedFiles,
       isDirOpened: this.isDirOpened,
+      handleFileSelect: this.handleFileSelect,
       handleDirToggle: this.handleDirToggle,
       handleFileMove: this.handleFileMove,
       handleNativeDrop: this.handleNativeDrop,

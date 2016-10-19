@@ -45,7 +45,9 @@ class Main extends Component {
     reboot: false,
 
     tabContextMenu: {},
-    selectedFile: null,
+
+    selectedKey: null,
+    tabbedKeys: [],
 
     editorOptions: {
       tabVisibility: false,
@@ -53,14 +55,24 @@ class Main extends Component {
 
   };
 
+  get selectedFile() {
+    const { files, selectedKey } = this.state;
+    return files.find(file => file.key === selectedKey);
+  }
+
+  get tabbedFiles() {
+    const { files, tabbedKeys } = this.state;
+    return tabbedKeys.map(key => files.find(file => key === file.key));
+  }
+
   componentDidMount() {
     const { player, config: { files } } = this.props;
 
-    this.setState({ files, reboot: true }, () => {
-      if (files.length > 0) {
-        this.selectFile(files[0]);
-      }
-    });
+    const tabbedKeys = files
+      .filter(file => file.options.isEntryPoint)
+      .map(file => file.key);
+    const selectedKey = tabbedKeys[0] || null;
+    this.setState({ reboot: true, files, tabbedKeys, selectedKey });
   }
 
   componentDidUpdate() {
@@ -71,17 +83,11 @@ class Main extends Component {
 
   addFile = (file) => new Promise((resolve, reject) => {
     const files = this.state.files.concat(file);
-    if (this.inspection(file, reject)) {
+    if (this.inspection(file)) {
       resolve(file);
       return;
     }
-    this.setState({ files }, () => {
-      if (file.options.isOpened) {
-        this.selectFile(file, (lastFile) => resolve(lastFile));
-      } else {
-        resolve(file);
-      }
-    });
+    this.setState({ files }, () => resolve(file));
   });
 
   updateFile = (file, updated) => new Promise((resolve, reject) => {
@@ -91,45 +97,55 @@ class Main extends Component {
       return;
     }
     const files = this.state.files.map((item) => item === file ? nextFile : item);
-    this.setState({ files }, () => {
-      if (file === this.state.selectedFile && nextFile.options.isOpened) {
-        this.selectFile(nextFile).then(resolve);
-      } else {
-        resolve(nextFile);
-      }
-    });
+    this.setState({ files }, () => resolve(nextFile));
   });
 
   deleteFile = (file) => new Promise((resolve, reject) => {
-    const files = this.state.files.filter((item) => item !== file);
-    this.setState({ files }, resolve);
+    const files = this.state.files.filter((item) => item.key !== file.key);
+    this.setState({ files }, () => resolve());
   });
 
   selectFile = (file) => new Promise((resolve, reject) => {
-    // Select and open the file
-    this.setState({ selectedFile: file }, () => {
-      if (!file.options.isOpened) {
-        const options = Object.assign({}, file.options, { isOpened: true });
-        this.updateFile(this.state.selectedFile, { options })
-          .then(lastFile => resolve(lastFile));
-      } else {
-        resolve(file);
-      }
-    });
+    const selectedKey = file.key;
+    if (this.state.tabbedKeys.includes(selectedKey)) {
+      this.setState({ selectedKey }, () => resolve(file));
+    } else {
+      const tabbedKeys = this.state.tabbedKeys.concat(file.key);
+      this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
+    }
   });
 
-  switchEntryPoint = (file) => {
+  switchEntryPoint = (file) => new Promise((resolve, reject) => {
     const files = this.state.files.map(item => {
-      const options = Object.assign({}, item.options, { isEntryPoint: item === file });
+      const options = Object.assign({}, item.options, { isEntryPoint: item.key === file.key });
       return Object.assign({}, item, options);
     });
-    this.setState({ files });
-  };
+    this.setState({ files }, () => resolve(this.selectedFile));
+  });
+
+  addTab = (file) => new Promise((resolve, reject) => {
+    if (this.state.tabbedKeys.includes(file.key)) {
+      resolve(file);
+      return;
+    }
+    const tabbedKeys = this.state.tabbedKeys.concat(file.key);
+    this.setState({ tabbedKeys }, () => resolve(file));
+  });
+
+  closeTab = (file) => new Promise((resolve, reject) => {
+    const tabbedKeys = this.state.tabbedKeys.filter(key => key !== file.key);
+    if (this.state.selectedKey !== file.key) {
+      this.setState({ tabbedKeys }, () => resolve(file));
+    } else {
+      const selectedKey = tabbedKeys[0] || null;
+      this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
+    }
+  });
 
   inspection = (newFile, reject) => {
     const { files } = this.state;
-    // file.name should be unique
     if (files.some(file => file.name === newFile.name && file.key !== newFile.key)) {
+      // file.name should be unique
       return true;
     }
     return false;
@@ -202,11 +218,10 @@ class Main extends Component {
 
   render() {
     const {
-      files,
+      files, tabbedKeys, selectedKey,
       dialogContent,
       openDialogType,
       tabContextMenu,
-      selectedFile,
       primaryStyle,
       editorOptions,
       isPopout,
@@ -257,11 +272,12 @@ class Main extends Component {
               secondaryHeight={secondaryStyle.height}
             />
             <EditorPane
-              files={files}
+              selectedFile={this.selectedFile}
+              tabbedFiles={this.tabbedFiles}
               addFile={this.addFile}
               updateFile={this.updateFile}
               selectFile={this.selectFile}
-              selectedFile={selectedFile}
+              closeTab={this.closeTab}
               handleRun={this.handleRun}
               onTabContextMenu={this.handleTabContextMenu}
               editorOptions={editorOptions}
@@ -282,10 +298,12 @@ class Main extends Component {
             />
             <ResourcePane
               files={files}
-              selectedFile={selectedFile}
+              selectedFile={this.selectedFile}
+              tabbedFiles={this.tabbedFiles}
               addFile={this.addFile}
               updateFile={this.updateFile}
               selectFile={this.selectFile}
+              closeTab={this.closeTab}
               openFileDialog={this.openFileDialog}
               style={{ flex: '1 1 auto' }}
             />
