@@ -1,37 +1,39 @@
 import React, { Component, PropTypes } from 'react';
-import { List, ListItem } from 'material-ui';
 import { faintBlack } from 'material-ui/styles/colors';
 
 
 import { DialogTypes } from './FileDialog/';
 import { makeFromFile } from '../js/files';
+import Hierarchy from './Hierarchy/';
 
 export default class ResourcePane extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
-    addFile: PropTypes.func.isRequired,
-    selectFile: PropTypes.func.isRequired,
     selectedFile: PropTypes.object,
+    tabbedFiles: PropTypes.array.isRequired,
+    addFile: PropTypes.func.isRequired,
+    updateFile: PropTypes.func.isRequired,
+    selectFile: PropTypes.func.isRequired,
+    closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-  }
+  state = {
+    openedPaths: ['']
+  };
 
-  handleDrop = (event) => {
+  handleNativeDrop = (files, dir) => {
     const { addFile, selectFile, openFileDialog } = this.props;
-    event.preventDefault();
 
-    Array.from(event.dataTransfer.files)
-    .map(file => () => {
+    files.map(file => () => {
       const content = { name: file.name };
       return Promise.all([
         makeFromFile(file),
         openFileDialog(DialogTypes.Sign, { content })
       ])
       .then(([file, author]) => Object.assign({}, file, { author }))
+      .then(file => Object.assign({}, file, { name: dir.path + file.name }))
       .then(addFile)
       .then(selectFile);
     })
@@ -40,38 +42,59 @@ export default class ResourcePane extends Component {
     }, Promise.resolve());
   };
 
-  handleDragOver = (event) => {
-    event.preventDefault();
+  handleDirToggle = (dir) => {
+    const openedPaths = this.isDirOpened(dir,
+      this.state.openedPaths.filter(path => path !== dir.path),
+      this.state.openedPaths.concat(dir.path)
+    );
+    this.setState({ openedPaths });
   };
 
-  handleSelectFile = (file) => {
-    this.props.selectFile(file);
+  handleFileMove = (file, dir) => {
+    const { updateFile } = this.props;
+
+    const name = file.name.includes('/') ?
+      file.name.replace(/.*\//, dir.path) :
+      dir.path + file.name;
+    return updateFile(file, { name });
+  };
+
+  handleFileSelect = (file) => {
+    const { selectFile, closeTab, selectedFile } = this.props;
+
+    if (file === selectedFile) {
+      closeTab(file);
+    } else {
+      selectFile(file);
+    }
+  };
+
+  isDirOpened = (dir, passed, failed) => {
+    return this.state.openedPaths.includes(dir.path) ? passed : failed;
   };
 
   render() {
-    const { files, selectFile } = this.props;
+    const { files, selectFile, selectedFile, tabbedFiles } = this.props;
 
-    const style = Object.assign({
+    const transfer = {
+      selectedFile,
+      tabbedFiles,
+      isDirOpened: this.isDirOpened,
+      handleFileSelect: this.handleFileSelect,
+      handleDirToggle: this.handleDirToggle,
+      handleFileMove: this.handleFileMove,
+      handleNativeDrop: this.handleNativeDrop,
+    };
+
+    const style = Object.assign({}, this.props.style, {
       backgroundColor: faintBlack,
-    }, this.props.style);
+      overflowY: 'scroll',
+      boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px inset, rgba(0, 0, 0, 0.227451) 0px 3px 10px inset',
+    });
 
     return (
-      <div
-        onDragOver={this.handleDragOver}
-        onDrop={this.handleDrop}
-        style={style}
-      >
-        <List>
-        {files.map(file => (
-          <ListItem
-            key={file.key}
-            primaryText={file.name}
-            disableKeyboardFocus={true}
-            onTouchTap={() => this.handleSelectFile(file)}
-          />
-        ))}
-        </List>
-        <div>Drag and Drop here.</div>
+      <div style={style}>
+        <Hierarchy files={files} {...transfer} />
       </div>
     );
   }

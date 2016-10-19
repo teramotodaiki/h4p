@@ -13,19 +13,23 @@
 
     <!-- Files as a <script> -->
     <script class="example1" name="main" data-type="text/javascript" is-entry-point is-opened type="hack">
-    var sub = require('sub');
+    var message = require('sub/message');
 
     var body = document.body;
     body.style.backgroundColor = 'white';
     body.style.height = '200px';
 
-    body.textContent = sub;
+    body.textContent = message;
 
     </script>
-    <script class="example1" name="sub" data-type="text/javascript" type="hack">
+    <script class="example1" name="sub/message" data-type="text/javascript" type="hack">
     module.exports = "It's fine! :-)";
 
     </script>
+    <script class="example1" name="sub/sub2/message" data-type="text/javascript" type="hack"></script>
+    <script class="example1" name="sub/sub2/message2" data-type="text/javascript" type="hack"></script>
+    <script class="example1" name="sub/sub2/message3" data-type="text/javascript" type="hack"></script>
+    <script class="example1" name="sub/sub2/sub3/message4" data-type="text/javascript" type="hack"></script>
 
   </body>
 </html>

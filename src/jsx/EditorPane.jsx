@@ -26,11 +26,11 @@ const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
 export default class EditorPane extends Component {
 
   static propTypes = {
-    files: PropTypes.array.isRequired,
+    selectedFile: PropTypes.object,
+    tabbedFiles: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
-    selectedFile: PropTypes.object,
     handleRun: PropTypes.func.isRequired,
     onTabContextMenu: PropTypes.func.isRequired,
     editorOptions: PropTypes.object.isRequired,
@@ -47,15 +47,15 @@ export default class EditorPane extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { style, files } = this.props;
+    const { style, tabbedFiles } = this.props;
     // Optimize styles when size changed
     if (style !== nextProps.style) {
       this.setEnoughHeight();
     }
     // Destruct codemirror instance
-    if (files !== nextProps.files) {
-      files
-        .filter(file => nextProps.files.every(next => file.key !== next.key))
+    if (tabbedFiles !== nextProps.tabbedFiles) {
+      tabbedFiles
+        .filter(file => nextProps.tabbedFiles.every(next => file.key !== next.key))
         .map(file => this.removeCodemirror(file.key));
     }
   }
@@ -118,42 +118,25 @@ export default class EditorPane extends Component {
       .then(file => addFile(file));
   };
 
-  handleClose = (file) => {
-    const { updateFile, selectFile, selectedFile, files } = this.props;
-
-    const nextSelect = files.find((item) => item !== file);
-    const options = Object.assign({}, file.options, { isOpened: false });
-
-    setTimeout(() => {
-      updateFile(file, { options })
-        .then(() => nextSelect && selectFile(nextSelect));
-    }, 200);
-  };
-
   render() {
     const {
-      files,
-      updateFile,
-      selectFile,
-      selectedFile,
+      selectedFile, tabbedFiles,
+      updateFile, selectFile, closeTab,
       handleRun,
       editorOptions,
       handleEditorOptionChange,
       openFileDialog,
     } = this.props;
 
-    const options = Object.assign({
+    const options = (file) => Object.assign({
       lineNumbers: true,
       mode: 'javascript',
       indentUnit: 4,
       indentWithTabs: true,
       matchBrackets: true,
       autoCloseBrackets: true,
+      readOnly: file.options.isReadOnly,
     }, editorOptions);
-
-    const readOnlyOptions = Object.assign({}, options, {
-      readOnly: true,
-    });
 
     const style = Object.assign({
       display: 'flex',
@@ -168,11 +151,11 @@ export default class EditorPane extends Component {
       bottom: 23,
     };
 
-    const tabStyle = (selected) => ({
+    const tabStyle = (file) => ({
       width: '100%',
       height: '100%',
       position: 'absolute',
-      visibility: selected ? 'visible' : 'hidden',
+      visibility: file === selectedFile ? 'visible' : 'hidden',
     });
 
     return (
@@ -182,27 +165,25 @@ export default class EditorPane extends Component {
         handleEditorOptionChange={handleEditorOptionChange}
       />
       <ChromeTabs
-        files={files}
         selectedFile={selectedFile}
-        handleSelect={(file) => selectFile(file)}
+        tabbedFiles={tabbedFiles}
+        handleSelect={selectFile}
+        handleClose={closeTab}
         handleRun={handleRun}
-        handleClose={this.handleClose}
       />
       <div className={TAB_CONTENT_CONTAINER} style={{ flex: '1 1 auto' }}>
-      {files.map((file, index) => (
-        <div key={file.key} style={tabStyle(file === selectedFile)}>
+      {tabbedFiles.map(file => (
+        <div key={file.key} style={tabStyle(file)}>
         {file.isText ? (
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
             ref={(cm) => this.handleCodemirror(cm, file)}
             value={file.text}
             onChange={(text) => updateFile(file, { text })}
-            options={file.options.isReadOnly ? readOnlyOptions: options}
+            options={options(file)}
           />
         ) : (
-          <Preview
-            file={file}
-          />
+          <Preview file={file} />
         )}
         </div>
       ))}

@@ -41,8 +41,12 @@ export default class Menu extends Component {
       marginRight: 20
     };
 
+    const style = Object.assign({}, this.props.style, {
+      zIndex: 1,
+    });
+
     return (
-      <div className={CSS_PREFIX + 'menu'} style={this.props.style}>
+      <div className={CSS_PREFIX + 'menu'} style={style}>
         <IconButton tooltip="RUN" onTouchTap={handleRun} style={iconStyle}>
           <PlayCircleOutline color={darkBlack} />
         </IconButton>
