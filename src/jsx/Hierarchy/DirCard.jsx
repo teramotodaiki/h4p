@@ -83,6 +83,7 @@ class _DirCard extends Component {
     const closedStyle = {
       color: label2Color,
       paddingLeft: StepWidth,
+      cursor: 'pointer',
     };
 
     const hierarchy =
@@ -136,6 +137,7 @@ export const DirCloser = (props) => {
   const style = {
     marginLeft: -StepWidth,
     backgroundColor: borderColor,
+    cursor: 'pointer',
   };
 
   const backwordStyle = {

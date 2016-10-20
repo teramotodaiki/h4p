@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import { Paper } from 'material-ui';
 import { transparent } from 'material-ui/styles/colors';
+import EditorDragHandle from 'material-ui/svg-icons/editor/drag-handle';
 
 
 import {
@@ -25,7 +26,7 @@ class FileCard extends Component {
   render() {
     const {
       file, selectedFile, tabbedFiles, handleFileSelect, handleFileMove,
-      connectDragSource, isDragging,
+      connectDragSource, connectDragPreview, isDragging,
     } = this.props;
 
     const isSelected = (file, passed, failed) => selectedFile === file ? passed : failed;
@@ -59,15 +60,25 @@ class FileCard extends Component {
       color: labelColor,
     };
 
+    const dragHandleStyle = {
+      height: 24,
+      marginLeft: -6,
+      marginRight: 8,
+      cursor: 'move',
+    };
+
     const { path, name } = separate(file.name);
 
-    return connectDragSource(
+    return connectDragPreview(
       <div>
         <Paper
           zDepth={isSelected(file, 2, 0)}
           onTouchTap={() => handleFileSelect(file)}
           style={style}
         >
+          {connectDragSource(
+            <span style={dragHandleStyle}><EditorDragHandle color={label2Color} /></span>
+          )}
           <span style={pathStyle}>{path}</span>
           <span style={nameStyle}>{name}</span>
         </Paper>
@@ -94,6 +105,7 @@ const spec = {
 
 const collect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
 });
 
