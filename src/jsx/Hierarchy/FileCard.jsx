@@ -7,7 +7,7 @@ import { transparent } from 'material-ui/styles/colors';
 import {
   Types,
   CardHeight, BlankWidth, StepWidth, BorderWidth,
-  labelColor, backgroundColor, selectedColor,
+  labelColor, label2Color, backgroundColor, selectedColor,
 } from './constants';
 
 class FileCard extends Component {
@@ -47,10 +47,19 @@ class FileCard extends Component {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      color: labelColor,
       transition: 'all .2s ease',
       opacity: isDragging ? .5 : 1,
     };
+
+    const pathStyle = {
+      color: label2Color,
+    };
+
+    const nameStyle = {
+      color: labelColor,
+    };
+
+    const { path, name } = separate(file.name);
 
     return connectDragSource(
       <div>
@@ -59,12 +68,23 @@ class FileCard extends Component {
           onTouchTap={() => handleFileSelect(file)}
           style={style}
         >
-        {file.name}
+          <span style={pathStyle}>{path}</span>
+          <span style={nameStyle}>{name}</span>
         </Paper>
       </div>
     );
   }
 }
+
+const separate = (fullpath) => {
+  if (!fullpath.includes('/')) {
+    return { path: '', name: fullpath };
+  }
+  const slash = fullpath.lastIndexOf('/');
+  const path = fullpath.substr(0, slash + 1);
+  const name = fullpath.substr(slash + 1);
+  return { path, name };
+};
 
 const spec = {
   beginDrag(props) {

@@ -8,7 +8,7 @@ import FileCard from './FileCard';
 import {
   Types,
   CardHeight, BlankWidth, StepWidth, BorderWidth,
-  labelColor, borderColor, backgroundColor, selectedColor,
+  labelColor, label2Color, borderColor, backgroundColor, selectedColor,
 } from './constants';
 
 class _DirCard extends Component {
@@ -81,7 +81,7 @@ class _DirCard extends Component {
     };
 
     const closedStyle = {
-      color: labelColor,
+      color: label2Color,
       paddingLeft: StepWidth,
     };
 
