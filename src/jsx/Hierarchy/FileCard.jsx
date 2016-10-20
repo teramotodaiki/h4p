@@ -88,7 +88,7 @@ const separate = (fullpath) => {
 
 const spec = {
   beginDrag(props) {
-    return { files: props.tabbedFiles };
+    return { files: [props.file] };
   }
 };
 
