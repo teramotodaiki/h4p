@@ -47,24 +47,35 @@ class FileCard extends Component {
       backgroundColor: isTabbed(file, selectedColor, backgroundColor),
       display: 'flex',
       flexDirection: 'row',
+      justifyContent: 'space-between',
       alignItems: 'center',
       transition: 'all .2s ease',
       opacity: isDragging ? .5 : 1,
     };
 
-    const pathStyle = {
+    const subStyle = {
       color: label2Color,
     };
 
-    const nameStyle = {
+    const mainStyle = {
       color: labelColor,
     };
 
     const dragHandleStyle = {
+      flex: '0 0 auto',
+      width: 24,
       height: 24,
-      marginLeft: -6,
+      marginLeft: -4,
       marginRight: 8,
       cursor: 'move',
+    };
+
+    const contentStyle = {
+      flex: '1 1 auto',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     };
 
     const { path, name } = separate(file.name);
@@ -77,10 +88,17 @@ class FileCard extends Component {
           style={style}
         >
           {connectDragSource(
-            <span style={dragHandleStyle}><EditorDragHandle color={label2Color} /></span>
+            <div style={dragHandleStyle}><EditorDragHandle color={label2Color} /></div>
           )}
-          <span style={pathStyle}>{path}</span>
-          <span style={nameStyle}>{name}</span>
+          <div style={contentStyle}>
+            <div>
+              <span style={subStyle}>{path}</span>
+              <span style={mainStyle}>{name}</span>
+            </div>
+            <div>
+              <span style={subStyle}>{file.type}</span>
+            </div>
+          </div>
         </Paper>
       </div>
     );
