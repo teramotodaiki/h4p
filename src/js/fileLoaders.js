@@ -88,7 +88,7 @@ export const blobLoader = (type, seed) =>
       type,
       isText: false,
       blob,
-      blobURL: URL.createObjectURL(seed.blob),
+      blobURL: URL.createObjectURL(blob),
       options: Object.assign({}, defaultValue.options, seed.options)
     }));
   });
