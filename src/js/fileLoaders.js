@@ -1,12 +1,12 @@
 export default [
   {
-    test: 'text/javascript',
-    loader: (seed) => textLoader('text/javascript', seed),
+    test: /^(text|application)\//,
+    loader: (type, seed) => textLoader(type, seed),
     composer: (file) => Promise.resolve(file.text)
   },
   {
-    test: 'image/png',
-    loader: (seed) => blobLoader('image/png', seed),
+    test: /^(image|audio|video)\//,
+    loader: (type, seed) => blobLoader(type, seed),
     composer: (file) => blobToBase64(file.blob)
   },
   {
@@ -88,7 +88,7 @@ export const blobLoader = (type, seed) =>
       type,
       isText: false,
       blob,
-      blobURL: URL.createObjectURL(seed.blob),
+      blobURL: URL.createObjectURL(blob),
       options: Object.assign({}, defaultValue.options, seed.options)
     }));
   });

@@ -69,6 +69,12 @@ export default class ResourcePane extends Component {
     }
   };
 
+  handleNameChange = (file, name) => {
+    const { updateFile } = this.props;
+
+    return updateFile(file, { name });
+  };
+
   isDirOpened = (dir, passed, failed) => {
     return this.state.openedPaths.includes(dir.path) ? passed : failed;
   };
@@ -84,6 +90,7 @@ export default class ResourcePane extends Component {
       handleDirToggle: this.handleDirToggle,
       handleFileMove: this.handleFileMove,
       handleNativeDrop: this.handleNativeDrop,
+      handleNameChange: this.handleNameChange,
     };
 
     const style = Object.assign({}, this.props.style, {

@@ -15,7 +15,7 @@ export const makeFromType = (type, seed = {}) => {
     Promise.reject(new Error(`Invalid file type: ${type}. See the src/js/fileLoaders.js`));
     return;
   }
-  return loader(seed);
+  return loader(type, seed);
 };
 
 /**

@@ -8,8 +8,9 @@ import EditorDragHandle from 'material-ui/svg-icons/editor/drag-handle';
 import {
   Types,
   CardHeight, BlankWidth, StepWidth, BorderWidth,
-  labelColor, label2Color, backgroundColor, selectedColor,
+  label2Color, backgroundColor, selectedColor,
 } from './constants';
+import Filename from './Filename';
 
 class FileCard extends Component {
 
@@ -18,6 +19,7 @@ class FileCard extends Component {
     selectedFile: PropTypes.object,
     tabbedFiles: PropTypes.array.isRequired,
     handleFileSelect: PropTypes.func.isRequired,
+    handleNameChange: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
@@ -25,7 +27,7 @@ class FileCard extends Component {
 
   render() {
     const {
-      file, selectedFile, tabbedFiles, handleFileSelect, handleFileMove,
+      file, selectedFile, tabbedFiles, handleFileSelect, handleFileMove, handleNameChange,
       connectDragSource, connectDragPreview, isDragging,
     } = this.props;
 
@@ -53,14 +55,6 @@ class FileCard extends Component {
       opacity: isDragging ? .5 : 1,
     };
 
-    const subStyle = {
-      color: label2Color,
-    };
-
-    const mainStyle = {
-      color: labelColor,
-    };
-
     const dragHandleStyle = {
       flex: '0 0 auto',
       width: 24,
@@ -78,8 +72,6 @@ class FileCard extends Component {
       alignItems: 'center',
     };
 
-    const { path, name } = separate(file.name);
-
     return connectDragPreview(
       <div>
         <Paper
@@ -91,12 +83,9 @@ class FileCard extends Component {
             <div style={dragHandleStyle}><EditorDragHandle color={label2Color} /></div>
           )}
           <div style={contentStyle}>
+            <Filename file={file} handleNameChange={handleNameChange} />
             <div>
-              <span style={subStyle}>{path}</span>
-              <span style={mainStyle}>{name}</span>
-            </div>
-            <div>
-              <span style={subStyle}>{file.type}</span>
+              <span style={{ color: label2Color }}>{file.type}</span>
             </div>
           </div>
         </Paper>
@@ -104,16 +93,6 @@ class FileCard extends Component {
     );
   }
 }
-
-const separate = (fullpath) => {
-  if (!fullpath.includes('/')) {
-    return { path: '', name: fullpath };
-  }
-  const slash = fullpath.lastIndexOf('/');
-  const path = fullpath.substr(0, slash + 1);
-  const name = fullpath.substr(slash + 1);
-  return { path, name };
-};
 
 const spec = {
   beginDrag(props) {
