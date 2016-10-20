@@ -14,6 +14,7 @@ export default class Hierarchy extends Component {
     handleDirToggle: PropTypes.func.isRequired,
     handleFileMove: PropTypes.func.isRequired,
     handleNativeDrop: PropTypes.func.isRequired,
+    handleNameChange: PropTypes.func.isRequired,
   };
 
   render() {
@@ -27,6 +28,7 @@ export default class Hierarchy extends Component {
       handleDirToggle: this.props.handleDirToggle,
       handleFileMove: this.props.handleFileMove,
       handleNativeDrop: this.props.handleNativeDrop,
+      handleNameChange: this.props.handleNameChange,
     };
 
     const style = {
