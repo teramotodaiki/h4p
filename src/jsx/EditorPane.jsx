@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import { FloatingActionButton } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import { darkWhite, faintBlack, darkBlack } from 'material-ui/styles/colors';
+import { grey400, darkWhite, faintBlack, darkBlack } from 'material-ui/styles/colors';
 
 
 import 'codemirror/mode/javascript/javascript';
@@ -12,13 +12,12 @@ import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
 
-
 import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
-import { DialogTypes } from './FileDialog/';
 import ChromeTabs from './ChromeTabs';
 import Preview from './Preview';
 import { makeFromType } from '../js/files';
+import { AddDialog } from './FileDialog/';
 
 const TAB_CONTENT_CONTAINER = CSS_PREFIX + 'tab_content';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
@@ -32,7 +31,6 @@ export default class EditorPane extends Component {
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
-    onTabContextMenu: PropTypes.func.isRequired,
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
@@ -105,15 +103,9 @@ export default class EditorPane extends Component {
     return this.style;
   }
 
-  handleContextMenu(event, file) {
-    event.preventDefault();
-    const { clientX, clientY } = event.nativeEvent;
-    this.props.onTabContextMenu({ file, event: { absX: clientX, absY: clientY } });
-  }
-
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;
-    openFileDialog(DialogTypes.Add)
+    openFileDialog(AddDialog)
       .then(seed => makeFromType('text/javascript', seed))
       .then(file => addFile(file));
   };
@@ -156,6 +148,8 @@ export default class EditorPane extends Component {
       height: '100%',
       position: 'absolute',
       visibility: file === selectedFile ? 'visible' : 'hidden',
+      backgroundColor: grey400,
+      zIndex: file === selectedFile ? 2 : 1,
     });
 
     return (

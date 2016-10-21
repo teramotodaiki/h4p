@@ -5,9 +5,11 @@ import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
+import ImagePalette from 'material-ui/svg-icons/image/palette';
 import 'whatwg-fetch';
 
-import { DialogTypes } from './FileDialog/';
+import { DownloadDialog, SaveDialog } from './FileDialog/';
+import CustomDialog from './CustomDialog';
 
 export default class Menu extends Component {
 
@@ -18,6 +20,8 @@ export default class Menu extends Component {
     handleRun: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     handleTogglePopout: PropTypes.func.isRequired,
+    palette: PropTypes.object.isRequired,
+    updatePalette: PropTypes.func.isRequired,
   };
 
   handlePowerOff = () => {
@@ -27,11 +31,17 @@ export default class Menu extends Component {
   handleDownload = () => {
     const { files, openFileDialog } = this.props;
 
-    openFileDialog(DialogTypes.Download, { files })
+    openFileDialog(DownloadDialog, { files })
       .then(content => {
-        openFileDialog(DialogTypes.Save, { content });
+        openFileDialog(SaveDialog, { content });
       })
       .catch((err) => alert(err.message));
+  };
+
+  handlePalette = () => {
+    const { openFileDialog, palette, updatePalette } = this.props;
+
+    openFileDialog(CustomDialog, { palette, updatePalette });
   };
 
   render() {
@@ -63,6 +73,9 @@ export default class Menu extends Component {
           iconStyle={isPopout ? { transform: 'rotate(180deg)' } : null}
         >
           <OpenInBrowser color={darkBlack} />
+        </IconButton>
+        <IconButton tooltip="Colors" onTouchTap={this.handlePalette} style={iconStyle}>
+          <ImagePalette color={darkBlack} />
         </IconButton>
       </div>
     );

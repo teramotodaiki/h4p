@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
@@ -20,8 +21,7 @@ import ResourcePane from './ResourcePane';
 import ScreenPane from './ScreenPane';
 import Sizer from './Sizer';
 
-import ContextMenu from './ContextMenu';
-import FileDialog, { DialogTypes } from './FileDialog/';
+import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from './FileDialog/';
 
 class Main extends Component {
 
@@ -44,14 +44,14 @@ class Main extends Component {
     isPopout: false,
     reboot: false,
 
-    tabContextMenu: {},
-
     selectedKey: null,
     tabbedKeys: [],
 
     editorOptions: {
       tabVisibility: false,
-    }
+    },
+
+    palette: {},
 
   };
 
@@ -170,47 +170,15 @@ class Main extends Component {
     this.setState({ isPopout, reboot: true });
   };
 
-  handleTabContextMenu = (tabContextMenu) => {
-    this.setState({ tabContextMenu })
-  };
-
-  handleContextMenuClose() {
-    this.setState({ tabContextMenu: {} });
-  }
-
-  handleContextSave = () => {
-    const content = this.state.tabContextMenu.file;
-    if (!content) return;
-    this.openFileDialog(DialogTypes.Save, { content });
-    this.setState({ tabContextMenu: {} });
-  };
-
-  handleContextRename = () => {
-    const content = this.state.tabContextMenu.file;
-    if (!content) return;
-    this.openFileDialog(DialogTypes.Rename, { content })
-      .then((updated) => this.updateFile(content, updated));
-    this.setState({ tabContextMenu: {} });
-  };
-
-  handleContextSwitch = () => {
-    const switchFile = this.state.tabContextMenu.file;
-    if (!switchFile) return;
-    this.switchEntryPoint(switchFile);
-    this.setState({ tabContextMenu: {} });
-  };
-
-  handleContextDelete = () => {
-    const content = this.state.tabContextMenu.file;
-    if (!content) return;
-    this.openFileDialog(DialogTypes.Delete, { content })
-      .then(this.deleteFile);
-    this.setState({ tabContextMenu: {} });
-  };
-
   handleEditorOptionChange = (change) => {
     const editorOptions = Object.assign({}, this.state.editorOptions, change);
     this.setState({ editorOptions });
+  };
+
+  updatePalette = (change) => {
+    const palette = Object.assign({}, this.props.palette, change);
+
+    this.setState({ palette });
   };
 
   openFileDialog = () => console.error('openFileDialog has not be declared');
@@ -220,33 +188,13 @@ class Main extends Component {
     const {
       files, tabbedKeys, selectedKey,
       dialogContent,
-      openDialogType,
-      tabContextMenu,
       primaryStyle,
       editorOptions,
       isPopout,
       reboot,
+      palette,
     } = this.state;
     const { player, config } = this.props;
-
-    const menuList = [
-      {
-        primaryText: 'Save as',
-        onTouchTap: this.handleContextSave
-      },
-      {
-        primaryText: 'Rename',
-        onTouchTap: this.handleContextRename
-      },
-      {
-        primaryText: 'Switch entry point',
-        onTouchTap: this.handleContextSwitch
-      },
-      {
-        primaryText: 'Delete',
-        onTouchTap: this.handleContextDelete
-      }
-    ];
 
     const secondaryStyle = Object.assign({
       flexDirection: 'column',
@@ -263,7 +211,7 @@ class Main extends Component {
     };
 
     return (
-      <MuiThemeProvider>
+      <MuiThemeProvider muiTheme={getMuiTheme({ palette })}>
         <div style={{ backgroundColor: 'inherit' }}>
           <Dock config={config} align="right" style={primaryStyle}>
             <Sizer
@@ -279,7 +227,6 @@ class Main extends Component {
               selectFile={this.selectFile}
               closeTab={this.closeTab}
               handleRun={this.handleRun}
-              onTabContextMenu={this.handleTabContextMenu}
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
@@ -294,6 +241,8 @@ class Main extends Component {
               handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
               handleTogglePopout={this.handleTogglePopout}
+              palette={palette}
+              updatePalette={this.updatePalette}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -316,11 +265,6 @@ class Main extends Component {
             reboot={reboot}
             handlePopoutClose={this.handleTogglePopout}
             style={inlineScreenStyle}
-          />
-          <ContextMenu
-            menuList={menuList}
-            openEvent={tabContextMenu.event}
-            onClose={this.handleContextMenuClose}
           />
           <FileDialog ref={this.handleFileDialog} />
         </div>
