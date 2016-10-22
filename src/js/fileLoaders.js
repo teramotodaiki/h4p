@@ -1,3 +1,5 @@
+import { separate } from './files';
+
 export default [
   {
     test: /^(text|application)\//,
@@ -50,6 +52,8 @@ export const textLoader = (type, seed) =>
   new Promise((resolve, reject) => {
     if (sanitize(seed, reject)) return;
 
+    const path = separate(seed.name);
+
     // when Blob => text, it must be asynchronous
     new Promise((resolve, reject) => {
       if (typeof seed.text === 'string') {
@@ -63,8 +67,8 @@ export const textLoader = (type, seed) =>
       reader.readAsText(seed.blob);
     })
     .then(text => resolve(merger({
-      name: seed.name,
-      moduleName: seed.name.split('.')[0],
+      name: path.name,
+      moduleName: path.moduleName,
       type,
       isText: true,
       text,
@@ -85,9 +89,11 @@ export const blobLoader = (type, seed) =>
       return new Blob([byteArray.buffer], { type });
     })(seed.text);
 
+    const path = separate(seed.name);
+
     resolve(merger({
-      name: seed.name,
-      moduleName: seed.name.split('.')[0],
+      name: path.name,
+      moduleName: path.moduleName,
       type,
       isText: false,
       blob,
