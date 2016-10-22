@@ -106,10 +106,11 @@ class Main extends Component {
   });
 
   selectFile = (file) => new Promise((resolve, reject) => {
+    const { files } = this.state;
     const selectedKey = file.key;
     if (this.state.tabbedKeys.includes(selectedKey)) {
       this.setState({ selectedKey }, () => resolve(file));
-    } else {
+    } else if (files.some(item => item === file)) {
       const tabbedKeys = this.state.tabbedKeys.concat(file.key);
       this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
     }
