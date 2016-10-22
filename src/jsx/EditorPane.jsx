@@ -91,9 +91,7 @@ export default class EditorPane extends Component {
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
-      if (/\S/.test(token.string)) {
-        cm.showHint({ completeSingle: false, container: this.hints, files: getFiles() });
-      }
+      cm.showHint({ completeSingle: false, container: this.hints, files: getFiles() });
     });
   }
 
