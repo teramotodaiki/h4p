@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { faintBlack } from 'material-ui/styles/colors';
 
 
-import { DialogTypes } from './FileDialog/';
+import { SignDialog } from './FileDialog/';
 import { makeFromFile } from '../js/files';
 import Hierarchy from './Hierarchy/';
 
@@ -30,7 +30,7 @@ export default class ResourcePane extends Component {
       const content = { name: file.name };
       return Promise.all([
         makeFromFile(file),
-        openFileDialog(DialogTypes.Sign, { content })
+        openFileDialog(SignDialog, { content })
       ])
       .then(([file, author]) => Object.assign({}, file, { author }))
       .then(file => Object.assign({}, file, { name: dir.path + file.name }))
