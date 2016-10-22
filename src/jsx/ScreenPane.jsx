@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import Popout from 'react-popout';
+import Popout from '../lib/ReactPopout';
+
 import Postmate from '../js/LoosePostmate';
 
 Postmate.debug = process.env.NODE_ENV !== 'production';

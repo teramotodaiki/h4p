@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog } from 'material-ui';
+import Dialog from 'material-ui/Dialog';
 import AlertError from 'material-ui/svg-icons/alert/error';
 import { redA400 } from 'material-ui/styles/colors';
 

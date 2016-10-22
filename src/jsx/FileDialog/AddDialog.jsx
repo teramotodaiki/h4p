@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog } from 'material-ui';
+import Dialog from 'material-ui/Dialog';
 
 
 import { Confirm, Abort } from './Buttons';

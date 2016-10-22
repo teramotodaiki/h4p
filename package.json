@@ -5,7 +5,7 @@
   "main": "dist/h4p.js",
   "scripts": {
     "start": "webpack-dev-server --inline",
-    "build": "NODE_ENV='production' webpack -p"
+    "build": "webpack -p"
   },
   "repository": {
     "type": "git",
@@ -34,14 +34,14 @@
     "raw-loader": "^0.5.1",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.1"
+    "webpack": "^2.1.0-beta.25",
+    "webpack-dev-server": "^2.1.0-beta.9"
   },
   "dependencies": {
     "classnames": "^2.2.5",
     "eventemitter2": "^2.1.3",
     "handlebars-loader": "^1.4.0",
-    "material-ui": "^0.15.4",
+    "material-ui": "^0.16.1",
     "postmate": "^1.0.3",
     "react": "^15.3.2",
     "react-codemirror": "^0.2.6",

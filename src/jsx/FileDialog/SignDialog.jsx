@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog, TextField } from 'material-ui';
-
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 
 import { Confirm, Abort } from './Buttons';
 

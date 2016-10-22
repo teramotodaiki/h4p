@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
-import { Paper } from 'material-ui';
+import Paper from 'material-ui/Paper';
 import { transparent } from 'material-ui/styles/colors';
 import EditorDragHandle from 'material-ui/svg-icons/editor/drag-handle';
 

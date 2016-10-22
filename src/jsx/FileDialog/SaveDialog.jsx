@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
-import { Dialog, RaisedButton } from 'material-ui';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
 import Save from 'material-ui/svg-icons/content/save';
 
 

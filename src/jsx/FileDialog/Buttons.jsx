@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { FlatButton, RaisedButton } from 'material-ui';
-
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const Confirm = (props) => {
   const style = Object.assign({}, commonStyle, props.style);

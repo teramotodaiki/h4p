@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { TextField } from 'material-ui';
+import TextField from 'material-ui/TextField';
 
 
 import { labelColor, label2Color } from './constants';

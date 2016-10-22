@@ -1,7 +1,7 @@
 import Player from './js/Player';
 import init from './js/init';
 
-require('./scss/main.scss');
+require('./scss/main');
 
 const h4p = (...args) =>
   new Promise((resolve, reject) => {
