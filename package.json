@@ -5,7 +5,7 @@
   "main": "dist/h4p.js",
   "scripts": {
     "start": "webpack-dev-server --inline",
-    "build": "webpack -p"
+    "build": "NODE_ENV=production webpack -p"
   },
   "repository": {
     "type": "git",
