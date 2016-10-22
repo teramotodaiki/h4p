@@ -9,6 +9,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/keymap/sublime';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
 
@@ -26,6 +27,7 @@ export default class EditorPane extends Component {
 
   static propTypes = {
     selectedFile: PropTypes.object,
+    files: PropTypes.array.isRequired,
     tabbedFiles: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
@@ -85,12 +87,11 @@ export default class EditorPane extends Component {
   }
 
   showHint(cm) {
+    const getFiles = () => this.props.files;
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
-      if (/\S/.test(token.string)) {
-        cm.showHint({ completeSingle: false, container: this.hints });
-      }
+      cm.showHint({ completeSingle: false, container: this.hints, files: getFiles() });
     });
   }
 
@@ -127,6 +128,7 @@ export default class EditorPane extends Component {
       indentWithTabs: true,
       matchBrackets: true,
       autoCloseBrackets: true,
+      keyMap: 'sublime',
       readOnly: file.options.isReadOnly,
     }, editorOptions);
 

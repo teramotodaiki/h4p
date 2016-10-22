@@ -6,17 +6,37 @@ import Snippet from './Snippet';
 
 const jsHint = CodeMirror.hint.javascript;
 CodeMirror.hint.javascript = (instance, options) => {
-  const token = instance.getTokenAt(instance.getCursor());
+  const cursor = instance.getCursor();
+  const token = instance.getTokenAt(cursor);
+  const from = { line: cursor.line, ch: token.start };
+  const to = { line: cursor.line, ch: cursor.ch };
+
+  if (endOfCompletion.test(token.string)) {
+    return { list: [], from, to };
+  }
 
   options = Object.assign({}, options, jsOptions);
 
-  const result = jsHint(instance, options) || { list: [], from: token.from, to: token.to };
+  const result = jsHint(instance, options) || { list: [], from, to };
 
   const snippets = Object.keys(jsSnippets)
     .filter((key) => key.indexOf(token.string) === 0)
     .map((key) => jsSnippets[key]);
 
   result.list = snippets.concat(result.list);
+
+  if (token.type === 'string') {
+    const left = instance.getLine(cursor.line)
+      .substr(0, cursor.ch)
+      .substr(token.start + 1);
+    const moduleNames = options.files
+      .filter(file => file.moduleName.indexOf(left) === 0)
+      .map(file => ({
+        text: file.moduleName,
+        from: { line: from.line, ch: from.ch + 1 },
+      }));
+    result.list = moduleNames.concat(result.list);
+  }
 
   return result;
 };
@@ -33,20 +53,66 @@ const jsOptions = {
 
 
 const jsSnippets = {
-  "fun": new Snippet({
-    text: "function functionName() {\n\t// \n}",
-    displayText: '[function]',
+  "(": new Snippet({
+    text: "() => {};",
+    displayText: '() => {}; [arrow function]',
+    pick: (from) => ({
+      from: { line: from.line, ch: from.ch - 1 },
+      to: { line: from.line, ch: from.ch + 1 },
+    }),
     selections: (from) => [{
-      head: { line: from.line, ch: from.ch + 9 },
-      anchor: { line: from.line, ch: from.ch + 21 }
+      head: { line: from.line, ch: from.ch + 6 },
+      anchor: { line: from.line, ch: from.ch + 6 }
     }]
   }),
+  "const": new Snippet({
+    text: "const  = ;",
+    displayText: '[const]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 6 },
+      anchor: { line: from.line, ch: from.ch + 9 }
+    }]
+  }),
+  "fetchblob": new Snippet({
+    text: "fetch('')\n.then(response => response.blob())\n.then(blob => {\n\t\n});",
+    displayText: 'fetch() [fetch:Blob]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 7 },
+      anchor: { line: from.line, ch: from.ch + 7 }
+    }],
+    autoIndent: false,
+  }),
+  "fetchtext": new Snippet({
+    text: "fetch('')\n.then(response => response.text())\n.then(text => {\n\t\n});",
+    displayText: 'fetch() [fetch:Text]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 7 },
+      anchor: { line: from.line, ch: from.ch + 7 }
+    }],
+    autoIndent: false,
+  }),
   "f": new Snippet({
+    text: "() => {};",
+    displayText: '() => {}; [arrow function]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 7 },
+      anchor: { line: from.line, ch: from.ch + 7 }
+    }]
+  }),
+  "fun": new Snippet({
     text: "function () {}",
     displayText: '[anonymous function]',
     selections: (from) => [{
       head: { line: from.line, ch: from.ch + 13 },
       anchor: { line: from.line, ch: from.ch + 13 }
+    }]
+  }),
+  "funcion": new Snippet({
+    text: "function functionName() {\n\t// \n}",
+    displayText: '[function]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 9 },
+      anchor: { line: from.line, ch: from.ch + 21 }
     }]
   }),
   "if": new Snippet({
@@ -84,5 +150,7 @@ const jsSnippets = {
       head: { line: from.line, ch: from.ch + 14 },
       anchor: { line: from.line, ch: from.ch + 14 }
     }]
-  })
+  }),
 };
+
+const endOfCompletion = /^(.*[\;\=\)]|\s*)$/;

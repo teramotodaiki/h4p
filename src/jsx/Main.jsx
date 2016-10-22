@@ -223,6 +223,7 @@ class Main extends Component {
             <EditorPane
               selectedFile={this.selectedFile}
               tabbedFiles={this.tabbedFiles}
+              files={files}
               addFile={this.addFile}
               updateFile={this.updateFile}
               selectFile={this.selectFile}
