@@ -34,7 +34,7 @@ export default class ChromeTabs extends Component {
         <ChromeTab
           key={file.key}
           active={selectedFile === file}
-          label={file.name}
+          label={file.moduleName}
           leftIcon={file.options.isEntryPoint ? (<PlayCircleOutline color={darkBlack} />) : null}
           onLeftTouchTap={() => handleRun()}
           rightIcon={<NavigationClose color={darkBlack} />}

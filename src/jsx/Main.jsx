@@ -106,10 +106,11 @@ class Main extends Component {
   });
 
   selectFile = (file) => new Promise((resolve, reject) => {
+    const { files } = this.state;
     const selectedKey = file.key;
     if (this.state.tabbedKeys.includes(selectedKey)) {
       this.setState({ selectedKey }, () => resolve(file));
-    } else {
+    } else if (files.some(item => item === file)) {
       const tabbedKeys = this.state.tabbedKeys.concat(file.key);
       this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
     }
@@ -144,8 +145,8 @@ class Main extends Component {
 
   inspection = (newFile, reject) => {
     const { files } = this.state;
-    if (files.some(file => file.name === newFile.name && file.key !== newFile.key)) {
-      // file.name should be unique
+    if (files.some(file => file.moduleName === newFile.moduleName && file.key !== newFile.key)) {
+      // file.moduleName should be unique
       return true;
     }
     return false;

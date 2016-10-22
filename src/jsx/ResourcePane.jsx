@@ -3,7 +3,7 @@ import { faintBlack } from 'material-ui/styles/colors';
 
 
 import { SignDialog } from './FileDialog/';
-import { makeFromFile } from '../js/files';
+import { makeFromFile, changeName, changeDir } from '../js/files';
 import Hierarchy from './Hierarchy/';
 
 export default class ResourcePane extends Component {
@@ -33,7 +33,7 @@ export default class ResourcePane extends Component {
         openFileDialog(SignDialog, { content })
       ])
       .then(([file, author]) => Object.assign({}, file, { author }))
-      .then(file => Object.assign({}, file, { name: dir.path + file.name }))
+      .then(file => changeDir(file, dir.path))
       .then(addFile)
       .then(selectFile);
     })
@@ -53,10 +53,7 @@ export default class ResourcePane extends Component {
   handleFileMove = (file, dir) => {
     const { updateFile } = this.props;
 
-    const name = file.name.includes('/') ?
-      file.name.replace(/.*\//, dir.path) :
-      dir.path + file.name;
-    return updateFile(file, { name });
+    return updateFile(file, changeDir(file, dir.path));
   };
 
   handleFileSelect = (file) => {
@@ -72,7 +69,7 @@ export default class ResourcePane extends Component {
   handleNameChange = (file, name) => {
     const { updateFile } = this.props;
 
-    return updateFile(file, { name });
+    return updateFile(file, changeName(file, name));
   };
 
   isDirOpened = (dir, passed, failed) => {
