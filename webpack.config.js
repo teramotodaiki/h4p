@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const exportVarName = process.env.EXPORT_VAR_NAME || "h4p";
@@ -39,7 +40,11 @@ const config = {
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.html']
+    extensions: ['.js', '.jsx', '.html', '.scss'],
+    modules: [
+      path.resolve('./src'),
+      'node_modules'
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -50,11 +55,12 @@ const config = {
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
     })
   ],
-  sassLoader: {
-    data: `$prefix: ${cssPrefix};`
-  },
   devServer: {
     contentBase: 'dist',
     port: process.env.PORT
@@ -65,13 +71,6 @@ if (process.env.NODE_ENV === 'production') {
 
   // for browser (& upload CDN)
   config.entry[CORE_NAME] = config.entry.h4p;
-
-  const uglify = new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    }
-  });
-  config.plugins.push(uglify);
 }
 
 module.exports = config;
