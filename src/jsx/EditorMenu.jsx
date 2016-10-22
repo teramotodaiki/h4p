@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { IconMenu, IconButton, MenuItem } from 'material-ui';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import MenuItem from 'material-ui/MenuItem';
 import { minBlack } from 'material-ui/styles/colors';
 import HardwareKeyboardTab from 'material-ui/svg-icons/hardware/keyboard-tab';
 import ActionSettings from 'material-ui/svg-icons/action/settings';

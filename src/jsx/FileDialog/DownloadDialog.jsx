@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  Dialog, RaisedButton,
-  Table, TableBody, TableRow, TableRowColumn
-} from 'material-ui';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
+import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
 import { compose } from '../../js/files';

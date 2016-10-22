@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
-import { FloatingActionButton } from 'material-ui';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { grey400, darkWhite, faintBlack, darkBlack } from 'material-ui/styles/colors';
 

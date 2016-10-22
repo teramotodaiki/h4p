@@ -4,12 +4,10 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import {
-    Divider,
-    Menu,
-    MenuItem,
-    Popover
-  } from 'material-ui';
+import Divider from 'material-ui/Divider';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import Popover from 'material-ui/Popover';
 
 export default class ContextMenu extends Component {
 

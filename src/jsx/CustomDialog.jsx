@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { Dialog, Popover } from 'material-ui';
+import Dialog from 'material-ui/Dialog';
+import Popover from 'material-ui/Popover';
 import { lightBaseTheme } from 'material-ui/styles';
-import { ChromePicker } from 'react-color';
+import ChromePicker from 'react-color/lib/components/chrome/Chrome';
 
 
 export default class CustomDialog extends Component {

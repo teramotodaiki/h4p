@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { TextField, DropDownMenu, MenuItem } from 'material-ui';
+import TextField from 'material-ui/TextField';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 
 
 const extensions = {

@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { IconButton } from 'material-ui';
+import IconButton from 'material-ui/IconButton';
 import { darkBlack } from 'material-ui/styles/colors';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';

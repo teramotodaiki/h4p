@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { IconButton } from 'material-ui';
+import IconButton from 'material-ui/IconButton';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { darkBlack } from 'material-ui/styles/colors';
