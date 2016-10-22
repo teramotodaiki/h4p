@@ -9,6 +9,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/keymap/sublime';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
 
@@ -129,6 +130,7 @@ export default class EditorPane extends Component {
       indentWithTabs: true,
       matchBrackets: true,
       autoCloseBrackets: true,
+      keyMap: 'sublime',
       readOnly: file.options.isReadOnly,
     }, editorOptions);
 
