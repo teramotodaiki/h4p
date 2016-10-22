@@ -26,6 +26,7 @@ export default class EditorPane extends Component {
 
   static propTypes = {
     selectedFile: PropTypes.object,
+    files: PropTypes.array.isRequired,
     tabbedFiles: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
@@ -85,11 +86,12 @@ export default class EditorPane extends Component {
   }
 
   showHint(cm) {
+    const getFiles = () => this.props.files;
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
       if (/\S/.test(token.string)) {
-        cm.showHint({ completeSingle: false, container: this.hints });
+        cm.showHint({ completeSingle: false, container: this.hints, files: getFiles() });
       }
     });
   }

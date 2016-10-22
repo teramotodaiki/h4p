@@ -6,17 +6,33 @@ import Snippet from './Snippet';
 
 const jsHint = CodeMirror.hint.javascript;
 CodeMirror.hint.javascript = (instance, options) => {
-  const token = instance.getTokenAt(instance.getCursor());
+  const cursor = instance.getCursor();
+  const token = instance.getTokenAt(cursor);
+  const from = { line: cursor.line, ch: token.start };
+  const to = { line: cursor.line, ch: cursor.ch };
 
   options = Object.assign({}, options, jsOptions);
 
-  const result = jsHint(instance, options) || { list: [], from: token.from, to: token.to };
+  const result = jsHint(instance, options) || { list: [], from, to };
 
   const snippets = Object.keys(jsSnippets)
     .filter((key) => key.indexOf(token.string) === 0)
     .map((key) => jsSnippets[key]);
 
   result.list = snippets.concat(result.list);
+
+  if (token.type === 'string') {
+    const left = instance.getLine(cursor.line)
+      .substr(0, cursor.ch)
+      .substr(token.start + 1);
+    const moduleNames = options.files
+      .filter(file => file.moduleName.indexOf(left) === 0)
+      .map(file => ({
+        text: file.moduleName,
+        from: { line: from.line, ch: from.ch + 1 },
+      }));
+    result.list = moduleNames.concat(result.list);
+  }
 
   return result;
 };
