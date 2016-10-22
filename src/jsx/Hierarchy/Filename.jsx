@@ -45,6 +45,13 @@ export default class Filename extends Component {
     const { file } = this.props;
     const { isEditing } = this.state;
 
+    const style = {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'baseline',
+    };
+
     const pathStyle = {
       color: label2Color,
     };
@@ -59,13 +66,24 @@ export default class Filename extends Component {
       paddingLeft: 4,
     };
 
+    const textFieldStyle = {
+      width: 'auto',
+      flex: '0 1 auto',
+      height: 40,
+    };
+
     const { path, plane, ext, name } = separate(file.name);
 
     return (
-      <div>
+      <div style={style}>
         <span style={pathStyle}>{path}</span>
         {isEditing ? (
-          <TextField id={name} defaultValue={plane} ref={this.handleInput} />
+          <TextField
+            id={name}
+            defaultValue={plane}
+            ref={this.handleInput}
+            style={textFieldStyle}
+          />
         ) : (
           <span
             onTouchTap={this.handleDoubleTap}
