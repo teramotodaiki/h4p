@@ -84,7 +84,7 @@ const loadAsync = (files) => {
 
   const _fetch = window.fetch;
   window.fetch = function (...args) {
-    const fetched = files.find(file => file.name === args[0]);
+    const fetched = files.find(file => [file.name, file.moduleName].includes(args[0]));
     if (!fetched) {
       return _fetch.apply(this, args);
     }
@@ -98,7 +98,7 @@ const loadAsync = (files) => {
 
   const paths = files
     .filter(file => file.type === 'text/javascript')
-    .map(file => ({ [file.name]: scriptLoader(file) }));
+    .map(file => ({ [file.moduleName]: scriptLoader(file) }));
 
   const config = {
     // alias
@@ -107,7 +107,7 @@ const loadAsync = (files) => {
 
   const entryPoins = files
     .filter(file => file.options.isEntryPoint)
-    .map(file => file.name);
+    .map(file => file.moduleName);
 
   // config, deps, callback
   requirejs(config, entryPoins, () => {

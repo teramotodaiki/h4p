@@ -145,8 +145,8 @@ class Main extends Component {
 
   inspection = (newFile, reject) => {
     const { files } = this.state;
-    if (files.some(file => file.name === newFile.name && file.key !== newFile.key)) {
-      // file.name should be unique
+    if (files.some(file => file.moduleName === newFile.moduleName && file.key !== newFile.key)) {
+      // file.moduleName should be unique
       return true;
     }
     return false;

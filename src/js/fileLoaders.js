@@ -20,6 +20,7 @@ export default [
 export const defaultValue = {
   key: null,
   name: '',
+  moduleName: '',
   type: '',
   isText: true,
   text: '',
@@ -63,6 +64,7 @@ export const textLoader = (type, seed) =>
     })
     .then(text => resolve(merger({
       name: seed.name,
+      moduleName: seed.name.split('.')[0],
       type,
       isText: true,
       text,
@@ -85,6 +87,7 @@ export const blobLoader = (type, seed) =>
 
     resolve(merger({
       name: seed.name,
+      moduleName: seed.name.split('.')[0],
       type,
       isText: false,
       blob,

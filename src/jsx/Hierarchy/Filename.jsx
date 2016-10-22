@@ -3,6 +3,7 @@ import { TextField } from 'material-ui';
 
 
 import { labelColor, label2Color } from './constants';
+import { separate } from '../../js/files';
 
 export default class Filename extends Component {
 
@@ -17,11 +18,10 @@ export default class Filename extends Component {
 
   handleInput = (ref) => {
     const { file, handleNameChange } = this.props;
-    const { path, name } = separate(file.name);
 
     if (!ref) return;
     ref.input.onchange = ({ target }) => {
-      handleNameChange(file, path + target.value);
+      handleNameChange(file, target.value);
       this.setState({ isEditing: false });
     };
     ref.input.onblur = (event) => {
@@ -49,36 +49,33 @@ export default class Filename extends Component {
       color: label2Color,
     };
 
-    const nameStyle = {
+    const planeStyle = {
       color: labelColor,
     };
 
-    const { path, name } = separate(file.name);
+    const extStyle = {
+      color: label2Color,
+      fontSize: '.8em',
+      paddingLeft: 4,
+    };
+
+    const { path, plane, ext, name } = separate(file.name);
 
     return (
       <div>
         <span style={pathStyle}>{path}</span>
         {isEditing ? (
-          <TextField id="" defaultValue={name} ref={this.handleInput} />
+          <TextField id={name} defaultValue={plane} ref={this.handleInput} />
         ) : (
           <span
             onTouchTap={this.handleDoubleTap}
-            style={nameStyle}
+            style={planeStyle}
           >
-            {name}
+            {plane}
           </span>
         )}
+        <span style={extStyle}>{ext}</span>
       </div>
     );
   }
 }
-
-const separate = (fullpath) => {
-  if (!fullpath.includes('/')) {
-    return { path: '', name: fullpath };
-  }
-  const slash = fullpath.lastIndexOf('/');
-  const path = fullpath.substr(0, slash + 1);
-  const name = fullpath.substr(slash + 1);
-  return { path, name };
-};

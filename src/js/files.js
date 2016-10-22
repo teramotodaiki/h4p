@@ -55,10 +55,7 @@ export const makeFromElements = (scripts) => {
  * @param file A file instance implements HTML5 File API
  */
 export const makeFromFile = (file) => {
-  const filename = file.name;
-  const extBegin = filename.lastIndexOf('.');
-  const name = extBegin > 0 ? filename.substr(0, extBegin) : filename;
-  const type = file.type;
+  const { name, type } = file;
 
   return makeFromType(type, { name, type, blob: file });
 };
@@ -70,4 +67,48 @@ export const compose = (file) => {
     return;
   }
   return composer(file).then(composed => Object.assign({}, file, { composed }));
+};
+
+/**
+ * @param file An object
+ * @param newName A string of new name without path and extension
+ */
+export const changeName = (file, newName) => {
+  const { path, name, ext } = separate(file.name);
+  const next = separate(path + newName + ext);
+
+  return Object.assign({}, file, {
+    name: next.name,
+    moduleName: next.moduleName,
+  });
+};
+
+/**
+ * @param file An object
+ * @param newPath A string of new path like 'sub/'
+ */
+export const changeDir = (file, newPath) => {
+  const { path, plane, ext } = separate(file.name);
+  const next = separate(newPath + plane + ext);
+
+  return Object.assign({}, file, {
+    name: next.name,
+    moduleName: next.moduleName,
+  });
+};
+
+export const separate = (fullpath) => {
+  const pathLength = fullpath.lastIndexOf('/') + 1;
+  const path = fullpath.substr(0, pathLength);
+  const filename = fullpath.substr(pathLength);
+
+  const dot = filename.includes('.');
+  const planeLength = dot ? filename.indexOf('.') : filename.length - 1;
+  const plane = filename.substr(0, planeLength);
+  const ext = filename.substr(planeLength);
+
+  const name = path + plane + ext;
+  const moduleName = path + plane;
+  
+  return { path, plane, ext, name, moduleName };
 };
