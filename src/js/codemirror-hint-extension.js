@@ -73,6 +73,17 @@ const jsSnippets = {
       anchor: { line: from.line, ch: from.ch + 9 }
     }]
   }),
+  "req": new Snippet({
+    text: "const  = require('');",
+    displayText: '[require]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 6 },
+      anchor: { line: from.line, ch: from.ch + 6 }
+    }, {
+      head: { line: from.line, ch: from.ch + 18 },
+      anchor: { line: from.line, ch: from.ch + 18 }
+    }]
+  }),
   "fetchblob": new Snippet({
     text: "fetch('')\n.then(response => response.blob())\n.then(blob => {\n\t\n});",
     displayText: 'fetch() [fetch:Blob]',
