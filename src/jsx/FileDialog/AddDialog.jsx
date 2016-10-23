@@ -14,9 +14,9 @@ export default class AddDialog extends Component {
 
   handleAdd = () => {
     const { resolve, onRequestClose } = this.props;
-    const { name, type } = this.input;
+    const { value, type } = this.input;
 
-    resolve({ name, type, text: '', options: { isOpened: true } });
+    resolve({ name: value, type, text: '', options: { isOpened: true } });
     onRequestClose();
   };
 

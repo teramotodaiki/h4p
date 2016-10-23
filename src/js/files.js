@@ -105,7 +105,8 @@ export const separate = (fullpath) => {
   const path = fullpath.substr(0, pathLength);
   const filename = fullpath.substr(pathLength);
 
-  const planeLength = filename.lastIndexOf('.');
+  const planeLength = filename.includes('.') ?
+    filename.lastIndexOf('.') : filename.length;
   const plane = filename.substr(0, planeLength);
   const ext = filename.substr(planeLength);
 

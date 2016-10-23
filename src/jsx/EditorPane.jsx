@@ -143,6 +143,7 @@ export default class EditorPane extends Component {
       position: 'absolute',
       right: 23,
       bottom: 23,
+      zIndex: 1000,
     };
 
     const tabStyle = (file) => ({
