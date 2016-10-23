@@ -26,16 +26,11 @@ new Postmate.Model({
   size: () => env.VIEW
 })
 .then(parent => {
-  const { files, debug } = parent.model;
+  const { files } = parent.model;
 
   var view = null;
 
   Object.defineProperties(env, {
-    DEBUG: {
-      configurable: true, enumerable: true,
-      writable: false,
-      value: debug
-    },
     // An abstract object/ Must implements "width" and "height" properties.
     VIEW: {
       configurable: true, enumerable: true,
@@ -53,6 +48,7 @@ new Postmate.Model({
       }
     }
   });
+  Object.assign(env, parent.model.env);
   define('env', () => env);
 
   window.fetch = localFetch(files);

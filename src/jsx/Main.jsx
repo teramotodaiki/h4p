@@ -13,6 +13,7 @@ injectTapEventPlugin();
 
 
 import { makeFromFile, makeFromType } from '../js/files';
+import { makeEnv } from '../js/env';
 import Dock from './Dock';
 import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
@@ -52,6 +53,7 @@ class Main extends Component {
     },
 
     palette: {},
+    env: [makeEnv('DEBUG', true, 'A flag means test mode')]
 
   };
 
@@ -149,6 +151,10 @@ class Main extends Component {
       // file.moduleName should be unique
       return true;
     }
+    if (newFile.moduleName === 'env') {
+      // 'env' is reserved name
+      return true;
+    }
     return false;
   };
 
@@ -182,6 +188,16 @@ class Main extends Component {
     this.setState({ palette });
   };
 
+  updateEnv = (change, index = -1) => {
+    const { env } = this.state;
+
+    this.setState({
+      env: index in env ?
+        env.map((item, i) => i === index ? change : item) :
+        env.concat(change)
+    });
+  };
+
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
@@ -193,7 +209,7 @@ class Main extends Component {
       editorOptions,
       isPopout,
       reboot,
-      palette,
+      palette, env,
     } = this.state;
     const { player, config } = this.props;
 
@@ -244,7 +260,9 @@ class Main extends Component {
               openFileDialog={this.openFileDialog}
               handleTogglePopout={this.handleTogglePopout}
               palette={palette}
+              env={env}
               updatePalette={this.updatePalette}
+              updateEnv={this.updateEnv}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -265,6 +283,7 @@ class Main extends Component {
             files={files}
             isPopout={isPopout}
             reboot={reboot}
+            env={env}
             handlePopoutClose={this.handleTogglePopout}
             style={inlineScreenStyle}
           />

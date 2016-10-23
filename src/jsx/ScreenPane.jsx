@@ -6,6 +6,7 @@ import Postmate from '../js/LoosePostmate';
 Postmate.debug = process.env.NODE_ENV !== 'production';
 
 
+import { composeEnv } from '../js/env';
 import template from '../html/screen';
 import screenJs from '../js/screen';
 import popoutTemplate from '../html/popout';
@@ -27,6 +28,7 @@ export default class ScreenPane extends Component {
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
+    env: PropTypes.array.isRequired,
     handlePopoutClose: PropTypes.func.isRequired,
     style: PropTypes.object.isRequired,
   };
@@ -61,7 +63,8 @@ export default class ScreenPane extends Component {
   prevent = null;
   start () {
     const { player, config, files } = this.props;
-    const model = Object.assign({}, config, { files, debug: true });
+    const env = composeEnv(this.props.env);
+    const model = Object.assign({}, config, { files, env });
 
     this.prevent =
       (this.prevent || Promise.resolve())
