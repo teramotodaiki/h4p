@@ -41,14 +41,29 @@ CodeMirror.hint.javascript = (instance, options) => {
   return result;
 };
 
+const globalScope = (keys => {
+  const merge = (p, c) => {
+    if (typeof c === 'string') {
+      p[c] = null;
+      return p;
+    } else if (c instanceof Array) {
+      const key = c[0];
+      const props = c.slice(1);
+      p[key] = props.reduce(merge, Object.create(null));
+    }
+    return p;
+  };
+  return keys.reduce(merge, Object.create(null));
+})([
+  'require',
+  'exports',
+  ['module', 'exports'],
+  ['console', 'log', 'info', 'warn', 'error', 'time', 'timeEnd'],
+  ['env', 'DEBUG', 'VIEW']
+]);
 
 const jsOptions = {
-  globalScope: {
-    require: {},
-    exports: {},
-    module: { exports: {} },
-    console: { log: {}, info: {}, warn: {}, error: {}, time: {}, timeEnd: {} },
-  }
+  globalScope
 };
 
 
@@ -164,4 +179,4 @@ const jsSnippets = {
   }),
 };
 
-const endOfCompletion = /^(.*[\;\=\)]|\s*)$/;
+const endOfCompletion = /^(.*[\;\=\)\,]|\s*)$/;
