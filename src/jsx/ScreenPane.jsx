@@ -61,7 +61,7 @@ export default class ScreenPane extends Component {
   prevent = null;
   start () {
     const { player, config, files } = this.props;
-    const model = Object.assign({}, config, { files });
+    const model = Object.assign({}, config, { files, debug: true });
 
     this.prevent =
       (this.prevent || Promise.resolve())

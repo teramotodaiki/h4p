@@ -1,5 +1,7 @@
 ;!function () {
 
+const env = {};
+
 // Un-checked parent origin
 const _addEventListener = window.addEventListener;
 window.addEventListener = (...args) => {
@@ -19,86 +21,59 @@ window.addEventListener = (...args) => {
   return _addEventListener.apply(window, args);
 };
 
-
-const getComputedStyle = (elem) => elem.currentStyle || document.defaultView.getComputedStyle(elem);
-
-const Hack = new EventEmitter2();
-
-
-// An abstract object/ Must implements "width" and "height" properties.
-var view = null;
-Object.defineProperty(Hack, 'view', {
-  get: () => ({ width: parseInt(view.width, 10), height: parseInt(view.height, 10) }),
-  set: (value) => {
-    const old = view;
-    view = value instanceof HTMLElement ? getComputedStyle(value) : value;
-    Hack.emit('viewchange', old, value);
-  }
-});
-
-window.addEventListener('load', () => Hack.view = document.body); // default
-
-// Utility/ Create primary canvas
-Hack.createCanvas = (width, height) => {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  canvas.style.margin = 0;
-  canvas.style.padding = 0;
-  document.body.appendChild(canvas);
-  Hack.view = canvas;
-
-  return canvas;
-};
-
-
 // Connect
-const handshake = new Postmate.Model({
-  size: () => Hack.view
-});
+new Postmate.Model({
+  size: () => env.VIEW
+})
+.then(parent => {
+  const { files, debug } = parent.model;
 
-handshake.then(parent => {
+  var view = null;
 
-  Hack.parent = parent; // export to global
+  Object.defineProperties(env, {
+    DEBUG: {
+      configurable: true, enumerable: true,
+      writable: false,
+      value: debug
+    },
+    // An abstract object/ Must implements "width" and "height" properties.
+    VIEW: {
+      configurable: true, enumerable: true,
+      get: () => {
+        const current = hasView(view) ? view : getComputedStyle(document.body);
+        return {
+          width: parseInt(current.width, 10),
+          height: parseInt(current.height, 10)
+        };
+      },
+      set: (value) => {
+        view = value instanceof HTMLElement ? getComputedStyle(value) :
+          hasView(value) ? value : null;
+        parent.emit('resize', env.VIEW);
+      }
+    }
+  });
+  define('env', () => env);
+
+  window.fetch = localFetch(files);
 
   // require
-  loadAsync(parent.model.files);
+  bundle(files)
+  .then(() => {
+    parent.emit('load')
+  });
 
   // resizing
-  window.addEventListener('resize', () => parent.emit('resize', Hack.view));
-  Hack.on('viewchange', () => parent.emit('resize', Hack.view));
-  Hack.on('load', () => parent.emit('load'));
+  window.addEventListener('resize', () => parent.emit('resize', env.VIEW));
 });
 
-
-const scriptLoader = (file) => {
-  const content =
-    // AMD definision
-    `define(function (require, exports, module) {${file.text}});`;
-
-  return URL.createObjectURL(new Blob([content]));
-};
-
-
-const loadAsync = (files) => {
-
-  const _fetch = window.fetch;
-  window.fetch = function (...args) {
-    const fetched = files.find(file => [file.name, file.moduleName].includes(args[0]));
-    if (!fetched) {
-      return _fetch.apply(this, args);
-    }
-    return new Promise((resolve, reject) => {
-      const blob = fetched.isText ?
-        new Blob([fetched.text], { type: fetched.type }) :
-        fetched.blob.slice(0, fetched.blob.size, fetched.blob.type);
-      resolve(new Response(blob));
-    });
-  };
-
+function bundle(files) {
   const paths = files
     .filter(file => file.type === 'text/javascript')
-    .map(file => ({ [file.moduleName]: scriptLoader(file) }));
+    .map(convertAmd)
+    .map(file => ({
+      [file.moduleName] : URL.createObjectURL(getBlob(file))
+    }));
 
   const config = {
     // alias
@@ -109,13 +84,43 @@ const loadAsync = (files) => {
     .filter(file => file.options.isEntryPoint)
     .map(file => file.moduleName);
 
-  // config, deps, callback
-  requirejs(config, entryPoins, () => {
-    Hack.emit('load');
+  return new Promise((resolve, reject) => {
+    requirejs(config, entryPoins, resolve);
   });
-};
+}
 
-// Export
-window.Hack = Hack;
+function convertAmd(fileObj) {
+  // AMD definision
+  const text = `define(function (require, exports, module) {${fileObj.text}});`;
+  return Object.assign({}, fileObj, { text });
+}
+
+function getBlob(fileObj) {
+  return fileObj.isText ?
+    new Blob([fileObj.text], { type: fileObj.type }) :
+    fileObj.blob.slice(0, fileObj.blob.size, fileObj.blob.type);
+}
+
+function localFetch() {
+  const _fetch = window.fetch;
+  return function (...args) {
+    const fetched = files.find(file => [file.name, file.moduleName].includes(args[0]));
+    if (!fetched) {
+      return _fetch.apply(this, args);
+    }
+    return new Promise((resolve, reject) => {
+      const blob = getBlob(fetched);
+      resolve(new Response(blob));
+    });
+  };
+}
+
+function hasView(view) {
+  return view && typeof view === 'object' && 'width' in view && 'height' in view;
+}
+
+function getComputedStyle(elem) {
+  return elem.currentStyle || document.defaultView.getComputedStyle(elem);
+}
 
 }();
