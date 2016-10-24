@@ -6,6 +6,9 @@ import { grey600 } from 'material-ui/styles/colors';
 
 
 import { EnvTypes } from '../js/env';
+import EditableLabel from './EditableLabel';
+
+const NoDescription = 'No description';
 
 export default class EnvDialog extends Component {
 
@@ -29,80 +32,124 @@ export default class EnvDialog extends Component {
     });
   };
 
-  renderItem = (props, index) => {
-    const onChange = (value) => {
-      if (props.type === EnvTypes.Number) {
-        value = parseInt(value, 10);
-      }
-      const change = Object.assign({}, props, { value });
-      this.updateEnv(change, index);
-      this.props.updateEnv(change, index);
-    };
-    const childProps = Object.assign({}, props, { onChange });
-
-    return (
-      <EnvItem key={props.key} {...props} >
-      {
-        props.type === EnvTypes.Bool ? (<ConfigureCheckbox {...childProps} />) :
-        props.type === EnvTypes.Number ? (<ConfigureText {...childProps} />) :
-        props.type === EnvTypes.String ? (<ConfigureText {...childProps} />) : null
-      }
-      </EnvItem>
-    )
-  }
-
   render() {
-    const { onRequestClose } = this.props;
+    const { updateEnv, onRequestClose } = this.props;
     const { env } = this.state;
+
+    const handleChange = (change, index) => {
+      this.updateEnv(change, index);
+      updateEnv(change, index);
+    };
 
     return (
       <Dialog title="Configure env" modal={false} open={true} onRequestClose={onRequestClose}>
-      {env.map(this.renderItem)}
+      {env.map((item, index) => (
+        <EnvItem
+          key={item.key}
+          item={item}
+          onChange={change => handleChange(change, index)}
+        />
+      ))}
       </Dialog>
     );
   }
 }
 
-const EnvItem = (props) => {
-  const { keyName, value, tooltip, children } = props;
+class EnvItem extends Component {
 
-  const divStyle = {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    paddingTop: 12,
-    paddingBottom: 12,
+  static propTypes = {
+    item: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired
   };
 
-  const keyStyle = {
-    flex: '0 0 auto',
-    minWidth: 160,
-    marginRight: 12,
+  handleKeyNameChange = (event) => {
+    const { item, onChange } = this.props;
+
+    const keyName = event.target.value;
+    const change = Object.assign({}, item, { keyName });
+    onChange(change);
   };
 
-  const valueStyle = {
-    flex: '0 0 auto',
-    marginRight: 12,
+  handleTooltipChange = (event) => {
+    const { item, onChange } = this.props;
+
+    const tooltip = event.target.value;
+    const change = Object.assign({}, item, { tooltip });
+    onChange(change);
   };
 
-  const tootipStyle = {
-    flex: '1 0 auto',
-    minWidth: 160,
-    color: grey600,
-    fontSize: '.8em',
+  renderConfiguable = () => {
+    const { item, onChange } = this.props;
+
+    const handleChange = (value) => {
+      if (item.type === EnvTypes.Number) {
+        value = parseInt(value, 10);
+      }
+      const change = Object.assign({}, item, { value });
+      onChange(change);
+    };
+    const childProps = { value: item.value, onChange: handleChange };
+
+    return (
+      item.type === EnvTypes.Bool ? (<ConfigureCheckbox {...childProps} />) :
+      item.type === EnvTypes.Number ||
+      item.type === EnvTypes.String ? (<ConfigureText {...childProps} />) : null
+    );
   };
 
-  return (
-    <div style={divStyle}>
-      <div style={keyStyle}>{keyName}</div>
-      <div style={valueStyle}>{children}</div>
-      <div style={tootipStyle}>{tooltip}</div>
-    </div>
-  );
-};
+  render() {
+    const { keyName, value, tooltip } = this.props.item;
 
+    const divStyle = {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      flexWrap: 'wrap',
+      height: 42,
+      paddingTop: 12,
+      paddingBottom: 12,
+    };
+
+    const keyStyle = {
+      flex: '0 0 auto',
+      minWidth: 160,
+      marginRight: 12
+    };
+
+    const valueStyle = {
+      flex: '0 0 auto',
+      marginRight: 12,
+    };
+
+    const tooltipStyle = {
+      flex: '1 0 auto',
+      minWidth: 160,
+      color: grey600,
+      fontSize: '.8em',
+    };
+
+    return (
+      <div style={divStyle}>
+        <EditableLabel
+          id="tf1"
+          defaultValue={keyName}
+          style={keyStyle}
+          onChange={this.handleKeyNameChange}
+        />
+        <div style={valueStyle}>
+        {this.renderConfiguable()}
+        </div>
+        <EditableLabel
+          id="tf2"
+          defaultValue={tooltip || NoDescription}
+          style={tooltipStyle}
+          onChange={this.handleTooltipChange}
+        />
+      </div>
+    );
+  }
+}
 
 const ConfigureCheckbox = (props) => (
   <Checkbox
