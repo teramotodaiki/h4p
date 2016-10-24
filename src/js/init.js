@@ -1,5 +1,6 @@
 import Player from './Player';
 import { makeFromElements } from './files';
+import { importEnv } from './env';
 
 // Initialize player from DOM
 export default () => {
@@ -14,10 +15,15 @@ export default () => {
   return Array.from(
     document.querySelectorAll(`.${CSS_PREFIX}app`)
   ).map(elem => {
-    const scripts = document.querySelectorAll(elem.getAttribute('data-target'));
+    const scripts = document.querySelectorAll('script' + elem.getAttribute('data-target'));
+    const env = (elem => {
+      if (!elem) return {};
+      return importEnv(elem.textContent);
+    })(document.querySelector('x-env' + elem.getAttribute('data-target') + '__env'));
+
     return makeFromElements(scripts).then(files => {
       // An instance of h4p.Player
-      const player = new Player({ files });
+      const player = new Player({ files, env });
       player.start();
       return player;
     });

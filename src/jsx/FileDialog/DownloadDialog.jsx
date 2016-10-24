@@ -6,13 +6,15 @@ import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
 import { compose } from '../../js/files';
 import download from '../../html/download';
+import { exportEnv } from '../../js/env';
 
 export default class DownloadDialog extends Component {
 
   static propTypes = {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    files: PropTypes.array.isRequired
+    files: PropTypes.array.isRequired,
+    env: PropTypes.array.isRequired
   };
 
   state = {
@@ -24,11 +26,13 @@ export default class DownloadDialog extends Component {
   componentDidMount() {
     Promise.all(this.props.files.map(compose))
     .then(files => {
-      const bundleWithURL = this.bundle({ files, useCDN: true });
+      const env = exportEnv(this.props.env);
+      const bundleWithURL = this.bundle({ files, env, useCDN: true });
       this.setState({ bundleWithURL });
-      return files;
+
+      return [files, env];
     })
-    .then(files => fetch(CORE_CDN_URL, { mode: 'cors' })
+    .then(([files, env]) => fetch(CORE_CDN_URL, { mode: 'cors' })
       .then(response => {
         if (!response.ok) {
           throw response.error ? response.error() : new Error(response.statusText);
@@ -37,8 +41,8 @@ export default class DownloadDialog extends Component {
       })
       .then(lib => {
         const raw = encodeURIComponent(lib);
-        const bundleWithRaw = this.bundle({ files, raw });
-        this.setState({ bundleWithRaw});
+        const bundleWithRaw = this.bundle({ files, env, raw });
+        this.setState({ bundleWithRaw });
       })
     )
     .catch(err => {

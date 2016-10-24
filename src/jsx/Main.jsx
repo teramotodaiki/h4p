@@ -13,6 +13,7 @@ injectTapEventPlugin();
 
 
 import { makeFromFile, makeFromType } from '../js/files';
+import { makeEnv } from '../js/env';
 import Dock from './Dock';
 import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
@@ -52,6 +53,7 @@ class Main extends Component {
     },
 
     palette: {},
+    env: []
 
   };
 
@@ -66,13 +68,13 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const { player, config: { files } } = this.props;
+    const { player, config: { files, env } } = this.props;
 
     const tabbedKeys = files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
-    this.setState({ reboot: true, files, tabbedKeys, selectedKey });
+    this.setState({ reboot: true, files, tabbedKeys, selectedKey, env });
   }
 
   componentDidUpdate() {
@@ -149,6 +151,10 @@ class Main extends Component {
       // file.moduleName should be unique
       return true;
     }
+    if (newFile.moduleName === 'env') {
+      // 'env' is reserved name
+      return true;
+    }
     return false;
   };
 
@@ -182,6 +188,15 @@ class Main extends Component {
     this.setState({ palette });
   };
 
+  updateEnv = (change, index = -1) => new Promise((resolve, reject) => {
+    const merged = index in this.state.env ?
+      this.state.env.map((item, i) => i === index ? change : item) :
+      this.state.env.concat(change);
+    const env = merged.filter(e => e);
+
+    this.setState({ env }, () => resolve(env));
+  });
+
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
@@ -193,7 +208,7 @@ class Main extends Component {
       editorOptions,
       isPopout,
       reboot,
-      palette,
+      palette, env,
     } = this.state;
     const { player, config } = this.props;
 
@@ -244,7 +259,9 @@ class Main extends Component {
               openFileDialog={this.openFileDialog}
               handleTogglePopout={this.handleTogglePopout}
               palette={palette}
+              env={env}
               updatePalette={this.updatePalette}
+              updateEnv={this.updateEnv}
               style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
@@ -265,6 +282,7 @@ class Main extends Component {
             files={files}
             isPopout={isPopout}
             reboot={reboot}
+            env={env}
             handlePopoutClose={this.handleTogglePopout}
             style={inlineScreenStyle}
           />

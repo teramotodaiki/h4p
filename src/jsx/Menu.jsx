@@ -6,10 +6,12 @@ import FileDownload from 'material-ui/svg-icons/file/file-download';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
 import ImagePalette from 'material-ui/svg-icons/image/palette';
+import ImageTune from 'material-ui/svg-icons/image/tune';
 import 'whatwg-fetch';
 
 import { DownloadDialog, SaveDialog } from './FileDialog/';
 import CustomDialog from './CustomDialog';
+import EnvDialog from './EnvDialog';
 
 export default class Menu extends Component {
 
@@ -21,7 +23,9 @@ export default class Menu extends Component {
     openFileDialog: PropTypes.func.isRequired,
     handleTogglePopout: PropTypes.func.isRequired,
     palette: PropTypes.object.isRequired,
+    env: PropTypes.array.isRequired,
     updatePalette: PropTypes.func.isRequired,
+    updateEnv: PropTypes.func.isRequired,
   };
 
   handlePowerOff = () => {
@@ -29,9 +33,9 @@ export default class Menu extends Component {
   };
 
   handleDownload = () => {
-    const { files, openFileDialog } = this.props;
+    const { files, env, openFileDialog } = this.props;
 
-    openFileDialog(DownloadDialog, { files })
+    openFileDialog(DownloadDialog, { files, env })
       .then(content => {
         openFileDialog(SaveDialog, { content });
       })
@@ -42,6 +46,12 @@ export default class Menu extends Component {
     const { openFileDialog, palette, updatePalette } = this.props;
 
     openFileDialog(CustomDialog, { palette, updatePalette });
+  };
+
+  handleEnv = () => {
+    const { openFileDialog, env, updateEnv } = this.props;
+
+    openFileDialog(EnvDialog, { env, updateEnv });
   };
 
   render() {
@@ -76,6 +86,9 @@ export default class Menu extends Component {
         </IconButton>
         <IconButton tooltip="Colors" onTouchTap={this.handlePalette} style={iconStyle}>
           <ImagePalette color={darkBlack} />
+        </IconButton>
+        <IconButton tooltip="Configure Env" onTouchTap={this.handleEnv} style={iconStyle}>
+          <ImageTune color={darkBlack} />
         </IconButton>
       </div>
     );

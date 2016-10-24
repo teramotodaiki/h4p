@@ -99,13 +99,16 @@ export const changeDir = (file, newPath) => {
 
 export const separate = (fullpath) => {
   // Filename CAN'T contains spaces.
-  fullpath = fullpath.replace(/\s/, '');
+  fullpath = fullpath.replace(/\s/g, '');
+  // Path separator
+  fullpath = fullpath.replace(/:/g, '/');
 
   const pathLength = fullpath.lastIndexOf('/') + 1;
   const path = fullpath.substr(0, pathLength);
   const filename = fullpath.substr(pathLength);
 
-  const planeLength = filename.lastIndexOf('.');
+  const planeLength = filename.includes('.') ?
+    filename.lastIndexOf('.') : filename.length;
   const plane = filename.substr(0, planeLength);
   const ext = filename.substr(planeLength);
 

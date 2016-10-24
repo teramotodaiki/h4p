@@ -41,14 +41,29 @@ CodeMirror.hint.javascript = (instance, options) => {
   return result;
 };
 
+const globalScope = (keys => {
+  const merge = (p, c) => {
+    if (typeof c === 'string') {
+      p[c] = null;
+      return p;
+    } else if (c instanceof Array) {
+      const key = c[0];
+      const props = c.slice(1);
+      p[key] = props.reduce(merge, Object.create(null));
+    }
+    return p;
+  };
+  return keys.reduce(merge, Object.create(null));
+})([
+  'require',
+  'exports',
+  ['module', 'exports'],
+  ['console', 'log', 'info', 'warn', 'error', 'time', 'timeEnd'],
+  ['env', 'DEBUG', 'VIEW']
+]);
 
 const jsOptions = {
-  globalScope: {
-    require: {},
-    exports: {},
-    module: { exports: {} },
-    console: { log: {}, info: {}, warn: {}, error: {}, time: {}, timeEnd: {} },
-  }
+  globalScope
 };
 
 
@@ -71,6 +86,17 @@ const jsSnippets = {
     selections: (from) => [{
       head: { line: from.line, ch: from.ch + 6 },
       anchor: { line: from.line, ch: from.ch + 9 }
+    }]
+  }),
+  "req": new Snippet({
+    text: "const  = require('');",
+    displayText: '[require]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 6 },
+      anchor: { line: from.line, ch: from.ch + 6 }
+    }, {
+      head: { line: from.line, ch: from.ch + 18 },
+      anchor: { line: from.line, ch: from.ch + 18 }
     }]
   }),
   "fetchblob": new Snippet({
@@ -153,4 +179,4 @@ const jsSnippets = {
   }),
 };
 
-const endOfCompletion = /^(.*[\;\=\)]|\s*)$/;
+const endOfCompletion = /^(.*[\;\=\)\,]|\s*)$/;
