@@ -11,16 +11,6 @@ export const makeEnv = (keyName = '', value = '', tooltip = '') => ({
   tooltip
 });
 
-/**
- * @param seeds An Object of keyName keyed values
- * @return Array
- */
-export const makeEnvArray = (seeds) => {
-  return Object.keys(seeds)
-    .map(keyName => ({ keyName, value: seeds[keyName] }))
-    .map(makeEnv);
-}
-
 export const composeEnv = (env) => {
   return [].concat(env).reduce((p, c) => {
     const type = Types.find(t => t.test(c.value));
@@ -38,6 +28,19 @@ export const validateEnv = (env) => {
     const type = EnvTypes.getType(e.type);
     return type.validate(e.value);
   });
+};
+
+export const importEnv = (json) => {
+  const seeds = JSON.parse(json);
+  return [].concat(seeds).map(s => makeEnv.apply(null, s));
+};
+
+export const exportEnv = (env) => {
+  const array = [].concat(env).map(e => {
+    const type = EnvTypes.getType(e.type);
+    return [e.keyName, type.compose(e.value), e.tooltip];
+  });
+  return JSON.stringify(array);
 };
 
 const Types = [

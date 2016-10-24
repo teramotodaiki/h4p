@@ -53,7 +53,7 @@ class Main extends Component {
     },
 
     palette: {},
-    env: [makeEnv('DEBUG', true, 'A flag means test mode')]
+    env: []
 
   };
 
@@ -68,13 +68,13 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const { player, config: { files } } = this.props;
+    const { player, config: { files, env } } = this.props;
 
     const tabbedKeys = files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
-    this.setState({ reboot: true, files, tabbedKeys, selectedKey });
+    this.setState({ reboot: true, files, tabbedKeys, selectedKey, env });
   }
 
   componentDidUpdate() {
@@ -193,7 +193,7 @@ class Main extends Component {
       this.state.env.map((item, i) => i === index ? change : item) :
       this.state.env.concat(change);
     const env = merged.filter(e => e);
-    
+
     this.setState({ env }, () => resolve(env));
   });
 
