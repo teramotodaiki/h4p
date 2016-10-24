@@ -188,15 +188,14 @@ class Main extends Component {
     this.setState({ palette });
   };
 
-  updateEnv = (change, index = -1) => {
-    const { env } = this.state;
-
-    this.setState({
-      env: index in env ?
-        env.map((item, i) => i === index ? change : item) :
-        env.concat(change)
-    });
-  };
+  updateEnv = (change, index = -1) => new Promise((resolve, reject) => {
+    const merged = index in this.state.env ?
+      this.state.env.map((item, i) => i === index ? change : item) :
+      this.state.env.concat(change);
+    const env = merged.filter(e => e);
+    
+    this.setState({ env }, () => resolve(env));
+  });
 
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;

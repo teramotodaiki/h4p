@@ -3,10 +3,12 @@ import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
 import { grey600 } from 'material-ui/styles/colors';
 import ToggleCheckBox from 'material-ui/svg-icons/toggle/check-box';
 import ImageLooksOne from 'material-ui/svg-icons/image/looks-one';
 import ContentFontDownload from 'material-ui/svg-icons/content/font-download';
+import ContentClear from 'material-ui/svg-icons/content/clear';
 import AvPlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 
 
@@ -24,19 +26,12 @@ export default class EnvDialog extends Component {
   };
 
   state = {
-    env: [].concat(this.props.env)
+    env: this.props.env
   };
 
   updateEnv = (change, index = -1) => {
-    const { env } = this.state;
-    const { updateEnv } = this.props;
-
-    this.setState({
-      env: index in env ?
-        env.map((item, i) => i === index ? change : item) :
-        env.concat(change)
-    });
-    updateEnv(change, index);
+    this.props.updateEnv(change, index)
+      .then(env => this.setState({ env }));
   };
 
   render() {
@@ -112,6 +107,11 @@ class EnvItem extends Component {
     onChange(change);
   };
 
+  handleRemove = () => {
+    const { onChange } = this.props;
+    onChange(null);
+  };
+
   renderConfiguable = () => {
     const { item, onChange } = this.props;
 
@@ -142,26 +142,23 @@ class EnvItem extends Component {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      justifyContent: 'space-between',
       paddingTop: 12,
       paddingBottom: 12,
       height: 48
     };
 
     const keyStyle = {
-      flex: '0 0 auto',
-      minWidth: 160,
+      minWidth: 100,
       marginRight: 12
     };
 
     const valueStyle = {
-      flex: '0 0 auto',
       marginRight: 12,
     };
 
     const tooltipStyle = {
-      flex: '1 0 auto',
-      minWidth: 160,
+      minWidth: 100,
       color: grey600,
       fontSize: '.8em',
     };
@@ -183,6 +180,12 @@ class EnvItem extends Component {
           style={tooltipStyle}
           onChange={this.handleTooltipChange}
         />
+        <IconButton
+          tooltip="Remove"
+          onTouchTap={this.handleRemove}
+        >
+          <ContentClear />
+        </IconButton>
       </div>
     );
   }
