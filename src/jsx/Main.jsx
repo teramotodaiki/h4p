@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
@@ -14,6 +13,7 @@ injectTapEventPlugin();
 
 import { makeFromFile, makeFromType } from '../js/files';
 import { makeEnv } from '../js/env';
+import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import Dock from './Dock';
 import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
@@ -52,7 +52,7 @@ class Main extends Component {
       tabVisibility: false,
     },
 
-    palette: {},
+    palette: defaultPalette,
     env: []
 
   };
@@ -182,11 +182,12 @@ class Main extends Component {
     this.setState({ editorOptions });
   };
 
-  updatePalette = (change) => {
-    const palette = Object.assign({}, this.props.palette, change);
-
-    this.setState({ palette });
-  };
+  updatePalette = (change) => new Promise((resolve, reject) => {
+    const palette = Object.assign({},
+      defaultPalette, this.props.palette, change);
+      
+    this.setState({ palette }, () => resolve(palette));
+  });
 
   updateEnv = (change, index = -1) => new Promise((resolve, reject) => {
     const merged = index in this.state.env ?
@@ -227,7 +228,7 @@ class Main extends Component {
     };
 
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme({ palette })}>
+      <MuiThemeProvider muiTheme={getCustomTheme({ palette })}>
         <div style={{ backgroundColor: 'inherit' }}>
           <Dock config={config} align="right" style={primaryStyle}>
             <Sizer

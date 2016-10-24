@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import Popover from 'material-ui/Popover';
-import { lightBaseTheme } from 'material-ui/styles';
+import { convertColorToString } from 'material-ui/utils/colorManipulator';
 import ChromePicker from 'react-color/lib/components/chrome/Chrome';
 
 
@@ -26,11 +26,13 @@ export default class CustomDialog extends Component {
   };
 
   handleChangeComplete = (structure) => {
-    const { key, palette } = this.state;
+    const { key } = this.state;
+    const { updatePalette } = this.props;
 
-    const change = { [key]: structure.hex };
-    this.setState({ palette: Object.assign({}, palette, change) });
-    this.props.updatePalette(change);
+    const { r, g, b, a } = structure.rgb;
+    const color = ({ type: 'rgba', values: [r, g, b, a] });
+    updatePalette({ [key]: convertColorToString(color) })
+      .then(palette => this.setState({ palette }));
   };
 
   closePopover = () => {
@@ -39,8 +41,7 @@ export default class CustomDialog extends Component {
 
   render() {
     const { onRequestClose } = this.props;
-    const palette = Object.assign({}, lightBaseTheme.palette, this.state.palette);
-    const { open, key, anchorEl } = this.state;
+    const { open, key, anchorEl, palette } = this.state;
 
     const divStyle = {
       display: 'flex',
