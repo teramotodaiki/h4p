@@ -2,13 +2,18 @@ import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
+import RaisedButton from 'material-ui/RaisedButton';
 import { grey600 } from 'material-ui/styles/colors';
+import ToggleCheckBox from 'material-ui/svg-icons/toggle/check-box';
+import ImageLooksOne from 'material-ui/svg-icons/image/looks-one';
+import ContentFontDownload from 'material-ui/svg-icons/content/font-download';
+import AvPlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 
 
-import { EnvTypes } from '../js/env';
+import { makeEnv, validateEnv, EnvTypes } from '../js/env';
 import EditableLabel from './EditableLabel';
 
-const NoDescription = 'No description';
+const InvalidValue = 'Invalid value';
 
 export default class EnvDialog extends Component {
 
@@ -24,30 +29,59 @@ export default class EnvDialog extends Component {
 
   updateEnv = (change, index = -1) => {
     const { env } = this.state;
+    const { updateEnv } = this.props;
 
     this.setState({
       env: index in env ?
         env.map((item, i) => i === index ? change : item) :
         env.concat(change)
     });
+    updateEnv(change, index);
   };
 
   render() {
-    const { updateEnv, onRequestClose } = this.props;
+    const { onRequestClose } = this.props;
     const { env } = this.state;
 
-    const handleChange = (change, index) => {
-      this.updateEnv(change, index);
-      updateEnv(change, index);
+    const actionStyle = {
+      marginLeft: 12,
     };
 
+    const addActions = [
+      <AvPlaylistAdd color={grey600} />,
+      <RaisedButton primary
+        label="Bool"
+        icon={<ToggleCheckBox />}
+        style={actionStyle}
+        onTouchTap={() => this.updateEnv(makeEnv('', false))}
+      />,
+      <RaisedButton primary
+        label="Number"
+        icon={<ImageLooksOne />}
+        style={actionStyle}
+        onTouchTap={() => this.updateEnv(makeEnv('', 0))}
+      />,
+      <RaisedButton primary
+        label="String"
+        icon={<ContentFontDownload />}
+        style={actionStyle}
+        onTouchTap={() => this.updateEnv(makeEnv('', ''))}
+      />,
+    ];
+
     return (
-      <Dialog title="Configure env" modal={false} open={true} onRequestClose={onRequestClose}>
+      <Dialog
+        title="Configure Environment Variables"
+        modal={false}
+        open
+        actions={addActions}
+        onRequestClose={onRequestClose}
+      >
       {env.map((item, index) => (
         <EnvItem
           key={item.key}
           item={item}
-          onChange={change => handleChange(change, index)}
+          onChange={change => this.updateEnv(change, index)}
         />
       ))}
       </Dialog>
@@ -82,13 +116,17 @@ class EnvItem extends Component {
     const { item, onChange } = this.props;
 
     const handleChange = (value) => {
-      if (item.type === EnvTypes.Number) {
-        value = parseInt(value, 10);
-      }
-      const change = Object.assign({}, item, { value });
-      onChange(change);
+      onChange(Object.assign({}, item, { value }));
     };
-    const childProps = { value: item.value, onChange: handleChange };
+    const childProps = Object.assign(
+      {
+        value: item.value,
+        onChange: handleChange
+      },
+      validateEnv(item) ? {} : {
+        errorText: InvalidValue
+      }
+    );
 
     return (
       item.type === EnvTypes.Bool ? (<ConfigureCheckbox {...childProps} />) :
@@ -105,10 +143,9 @@ class EnvItem extends Component {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      flexWrap: 'wrap',
-      height: 42,
       paddingTop: 12,
       paddingBottom: 12,
+      height: 48
     };
 
     const keyStyle = {
@@ -142,7 +179,7 @@ class EnvItem extends Component {
         </div>
         <EditableLabel
           id="tf2"
-          defaultValue={tooltip || NoDescription}
+          defaultValue={tooltip}
           style={tooltipStyle}
           onChange={this.handleTooltipChange}
         />
@@ -163,6 +200,7 @@ const ConfigureText = (props) => (
   <TextField
     id="tf"
     value={props.value}
+    errorText={props.errorText}
     onChange={e => props.onChange(e.target.value)}
   />
 );

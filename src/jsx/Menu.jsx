@@ -87,7 +87,7 @@ export default class Menu extends Component {
         <IconButton tooltip="Colors" onTouchTap={this.handlePalette} style={iconStyle}>
           <ImagePalette color={darkBlack} />
         </IconButton>
-        <IconButton tooltip="Tune Up" onTouchTap={this.handleEnv} style={iconStyle}>
+        <IconButton tooltip="Configure Env" onTouchTap={this.handleEnv} style={iconStyle}>
           <ImageTune color={darkBlack} />
         </IconButton>
       </div>
