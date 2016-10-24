@@ -120,6 +120,7 @@ class EnvItem extends Component {
     };
     const childProps = Object.assign(
       {
+        type: item.type,
         value: item.value,
         onChange: handleChange
       },
@@ -204,6 +205,7 @@ const ConfigureText = (props) => (
     id="tf"
     value={props.value}
     errorText={props.errorText}
+    multiLine={props.type === EnvTypes.String}
     onChange={e => props.onChange(e.target.value)}
   />
 );
