@@ -37,7 +37,7 @@ export default ({ palette }) => {
     accent3Color: emphasize(monochrome(accent1Color)),
     textColor: emphasize(canvasColor, 1),
     secondaryTextColor: fade(emphasize(canvasColor, 1), 0.54),
-    alternateTextColor: canvasColor,
+    alternateTextColor: emphasize(emphasize(canvasColor, 1), 1),
     canvasColor,
     borderColor: emphasize(emphasize(canvasColor, 1)),
     disabledColor: fade(emphasize(canvasColor, 1), 0.3),
