@@ -2,15 +2,66 @@ import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import { transparent } from 'material-ui/styles/colors';
+import transitions from 'material-ui/styles/transitions';
 import EditorDragHandle from 'material-ui/svg-icons/editor/drag-handle';
 
 
-import {
-  Types,
-  CardHeight, BlankWidth, StepWidth, BorderWidth,
-  label2Color, backgroundColor, selectedColor,
-} from './constants';
 import Filename from './Filename';
+
+export const Types = {
+  FILE: Symbol('FILE'),
+};
+
+const getStyles = (props, context) => {
+  const {
+    file,
+    selectedFile,
+    tabbedFiles,
+    isDragging,
+  } = props;
+  const {
+    palette,
+    spacing,
+  } = context.muiTheme;
+
+  const isSelected = selectedFile === file;
+  const backgroundColor = tabbedFiles.includes(file) ?
+    palette.canvasColor : palette.disabledColor;
+
+  return {
+    root: {
+      marginTop: spacing.desktopGutterLess,
+      marginRight: isSelected ? 0 : spacing.desktopGutterLess,
+      transition: transitions.easeOut(),
+    },
+    card: {
+      boxSizing: 'border-box',
+      height: 40,
+      paddingLeft: spacing.desktopGutterLess,
+      borderTopRightRadius: isSelected ? 0 : 2,
+      borderBottomRightRadius: isSelected ? 0 : 2,
+      backgroundColor,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      opacity: isDragging ? .5 : 1,
+      transition: transitions.easeOut(),
+    },
+    dragHandle: {
+      flex: '0 0 auto',
+      width: spacing.iconSize,
+      height: spacing.iconSize,
+      marginRight: spacing.desktopGutterMini,
+      cursor: 'move',
+    },
+    container: {
+      flex: '1 1 auto',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+  };
+};
 
 class FileCard extends Component {
 
@@ -25,68 +76,45 @@ class FileCard extends Component {
     isDragging: PropTypes.bool.isRequired,
   };
 
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
   render() {
     const {
-      file, selectedFile, tabbedFiles, handleFileSelect, handleFileMove, handleNameChange,
-      connectDragSource, connectDragPreview, isDragging,
+      file, selectedFile, handleFileSelect, handleNameChange,
+      connectDragSource, connectDragPreview,
     } = this.props;
+    const {
+      prepareStyles,
+      palette: {
+        secondaryTextColor,
+      },
+    } = this.context.muiTheme;
 
-    const isSelected = (file, passed, failed) => selectedFile === file ? passed : failed;
-    const isTabbed = (file, passed, failed) => tabbedFiles.includes(file) ? passed : failed;
+    const isSelected = selectedFile === file;
 
-    const style = {
-      boxSizing: 'border-box',
-      height: CardHeight,
-      marginTop: BlankWidth,
-      marginRight: isSelected(file, 0, StepWidth),
-      padding: '.25rem',
-      paddingLeft: StepWidth,
-      borderWidth: BorderWidth,
-      borderStyle: 'solid',
-      borderColor: transparent,
-      borderTopRightRadius: isSelected(file, 0, 2),
-      borderBottomRightRadius: isSelected(file, 0, 2),
-      backgroundColor: isTabbed(file, selectedColor, backgroundColor),
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      transition: 'all .2s ease',
-      opacity: isDragging ? .5 : 1,
-    };
-
-    const dragHandleStyle = {
-      flex: '0 0 auto',
-      width: 24,
-      height: 24,
-      marginLeft: -4,
-      marginRight: 8,
-      cursor: 'move',
-    };
-
-    const contentStyle = {
-      flex: '1 1 auto',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    };
+    const {
+      root,
+      card,
+      dragHandle,
+      container,
+    } = getStyles(this.props, this.context);
 
     return connectDragPreview(
-      <div>
+      <div style={root}>
         <Paper
-          zDepth={isSelected(file, 2, 0)}
+          zDepth={isSelected ? 2 : 0}
           onTouchTap={() => handleFileSelect(file)}
-          style={style}
+          style={card}
         >
           {connectDragSource(
-            <div style={dragHandleStyle}><EditorDragHandle color={label2Color} /></div>
-          )}
-          <div style={contentStyle}>
-            <Filename file={file} handleNameChange={handleNameChange} />
-            <div>
-              <span style={{ color: label2Color }}>{file.type}</span>
+            <div style={prepareStyles(dragHandle)}>
+              <EditorDragHandle color={secondaryTextColor} />
             </div>
+          )}
+          <div style={prepareStyles(container)}>
+            <Filename file={file} onChange={handleNameChange} />
           </div>
         </Paper>
       </div>

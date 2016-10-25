@@ -4,6 +4,15 @@ import React, { Component, PropTypes } from 'react';
 import DirCard from './DirCard';
 import getHierarchy from './getHierarchy';
 
+const getStyles = (props, context) => {
+  return {
+    root: {
+      boxSizing: 'border-box',
+      width: '100%',
+    },
+  };
+};
+
 export default class Hierarchy extends Component {
 
   static propTypes = {
@@ -16,6 +25,10 @@ export default class Hierarchy extends Component {
     handleFileMove: PropTypes.func.isRequired,
     handleNativeDrop: PropTypes.func.isRequired,
     handleNameChange: PropTypes.func.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   render() {
@@ -32,13 +45,11 @@ export default class Hierarchy extends Component {
       handleNameChange: this.props.handleNameChange,
     };
 
-    const style = {
-      boxSizing: 'border-box',
-      width: '100%',
-    };
+    const { root } = getStyles(this.props, this.context);
+    const { prepareStyles } = this.context.muiTheme;
 
     return (
-      <div style={style}>
+      <div style={prepareStyles(root)}>
         <DirCard dir={getHierarchy(files)} {...transfer} isRoot />
       </div>
     );

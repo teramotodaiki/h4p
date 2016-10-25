@@ -1,4 +1,4 @@
 
 export { default } from './Hierarchy';
-export * from './DirCard';
-export * from './FileCard';
+export { default as DirCard } from './DirCard';
+export { default as FileCard } from './FileCard';

@@ -52,11 +52,14 @@ export default class EditorMenu extends Component {
     } = this.props.editorOptions;
 
     const { root, button, menu } = getStyles(this.props, this.context);
+    const { secondaryTextColor } = this.context.muiTheme.palette;
 
     return (
         <IconMenu
           iconButtonElement={(
-            <IconButton style={button}><ActionSettings color={minBlack} /></IconButton>
+            <IconButton style={button}>
+              <ActionSettings color={secondaryTextColor} />
+            </IconButton>
           )}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}

@@ -2,14 +2,45 @@ import React, { Component, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 
 
-import { labelColor, label2Color } from './constants';
 import { separate } from '../../js/files';
+
+const getStyles = (props, context) => {
+  const { palette } = context.muiTheme;
+
+  return {
+    root: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'baseline',
+    },
+    path: {
+      color: palette.secondaryTextColor,
+    },
+    plane: {
+      color: palette.textColor,
+    },
+    ext: {
+      color: palette.secondaryTextColor,
+      fontSize: '.8em',
+      paddingLeft: 4,
+    },
+    textField: {
+      width: 'auto',
+      flex: '0 1 auto',
+      height: 40,
+    },
+  };
+};
 
 export default class Filename extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
-    handleNameChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   state = {
@@ -17,11 +48,11 @@ export default class Filename extends Component {
   };
 
   handleInput = (ref) => {
-    const { file, handleNameChange } = this.props;
+    const { file, onChange } = this.props;
 
     if (!ref) return;
     ref.input.onchange = ({ target }) => {
-      handleNameChange(file, target.value);
+      onChange(file, target.value);
       this.setState({ isEditing: false });
     };
     ref.input.onblur = (event) => {
@@ -44,55 +75,31 @@ export default class Filename extends Component {
   render() {
     const { file } = this.props;
     const { isEditing } = this.state;
+    const { prepareStyles } = this.context.muiTheme;
 
-    const style = {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      alignItems: 'baseline',
-    };
-
-    const pathStyle = {
-      color: label2Color,
-    };
-
-    const planeStyle = {
-      color: labelColor,
-    };
-
-    const extStyle = {
-      color: label2Color,
-      fontSize: '.8em',
-      paddingLeft: 4,
-    };
-
-    const textFieldStyle = {
-      width: 'auto',
-      flex: '0 1 auto',
-      height: 40,
-    };
+    const styles = getStyles(this.props, this.context);
 
     const { path, plane, ext, name } = separate(file.name);
 
     return (
-      <div style={style}>
-        <span style={pathStyle}>{path}</span>
+      <div style={prepareStyles(styles.root)}>
+        <span style={prepareStyles(styles.path)}>{path}</span>
         {isEditing ? (
           <TextField
             id={name}
             defaultValue={plane}
             ref={this.handleInput}
-            style={textFieldStyle}
+            style={styles.textField}
           />
         ) : (
           <span
             onTouchTap={this.handleDoubleTap}
-            style={planeStyle}
+            style={prepareStyles(styles.plane)}
           >
             {plane}
           </span>
         )}
-        <span style={extStyle}>{ext}</span>
+        <span style={prepareStyles(styles.ext)}>{ext}</span>
       </div>
     );
   }

@@ -1,16 +1,73 @@
 import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import { transparent } from 'material-ui/styles/colors';
+import transitions from 'material-ui/styles/transitions';
 import { NativeTypes } from 'react-dnd-html5-backend';
 
 
-import FileCard from './FileCard';
-import {
-  Types,
-  CardHeight, BlankWidth, StepWidth, BorderWidth,
-  labelColor, label2Color, borderColor, backgroundColor, selectedColor,
-} from './constants';
+import FileCard, { Types } from './FileCard';
 import getHierarchy from './getHierarchy';
+
+const getStyles = (props, context) => {
+  const {
+    isRoot,
+    isDirOpened,
+    isOver,
+    dragSource,
+  } = props;
+  const cd = props.dir;
+  const { palette, spacing } = context.muiTheme;
+
+  const borderStyle =
+    isOver && !cd.files.includes(dragSource) ?
+    'dashed' : 'solid';
+  const borderWidth = 4;
+
+  return {
+    root: isRoot ? {
+      paddingTop: spacing.desktopGutterMore,
+      paddingRight: 0,
+      paddingBottom: spacing.desktopGutterMore,
+      paddingLeft: spacing.desktopGutterLess,
+    } : {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch',
+      justifyContent: 'space-around',
+      boxSizing: 'border-box',
+      height: isDirOpened(cd, 'auto', 40),
+      marginTop: spacing.desktopGutterLess,
+      marginRight: isDirOpened(cd, 0, spacing.desktopGutterLess),
+      paddingBottom: isDirOpened(cd, spacing.desktopGutterLess, 0),
+      paddingLeft: isDirOpened(cd, spacing.desktopGutterLess, 0),
+      borderWidth,
+      borderRightWidth: isDirOpened(cd, 0, borderWidth),
+      borderStyle,
+      borderColor: palette.primary1Color,
+      borderRadius: 2,
+      borderTopRightRadius: isDirOpened(cd, 0, 2),
+      borderBottomRightRadius: isDirOpened(cd, 0, 2),
+      transition: transitions.easeOut(null, [
+        'margin', 'padding-bottom', 'border'
+      ])
+    },
+    closed: {
+      color: palette.secondaryTextColor,
+      paddingLeft: spacing.desktopGutterLess,
+      cursor: 'pointer',
+    },
+    closer: {
+      marginLeft: -spacing.desktopGutterLess,
+      backgroundColor: palette.primary1Color,
+      cursor: 'pointer',
+    },
+    closerLabel: {
+      paddingLeft: spacing.desktopGutterLess,
+      fontWeight: 'bold',
+      color: palette.alternateTextColor,
+    },
+  };
+};
 
 class _DirCard extends Component {
 
@@ -31,16 +88,24 @@ class _DirCard extends Component {
     dragSource: PropTypes.object,
   };
 
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
   static defaultProps = {
     isRoot: false
   };
 
   render() {
     const {
-      isDirOpened, handleDirToggle, handleFileMove, handleNativeDrop, isRoot,
-      connectDropTarget, isOver, dragSource,
+      isRoot,
+      isDirOpened,
+      handleDirToggle,
+
+      connectDropTarget,
     } = this.props;
     const cd = this.props.dir;
+    const { prepareStyles } = this.context.muiTheme;
 
     const transfer = {
       selectedFile: this.props.selectedFile,
@@ -53,54 +118,33 @@ class _DirCard extends Component {
       handleNameChange: this.props.handleNameChange,
     };
 
-    const dashed = isOver && !cd.files.includes(dragSource);
+    const {
+      root,
+      closed,
+      closer,
+      closerLabel
+    } = getStyles(this.props, this.context);
 
-    const dirStyle = {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
-      justifyContent: 'space-around',
-      boxSizing: 'border-box',
-      height: isDirOpened(cd, 'auto', CardHeight),
-      marginTop: BlankWidth,
-      borderColor: borderColor,
-      borderStyle: dashed ? 'dashed' : 'solid',
-      borderTopWidth: BorderWidth,
-      borderRightWidth: isDirOpened(cd, 0, BorderWidth),
-      borderBottomWidth: BorderWidth,
-      borderLeftWidth: BorderWidth,
-      borderRadius: 2,
-      borderTopRightRadius: isDirOpened(cd, 0, 2),
-      borderBottomRightRadius: isDirOpened(cd, 0, 2),
-      marginRight: isDirOpened(cd, 0, StepWidth),
-      paddingBottom: isDirOpened(cd, BlankWidth, 0),
-      paddingLeft: isDirOpened(cd, StepWidth, 0),
-      backgroundColor: isDirOpened(cd, transparent, backgroundColor),
-      transition: 'margin .2s ease, padding-bottom .2s ease, border .2s ease',
+    const closerProps = {
+      style: prepareStyles(closer),
+      labelStyle: prepareStyles(closerLabel),
+      onTouchTap: () => handleDirToggle(cd),
     };
-
-    const rootStyle = {
-      padding: '3rem 0 3rem 1rem',
-    };
-
-    const closedStyle = {
-      color: label2Color,
-      paddingLeft: StepWidth,
-      cursor: 'pointer',
-    };
-
-    const hierarchy =
-      isDirOpened(cd, [].concat(
-        isRoot ? null : <DirCloser key="closer" onTouchTap={() => handleDirToggle(cd)} />,
-        cd.dirs.map(dir => <DirCard key={dir.path} dir={dir} {...transfer} />),
-        cd.files.map(file =><FileCard key={file.key} file={file} {...transfer}  />)
-      ),
-      <div style={closedStyle} onTouchTap={() => handleDirToggle(cd)}>{cd.path}</div>
-    );
 
     return connectDropTarget(
-      <div style={isRoot ? rootStyle : dirStyle}>
-      {hierarchy}
+      <div style={prepareStyles(root)}>
+      {isDirOpened(cd, [].concat(
+          isRoot ? null : <DirCloser key="closer" {...closerProps} />,
+          cd.dirs.map(dir => <DirCard key={dir.path} dir={dir} {...transfer} />),
+          cd.files.map(file => <FileCard key={file.key} file={file} {...transfer}  />)
+        ),
+        <div
+          style={prepareStyles(closed)}
+          onTouchTap={() => handleDirToggle(cd)}
+        >
+        {cd.path}
+        </div>
+      )}
       </div>
     );
   }
@@ -137,21 +181,9 @@ export default DirCard;
 
 
 export const DirCloser = (props) => {
-  const style = {
-    marginLeft: -StepWidth,
-    backgroundColor: borderColor,
-    cursor: 'pointer',
-  };
-
-  const backwordStyle = {
-    paddingLeft: StepWidth,
-    fontWeight: 'bold',
-    color: labelColor,
-  };
-
   return (
-    <div style={style} onTouchTap={props.onTouchTap}>
-      <span style={backwordStyle}>../</span>
+    <div style={props.style} onTouchTap={props.onTouchTap}>
+      <span style={props.labelStyle}>../</span>
     </div>
   )
 };
