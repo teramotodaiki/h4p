@@ -2,6 +2,8 @@
 
   & {
     position: absolute;
+    width: 100%;
+    height: 100%;
   }
 
   // colors
@@ -9,7 +11,9 @@
 
     & {
       font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-      background-color: $light-white;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
     }
 
     .CodeMirror-matchingbracket {
@@ -18,8 +22,8 @@
     }
 
     .CodeMirror-gutters {
-      background-color: $editor-frame-color;
       border-color: $faint-black;
+      background-color: transparent;
     }
 
     .CodeMirror-sizer>div:first-child {

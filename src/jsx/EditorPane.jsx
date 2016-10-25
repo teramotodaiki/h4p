@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import { grey400, darkWhite, faintBlack, darkBlack } from 'material-ui/styles/colors';
 
 
 import 'codemirror/mode/javascript/javascript';
@@ -15,18 +14,15 @@ import 'codemirror/addon/hint/show-hint.css';
 
 import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
-import ChromeTabs from './ChromeTabs';
+import ChromeTabs, { ChromeTabContent } from './ChromeTabs/';
 import Preview from './Preview';
 import { makeFromType } from '../js/files';
 import { AddDialog } from './FileDialog/';
 
-const TAB_CONTENT_CONTAINER = CSS_PREFIX + 'tab_content';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
 
 const getStyles = (props, context) => {
-  const {
-    canvasColor,
-  } = context.muiTheme.palette;
+  const { palette } = context.muiTheme;
 
   const sizerWidth = 24;
 
@@ -41,15 +37,13 @@ const getStyles = (props, context) => {
     tabContentContainer: {
       flex: '1 1 auto',
       position: 'relative',
-      borderColor: canvasColor,
+      borderColor: palette.canvasColor,
       borderStyle: 'solid',
       borderTopWidth: 6,
       borderRightWidth: 0,
       borderBottomWidth: 0,
       borderLeftWidth: sizerWidth,
-    },
-    tabContent: {
-
+      backgroundColor: palette.canvasColor,
     },
     button: {
       position: 'absolute',
@@ -79,52 +73,11 @@ export default class EditorPane extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
-  componentDidMount() {
-    window.addEventListener('resize', this.setEnoughHeight);
-  }
-
-  componentWillUnmount() {
-    window.addEventListener('resize', this.setEnoughHeight);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { style, tabbedFiles } = this.props;
-    // Optimize styles when size changed
-    if (style !== nextProps.style) {
-      this.setEnoughHeight();
-    }
-    // Destruct codemirror instance
-    if (tabbedFiles !== nextProps.tabbedFiles) {
-      tabbedFiles
-        .filter(file => nextProps.tabbedFiles.every(next => file.key !== next.key))
-        .map(file => this.removeCodemirror(file.key));
-    }
-  }
-
-  setEnoughHeight = () => {
-    this.codemirrorInstances.forEach(cm => {
-      cm.setSize(this.getStyle().width, this.getStyle().height);
-    });
-  };
-
-  codemirrorInstances = [];
   handleCodemirror (ref, file) {
-    if (!ref || this.hasCodemirror(file.key)) return;
+    if (!ref) return;
     const cm = ref.getCodeMirror();
-    cm.key = file.key;
     cm.setValue(file.text);
     this.showHint(cm);
-    this.codemirrorInstances = this.codemirrorInstances.concat(cm);
-    this.setEnoughHeight();
-  }
-
-  removeCodemirror (key) {
-    this.codemirrorInstances =
-      this.codemirrorInstances.filter(cm => cm.key !== key);
-  }
-
-  hasCodemirror (key) {
-    return this.codemirrorInstances.some(cm => cm.key === key);
   }
 
   showHint(cm) {
@@ -134,15 +87,6 @@ export default class EditorPane extends Component {
       const token = cm.getTokenAt(cm.getCursor());
       cm.showHint({ completeSingle: false, container: this.hints, files: getFiles() });
     });
-  }
-
-  getStyle() {
-    if (!this.style) {
-      const ref = document.querySelector('.' + TAB_CONTENT_CONTAINER);
-      if (!ref) return { width: '100%', height: 300 };
-      this.style = ref.currentStyle || document.defaultView.getComputedStyle(ref);
-    }
-    return this.style;
   }
 
   handleAdd = () => {
@@ -180,15 +124,6 @@ export default class EditorPane extends Component {
       readOnly: file.options.isReadOnly,
     }, editorOptions);
 
-    const tabStyle = (file) => ({
-      width: '100%',
-      height: '100%',
-      position: 'absolute',
-      visibility: file === selectedFile ? 'visible' : 'hidden',
-      backgroundColor: grey400,
-      zIndex: file === selectedFile ? 2 : 1,
-    });
-
     return (
     <div style={prepareStyles(root)}>
       <EditorMenu
@@ -202,13 +137,13 @@ export default class EditorPane extends Component {
         handleClose={closeTab}
         handleRun={handleRun}
       />
-      <div className={TAB_CONTENT_CONTAINER} style={prepareStyles(tabContentContainer)}>
+      <div style={prepareStyles(tabContentContainer)}>
       {tabbedFiles.map(file => (
-        <div key={file.key} style={tabStyle(file)}>
+        <ChromeTabContent key={file.key} show={file === selectedFile}>
         {file.isText ? (
           <ReactCodeMirror
             className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
-            ref={(cm) => this.handleCodemirror(cm, file)}
+            ref={(ref) => this.handleCodemirror(ref, file)}
             value={file.text}
             onChange={(text) => updateFile(file, { text })}
             options={options(file)}
@@ -216,16 +151,16 @@ export default class EditorPane extends Component {
         ) : (
           <Preview file={file} />
         )}
-        </div>
+        </ChromeTabContent>
       ))}
       </div>
-      <div className={CODEMIRROR_HINT_CONTAINER} ref={(div) => this.hints = div}></div>
       <FloatingActionButton
         style={button}
         onClick={this.handleAdd}
       >
         <ContentAdd />
       </FloatingActionButton>
+      <div className={CODEMIRROR_HINT_CONTAINER} ref={(div) => this.hints = div}></div>
     </div>
     );
   }

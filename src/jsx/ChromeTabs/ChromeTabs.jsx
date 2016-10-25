@@ -76,9 +76,6 @@ const getStyles = (props, context) => {
   };
 };
 
-const TAB_CONTAINER = CSS_PREFIX + 'tab_container';
-const TAB_ITEM = CSS_PREFIX + 'tab';
-const TAB_ACTIVE = CSS_PREFIX + 'tab-active';
 
 export default class ChromeTabs extends Component {
 
@@ -128,9 +125,9 @@ export default class ChromeTabs extends Component {
     };
 
     return (
-      <div key={file.key} style={prepareStyles(item)}>
+      <div key={file.key} style={item}>
         <div
-          style={prepareStyles(styles.innerItem)}
+          style={styles.innerItem}
           onTouchTap={() => handleSelect(file)}
         >
         {file.options.isEntryPoint ? (
@@ -143,7 +140,7 @@ export default class ChromeTabs extends Component {
         ) : null}
           <a
             href="#"
-            style={prepareStyles(styles.label)}
+            style={styles.label}
             title={file.moduleName}
           >
           {file.moduleName}
@@ -167,12 +164,24 @@ export default class ChromeTabs extends Component {
       handleClose,
       handleRun,
     } = this.props;
-
-    const styles = getStyles(this.props, this.context);
     const { prepareStyles } = this.context.muiTheme;
 
+    let {
+      root,
+      item,
+      innerItem,
+      leftButton,
+      label,
+      rightButton
+    } = getStyles(this.props, this.context);
+
+    item = prepareStyles(item);
+    innerItem = prepareStyles(innerItem);
+    label = prepareStyles(label);
+    const styles = { item, innerItem, leftButton, label, rightButton };
+
     return (
-      <div style={prepareStyles(styles.root)}>
+      <div style={prepareStyles(root)}>
       {tabbedFiles.map(file => this.renderItem(file, styles))}
       </div>
     );
