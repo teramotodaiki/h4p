@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 
 
-import DirCard, { getHierarchy } from './DirCard';
+import DirCard from './DirCard';
+import getHierarchy from './getHierarchy';
 
 export default class Hierarchy extends Component {
 
