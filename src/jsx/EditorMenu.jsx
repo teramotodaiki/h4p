@@ -8,11 +8,36 @@ import ActionSettings from 'material-ui/svg-icons/action/settings';
 import ImageFilterBAndW from 'material-ui/svg-icons/image/filter-b-and-w';
 
 
+const getStyles = (props, context) => {
+
+  return {
+    root: {
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      zIndex: 100,
+    },
+    button: {
+      marginLeft: -12,
+      marginTop: -4,
+      padding: 0,
+    },
+    menu: {
+      minWidth: 300,
+    }
+  }
+};
+
+
 export default class EditorMenu extends Component {
 
   static propTypes = {
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   toggleOption = (propName) => {
@@ -26,25 +51,17 @@ export default class EditorMenu extends Component {
       darkness,
     } = this.props.editorOptions;
 
-    const style = Object.assign({
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      zIndex: 100
-    }, this.props.style);
-
-    const iconStyle = {
-      marginLeft: -12,
-      marginTop: -4,
-      padding: 0,
-    };
+    const { root, button, menu } = getStyles(this.props, this.context);
 
     return (
         <IconMenu
-          iconButtonElement={<IconButton style={iconStyle}><ActionSettings color={minBlack} /></IconButton>}
+          iconButtonElement={(
+            <IconButton style={button}><ActionSettings color={minBlack} /></IconButton>
+          )}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          style={style}
+          style={root}
+          menuStyle={menu}
         >
           <MenuItem
             rightIcon={<HardwareKeyboardTab />}
