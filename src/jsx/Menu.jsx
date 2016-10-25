@@ -26,7 +26,7 @@ const getStyles = (props, context) => {
       flexDirection: 'row-reverse',
       alignItems: 'center',
       height: 40,
-      backgroundColor: palette.accent1Color,
+      backgroundColor: palette.primary1Color,
       zIndex: 1,
     },
     button: {
@@ -90,7 +90,7 @@ export default class Menu extends Component {
     const { prepareStyles, palette: { alternateTextColor } } = this.context.muiTheme;
 
     return (
-      <Paper style={root}>
+      <Paper rounded={false} style={root}>
         <IconButton tooltip="RUN" onTouchTap={handleRun} style={button}>
           <PlayCircleOutline color={alternateTextColor} />
         </IconButton>

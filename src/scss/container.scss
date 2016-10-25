@@ -33,16 +33,3 @@
   }
 
 }
-
-
-// each of aligns
-.#{$container} {
-
-  & .#{$sizer} {
-    @include sizer(false);
-  }
-  & .#{$sizer}-active,
-  & .#{$sizer}:hover {
-    @include sizer(true);
-  }
-}

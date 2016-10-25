@@ -1,11 +1,50 @@
 import React, { Component, PropTypes } from 'react';
-import { faintBlack, transparent } from 'material-ui/styles/colors';
+import Paper from 'material-ui/Paper';
+import { transparent } from 'material-ui/styles/colors';
+import transitions from 'material-ui/styles/transitions';
 import classNames from 'classnames';
 
 
 const isTouchEnabled = 'ontouchend' in document;
 const MOVE_EVENT = isTouchEnabled ? 'touchmove' : 'mousemove';
 const END_EVENT = isTouchEnabled ? 'touchend' : 'mouseup';
+
+const getStyles = (props, context) => {
+
+  const {
+    primaryWidth,
+    secondaryHeight,
+  } = props;
+  const { palette } = context.muiTheme;
+
+  const sizerWidth = 24;
+
+  return {
+    root: {
+      position: 'absolute',
+      boxSizing: 'border-box',
+      height: '100%',
+      width: sizerWidth,
+      paddingBottom: secondaryHeight,
+      backgroundColor: transparent,
+      cursor: 'col-resize',
+      zIndex: 100,
+      transition: transitions.easeOut(null, 'box-shadow'),
+    },
+    blade: {
+      marginTop: 0,
+      borderTopWidth: 0,
+      borderRightWidth: 0,
+      borderBottomWidth: 40,
+      borderLeftWidth: sizerWidth,
+      borderStyle: 'solid',
+      borderColor: transparent,
+      height: '100%',
+      borderLeftColor: palette.primary1Color,
+    }
+  };
+
+};
 
 export default class Sizer extends Component {
 
@@ -15,8 +54,13 @@ export default class Sizer extends Component {
     secondaryHeight: PropTypes.number.isRequired
   };
 
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
   state = {
     isActive: false,
+    hover: false,
   };
 
   prevent = {};
@@ -49,6 +93,14 @@ export default class Sizer extends Component {
     getSelection().removeAllRanges();
   };
 
+  handleMouseEnter = () => {
+    this.setState({ hover: true });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({ hover: false });
+  };
+
   componentDidMount() {
     window.addEventListener(MOVE_EVENT, this.handleMouseMove);
     window.addEventListener(END_EVENT, this.handleMouseUp);
@@ -61,29 +113,23 @@ export default class Sizer extends Component {
 
   render() {
     const { secondaryHeight } = this.props;
+    const { hover } = this.state;
+    const { prepareStyles } = this.context.muiTheme;
 
-    const className = classNames(CSS_PREFIX + 'sizer', {
-      [`${CSS_PREFIX}sizer-active`]: this.state.isActive
-    });
-
-    const style = Object.assign({}, this.props.style, {
-      paddingBottom: secondaryHeight
-    });
+    const { root, blade } = getStyles(this.props, this.context);
 
     const events = isTouchEnabled ? {
       onTouchStart: this.handleMouseDown
     } : {
-      onMouseDown: this.handleMouseDown
+      onMouseDown: this.handleMouseDown,
+      onMouseEnter: this.handleMouseEnter,
+      onMouseLeave: this.handleMouseLeave
     };
 
     return (
-      <div
-        className={className}
-        style={style}
-        {...events}
-      >
-        <div></div>
-      </div>
+      <Paper rounded={false} zDepth={hover ? 2 : 0} style={root} {...events}>
+        <div style={prepareStyles(blade)}></div>
+      </Paper>
     );
   }
 }
