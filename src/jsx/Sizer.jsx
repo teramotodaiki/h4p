@@ -26,7 +26,7 @@ const getStyles = (props, context) => {
       height: '100%',
       width: sizerWidth,
       paddingBottom: secondaryHeight,
-      backgroundColor: transparent,
+      backgroundColor: palette.canvasColor,
       cursor: 'col-resize',
       zIndex: 100,
       transition: transitions.easeOut(null, 'box-shadow'),

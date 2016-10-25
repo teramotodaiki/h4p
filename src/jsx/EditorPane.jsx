@@ -23,6 +23,43 @@ import { AddDialog } from './FileDialog/';
 const TAB_CONTENT_CONTAINER = CSS_PREFIX + 'tab_content';
 const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
 
+const getStyles = (props, context) => {
+  const {
+    canvasColor,
+  } = context.muiTheme.palette;
+
+  const sizerWidth = 24;
+
+  return {
+    root: {
+      flex: '1 1 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch',
+      overflow: 'hidden',
+    },
+    tabContentContainer: {
+      flex: '1 1 auto',
+      position: 'relative',
+      borderColor: canvasColor,
+      borderStyle: 'solid',
+      borderTopWidth: 6,
+      borderRightWidth: 0,
+      borderBottomWidth: 0,
+      borderLeftWidth: sizerWidth,
+    },
+    tabContent: {
+
+    },
+    button: {
+      position: 'absolute',
+      right: 23,
+      bottom: 23,
+      zIndex: 1000,
+    }
+  };
+};
+
 export default class EditorPane extends Component {
 
   static propTypes = {
@@ -36,6 +73,10 @@ export default class EditorPane extends Component {
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   componentDidMount() {
@@ -121,6 +162,13 @@ export default class EditorPane extends Component {
       openFileDialog,
     } = this.props;
 
+    const {
+      root,
+      tabContentContainer,
+      button,
+    } = getStyles(this.props, this.context);
+    const { prepareStyles } = this.context.muiTheme;
+
     const options = (file) => Object.assign({
       lineNumbers: true,
       mode: 'javascript',
@@ -132,20 +180,6 @@ export default class EditorPane extends Component {
       readOnly: file.options.isReadOnly,
     }, editorOptions);
 
-    const style = Object.assign({
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
-      overflow: 'hidden',
-    }, this.props.style);
-
-    const addButtonStyle = {
-      position: 'absolute',
-      right: 23,
-      bottom: 23,
-      zIndex: 1000,
-    };
-
     const tabStyle = (file) => ({
       width: '100%',
       height: '100%',
@@ -156,7 +190,7 @@ export default class EditorPane extends Component {
     });
 
     return (
-    <div style={style}>
+    <div style={prepareStyles(root)}>
       <EditorMenu
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
@@ -168,7 +202,7 @@ export default class EditorPane extends Component {
         handleClose={closeTab}
         handleRun={handleRun}
       />
-      <div className={TAB_CONTENT_CONTAINER} style={{ flex: '1 1 auto' }}>
+      <div className={TAB_CONTENT_CONTAINER} style={prepareStyles(tabContentContainer)}>
       {tabbedFiles.map(file => (
         <div key={file.key} style={tabStyle(file)}>
         {file.isText ? (
@@ -187,7 +221,7 @@ export default class EditorPane extends Component {
       </div>
       <div className={CODEMIRROR_HINT_CONTAINER} ref={(div) => this.hints = div}></div>
       <FloatingActionButton
-        style={addButtonStyle}
+        style={button}
         onClick={this.handleAdd}
       >
         <ContentAdd />

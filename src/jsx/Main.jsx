@@ -241,7 +241,6 @@ class Main extends Component {
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
-              style={{ flex: '1 1 auto' }}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>

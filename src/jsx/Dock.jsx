@@ -15,13 +15,17 @@ const getStyle = (props, context) => {
     },
     pane: {
       position: 'absolute',
-      display: 'flex',
-      flexDirection: 'column',
       boxSizing: 'border-box',
       right: 0,
       bottom: 0,
       width: config.width,
       height: config.height,
+    },
+    overlay: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
       backgroundColor: palette.backgroundColor,
     }
   };
@@ -43,7 +47,7 @@ export default class Dock extends Component {
     const { style, children } = this.props;
     const { prepareStyles } = this.context.muiTheme;
 
-    const { root, pane } = getStyle(this.props, this.context);
+    const { root, pane, overlay } = getStyle(this.props, this.context);
 
     const paneStyle = prepareStyles(
       Object.assign({}, pane, style)
@@ -52,7 +56,9 @@ export default class Dock extends Component {
     return (
       <div style={prepareStyles(root)}>
         <div style={paneStyle}>
-        {children}
+          <div style={overlay}>
+          {children}
+          </div>
         </div>
       </div>
     );

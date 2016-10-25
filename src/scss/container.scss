@@ -16,20 +16,4 @@
     display: block;
   }
 
-  // tab
-  .#{$tab_container} {
-    @include tab_container;
-
-    .#{$tab} {
-      @include tab;
-
-      &.#{$tab}-active {
-        @include tab(true);
-      }
-    }
-  }
-  .#{$tab_content} {
-    @include tab_content;
-  }
-
 }
