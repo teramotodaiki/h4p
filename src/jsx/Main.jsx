@@ -32,14 +32,8 @@ class Main extends Component {
   };
 
   state = {
-    primaryStyle: {
-      width: 400,
-      zIndex: 200,
-    },
-    secondaryStyle: {
-      height: 400,
-      zIndex: 100,
-    },
+    primaryWidth: 400,
+    secondaryHeight: 400,
 
     files: [],
     isPopout: false,
@@ -159,13 +153,7 @@ class Main extends Component {
   };
 
   handleResize = (primaryWidth, secondaryHeight) => {
-    const primaryStyle = Object.assign({}, this.state.primaryStyle, {
-      width: primaryWidth
-    });
-    const secondaryStyle = Object.assign({}, this.state.secondaryStyle, {
-      height: secondaryHeight
-    });
-    this.setState({ primaryStyle, secondaryStyle });
+    this.setState({ primaryWidth, secondaryHeight });
   };
 
   handleRun = () => {
@@ -185,7 +173,7 @@ class Main extends Component {
   updatePalette = (change) => new Promise((resolve, reject) => {
     const palette = Object.assign({},
       defaultPalette, this.props.palette, change);
-      
+
     this.setState({ palette }, () => resolve(palette));
   });
 
@@ -205,7 +193,7 @@ class Main extends Component {
     const {
       files, tabbedKeys, selectedKey,
       dialogContent,
-      primaryStyle,
+      primaryWidth, secondaryHeight,
       editorOptions,
       isPopout,
       reboot,
@@ -213,28 +201,33 @@ class Main extends Component {
     } = this.state;
     const { player, config } = this.props;
 
-    const secondaryStyle = Object.assign({
-      flexDirection: 'column',
-      boxSizing: 'border-box',
-      paddingRight: primaryStyle.width,
-    }, this.state.secondaryStyle);
+    const primaryDockStyle = {
+      width: primaryWidth,
+      zIndex: 2,
+    }
+
+    const secondaryDockStyle = {
+      height: secondaryHeight,
+      paddingRight: primaryWidth,
+      zIndex: 1,
+    };
 
     const inlineScreenStyle = {
       boxSizing: 'border-box',
-      width: '100vw',
-      height: '100vh',
-      paddingRight: primaryStyle.width,
-      paddingBottom: secondaryStyle.height
+      width: config.width,
+      height: config.height,
+      paddingRight: primaryWidth,
+      paddingBottom: secondaryHeight,
     };
 
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette })}>
         <div style={{ backgroundColor: 'inherit' }}>
-          <Dock config={config} align="right" style={primaryStyle}>
+          <Dock config={config} style={primaryDockStyle}>
             <Sizer
               handleResize={this.handleResize}
-              primaryWidth={primaryStyle.width}
-              secondaryHeight={secondaryStyle.height}
+              primaryWidth={primaryWidth}
+              secondaryHeight={secondaryHeight}
             />
             <EditorPane
               selectedFile={this.selectedFile}
@@ -251,7 +244,7 @@ class Main extends Component {
               style={{ flex: '1 1 auto' }}
             />
           </Dock>
-          <Dock config={config} align="bottom" style={secondaryStyle}>
+          <Dock config={config} style={secondaryDockStyle}>
             <Menu
               player={player}
               files={files}
