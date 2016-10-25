@@ -39,7 +39,7 @@ export default ({ palette }) => {
     secondaryTextColor: fade(emphasize(canvasColor, 1), 0.54),
     alternateTextColor: emphasize(emphasize(canvasColor, 1), 1),
     canvasColor,
-    borderColor: emphasize(emphasize(canvasColor, 1)),
+    borderColor: fade(emphasize(canvasColor, 1), 0.12),
     disabledColor: fade(emphasize(canvasColor, 1), 0.3),
     pickerHeaderColor: primary1Color,
     clockCircleColor: fade(emphasize(canvasColor, 1), 0.07),

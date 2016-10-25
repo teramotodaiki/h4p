@@ -27,6 +27,7 @@ const getStyles = (props, context) => {
       marginLeft: sizerWidth,
       overflowX: 'scroll',
       overflowY: 'hidden',
+      zIndex: 10,
     },
     item: {
       height: 0,

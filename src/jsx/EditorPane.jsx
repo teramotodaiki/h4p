@@ -39,7 +39,7 @@ const getStyles = (props, context) => {
       position: 'relative',
       borderColor: palette.canvasColor,
       borderStyle: 'solid',
-      borderTopWidth: 6,
+      borderTopWidth: 0,
       borderRightWidth: 0,
       borderBottomWidth: 0,
       borderLeftWidth: sizerWidth,
