@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import { transparent } from 'material-ui/styles/colors';
 
 
 import 'codemirror/mode/javascript/javascript';
@@ -19,9 +20,13 @@ import Preview from './Preview';
 import { makeFromType } from '../js/files';
 import { AddDialog } from './FileDialog/';
 
-const CODEMIRROR_HINT_CONTAINER = 'CodeMirror-hint_container';
+const CssScopeId = ('just-a-scope-' + Math.random()).replace('.', '');
+const AlreadySetSymbol = Symbol('set');
 
 const getStyles = (props, context) => {
+  const {
+    tabVisibility,
+  } = props.editorOptions;
   const { palette } = context.muiTheme;
 
   const sizerWidth = 24;
@@ -50,7 +55,50 @@ const getStyles = (props, context) => {
       right: 23,
       bottom: 23,
       zIndex: 1000,
-    }
+    },
+    hint: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 1000,
+    },
+    codemirror: `
+      #${CssScopeId} textarea {
+        font-size: 16px; // In smartphone, will not scale automatically
+      }
+      #${CssScopeId} .ReactCodeMirror {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+      #${CssScopeId} .CodeMirror {
+        font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        width: 100%;
+        height: 100%;
+        background-color: ${transparent};
+      }
+      #${CssScopeId} .CodeMirror-gutters {
+        border-color: ${palette.borderColor};
+        background-color: ${palette.canvasColor};
+      }
+      #${CssScopeId} .CodeMirror-matchingbracket {
+        color: ${palette.primary1Color};
+      	border-bottom: 1px solid ${palette.primary1Color};
+      }
+      #${CssScopeId} .cm-tab:before {
+        content: '••••';
+        position: absolute;
+        color: ${palette.primary3Color};
+        border-left: 1px solid ${palette.primary3Color};
+        visibility: ${
+          tabVisibility ? 'visible' : 'hidden'
+        };
+      }
+      #${CssScopeId} .CodeMirror-hint-snippet {
+        font-style: italic;
+      }
+
+    `,
   };
 };
 
@@ -75,9 +123,11 @@ export default class EditorPane extends Component {
 
   handleCodemirror (ref, file) {
     if (!ref) return;
-    const cm = ref.getCodeMirror();
-    cm.setValue(file.text);
-    this.showHint(cm);
+    if (!ref[AlreadySetSymbol]) {
+      const cm = ref.getCodeMirror();
+      this.showHint(cm);
+      ref[AlreadySetSymbol] = true;
+    }
   }
 
   showHint(cm) {
@@ -110,6 +160,8 @@ export default class EditorPane extends Component {
       root,
       tabContentContainer,
       button,
+      hint,
+      codemirror,
     } = getStyles(this.props, this.context);
     const { prepareStyles } = this.context.muiTheme;
 
@@ -125,7 +177,8 @@ export default class EditorPane extends Component {
     }, editorOptions);
 
     return (
-    <div style={prepareStyles(root)}>
+    <div style={prepareStyles(root)} id={CssScopeId}>
+      <style>{codemirror}</style>
       <EditorMenu
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
@@ -142,7 +195,6 @@ export default class EditorPane extends Component {
         <ChromeTabContent key={file.key} show={file === selectedFile}>
         {file.isText ? (
           <ReactCodeMirror
-            className={options.tabVisibility ? 'ReactCodeMirror__tab-visible' : ''}
             ref={(ref) => this.handleCodemirror(ref, file)}
             value={file.text}
             onChange={(text) => updateFile(file, { text })}
@@ -160,7 +212,7 @@ export default class EditorPane extends Component {
       >
         <ContentAdd />
       </FloatingActionButton>
-      <div className={CODEMIRROR_HINT_CONTAINER} ref={(div) => this.hints = div}></div>
+      <div style={hint} ref={(div) => this.hints = div}></div>
     </div>
     );
   }

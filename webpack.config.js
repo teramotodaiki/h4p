@@ -30,17 +30,13 @@ const config = {
         loaders: ["style", "css"]
       },
       {
-        test: /\.scss$/,
-        loaders: ["style", "css", "sass"]
-      },
-      {
         test: /\.html$/,
         loaders: ["handlebars"]
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.html', '.scss'],
+    extensions: ['.js', '.jsx', '.html'],
     modules: [
       path.resolve('./src'),
       'node_modules'
