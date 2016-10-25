@@ -256,7 +256,6 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
-              style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
               files={files}

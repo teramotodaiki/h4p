@@ -16,11 +16,6 @@
     display: block;
   }
 
-  // menu
-  .#{$menu} {
-    @include menu();
-  }
-
   // tab
   .#{$tab_container} {
     @include tab_container;

@@ -29,7 +29,6 @@ export default ({ palette }) => {
   } = Object.assign({}, defaultPalette, palette);
 
   palette = {
-    backgroundColor,
     primary1Color,
     primary2Color: emphasize(primary1Color),
     primary3Color: monochrome(primary1Color),
@@ -45,6 +44,8 @@ export default ({ palette }) => {
     pickerHeaderColor: primary1Color,
     clockCircleColor: fade(emphasize(canvasColor, 1), 0.07),
     shadowColor: fullBlack,
+
+    backgroundColor,
   };
 
   return getMuiTheme({ palette });
