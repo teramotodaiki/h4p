@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import { transparent } from 'material-ui/styles/colors';
+import { transparent, fullWhite, grey100 } from 'material-ui/styles/colors';
 
 
 import 'codemirror/mode/javascript/javascript';
@@ -26,6 +26,7 @@ const AlreadySetSymbol = Symbol('set');
 const getStyles = (props, context) => {
   const {
     tabVisibility,
+    darkness,
   } = props.editorOptions;
   const { palette } = context.muiTheme;
 
@@ -70,6 +71,12 @@ const getStyles = (props, context) => {
         position: absolute;
         width: 100%;
         height: 100%;
+        filter:
+          invert(${darkness ? 100 : 0}%)
+          sepia(${darkness ? 40 : 0}%)
+          brightness(${darkness ? 0.6 : 1.0});
+        background-color: ${grey100};
+        transition: all .4s ease;
       }
       #${CssScopeId} .CodeMirror {
         font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
@@ -79,7 +86,7 @@ const getStyles = (props, context) => {
       }
       #${CssScopeId} .CodeMirror-gutters {
         border-color: ${palette.borderColor};
-        background-color: ${palette.canvasColor};
+        background-color: ${fullWhite};
       }
       #${CssScopeId} .CodeMirror-matchingbracket {
         color: ${palette.primary1Color};
