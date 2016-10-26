@@ -20,17 +20,43 @@ const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
 
+const getStyle = (props, context) => {
+  const { config, primaryWidth, secondaryHeight } = props;
+
+  return {
+    root: {
+      position: 'absolute',
+      width: 0,
+      height: 0,
+      top: 0,
+      left: 0,
+    },
+    container: {
+      boxSizing: 'border-box',
+      width: config.width,
+      height: config.height,
+      paddingRight: primaryWidth,
+      paddingBottom: secondaryHeight,
+    },
+  };
+};
+
 export default class ScreenPane extends Component {
 
   static propTypes = {
     player: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
+    primaryWidth: PropTypes.number.isRequired,
+    secondaryHeight: PropTypes.number.isRequired,
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
     env: PropTypes.array.isRequired,
     handlePopoutClose: PropTypes.func.isRequired,
-    style: PropTypes.object.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   state = {
@@ -147,11 +173,8 @@ export default class ScreenPane extends Component {
     const { width, height } = this.state;
     const { isPopout, reboot } = this.props;
 
-    const containerStyle = {
-      position: 'absolute',
-      width: 0,
-      height: 0
-    };
+    const { root, container } = getStyle(this.props, this.context);
+    const { prepareStyles } = this.context.muiTheme;
 
     const popoutOptions = {
       width: width,
@@ -177,8 +200,8 @@ export default class ScreenPane extends Component {
     ) : null;
 
     return (
-      <div style={containerStyle}>
-        <div style={this.props.style}>
+      <div style={prepareStyles(root)}>
+        <div style={prepareStyles(container)}>
           {popout}
           <Screen display={!isPopout} frameRef={(ref) => ref && (this.inlineFrame = ref)} />
         </div>

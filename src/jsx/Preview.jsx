@@ -1,11 +1,37 @@
 import React, { Component, PropTypes } from 'react';
-import { transparent, faintBlack, darkBlack } from 'material-ui/styles/colors';
+import { fullWhite, fullBlack } from 'material-ui/styles/colors';
 
+
+const getStyles = (props, context, state) => {
+  const { scale } = state;
+
+  return {
+    root: {
+      position: 'absolute',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+      background: `linear-gradient(${fullWhite}, ${fullBlack})`,
+      width: '100%',
+      height: '100%',
+    },
+    img: {
+      transform: `scale(${scale})`,
+    },
+  };
+};
 
 export default class Preview extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   state = {
@@ -30,24 +56,15 @@ export default class Preview extends Component {
   render() {
     const { name, type, blob, blobURL } = this.props.file;
 
-    const containerStyle = {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      boxSizing: 'border-box',
-      overflow: 'hidden',
-      background: `linear-gradient(${transparent}, ${darkBlack})`,
-      width: '100%',
-      height: '100%',
-    };
+    const { root, img } = getStyles(this.props, this.context, this.state);
+    const { prepareStyles } = this.context.muiTheme;
 
     const content = (
-      <img src={blobURL} alt={name} style={{ transform: `scale(${this.state.scale})` }} />
+      <img src={blobURL} alt={name} style={prepareStyles(img)} />
     );
 
     return (
-      <div style={containerStyle} ref={ref => ref && (this.container = ref)}>
+      <div style={prepareStyles(root)} ref={ref => ref && (this.container = ref)}>
       {content}
       </div>
     );
