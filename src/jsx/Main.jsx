@@ -172,8 +172,7 @@ class Main extends Component {
   };
 
   updatePalette = (change) => new Promise((resolve, reject) => {
-    const palette = Object.assign({},
-      defaultPalette, this.props.palette, change);
+    const palette = Object.assign({}, this.state.palette, change);
 
     this.setState({ palette }, () => resolve(palette));
   });
