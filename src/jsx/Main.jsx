@@ -216,14 +216,6 @@ class Main extends Component {
       zIndex: 1,
     };
 
-    const inlineScreenStyle = {
-      boxSizing: 'border-box',
-      width: config.width,
-      height: config.height,
-      paddingRight: primaryWidth,
-      paddingBottom: secondaryHeight,
-    };
-
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette })}>
         <div style={{ backgroundColor: 'inherit' }}>
@@ -275,12 +267,13 @@ class Main extends Component {
           <ScreenPane
             player={player}
             config={config}
+            primaryWidth={primaryWidth}
+            secondaryHeight={secondaryHeight}
             files={files}
             isPopout={isPopout}
             reboot={reboot}
             env={env}
             handlePopoutClose={this.handleTogglePopout}
-            style={inlineScreenStyle}
           />
           <FileDialog ref={this.handleFileDialog} />
         </div>
