@@ -1,6 +1,6 @@
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
-  lightGreen400, lightGreenA100, pinkA100,
+  lightGreenA100,
   fullWhite, fullBlack
 } from 'material-ui/styles/colors';
 import {
@@ -15,8 +15,8 @@ import {
 export const defaultPalette = {
   backgroundColor: fade(lightGreenA100, 0.15),
   canvasColor: fullWhite,
-  primary1Color: lightGreen400,
-  accent1Color: pinkA100,
+  primary1Color: '#00d084',
+  accent1Color: '#f78da7',
 };
 
 export default ({ palette }) => {
@@ -28,7 +28,7 @@ export default ({ palette }) => {
     accent1Color
   } = Object.assign({}, defaultPalette, palette);
 
-  palette = {
+  const theme = {
     primary1Color,
     primary2Color: emphasize(primary1Color),
     primary3Color: monochrome(primary1Color),
@@ -39,7 +39,7 @@ export default ({ palette }) => {
     secondaryTextColor: fade(emphasize(canvasColor, 1), 0.54),
     alternateTextColor: emphasize(emphasize(canvasColor, 1), 1),
     canvasColor,
-    borderColor: fade(emphasize(canvasColor, 0.5), 0.3),
+    borderColor: fade(accent1Color, 0.4),
     disabledColor: fade(emphasize(canvasColor, 1), 0.3),
     pickerHeaderColor: primary1Color,
     clockCircleColor: fade(emphasize(canvasColor, 1), 0.07),
@@ -47,6 +47,8 @@ export default ({ palette }) => {
 
     backgroundColor,
   };
+
+  palette = Object.assign({}, theme, palette);
 
   return getMuiTheme({ palette });
 };

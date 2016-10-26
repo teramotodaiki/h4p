@@ -44,11 +44,9 @@ const getStyles = (props, context) => {
     tabContentContainer: {
       flex: '1 1 auto',
       position: 'relative',
-      borderColor: palette.canvasColor,
+      borderColor: transparent,
       borderStyle: 'solid',
-      borderTopWidth: 0,
-      borderRightWidth: 0,
-      borderBottomWidth: 0,
+      borderWidth: 0,
       borderLeftWidth: sizerWidth,
       backgroundColor: palette.canvasColor,
     },
