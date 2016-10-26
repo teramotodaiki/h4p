@@ -30,9 +30,7 @@
     "css-loader": "^0.25.0",
     "handlebars": "^4.0.5",
     "html-webpack-plugin": "^2.22.0",
-    "node-sass": "^3.10.0",
     "raw-loader": "^0.5.1",
-    "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^2.1.0-beta.25",
     "webpack-dev-server": "^2.1.0-beta.9"
