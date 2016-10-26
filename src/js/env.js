@@ -30,17 +30,15 @@ export const validateEnv = (env) => {
   });
 };
 
-export const importEnv = (json) => {
-  const seeds = JSON.parse(json);
+export const importEnv = (seeds) => {
   return [].concat(seeds).map(s => makeEnv.apply(null, s));
 };
 
 export const exportEnv = (env) => {
-  const array = [].concat(env).map(e => {
+  return [].concat(env).map(e => {
     const type = EnvTypes.getType(e.type);
     return [e.keyName, type.compose(e.value), e.tooltip];
   });
-  return JSON.stringify(array);
 };
 
 const Types = [

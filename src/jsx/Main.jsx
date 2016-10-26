@@ -13,7 +13,7 @@ injectTapEventPlugin();
 
 import { makeFromFile, makeFromType } from '../js/files';
 import { makeEnv } from '../js/env';
-import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
+import getCustomTheme from '../js/getCustomTheme';
 import Dock from './Dock';
 import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
@@ -47,7 +47,7 @@ class Main extends Component {
       darkness: false,
     },
 
-    palette: defaultPalette,
+    palette: {},
     env: []
 
   };
@@ -63,13 +63,17 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const { player, config: { files, env } } = this.props;
+    const { player, config: { files, env, palette } } = this.props;
 
     const tabbedKeys = files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
-    this.setState({ reboot: true, files, tabbedKeys, selectedKey, env });
+    this.setState({
+      reboot: true,
+      files, tabbedKeys, selectedKey,
+      env, palette
+    });
   }
 
   componentDidUpdate() {

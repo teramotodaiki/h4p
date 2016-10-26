@@ -16,14 +16,21 @@ export default () => {
     document.querySelectorAll(`.${CSS_PREFIX}app`)
   ).map(elem => {
     const scripts = document.querySelectorAll('script' + elem.getAttribute('data-target'));
-    const env = (elem => {
+    const {
+      env,
+      palette,
+    } = (elem => {
       if (!elem) return {};
-      return importEnv(elem.textContent);
-    })(document.querySelector('x-env' + elem.getAttribute('data-target') + '__env'));
+      const exported = JSON.parse(elem.textContent);
+      return {
+        env: importEnv(exported.env),
+        palette: exported.palette,
+      };
+    })(document.querySelector('x-exports' + elem.getAttribute('data-target') + '__exports'));
 
     return makeFromElements(scripts).then(files => {
       // An instance of h4p.Player
-      const player = new Player({ files, env });
+      const player = new Player({ files, env, palette });
       player.start();
       return player;
     });

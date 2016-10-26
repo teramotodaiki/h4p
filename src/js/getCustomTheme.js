@@ -12,7 +12,7 @@ import {
 } from 'material-ui/utils/colorManipulator';
 
 
-export const defaultPalette = {
+const defaultPalette = {
   backgroundColor: fade(lightGreenA100, 0.15),
   canvasColor: fullWhite,
   primary1Color: '#00d084',
