@@ -1,47 +1,37 @@
 import React, { Component, PropTypes } from 'react';
 import Paper from 'material-ui/Paper';
-import { transparent } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
-import classNames from 'classnames';
 
 
 const isTouchEnabled = 'ontouchend' in document;
 const MOVE_EVENT = isTouchEnabled ? 'touchmove' : 'mousemove';
 const END_EVENT = isTouchEnabled ? 'touchend' : 'mouseup';
 
+const SkewY = 66;
+const SizerWidth = 24;
+const MenuHeight = 40;
+
 const getStyles = (props, context) => {
 
-  const {
-    primaryWidth,
-    secondaryHeight,
-  } = props;
+  const { secondaryHeight } = props;
   const { palette } = context.muiTheme;
 
-  const sizerWidth = 24;
+  const blade = SizerWidth * Math.tan(SkewY / 180 * Math.PI);
 
   return {
     root: {
       position: 'absolute',
       boxSizing: 'border-box',
       height: '100%',
-      width: sizerWidth,
-      paddingBottom: secondaryHeight,
-      backgroundColor: transparent,
+      width: SizerWidth,
+      bottom: secondaryHeight - MenuHeight + blade / 2,
+
       cursor: 'col-resize',
+      backgroundColor: palette.primary1Color,
+      transform: `skewY(${-SkewY}deg)`,
       zIndex: 100,
       transition: transitions.easeOut(null, 'box-shadow'),
     },
-    blade: {
-      marginTop: 0,
-      borderTopWidth: 0,
-      borderRightWidth: 0,
-      borderBottomWidth: 40,
-      borderLeftWidth: sizerWidth,
-      borderStyle: 'solid',
-      borderColor: transparent,
-      height: '100%',
-      borderLeftColor: palette.primary1Color,
-    }
   };
 
 };
@@ -112,11 +102,9 @@ export default class Sizer extends Component {
   }
 
   render() {
-    const { secondaryHeight } = this.props;
     const { hover } = this.state;
-    const { prepareStyles } = this.context.muiTheme;
 
-    const { root, blade } = getStyles(this.props, this.context);
+    const { root } = getStyles(this.props, this.context);
 
     const events = isTouchEnabled ? {
       onTouchStart: this.handleMouseDown
@@ -127,9 +115,12 @@ export default class Sizer extends Component {
     };
 
     return (
-      <Paper rounded={false} zDepth={hover ? 2 : 0} style={root} {...events}>
-        <div style={prepareStyles(blade)}></div>
-      </Paper>
+      <Paper
+        rounded={false}
+        zDepth={hover ? 2 : 0}
+        style={root}
+        {...events}
+      />
     );
   }
 }

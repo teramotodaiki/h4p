@@ -26,6 +26,7 @@ const getStyles = (props, context) => {
       flex: '0 0 auto',
       boxSizing: 'border-box',
       height: 6,
+      marginLeft: -sizerWidth,
       borderTopWidth: 1,
       borderRightWidth: 0,
       borderLeftWidth: 0,

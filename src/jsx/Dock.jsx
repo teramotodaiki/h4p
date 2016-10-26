@@ -20,6 +20,7 @@ const getStyle = (props, context) => {
       bottom: 0,
       width: config.width,
       height: config.height,
+      overlay: 'hidden',
     },
     overlay: {
       display: 'flex',
