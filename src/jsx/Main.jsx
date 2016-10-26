@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
@@ -14,6 +13,7 @@ injectTapEventPlugin();
 
 import { makeFromFile, makeFromType } from '../js/files';
 import { makeEnv } from '../js/env';
+import getCustomTheme from '../js/getCustomTheme';
 import Dock from './Dock';
 import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
@@ -32,14 +32,8 @@ class Main extends Component {
   };
 
   state = {
-    primaryStyle: {
-      width: 400,
-      zIndex: 200,
-    },
-    secondaryStyle: {
-      height: 400,
-      zIndex: 100,
-    },
+    primaryWidth: 400,
+    secondaryHeight: 400,
 
     files: [],
     isPopout: false,
@@ -50,6 +44,7 @@ class Main extends Component {
 
     editorOptions: {
       tabVisibility: false,
+      darkness: false,
     },
 
     palette: {},
@@ -68,13 +63,17 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const { player, config: { files, env } } = this.props;
+    const { player, config: { files, env, palette } } = this.props;
 
     const tabbedKeys = files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
-    this.setState({ reboot: true, files, tabbedKeys, selectedKey, env });
+    this.setState({
+      reboot: true,
+      files, tabbedKeys, selectedKey,
+      env, palette
+    });
   }
 
   componentDidUpdate() {
@@ -159,13 +158,7 @@ class Main extends Component {
   };
 
   handleResize = (primaryWidth, secondaryHeight) => {
-    const primaryStyle = Object.assign({}, this.state.primaryStyle, {
-      width: primaryWidth
-    });
-    const secondaryStyle = Object.assign({}, this.state.secondaryStyle, {
-      height: secondaryHeight
-    });
-    this.setState({ primaryStyle, secondaryStyle });
+    this.setState({ primaryWidth, secondaryHeight });
   };
 
   handleRun = () => {
@@ -182,11 +175,11 @@ class Main extends Component {
     this.setState({ editorOptions });
   };
 
-  updatePalette = (change) => {
-    const palette = Object.assign({}, this.props.palette, change);
+  updatePalette = (change) => new Promise((resolve, reject) => {
+    const palette = Object.assign({}, this.state.palette, change);
 
-    this.setState({ palette });
-  };
+    this.setState({ palette }, () => resolve(palette));
+  });
 
   updateEnv = (change, index = -1) => new Promise((resolve, reject) => {
     const merged = index in this.state.env ?
@@ -204,7 +197,7 @@ class Main extends Component {
     const {
       files, tabbedKeys, selectedKey,
       dialogContent,
-      primaryStyle,
+      primaryWidth, secondaryHeight,
       editorOptions,
       isPopout,
       reboot,
@@ -212,28 +205,33 @@ class Main extends Component {
     } = this.state;
     const { player, config } = this.props;
 
-    const secondaryStyle = Object.assign({
-      flexDirection: 'column',
-      boxSizing: 'border-box',
-      paddingRight: primaryStyle.width,
-    }, this.state.secondaryStyle);
+    const primaryDockStyle = {
+      width: primaryWidth,
+      zIndex: 2,
+    }
+
+    const secondaryDockStyle = {
+      height: secondaryHeight,
+      paddingRight: primaryWidth,
+      zIndex: 1,
+    };
 
     const inlineScreenStyle = {
       boxSizing: 'border-box',
-      width: '100vw',
-      height: '100vh',
-      paddingRight: primaryStyle.width,
-      paddingBottom: secondaryStyle.height
+      width: config.width,
+      height: config.height,
+      paddingRight: primaryWidth,
+      paddingBottom: secondaryHeight,
     };
 
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme({ palette })}>
+      <MuiThemeProvider muiTheme={getCustomTheme({ palette })}>
         <div style={{ backgroundColor: 'inherit' }}>
-          <Dock config={config} align="right" style={primaryStyle}>
+          <Dock config={config} style={primaryDockStyle}>
             <Sizer
               handleResize={this.handleResize}
-              primaryWidth={primaryStyle.width}
-              secondaryHeight={secondaryStyle.height}
+              primaryWidth={primaryWidth}
+              secondaryHeight={secondaryHeight}
             />
             <EditorPane
               selectedFile={this.selectedFile}
@@ -247,10 +245,9 @@ class Main extends Component {
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
-              style={{ flex: '1 1 auto' }}
             />
           </Dock>
-          <Dock config={config} align="bottom" style={secondaryStyle}>
+          <Dock config={config} style={secondaryDockStyle}>
             <Menu
               player={player}
               files={files}
@@ -262,7 +259,6 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
-              style={{ flex: '0 0 auto' }}
             />
             <ResourcePane
               files={files}

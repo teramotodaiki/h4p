@@ -4,6 +4,23 @@
     <meta charset="utf-8">
     <title>HackforPlay Example</title>
     <script async type="text/javascript" src="h4p.js" onload="h4p()"></script>
+    <style media="screen">
+    .h4p__container {
+        // generals
+        background-color: #e0e0e0;
+        display: none;
+        position: absolute;
+        padding: 0px;
+        margin: 0px;
+        left: 0px;
+        top: 0px;
+        width: 0px;
+        height: 0px;
+    }
+    .h4p__container-open {
+        display: block;
+    }
+    </style>
   </head>
   <body>
     <h1>h4p example</h1>
@@ -27,7 +44,12 @@
 
     </script>
 
-    <x-env class="example1__env">[["DEBUG", true, "A flag means test mode"]]</x-env>
+    <x-exports class="example1__exports">
+    {
+        "env": [["DEBUG", true, "A flag means test mode"]],
+        "palette": {}
+    }
+    </x-exports>
 
   </body>
 </html>

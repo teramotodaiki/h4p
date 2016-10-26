@@ -1,36 +1,67 @@
 import React, { Component, PropTypes } from 'react';
 
-const Dock = ({ config, align, children, containerStyle, style }) => {
 
-  containerStyle = Object.assign({
-    position: 'absolute',
-    left: config.width,
-    top: config.height,
-    width: 0,
-    height: 0,
-    backgroundColor: 'inherit',
-  }, containerStyle);
+const getStyle = (props, context) => {
+  const { config } = props;
+  const { palette } = context.muiTheme;
 
-  style = Object.assign({
-    width: config.width,
-    height: config.height,
-    backgroundColor: 'inherit',
-  }, style);
+  return {
+    root: {
+      position: 'absolute',
+      left: config.width,
+      top: config.height,
+      width: 0,
+      height: 0,
+    },
+    pane: {
+      position: 'absolute',
+      boxSizing: 'border-box',
+      right: 0,
+      bottom: 0,
+      width: config.width,
+      height: config.height,
+      overlay: 'hidden',
+    },
+    overlay: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      height: '100%',
+      backgroundColor: palette.backgroundColor,
+    }
+  };
+};
 
-  return (
-    <div style={containerStyle}>
-      <div style={style} className={CSS_PREFIX + 'dock-' + align}>
-        {children}
+export default class Dock extends Component {
+
+  static propTypes = {
+    config: PropTypes.object.isRequired,
+    style: PropTypes.object.isRequired,
+    children: PropTypes.node
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
+  render() {
+    const { style, children } = this.props;
+    const { prepareStyles } = this.context.muiTheme;
+
+    const { root, pane, overlay } = getStyle(this.props, this.context);
+
+    const paneStyle = prepareStyles(
+      Object.assign({}, pane, style)
+    );
+
+    return (
+      <div style={prepareStyles(root)}>
+        <div style={paneStyle}>
+          <div style={overlay}>
+          {children}
+          </div>
+        </div>
       </div>
-    </div>
-  );
-
-};
-
-Dock.propTypes = {
-  config: PropTypes.object.isRequired,
-  align: PropTypes.string.isRequired,
-  containerStyle: PropTypes.any,
-};
-
-export default Dock;
+    );
+  }
+}

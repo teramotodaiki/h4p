@@ -14,7 +14,8 @@ export default class DownloadDialog extends Component {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     files: PropTypes.array.isRequired,
-    env: PropTypes.array.isRequired
+    env: PropTypes.array.isRequired,
+    palette: PropTypes.object.isRequired,
   };
 
   state = {
@@ -26,13 +27,16 @@ export default class DownloadDialog extends Component {
   componentDidMount() {
     Promise.all(this.props.files.map(compose))
     .then(files => {
-      const env = exportEnv(this.props.env);
-      const bundleWithURL = this.bundle({ files, env, useCDN: true });
+      const exports = JSON.stringify({
+        env: exportEnv(this.props.env),
+        palette: this.props.palette
+      });
+      const bundleWithURL = this.bundle({ files, exports, useCDN: true });
       this.setState({ bundleWithURL });
 
-      return [files, env];
+      return [files, exports];
     })
-    .then(([files, env]) => fetch(CORE_CDN_URL, { mode: 'cors' })
+    .then(([files, exports]) => fetch(CORE_CDN_URL, { mode: 'cors' })
       .then(response => {
         if (!response.ok) {
           throw response.error ? response.error() : new Error(response.statusText);
@@ -41,7 +45,7 @@ export default class DownloadDialog extends Component {
       })
       .then(lib => {
         const raw = encodeURIComponent(lib);
-        const bundleWithRaw = this.bundle({ files, env, raw });
+        const bundleWithRaw = this.bundle({ files, exports, raw });
         this.setState({ bundleWithRaw });
       })
     )

@@ -1,11 +1,40 @@
 import React, { Component, PropTypes } from 'react';
-import { faintBlack, transparent } from 'material-ui/styles/colors';
-import classNames from 'classnames';
+import Paper from 'material-ui/Paper';
+import transitions from 'material-ui/styles/transitions';
 
 
 const isTouchEnabled = 'ontouchend' in document;
 const MOVE_EVENT = isTouchEnabled ? 'touchmove' : 'mousemove';
 const END_EVENT = isTouchEnabled ? 'touchend' : 'mouseup';
+
+const SkewY = 66;
+const SizerWidth = 24;
+const MenuHeight = 40;
+
+const getStyles = (props, context) => {
+
+  const { secondaryHeight } = props;
+  const { palette } = context.muiTheme;
+
+  const blade = SizerWidth * Math.tan(SkewY / 180 * Math.PI);
+
+  return {
+    root: {
+      position: 'absolute',
+      boxSizing: 'border-box',
+      height: '100%',
+      width: SizerWidth,
+      bottom: secondaryHeight - MenuHeight + blade / 2,
+
+      cursor: 'col-resize',
+      backgroundColor: palette.primary1Color,
+      transform: `skewY(${-SkewY}deg)`,
+      zIndex: 100,
+      transition: transitions.easeOut(null, 'box-shadow'),
+    },
+  };
+
+};
 
 export default class Sizer extends Component {
 
@@ -15,8 +44,13 @@ export default class Sizer extends Component {
     secondaryHeight: PropTypes.number.isRequired
   };
 
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
   state = {
     isActive: false,
+    hover: false,
   };
 
   prevent = {};
@@ -49,6 +83,14 @@ export default class Sizer extends Component {
     getSelection().removeAllRanges();
   };
 
+  handleMouseEnter = () => {
+    this.setState({ hover: true });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({ hover: false });
+  };
+
   componentDidMount() {
     window.addEventListener(MOVE_EVENT, this.handleMouseMove);
     window.addEventListener(END_EVENT, this.handleMouseUp);
@@ -60,30 +102,25 @@ export default class Sizer extends Component {
   }
 
   render() {
-    const { secondaryHeight } = this.props;
+    const { hover } = this.state;
 
-    const className = classNames(CSS_PREFIX + 'sizer', {
-      [`${CSS_PREFIX}sizer-active`]: this.state.isActive
-    });
-
-    const style = Object.assign({}, this.props.style, {
-      paddingBottom: secondaryHeight
-    });
+    const { root } = getStyles(this.props, this.context);
 
     const events = isTouchEnabled ? {
       onTouchStart: this.handleMouseDown
     } : {
-      onMouseDown: this.handleMouseDown
+      onMouseDown: this.handleMouseDown,
+      onMouseEnter: this.handleMouseEnter,
+      onMouseLeave: this.handleMouseLeave
     };
 
     return (
-      <div
-        className={className}
-        style={style}
+      <Paper
+        rounded={false}
+        zDepth={hover ? 2 : 0}
+        style={root}
         {...events}
-      >
-        <div></div>
-      </div>
+      />
     );
   }
 }

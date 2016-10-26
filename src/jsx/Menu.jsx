@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
+import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
-import { darkBlack } from 'material-ui/styles/colors';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
@@ -9,9 +9,34 @@ import ImagePalette from 'material-ui/svg-icons/image/palette';
 import ImageTune from 'material-ui/svg-icons/image/tune';
 import 'whatwg-fetch';
 
+
 import { DownloadDialog, SaveDialog } from './FileDialog/';
 import CustomDialog from './CustomDialog';
 import EnvDialog from './EnvDialog';
+
+const getStyles = (props, context) => {
+
+  const { isPopout } = props;
+  const { palette } = context.muiTheme;
+
+  return {
+    root: {
+      flex: '0 0 auto',
+      display: 'flex',
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      height: 40,
+      backgroundColor: palette.primary1Color,
+      zIndex: 1,
+    },
+    button: {
+      marginRight: 20
+    },
+    popoutIcon: {
+      transform: isPopout ? 'rotate(180deg)' : '',
+    }
+  };
+};
 
 export default class Menu extends Component {
 
@@ -28,14 +53,18 @@ export default class Menu extends Component {
     updateEnv: PropTypes.func.isRequired,
   };
 
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
   handlePowerOff = () => {
     this.props.player.close();
   };
 
   handleDownload = () => {
-    const { files, env, openFileDialog } = this.props;
+    const { files, env, palette, openFileDialog } = this.props;
 
-    openFileDialog(DownloadDialog, { files, env })
+    openFileDialog(DownloadDialog, { files, env, palette })
       .then(content => {
         openFileDialog(SaveDialog, { content });
       })
@@ -57,40 +86,35 @@ export default class Menu extends Component {
   render() {
     const { isPopout, handleRun, handleTogglePopout } = this.props;
 
-    const iconStyle = {
-      marginRight: 20
-    };
-
-    const style = Object.assign({}, this.props.style, {
-      zIndex: 1,
-    });
+    const { root, button, popoutIcon } = getStyles(this.props, this.context);
+    const { prepareStyles, palette: { alternateTextColor } } = this.context.muiTheme;
 
     return (
-      <div className={CSS_PREFIX + 'menu'} style={style}>
-        <IconButton tooltip="RUN" onTouchTap={handleRun} style={iconStyle}>
-          <PlayCircleOutline color={darkBlack} />
+      <Paper rounded={false} style={root}>
+        <IconButton tooltip="RUN" onTouchTap={handleRun} style={button}>
+          <PlayCircleOutline color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Shut down" onTouchTap={this.handlePowerOff} style={iconStyle}>
-          <PowerSettingsNew color={darkBlack} />
+        <IconButton tooltip="Shut down" onTouchTap={this.handlePowerOff} style={button}>
+          <PowerSettingsNew color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Download" onTouchTap={this.handleDownload} style={iconStyle}>
-          <FileDownload color={darkBlack} />
+        <IconButton tooltip="Download" onTouchTap={this.handleDownload} style={button}>
+          <FileDownload color={alternateTextColor} />
         </IconButton>
         <IconButton
           tooltip={isPopout ? "Inside" : "New window"}
           onTouchTap={handleTogglePopout}
-          style={iconStyle}
-          iconStyle={isPopout ? { transform: 'rotate(180deg)' } : null}
+          style={button}
+          iconStyle={popoutIcon}
         >
-          <OpenInBrowser color={darkBlack} />
+          <OpenInBrowser color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Colors" onTouchTap={this.handlePalette} style={iconStyle}>
-          <ImagePalette color={darkBlack} />
+        <IconButton tooltip="Colors" onTouchTap={this.handlePalette} style={button}>
+          <ImagePalette color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Configure Env" onTouchTap={this.handleEnv} style={iconStyle}>
-          <ImageTune color={darkBlack} />
+        <IconButton tooltip="Configure Env" onTouchTap={this.handleEnv} style={button}>
+          <ImageTune color={alternateTextColor} />
         </IconButton>
-      </div>
+      </Paper>
     );
   }
 }
