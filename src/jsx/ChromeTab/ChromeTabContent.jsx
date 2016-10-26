@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { fade } from 'material-ui/utils/colorManipulator';
 
 
 const getStyles = (props, context) => {
@@ -25,14 +26,13 @@ const getStyles = (props, context) => {
       flex: '0 0 auto',
       boxSizing: 'border-box',
       height: 6,
-      marginTop: -1,
       borderTopWidth: 1,
       borderRightWidth: 0,
       borderLeftWidth: 0,
       borderBottomWidth: 1,
       borderStyle: 'solid',
       borderColor: borderColor,
-      backgroundColor: canvasColor,
+      backgroundColor: fade(canvasColor, 1),
     },
     container: {
       flex: '1 1 auto',

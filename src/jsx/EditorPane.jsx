@@ -16,7 +16,7 @@ import 'codemirror/addon/hint/show-hint.css';
 
 import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
-import ChromeTabs, { ChromeTabContent } from './ChromeTabs/';
+import ChromeTab, { ChromeTabContent } from './ChromeTab/';
 import Preview from './Preview';
 import { makeFromType } from '../js/files';
 import { AddDialog } from './FileDialog/';
@@ -29,8 +29,9 @@ const getStyles = (props, context) => {
     tabVisibility,
     darkness,
   } = props.editorOptions;
-  const { palette } = context.muiTheme;
+  const { palette, spacing } = context.muiTheme;
 
+  const tabHeight = 32;
   const sizerWidth = 24;
 
   return {
@@ -40,6 +41,20 @@ const getStyles = (props, context) => {
       flexDirection: 'column',
       alignItems: 'stretch',
       overflow: 'hidden',
+    },
+    tabContainer: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      height: 32,
+      paddingTop: spacing.desktopGutterMini,
+      paddingBottom: 10,
+      paddingLeft: spacing.desktopGutterLess,
+      marginRight: spacing.desktopGutterMore,
+      marginBottom: -10,
+      marginLeft: sizerWidth,
+      overflowX: 'scroll',
+      overflowY: 'hidden',
+      zIndex: 10,
     },
     tabContentContainer: {
       flex: '1 1 auto',
@@ -172,6 +187,7 @@ export default class EditorPane extends Component {
 
     const {
       root,
+      tabContainer,
       tabContentContainer,
       button,
       hint,
@@ -197,13 +213,19 @@ export default class EditorPane extends Component {
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
       />
-      <ChromeTabs
-        selectedFile={selectedFile}
-        tabbedFiles={tabbedFiles}
-        handleSelect={selectFile}
-        handleClose={closeTab}
-        handleRun={handleRun}
-      />
+      <div style={prepareStyles(tabContainer)}>
+      {tabbedFiles.map(file => (
+        <ChromeTab
+          key={file.key}
+          file={file}
+          isSelected={file === selectedFile}
+          tabbedFiles={tabbedFiles}
+          handleSelect={selectFile}
+          handleClose={closeTab}
+          handleRun={handleRun}
+        />
+      ))}
+      </div>
       <div style={prepareStyles(tabContentContainer)}>
       {tabbedFiles.map(file => (
         <ChromeTabContent key={file.key} show={file === selectedFile}>

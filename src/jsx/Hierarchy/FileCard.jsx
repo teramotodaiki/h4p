@@ -3,6 +3,7 @@ import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import { transparent } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
+import { fade } from 'material-ui/utils/colorManipulator';
 import EditorDragHandle from 'material-ui/svg-icons/editor/drag-handle';
 
 
@@ -26,7 +27,7 @@ const getStyles = (props, context) => {
 
   const isSelected = selectedFile === file;
   const backgroundColor = tabbedFiles.includes(file) ?
-    palette.canvasColor : palette.disabledColor;
+    fade(palette.canvasColor, 1) : palette.disabledColor;
 
   return {
     root: {
