@@ -3,6 +3,7 @@ import ReactCodeMirror from 'react-codemirror';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { transparent, fullWhite, grey100 } from 'material-ui/styles/colors';
+import transitions from 'material-ui/styles/transitions';
 
 
 import 'codemirror/mode/javascript/javascript';
@@ -72,11 +73,9 @@ const getStyles = (props, context) => {
         width: 100%;
         height: 100%;
         filter:
-          invert(${darkness ? 100 : 0}%)
-          sepia(${darkness ? 40 : 0}%)
-          brightness(${darkness ? 0.6 : 1.0});
+          invert(${darkness ? 100 : 0}%);
         background-color: ${grey100};
-        transition: all .4s ease;
+        transition: ${transitions.easeOut()};
       }
       #${CssScopeId} .CodeMirror {
         font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
@@ -84,9 +83,19 @@ const getStyles = (props, context) => {
         height: 100%;
         background-color: ${transparent};
       }
+      #${CssScopeId} .CodeMirror-line {
+        filter:
+          contrast(${darkness ? 20 : 100}%)
+          saturate(${darkness ? 200 : 100}%);
+      }
+      #${CssScopeId} .CodeMirror-linenumber {
+        color: ${palette.secondaryTextColor};
+        filter: invert(${darkness ? 100 : 0}%);
+      }
       #${CssScopeId} .CodeMirror-gutters {
         border-color: ${palette.borderColor};
-        background-color: ${fullWhite};
+        background-color: ${palette.canvasColor};
+        filter: invert(${darkness ? 100 : 0}%);
       }
       #${CssScopeId} .CodeMirror-matchingbracket {
         color: ${palette.primary1Color};
@@ -213,7 +222,7 @@ export default class EditorPane extends Component {
         </ChromeTabContent>
       ))}
       </div>
-      <FloatingActionButton
+      <FloatingActionButton secondary
         style={button}
         onClick={this.handleAdd}
       >

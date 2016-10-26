@@ -43,7 +43,7 @@ export default ({ palette }) => {
     disabledColor: fade(emphasize(canvasColor, 1), 0.3),
     pickerHeaderColor: primary1Color,
     clockCircleColor: fade(emphasize(canvasColor, 1), 0.07),
-    shadowColor: fullBlack,
+    shadowColor: emphasize(canvasColor, 1),
 
     backgroundColor,
   };
