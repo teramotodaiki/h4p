@@ -65,7 +65,10 @@ export default class ScreenPane extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.style !== nextProps.style) {
+    if (
+      this.props.primaryWidth !== nextProps.primaryWidth ||
+      this.props.secondaryHeight !== nextProps.secondaryHeight
+    ) {
       this.handleResize();
     }
   }
