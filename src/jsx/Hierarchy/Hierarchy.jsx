@@ -5,10 +5,13 @@ import DirCard from './DirCard';
 import getHierarchy from './getHierarchy';
 
 const getStyles = (props, context) => {
+  const { fontFamily } = context.muiTheme;
+
   return {
     root: {
       boxSizing: 'border-box',
       width: '100%',
+      fontFamily,
     },
   };
 };
