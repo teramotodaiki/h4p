@@ -13,7 +13,7 @@ const TabSkewX = 24;
 
 const getStyles = (props, context, state) => {
   const { isSelected, tabbedFiles } = props;
-  const { palette, spacing } = context.muiTheme;
+  const { palette, spacing, fontFamily } = context.muiTheme;
   const { containerStyle, closerMouseOver } = state;
 
   const tabHeight = TabHeight + (isSelected ? 1 : 0);
@@ -52,6 +52,7 @@ const getStyles = (props, context, state) => {
       height: tabHeight,
       marginBottom: isSelected ? -1 : 0,
       zIndex: isSelected ? 2 : 1,
+      fontFamily,
     },
     left: blade(true),
     center: {

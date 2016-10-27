@@ -12,10 +12,10 @@ import screenJs from '../js/screen';
 import popoutTemplate from '../html/popout';
 import Screen from './Screen';
 
+const ConnectionTimeout = 1000;
 const frameURL = URL.createObjectURL(
   new Blob([template({ title: 'app', screenJs })], { type: 'text/html' })
 );
-
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
@@ -65,7 +65,10 @@ export default class ScreenPane extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.style !== nextProps.style) {
+    if (
+      this.props.primaryWidth !== nextProps.primaryWidth ||
+      this.props.secondaryHeight !== nextProps.secondaryHeight
+    ) {
       this.handleResize();
     }
   }
@@ -94,14 +97,18 @@ export default class ScreenPane extends Component {
 
     this.prevent =
       (this.prevent || Promise.resolve())
-      .then(() => {
+      .then(() => new Promise((resolve, reject) => {
         player.emit('screen.beforeunload'); // call beforeunload
-        return new Postmate({
+
+        new Postmate({
           url: frameURL,
           model,
           frame: this.iframe
-        });
-      })
+        })
+        .then(resolve);
+
+        setTimeout(reject, ConnectionTimeout);
+      }))
       .then(child => {
         if (!child) {
           return Promise.reject();

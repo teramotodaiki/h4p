@@ -97,7 +97,7 @@ function getBlob(fileObj) {
     fileObj.blob.slice(0, fileObj.blob.size, fileObj.blob.type);
 }
 
-function localFetch() {
+function localFetch(files) {
   const _fetch = window.fetch;
   return function (...args) {
     const fetched = files.find(file => [file.name, file.moduleName].includes(args[0]));
