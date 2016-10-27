@@ -51,6 +51,7 @@ export default class Menu extends Component {
     env: PropTypes.array.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
+    getLocalizedLabel: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -84,35 +85,70 @@ export default class Menu extends Component {
   };
 
   render() {
-    const { isPopout, handleRun, handleTogglePopout } = this.props;
+    const {
+      isPopout,
+      handleRun,
+      handleTogglePopout,
+      getLocalizedLabel,
+    } = this.props;
 
-    const { root, button, popoutIcon } = getStyles(this.props, this.context);
-    const { prepareStyles, palette: { alternateTextColor } } = this.context.muiTheme;
+    const {
+      root,
+      button,
+      popoutIcon
+    } = getStyles(this.props, this.context);
+
+    const {
+      prepareStyles,
+      palette: { alternateTextColor }
+    } = this.context.muiTheme;
+
+    const menu = getLocalizedLabel('menu');
 
     return (
       <Paper rounded={false} style={root}>
-        <IconButton tooltip="RUN" onTouchTap={handleRun} style={button}>
+        <IconButton
+          tooltip={menu.run}
+          onTouchTap={handleRun}
+          style={button}
+        >
           <PlayCircleOutline color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Shut down" onTouchTap={this.handlePowerOff} style={button}>
+        <IconButton
+          tooltip={menu.shutdown}
+          onTouchTap={this.handlePowerOff}
+          style={button}
+        >
           <PowerSettingsNew color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Download" onTouchTap={this.handleDownload} style={button}>
-          <FileDownload color={alternateTextColor} />
-        </IconButton>
         <IconButton
-          tooltip={isPopout ? "Inside" : "New window"}
+          tooltip={menu.popout}
           onTouchTap={handleTogglePopout}
           style={button}
           iconStyle={popoutIcon}
         >
           <OpenInBrowser color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Colors" onTouchTap={this.handlePalette} style={button}>
+        <IconButton
+          tooltip={menu.palette}
+          onTouchTap={this.handlePalette}
+          style={button}
+        >
           <ImagePalette color={alternateTextColor} />
         </IconButton>
-        <IconButton tooltip="Configure Env" onTouchTap={this.handleEnv} style={button}>
+        <IconButton
+          tooltip={menu.env}
+          onTouchTap={this.handleEnv}
+          style={button}
+        >
           <ImageTune color={alternateTextColor} />
+        </IconButton>
+        <IconButton
+          tooltip={menu.download}
+          onTouchTap={this.handleDownload}
+          style={button}
+        >
+          <FileDownload color={alternateTextColor} />
         </IconButton>
       </Paper>
     );

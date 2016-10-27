@@ -11,6 +11,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
+import localization from '../localization/';
 import { makeFromFile, makeFromType } from '../js/files';
 import { makeEnv } from '../js/env';
 import getCustomTheme from '../js/getCustomTheme';
@@ -48,7 +49,8 @@ class Main extends Component {
     },
 
     palette: {},
-    env: []
+    env: [],
+    language: navigator.language || 'en',
 
   };
 
@@ -190,6 +192,11 @@ class Main extends Component {
     this.setState({ env }, () => resolve(env));
   });
 
+  getLocalizedLabel = (...keys) => {
+    const { language } = this.state;
+    return keys.reduce((p, c) => p[c], localization[language]);
+  };
+
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
@@ -251,6 +258,7 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
+              getLocalizedLabel={this.getLocalizedLabel}
             />
             <ResourcePane
               files={files}
