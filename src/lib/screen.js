@@ -64,16 +64,19 @@ new Postmate.Model({
 });
 
 function bundle(files) {
-  const paths = files
+
+  files
     .filter(file => file.type === 'text/javascript')
-    .map(convertAmd)
-    .map(file => ({
-      [file.moduleName] : URL.createObjectURL(getBlob(file))
-    }));
+    .forEach(file => {
+      define(
+        file.moduleName,
+        new Function('require, exports, module', file.text)
+      );
+    });
 
   const config = {
     // alias
-    map: { '*': Object.assign.apply(null, [{}].concat(paths)) }
+    // map: { '*': {} }
   };
 
   const entryPoins = files
@@ -83,12 +86,6 @@ function bundle(files) {
   return new Promise((resolve, reject) => {
     requirejs(config, entryPoins, resolve);
   });
-}
-
-function convertAmd(fileObj) {
-  // AMD definision
-  const text = `define(function (require, exports, module) {${fileObj.text}});`;
-  return Object.assign({}, fileObj, { text });
 }
 
 function getBlob(fileObj) {
