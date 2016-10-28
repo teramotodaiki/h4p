@@ -1,6 +1,6 @@
 export default {
 
-  accept: ['ja', 'ja-JP'],
+  accept: ['ja', 'ja-jp'],
   native: '日本語',
 
   menu: {

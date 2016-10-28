@@ -1,6 +1,6 @@
 export default {
 
-  accept: ['en', 'en-US'],
+  accept: ['en', 'en-us'],
   native: 'English',
 
   menu: {
