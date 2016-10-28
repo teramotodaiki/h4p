@@ -11,6 +11,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
+import getLocalization from '../localization/';
 import { makeFromFile, makeFromType } from '../js/files';
 import { makeEnv } from '../js/env';
 import getCustomTheme from '../js/getCustomTheme';
@@ -48,7 +49,10 @@ class Main extends Component {
     },
 
     palette: {},
-    env: []
+    env: [],
+    localization: getLocalization(...(
+      navigator.languages || [navigator.language]
+    )),
 
   };
 
@@ -190,6 +194,10 @@ class Main extends Component {
     this.setState({ env }, () => resolve(env));
   });
 
+  setLocalization = (localization) => {
+    this.setState({ localization });
+  };
+
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
@@ -202,6 +210,7 @@ class Main extends Component {
       isPopout,
       reboot,
       palette, env,
+      localization,
     } = this.state;
     const { player, config } = this.props;
 
@@ -237,6 +246,7 @@ class Main extends Component {
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
+              localization={localization}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
@@ -251,6 +261,9 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
+              localization={localization}
+              setLocalization={this.setLocalization}
+              availableLanguages={this.availableLanguages}
             />
             <ResourcePane
               files={files}
@@ -275,7 +288,10 @@ class Main extends Component {
             env={env}
             handlePopoutClose={this.handleTogglePopout}
           />
-          <FileDialog ref={this.handleFileDialog} />
+          <FileDialog
+            ref={this.handleFileDialog}
+            localization={localization}
+          />
         </div>
       </MuiThemeProvider>
     );

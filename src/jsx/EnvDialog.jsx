@@ -23,6 +23,7 @@ export default class EnvDialog extends Component {
     env: PropTypes.array.isRequired,
     updateEnv: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   state = {
@@ -35,7 +36,10 @@ export default class EnvDialog extends Component {
   };
 
   render() {
-    const { onRequestClose } = this.props;
+    const {
+      onRequestClose,
+      localization: { envDialog },
+    } = this.props;
     const { env } = this.state;
 
     const actionStyle = {
@@ -65,10 +69,9 @@ export default class EnvDialog extends Component {
     ];
 
     return (
-      <Dialog
-        title="Configure Environment Variables"
+      <Dialog open
+        title={envDialog.title}
         modal={false}
-        open
         actions={addActions}
         onRequestClose={onRequestClose}
       >
