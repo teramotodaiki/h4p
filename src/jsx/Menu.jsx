@@ -51,7 +51,7 @@ export default class Menu extends Component {
     env: PropTypes.array.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
-    getLocalizedLabel: PropTypes.func.isRequired,
+    getLocalizedLabels: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -89,7 +89,7 @@ export default class Menu extends Component {
       isPopout,
       handleRun,
       handleTogglePopout,
-      getLocalizedLabel,
+      getLocalizedLabels,
     } = this.props;
 
     const {
@@ -103,7 +103,7 @@ export default class Menu extends Component {
       palette: { alternateTextColor }
     } = this.context.muiTheme;
 
-    const menu = getLocalizedLabel('menu');
+    const { menu } = getLocalizedLabels();
 
     return (
       <Paper rounded={false} style={root}>

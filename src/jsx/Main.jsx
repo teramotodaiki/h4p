@@ -192,9 +192,8 @@ class Main extends Component {
     this.setState({ env }, () => resolve(env));
   });
 
-  getLocalizedLabel = (...keys) => {
-    const { language } = this.state;
-    return keys.reduce((p, c) => p[c], localization[language]);
+  getLocalizedLabels = () => {
+    return localization[this.state.language];
   };
 
   openFileDialog = () => console.error('openFileDialog has not be declared');
@@ -244,6 +243,7 @@ class Main extends Component {
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
+              getLocalizedLabels={this.getLocalizedLabels}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
@@ -258,7 +258,7 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
-              getLocalizedLabel={this.getLocalizedLabel}
+              getLocalizedLabels={this.getLocalizedLabels}
             />
             <ResourcePane
               files={files}
@@ -283,7 +283,10 @@ class Main extends Component {
             env={env}
             handlePopoutClose={this.handleTogglePopout}
           />
-          <FileDialog ref={this.handleFileDialog} />
+          <FileDialog
+            ref={this.handleFileDialog}
+            getLocalizedLabels={this.getLocalizedLabels}
+          />
         </div>
       </MuiThemeProvider>
     );

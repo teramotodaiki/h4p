@@ -34,6 +34,7 @@ export default class EditorMenu extends Component {
   static propTypes = {
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
+    getLocalizedLabels: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -46,13 +47,12 @@ export default class EditorMenu extends Component {
   };
 
   render() {
-    const {
-      tabVisibility,
-      darkness,
-    } = this.props.editorOptions;
+    const { editorOptions, getLocalizedLabels } = this.props;
 
     const { root, button, menu } = getStyles(this.props, this.context);
     const { secondaryTextColor } = this.context.muiTheme.palette;
+
+    const { editorMenu } = getLocalizedLabels();
 
     return (
         <IconMenu
@@ -68,15 +68,15 @@ export default class EditorMenu extends Component {
         >
           <MenuItem
             rightIcon={<HardwareKeyboardTab />}
-            primaryText="Tab Visibility"
+            primaryText={editorMenu.tabVisibility}
             onTouchTap={() => this.toggleOption('tabVisibility')}
-            checked={tabVisibility}
+            checked={editorOptions.tabVisibility}
           />
           <MenuItem
             rightIcon={<ImageFilterBAndW />}
-            primaryText="Darkness"
+            primaryText={editorMenu.darkness}
             onTouchTap={() => this.toggleOption('darkness')}
-            checked={darkness}
+            checked={editorOptions.darkness}
           />
         </IconMenu>
     );

@@ -88,6 +88,7 @@ export default class CustomDialog extends Component {
     palette: PropTypes.object.isRequired,
     updatePalette: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
+    getLocalizedLabels: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -151,7 +152,7 @@ export default class CustomDialog extends Component {
   }
 
   render() {
-    const { onRequestClose } = this.props;
+    const { onRequestClose, getLocalizedLabels } = this.props;
     const { open, key, anchorEl, showAll, limited } = this.state;
     const { palette, prepareStyles } = this.context.muiTheme;
 
@@ -159,9 +160,11 @@ export default class CustomDialog extends Component {
     styles.item = prepareStyles(styles.item);
     styles.label = prepareStyles(styles.label);
 
+    const { paletteDialog } = getLocalizedLabels();
+
     return (
       <Dialog open
-        title="Colors"
+        title={paletteDialog.title}
         modal={false}
         bodyStyle={styles.root}
         onRequestClose={onRequestClose}

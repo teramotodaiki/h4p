@@ -3,13 +3,17 @@ import React, { Component, PropTypes } from 'react';
 
 export default class FileDialog extends Component {
 
+  static propTypes = {
+    getLocalizedLabels: PropTypes.func.isRequired,
+  };
+
   state = {
     dialogInstance: null,
   };
 
   open = (reactClass, props) =>
     new Promise((resolve, reject) => {
-      props = Object.assign({}, props, {
+      props = Object.assign({}, this.props, props, {
         resolve, reject,
         onRequestClose: this.close,
       });

@@ -16,6 +16,7 @@ export default class DownloadDialog extends Component {
     files: PropTypes.array.isRequired,
     env: PropTypes.array.isRequired,
     palette: PropTypes.object.isRequired,
+    getLocalizedLabels: PropTypes.func.isRequired,
   };
 
   state = {
@@ -77,12 +78,14 @@ export default class DownloadDialog extends Component {
   }
 
   render() {
-    const { onRequestClose, content } = this.props;
+    const { onRequestClose, content, getLocalizedLabels } = this.props;
     const { bundleWithURL, bundleWithRaw, errorInFetch } = this.state;
+
+    const { downloadDialog } = getLocalizedLabels();
 
     const buttonURL = (
       <RaisedButton
-        label="Download"
+        label={downloadDialog.download}
         primary={true}
         disabled={!bundleWithURL}
         onTouchTap={() => this.handleDownload(bundleWithURL)}
@@ -91,7 +94,7 @@ export default class DownloadDialog extends Component {
 
     const buttonRaw = (
       <RaisedButton
-        label={errorInFetch ? errorInFetch.message : "Download"}
+        label={errorInFetch ? errorInFetch.message : downloadDialog.download}
         primary={true}
         disabled={!bundleWithRaw}
         onTouchTap={() => this.handleDownload(bundleWithRaw)}
@@ -100,7 +103,7 @@ export default class DownloadDialog extends Component {
 
     return (
       <Dialog
-        title="Chose download type"
+        title={downloadDialog.title}
         modal={false}
         open={true}
         onRequestClose={onRequestClose}
@@ -111,26 +114,21 @@ export default class DownloadDialog extends Component {
           >
             <TableRow>
               <TableRowColumn></TableRowColumn>
-              <TableRowColumn>Source Only</TableRowColumn>
-              <TableRowColumn>Bundle ALL</TableRowColumn>
+              <TableRowColumn>{downloadDialog.sourceOnly}</TableRowColumn>
+              <TableRowColumn>{downloadDialog.bundleAll}</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn>Library type</TableRowColumn>
-              <TableRowColumn>Hosting in CDN</TableRowColumn>
-              <TableRowColumn>Embed in HTML</TableRowColumn>
+              <TableRowColumn>{downloadDialog.libraryType}</TableRowColumn>
+              <TableRowColumn>{downloadDialog.hostingOnCdn}</TableRowColumn>
+              <TableRowColumn>{downloadDialog.embedInHtml}</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn>Requirement in downloading</TableRowColumn>
-              <TableRowColumn>Nothing</TableRowColumn>
-              <TableRowColumn>Need internet</TableRowColumn>
+              <TableRowColumn>{downloadDialog.requirement}</TableRowColumn>
+              <TableRowColumn>{downloadDialog.needInternet}</TableRowColumn>
+              <TableRowColumn>{downloadDialog.maybeNothing}</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn>Requirement in playing</TableRowColumn>
-              <TableRowColumn>Need internet</TableRowColumn>
-              <TableRowColumn>Maybe Nothing</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>File size</TableRowColumn>
+              <TableRowColumn>{downloadDialog.fileSize}</TableRowColumn>
               <TableRowColumn>1-10KB</TableRowColumn>
               <TableRowColumn>1MB+</TableRowColumn>
             </TableRow>
