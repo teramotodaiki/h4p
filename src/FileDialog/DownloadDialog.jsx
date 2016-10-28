@@ -4,9 +4,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
-import { compose } from '../../js/files';
-import download from '../../html/download';
-import { exportEnv } from '../../js/env';
+import { compose } from '../js/files';
+import download from '../html/download';
+import { exportEnv } from '../js/env';
 
 export default class DownloadDialog extends Component {
 

@@ -14,8 +14,8 @@ import 'whatwg-fetch';
 
 
 import getLocalization, { acceptedLanguages } from '../localization/';
-import { DownloadDialog, SaveDialog } from './FileDialog/';
-import CustomDialog from './CustomDialog';
+import { DownloadDialog, SaveDialog } from '../FileDialog/';
+import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 
 const getStyles = (props, context) => {
@@ -80,7 +80,7 @@ export default class Menu extends Component {
   handlePalette = () => {
     const { openFileDialog, palette, updatePalette } = this.props;
 
-    openFileDialog(CustomDialog, { palette, updatePalette });
+    openFileDialog(PaletteDialog, { palette, updatePalette });
   };
 
   handleEnv = () => {

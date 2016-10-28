@@ -23,7 +23,7 @@ import ResourcePane from './ResourcePane';
 import ScreenPane from './ScreenPane';
 import Sizer from './Sizer';
 
-import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from './FileDialog/';
+import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 
 class Main extends Component {
 
