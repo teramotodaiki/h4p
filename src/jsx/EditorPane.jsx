@@ -16,10 +16,10 @@ import 'codemirror/addon/hint/show-hint.css';
 
 import '../js/codemirror-hint-extension';
 import EditorMenu from './EditorMenu';
-import ChromeTab, { ChromeTabContent } from './ChromeTab/';
+import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import Preview from './Preview';
 import { makeFromType } from '../js/files';
-import { AddDialog } from './FileDialog/';
+import { AddDialog } from '../FileDialog/';
 
 const CssScopeId = ('just-a-scope-' + Math.random()).replace('.', '');
 const AlreadySetSymbol = Symbol('set');

@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { faintBlack } from 'material-ui/styles/colors';
 
 
-import { SignDialog } from './FileDialog/';
+import { SignDialog } from '../FileDialog/';
 import { makeFromFile, changeName, changeDir } from '../js/files';
-import Hierarchy from './Hierarchy/';
+import Hierarchy from '../Hierarchy/';
 
 export default class ResourcePane extends Component {
 

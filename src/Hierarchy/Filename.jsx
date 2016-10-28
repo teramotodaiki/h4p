@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 
 
-import { separate } from '../../js/files';
+import { separate } from '../js/files';
 
 const getStyles = (props, context) => {
   const { palette } = context.muiTheme;
