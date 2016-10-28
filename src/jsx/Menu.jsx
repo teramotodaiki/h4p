@@ -1,15 +1,19 @@
 import React, { PropTypes, Component } from 'react';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
 import ImagePalette from 'material-ui/svg-icons/image/palette';
 import ImageTune from 'material-ui/svg-icons/image/tune';
+import ActionLanguage from 'material-ui/svg-icons/action/language';
 import 'whatwg-fetch';
 
 
+import getLocalization, { acceptedLanguages } from '../localization/';
 import { DownloadDialog, SaveDialog } from './FileDialog/';
 import CustomDialog from './CustomDialog';
 import EnvDialog from './EnvDialog';
@@ -51,7 +55,8 @@ export default class Menu extends Component {
     env: PropTypes.array.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
-    getLocalizedLabels: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
+    setLocalization: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -89,7 +94,8 @@ export default class Menu extends Component {
       isPopout,
       handleRun,
       handleTogglePopout,
-      getLocalizedLabels,
+      localization: { menu },
+      setLocalization,
     } = this.props;
 
     const {
@@ -102,8 +108,6 @@ export default class Menu extends Component {
       prepareStyles,
       palette: { alternateTextColor }
     } = this.context.muiTheme;
-
-    const { menu } = getLocalizedLabels();
 
     return (
       <Paper rounded={false} style={root}>
@@ -143,6 +147,26 @@ export default class Menu extends Component {
         >
           <ImageTune color={alternateTextColor} />
         </IconButton>
+        <IconMenu
+          iconButtonElement={(
+            <IconButton tooltip={menu.language}>
+              <ActionLanguage color={alternateTextColor} />
+            </IconButton>
+          )}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          style={button}
+        >
+        {acceptedLanguages.map(lang => (
+          <MenuItem
+            key={lang.accept[0]}
+            primaryText={lang.native}
+            onTouchTap={() => setLocalization(
+              getLocalization(lang.accept[0])
+            )}
+          />
+        ))}
+        </IconMenu>
         <IconButton
           tooltip={menu.download}
           onTouchTap={this.handleDownload}

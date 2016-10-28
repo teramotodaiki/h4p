@@ -16,7 +16,7 @@ export default class DownloadDialog extends Component {
     files: PropTypes.array.isRequired,
     env: PropTypes.array.isRequired,
     palette: PropTypes.object.isRequired,
-    getLocalizedLabels: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   state = {
@@ -78,10 +78,12 @@ export default class DownloadDialog extends Component {
   }
 
   render() {
-    const { onRequestClose, content, getLocalizedLabels } = this.props;
+    const {
+      onRequestClose,
+      content,
+      localization: { downloadDialog },
+    } = this.props;
     const { bundleWithURL, bundleWithRaw, errorInFetch } = this.state;
-
-    const { downloadDialog } = getLocalizedLabels();
 
     const buttonURL = (
       <RaisedButton

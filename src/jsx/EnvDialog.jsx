@@ -23,7 +23,7 @@ export default class EnvDialog extends Component {
     env: PropTypes.array.isRequired,
     updateEnv: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    getLocalizedLabels: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   state = {
@@ -36,14 +36,15 @@ export default class EnvDialog extends Component {
   };
 
   render() {
-    const { onRequestClose, getLocalizedLabels } = this.props;
+    const {
+      onRequestClose,
+      localization: { envDialog },
+    } = this.props;
     const { env } = this.state;
 
     const actionStyle = {
       marginLeft: 12,
     };
-
-    const { envDialog } = getLocalizedLabels();
 
     const addActions = [
       <AvPlaylistAdd color={grey600} />,

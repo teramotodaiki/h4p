@@ -144,7 +144,7 @@ export default class EditorPane extends Component {
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
-    getLocalizedLabels: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -184,7 +184,7 @@ export default class EditorPane extends Component {
       editorOptions,
       handleEditorOptionChange,
       openFileDialog,
-      getLocalizedLabels,
+      localization,
     } = this.props;
 
     const {
@@ -214,7 +214,7 @@ export default class EditorPane extends Component {
       <EditorMenu
         editorOptions={editorOptions}
         handleEditorOptionChange={handleEditorOptionChange}
-        getLocalizedLabels={getLocalizedLabels}
+        localization={localization}
       />
       <div style={prepareStyles(tabContainer)}>
       {tabbedFiles.map(file => (

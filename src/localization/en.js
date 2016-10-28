@@ -1,5 +1,7 @@
 export default {
 
+  accept: ['en', 'en-US'],
+  native: 'English',
 
   menu: {
     run: 'Run',
@@ -7,6 +9,7 @@ export default {
     popout: 'Pop-out Screen',
     palette: 'Palette',
     env: 'Configure env',
+    language: 'Language',
     download: 'Download'
   },
   downloadDialog: {
@@ -32,7 +35,6 @@ export default {
     tabVisibility: 'Tab Visibility',
     darkness: 'Darkness',
   },
-
 
 
 };

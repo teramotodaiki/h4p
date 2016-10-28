@@ -34,7 +34,7 @@ export default class EditorMenu extends Component {
   static propTypes = {
     editorOptions: PropTypes.object.isRequired,
     handleEditorOptionChange: PropTypes.func.isRequired,
-    getLocalizedLabels: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -47,12 +47,13 @@ export default class EditorMenu extends Component {
   };
 
   render() {
-    const { editorOptions, getLocalizedLabels } = this.props;
+    const {
+      editorOptions,
+      localization: { editorMenu },
+    } = this.props;
 
     const { root, button, menu } = getStyles(this.props, this.context);
     const { secondaryTextColor } = this.context.muiTheme.palette;
-
-    const { editorMenu } = getLocalizedLabels();
 
     return (
         <IconMenu

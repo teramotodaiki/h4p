@@ -1,5 +1,7 @@
 export default {
 
+  accept: ['ja', 'ja-JP'],
+  native: '日本語',
 
   menu: {
     run: 'スタート',
@@ -7,6 +9,7 @@ export default {
     popout: 'ポップアウト',
     palette: 'パレット',
     env: 'envのせってい',
+    language: '言語',
     download: 'ダウンロード'
   },
   downloadDialog: {

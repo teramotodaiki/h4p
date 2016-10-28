@@ -11,7 +11,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
-import localization from '../localization/';
+import getLocalization from '../localization/';
 import { makeFromFile, makeFromType } from '../js/files';
 import { makeEnv } from '../js/env';
 import getCustomTheme from '../js/getCustomTheme';
@@ -50,7 +50,9 @@ class Main extends Component {
 
     palette: {},
     env: [],
-    language: navigator.language || 'en',
+    localization: getLocalization(...(
+      navigator.languages || [navigator.language]
+    )),
 
   };
 
@@ -192,8 +194,8 @@ class Main extends Component {
     this.setState({ env }, () => resolve(env));
   });
 
-  getLocalizedLabels = () => {
-    return localization[this.state.language];
+  setLocalization = (localization) => {
+    this.setState({ localization });
   };
 
   openFileDialog = () => console.error('openFileDialog has not be declared');
@@ -208,6 +210,7 @@ class Main extends Component {
       isPopout,
       reboot,
       palette, env,
+      localization,
     } = this.state;
     const { player, config } = this.props;
 
@@ -243,7 +246,7 @@ class Main extends Component {
               editorOptions={editorOptions}
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
-              getLocalizedLabels={this.getLocalizedLabels}
+              localization={localization}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
@@ -258,7 +261,9 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
-              getLocalizedLabels={this.getLocalizedLabels}
+              localization={localization}
+              setLocalization={this.setLocalization}
+              availableLanguages={this.availableLanguages}
             />
             <ResourcePane
               files={files}
@@ -285,7 +290,7 @@ class Main extends Component {
           />
           <FileDialog
             ref={this.handleFileDialog}
-            getLocalizedLabels={this.getLocalizedLabels}
+            localization={localization}
           />
         </div>
       </MuiThemeProvider>

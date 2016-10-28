@@ -4,7 +4,7 @@ import React, { Component, PropTypes } from 'react';
 export default class FileDialog extends Component {
 
   static propTypes = {
-    getLocalizedLabels: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   state = {
