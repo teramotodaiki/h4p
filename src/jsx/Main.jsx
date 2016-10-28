@@ -46,6 +46,7 @@ class Main extends Component {
     editorOptions: {
       tabVisibility: false,
       darkness: false,
+      lineWrapping: false,
     },
 
     palette: {},

@@ -32,6 +32,7 @@ export default {
     title: 'Color Palette',
   },
   editorMenu: {
+    lineWrapping: 'Line Wrapping',
     tabVisibility: 'Tab Visibility',
     darkness: 'Darkness',
   },
