@@ -6,6 +6,7 @@ import { minBlack } from 'material-ui/styles/colors';
 import HardwareKeyboardTab from 'material-ui/svg-icons/hardware/keyboard-tab';
 import ActionSettings from 'material-ui/svg-icons/action/settings';
 import ImageFilterBAndW from 'material-ui/svg-icons/image/filter-b-and-w';
+import EditorWrapText from 'material-ui/svg-icons/editor/wrap-text';
 
 
 const getStyles = (props, context) => {
@@ -67,6 +68,12 @@ export default class EditorMenu extends Component {
           style={root}
           menuStyle={menu}
         >
+          <MenuItem
+            rightIcon={<EditorWrapText />}
+            primaryText={editorMenu.lineWrapping}
+            onTouchTap={() => this.toggleOption('lineWrapping')}
+            checked={editorOptions.lineWrapping}
+          />
           <MenuItem
             rightIcon={<HardwareKeyboardTab />}
             primaryText={editorMenu.tabVisibility}
