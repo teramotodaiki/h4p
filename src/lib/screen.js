@@ -56,7 +56,7 @@ new Postmate.Model({
   // require
   bundle(files)
   .then(() => {
-    parent.emit('load')
+    parent.emit('resize', env.VIEW);
   });
 
   // resizing

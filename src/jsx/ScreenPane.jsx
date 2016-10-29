@@ -113,12 +113,9 @@ export default class ScreenPane extends Component {
         if (!child) {
           return Promise.reject();
         }
-        const resized = (view) => player.emit('screen.resize', view);
-        child.on('load', () => child.get('size').then(resized));
-        child.on('resize', resized);
+        child.on('load', () => child.get('size').then(this.handleScreenSizeChange));
+        child.on('resize', this.handleScreenSizeChange);
 
-        player.once('screen.beforeunload', () => child.destroy());
-        player.emit('screen.load', { child });
         this.handleResize();
       })
       .catch((err) => console.error(err) || err);
@@ -143,12 +140,10 @@ export default class ScreenPane extends Component {
   };
 
   componentDidMount() {
-    this.props.player.on('screen.resize', this.handleScreenSizeChange);
     window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
-    this.props.player.off('screen.resize', this.handleScreenSizeChange);
     window.removeEventListener('resize', this.handleResize);
   }
 
