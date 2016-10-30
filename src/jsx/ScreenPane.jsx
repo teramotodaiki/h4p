@@ -64,14 +64,6 @@ export default class ScreenPane extends Component {
     height: 150,
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      this.props.primaryWidth !== nextProps.primaryWidth ||
-      this.props.secondaryHeight !== nextProps.secondaryHeight
-    ) {
-      this.handleResize();
-    }
-  }
   popoutClosed = false;
 
   componentDidUpdate(prevProps, prevStates) {
@@ -87,6 +79,13 @@ export default class ScreenPane extends Component {
     }
     if (prevProps.isPopout && !this.props.isPopout) {
       this.popoutClosed = true; // Use delay
+    }
+
+    if (
+      this.props.primaryWidth !== prevProps.primaryWidth ||
+      this.props.secondaryHeight !== prevProps.secondaryHeight
+    ) {
+      this.handleResize();
     }
   }
 
