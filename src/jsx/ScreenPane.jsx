@@ -105,7 +105,8 @@ export default class ScreenPane extends Component {
         channel.port1.onmessage = (e) => {
           switch (e.data.query) {
             case 'resize':
-              this.handleScreenSizeChange(e.data.value);
+              const { width, height } = e.data.value;
+              this.setState({ width, height }, this.handleResize);
               break;
           }
         };
@@ -142,10 +143,6 @@ export default class ScreenPane extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
   }
-
-  handleScreenSizeChange = ({ width, height }) => {
-    this.setState({ width, height }, this.handleResize);
-  };
 
   handleResize = () => {
     const { width, height } = this.state;
