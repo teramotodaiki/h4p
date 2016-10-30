@@ -1,10 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from '../lib/ReactPopout';
 
-import Postmate from '../js/LoosePostmate';
-
-Postmate.debug = process.env.NODE_ENV !== 'production';
-
 
 import { composeEnv } from '../js/env';
 import template from '../html/screen';
@@ -44,7 +40,6 @@ const getStyle = (props, context) => {
 export default class ScreenPane extends Component {
 
   static propTypes = {
-    player: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
     primaryWidth: PropTypes.number.isRequired,
     secondaryHeight: PropTypes.number.isRequired,
@@ -95,32 +90,29 @@ export default class ScreenPane extends Component {
 
   prevent = null;
   start () {
-    const { player, config, files } = this.props;
+    const { files } = this.props;
     const env = composeEnv(this.props.env);
-    const model = Object.assign({}, config, { files, env });
 
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => new Promise((resolve, reject) => {
-        player.emit('screen.beforeunload'); // call beforeunload
-
-        new Postmate({
-          url: frameURL,
-          model,
-          frame: this.iframe
-        })
-        .then(resolve);
-
+        this.iframe.onload = () => resolve(this.iframe);
+        this.iframe.src = frameURL;
         setTimeout(reject, ConnectionTimeout);
       }))
-      .then(child => {
-        if (!child) {
-          return Promise.reject();
-        }
-        child.on('load', () => child.get('size').then(this.handleScreenSizeChange));
-        child.on('resize', this.handleScreenSizeChange);
+      .then(frame => {
+        const channel = new MessageChannel();
+        channel.port1.onmessage = (e) => {
+          switch (e.data.query) {
+            case 'resize':
+              this.handleScreenSizeChange(e.data.value);
+              break;
+          }
+        };
 
-        this.handleResize();
+        frame.contentWindow.postMessage({
+          files, env,
+        }, '*', [channel.port2]);
       })
       .catch((err) => console.error(err) || err);
   }
