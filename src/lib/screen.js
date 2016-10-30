@@ -41,9 +41,6 @@ new Promise((resolve, reject) => {
 
   window.fetch = localFetch(model.files);
 
-  // resizing
-  window.addEventListener('resize', () => emit('resize', env.VIEW));
-
   bundle(model.files)
   .then(() => {
     emit('resize', env.VIEW);
