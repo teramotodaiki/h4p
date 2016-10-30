@@ -72,16 +72,21 @@ export default class ScreenPane extends Component {
       this.handleResize();
     }
   }
+  popoutClosed = false;
 
   componentDidUpdate(prevProps, prevStates) {
     if (prevProps.reboot && !this.props.reboot) {
-      if (!this.props.isPopout) {
-        this.start();
-      } else {
+      if (this.props.isPopout || this.popoutClosed) {
         // react-popoutがpopoutWindowにDOMをrenderした後でstartする必要がある
         // renderを補足するのは難しい&updateの度に何度もrenderされる=>delayを入れる
         setTimeout(() => this.start(), 300);
+        this.popoutClosed = false;
+      } else {
+        this.start();
       }
+    }
+    if (prevProps.isPopout && !this.props.isPopout) {
+      this.popoutClosed = true; // Use delay
     }
   }
 
