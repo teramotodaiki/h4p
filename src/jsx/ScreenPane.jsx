@@ -59,6 +59,13 @@ export default class ScreenPane extends Component {
     height: 150,
   };
 
+  popoutOptions = {
+    width: 300,
+    height: 150,  // means innerHeight of browser expecting Safari.
+    left: 50,
+    top: 50,
+  };
+
   popoutClosed = false;
 
   componentDidUpdate(prevProps, prevStates) {
@@ -122,6 +129,31 @@ export default class ScreenPane extends Component {
     this.parent = window.open.apply(window, args);
     if (this.parent) {
       this.parent.addEventListener('resize', this.handleResize);
+      this.parent.addEventListener('load', () => {
+
+        const out = this.popoutOptions.height !== this.parent.innerHeight;
+        this.parent.addEventListener('resize', () => {
+          this.popoutOptions = Object.assign({}, this.popoutOptions, {
+            width: this.parent.innerWidth,
+            height: out ? this.parent.outerHeight : this.parent.innerHeight,
+          });
+        });
+
+        const popoutMove = setInterval(() => {
+          if (this.parent.screenX === this.popoutOptions.left &&
+              this.parent.screenY === this.popoutOptions.top) {
+            return;
+          }
+          this.popoutOptions = Object.assign({}, this.popoutOptions, {
+            left: this.parent.screenX,
+            top: this.parent.screenY,
+          });
+        }, 100);
+
+        this.parent.addEventListener('beforeunload', () => {
+          clearInterval(popoutMove);
+        });
+      });
     }
     return this.parent;
   };
@@ -171,18 +203,11 @@ export default class ScreenPane extends Component {
     const { root, container } = getStyle(this.props, this.context);
     const { prepareStyles } = this.context.muiTheme;
 
-    const popoutOptions = {
-      width: width,
-      height: height,
-      left: window.screenX + 25,
-      top: window.screenY + 25
-    };
-
     const popout = isPopout && !reboot ? (
       <Popout
         url={popoutURL}
         title='app'
-        options={popoutOptions}
+        options={this.popoutOptions}
         window={{
           open: this.handlePopoutOpen,
           addEventListener: window.addEventListener.bind(window),
