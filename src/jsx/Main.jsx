@@ -16,7 +16,6 @@ import { makeFromFile, makeFromType } from '../js/files';
 import { makeEnv } from '../js/env';
 import getCustomTheme from '../js/getCustomTheme';
 import Dock from './Dock';
-import Postmate from '../js/LoosePostmate';
 import Menu from './Menu';
 import EditorPane from './EditorPane';
 import ResourcePane from './ResourcePane';
