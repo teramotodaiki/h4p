@@ -1,5 +1,4 @@
 import eventemitter2Js from 'raw!eventemitter2';
-import postmateJs from 'raw!postmate';
 import requireJs from 'raw!../lib/require';
 import fetchJs from 'raw!whatwg-fetch';
 import screenJs from 'raw!../lib/screen';
@@ -8,7 +7,6 @@ import screenJs from 'raw!../lib/screen';
 export default [
 
   eventemitter2Js,
-  postmateJs,
   requireJs,
   fetchJs,
   screenJs,

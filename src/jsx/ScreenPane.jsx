@@ -1,10 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from '../lib/ReactPopout';
 
-import Postmate from '../js/LoosePostmate';
-
-Postmate.debug = process.env.NODE_ENV !== 'production';
-
 
 import { composeEnv } from '../js/env';
 import template from '../html/screen';
@@ -44,7 +40,6 @@ const getStyle = (props, context) => {
 export default class ScreenPane extends Component {
 
   static propTypes = {
-    player: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
     primaryWidth: PropTypes.number.isRequired,
     secondaryHeight: PropTypes.number.isRequired,
@@ -64,24 +59,35 @@ export default class ScreenPane extends Component {
     height: 150,
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      this.props.primaryWidth !== nextProps.primaryWidth ||
-      this.props.secondaryHeight !== nextProps.secondaryHeight
-    ) {
-      this.handleResize();
-    }
-  }
+  popoutOptions = {
+    width: 300,
+    height: 150,  // means innerHeight of browser expecting Safari.
+    left: 50,
+    top: 50,
+  };
+
+  popoutClosed = false;
 
   componentDidUpdate(prevProps, prevStates) {
     if (prevProps.reboot && !this.props.reboot) {
-      if (!this.props.isPopout) {
-        this.start();
-      } else {
+      if (this.props.isPopout || this.popoutClosed) {
         // react-popoutがpopoutWindowにDOMをrenderした後でstartする必要がある
         // renderを補足するのは難しい&updateの度に何度もrenderされる=>delayを入れる
         setTimeout(() => this.start(), 300);
+        this.popoutClosed = false;
+      } else {
+        this.start();
       }
+    }
+    if (prevProps.isPopout && !this.props.isPopout) {
+      this.popoutClosed = true; // Use delay
+    }
+
+    if (
+      this.props.primaryWidth !== prevProps.primaryWidth ||
+      this.props.secondaryHeight !== prevProps.secondaryHeight
+    ) {
+      this.handleResize();
     }
   }
 
@@ -91,35 +97,30 @@ export default class ScreenPane extends Component {
 
   prevent = null;
   start () {
-    const { player, config, files } = this.props;
+    const { files } = this.props;
     const env = composeEnv(this.props.env);
-    const model = Object.assign({}, config, { files, env });
 
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => new Promise((resolve, reject) => {
-        player.emit('screen.beforeunload'); // call beforeunload
-
-        new Postmate({
-          url: frameURL,
-          model,
-          frame: this.iframe
-        })
-        .then(resolve);
-
+        this.iframe.onload = () => resolve(this.iframe);
+        this.iframe.src = frameURL;
         setTimeout(reject, ConnectionTimeout);
       }))
-      .then(child => {
-        if (!child) {
-          return Promise.reject();
-        }
-        const resized = (view) => player.emit('screen.resize', view);
-        child.on('load', () => child.get('size').then(resized));
-        child.on('resize', resized);
+      .then(frame => {
+        const channel = new MessageChannel();
+        channel.port1.onmessage = (e) => {
+          switch (e.data.query) {
+            case 'resize':
+              const { width, height } = e.data.value;
+              this.setState({ width, height }, this.handleResize);
+              break;
+          }
+        };
 
-        player.once('screen.beforeunload', () => child.destroy());
-        player.emit('screen.load', { child });
-        this.handleResize();
+        frame.contentWindow.postMessage({
+          files, env,
+        }, '*', [channel.port2]);
       })
       .catch((err) => console.error(err) || err);
   }
@@ -128,6 +129,31 @@ export default class ScreenPane extends Component {
     this.parent = window.open.apply(window, args);
     if (this.parent) {
       this.parent.addEventListener('resize', this.handleResize);
+      this.parent.addEventListener('load', () => {
+
+        const out = this.popoutOptions.height !== this.parent.innerHeight;
+        this.parent.addEventListener('resize', () => {
+          this.popoutOptions = Object.assign({}, this.popoutOptions, {
+            width: this.parent.innerWidth,
+            height: out ? this.parent.outerHeight : this.parent.innerHeight,
+          });
+        });
+
+        const popoutMove = setInterval(() => {
+          if (this.parent.screenX === this.popoutOptions.left &&
+              this.parent.screenY === this.popoutOptions.top) {
+            return;
+          }
+          this.popoutOptions = Object.assign({}, this.popoutOptions, {
+            left: this.parent.screenX,
+            top: this.parent.screenY,
+          });
+        }, 100);
+
+        this.parent.addEventListener('beforeunload', () => {
+          clearInterval(popoutMove);
+        });
+      });
     }
     return this.parent;
   };
@@ -143,18 +169,12 @@ export default class ScreenPane extends Component {
   };
 
   componentDidMount() {
-    this.props.player.on('screen.resize', this.handleScreenSizeChange);
     window.addEventListener('resize', this.handleResize);
   }
 
   componentWillUnmount() {
-    this.props.player.off('screen.resize', this.handleScreenSizeChange);
     window.removeEventListener('resize', this.handleResize);
   }
-
-  handleScreenSizeChange = ({ width, height }) => {
-    this.setState({ width, height }, this.handleResize);
-  };
 
   handleResize = () => {
     const { width, height } = this.state;
@@ -183,18 +203,11 @@ export default class ScreenPane extends Component {
     const { root, container } = getStyle(this.props, this.context);
     const { prepareStyles } = this.context.muiTheme;
 
-    const popoutOptions = {
-      width: width,
-      height: height,
-      left: window.screenX + 25,
-      top: window.screenY + 25
-    };
-
     const popout = isPopout && !reboot ? (
       <Popout
         url={popoutURL}
         title='app'
-        options={popoutOptions}
+        options={this.popoutOptions}
         window={{
           open: this.handlePopoutOpen,
           addEventListener: window.addEventListener.bind(window),

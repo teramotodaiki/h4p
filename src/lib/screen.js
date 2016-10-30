@@ -2,31 +2,19 @@
 
 const env = {};
 
-// Un-checked parent origin
-const _addEventListener = window.addEventListener;
-window.addEventListener = (...args) => {
-  if (args[0] === 'message' && typeof args[1] === 'function') {
-    const _listener = args[1];
-    args[1] = (...eArgs) => {
-      const {data, source} = eArgs[0];
-      if (source === parent) {
-        eArgs[0] = {
-          origin: '*', // Ignore origin check
-          data, source
-        };
-      }
-      return _listener.apply(window, eArgs);
-    };
-  }
-  return _addEventListener.apply(window, args);
-};
-
 // Connect
-new Postmate.Model({
-  size: () => env.VIEW
+new Promise((resolve, reject) => {
+  window.addEventListener('message', (event) => {
+    if (!event.ports) return;
+
+    resolve({
+      port: event.ports[0],
+      model: event.data,
+    });
+  });
 })
-.then(parent => {
-  const { files } = parent.model;
+.then(({ port, model }) => {
+  const emit = (query, value) => port.postMessage({ query, value });
 
   var view = null;
 
@@ -44,24 +32,21 @@ new Postmate.Model({
       set: (value) => {
         view = value instanceof HTMLElement ? getComputedStyle(value) :
           hasView(value) ? value : null;
-        parent.emit('resize', env.VIEW);
+        emit('resize', env.VIEW);
       }
     }
   });
-  Object.assign(env, parent.model.env);
+  Object.assign(env, model.env);
   define('env', () => env);
 
-  window.fetch = localFetch(files);
+  window.fetch = localFetch(model.files);
 
-  // require
-  bundle(files)
+  bundle(model.files)
   .then(() => {
-    parent.emit('load')
+    emit('resize', env.VIEW);
   });
-
-  // resizing
-  window.addEventListener('resize', () => parent.emit('resize', env.VIEW));
-});
+})
+.catch((err) => console.error('eee!', err));
 
 function bundle(files) {
 
