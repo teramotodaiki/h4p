@@ -1,12 +1,6 @@
-import classNames from 'classnames';
-
-const HINT_ELEMENT_CLASS_SNIPPET = 'CodeMirror-hint-snippet';
-
 export default class Snippet {
   constructor(settings) {
     Object.assign(this, settings);
-
-    this.className = classNames(HINT_ELEMENT_CLASS_SNIPPET, this.className);
   }
 
   render(element, self, data) {

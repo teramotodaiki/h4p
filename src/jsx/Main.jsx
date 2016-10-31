@@ -35,7 +35,7 @@ class Main extends Component {
     primaryWidth: 400,
     secondaryHeight: 400,
 
-    files: [],
+    files: this.props.config.files,
     isPopout: false,
     reboot: false,
 
@@ -48,11 +48,12 @@ class Main extends Component {
       lineWrapping: false,
     },
 
-    palette: {},
-    env: [],
+    palette: this.props.config.palette,
+    env: this.props.config.env,
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
     )),
+    portPostMessage: () => {},
 
   };
 
@@ -66,17 +67,19 @@ class Main extends Component {
     return tabbedKeys.map(key => files.find(file => key === file.key));
   }
 
-  componentDidMount() {
-    const { player, config: { files, env, palette } } = this.props;
+  get shot() {
+    return this.state.files.find(f => f.name === '.shot');
+  }
 
-    const tabbedKeys = files
+  componentDidMount() {
+    const tabbedKeys = this.props.config.files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
+
     this.setState({
       reboot: true,
-      files, tabbedKeys, selectedKey,
-      env, palette
+      tabbedKeys, selectedKey,
     });
   }
 
@@ -158,6 +161,9 @@ class Main extends Component {
       // 'env' is reserved name
       return true;
     }
+    if (newFile.moduleName.indexOf('.') === 0) {
+      return true;
+    }
     return false;
   };
 
@@ -201,6 +207,11 @@ class Main extends Component {
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
+  handlePort = (ref) => {
+    const portPostMessage = (data) => ref.postMessage(data);
+    this.setState({ portPostMessage });
+  };
+
   render() {
     const {
       files, tabbedKeys, selectedKey,
@@ -211,6 +222,7 @@ class Main extends Component {
       reboot,
       palette, env,
       localization,
+      portPostMessage,
     } = this.state;
     const { player, config } = this.props;
 
@@ -247,6 +259,8 @@ class Main extends Component {
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
               localization={localization}
+              portPostMessage={portPostMessage}
+              shot={this.shot}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
@@ -287,6 +301,7 @@ class Main extends Component {
             reboot={reboot}
             env={env}
             handlePopoutClose={this.handleTogglePopout}
+            portRef={this.handlePort}
           />
           <FileDialog
             ref={this.handleFileDialog}

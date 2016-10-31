@@ -39,6 +39,17 @@ new Promise((resolve, reject) => {
   Object.assign(env, model.env);
   define('env', () => env);
 
+  port.onmessage = (e) => {
+    switch (e.data.query) {
+      case 'shot':
+        requirejs(
+          ['require', 'exports', 'module'],
+          new Function('require, exports, module', e.data.value.text)
+        );
+        break;
+    }
+  };
+
   window.fetch = localFetch(model.files);
 
   bundle(model.files)
@@ -66,7 +77,8 @@ function bundle(files) {
 
   const entryPoins = files
     .filter(file => file.options.isEntryPoint)
-    .map(file => file.moduleName);
+    .map(file => file.moduleName)
+    .concat('env');
 
   return new Promise((resolve, reject) => {
     requirejs(config, entryPoins, resolve);
