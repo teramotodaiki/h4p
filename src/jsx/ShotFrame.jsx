@@ -73,10 +73,8 @@ const getStyles = (props, context, state) => {
 export default class MagicShot extends Component {
 
   static propTypes = {
-    shot: PropTypes.object.isRequired,
-    options: PropTypes.object.isRequired,
     onShot: PropTypes.func.isRequired,
-    updateShot: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
   };
 
   static contextTypes = {
@@ -91,7 +89,7 @@ export default class MagicShot extends Component {
     if (this.state.shooting) {
       return;
     }
-    const { onShot, shot } = this.props;
+    const { onShot } = this.props;
 
     const transition = (anim, delay) => {
       return new Promise((resolve, reject) => {
@@ -107,14 +105,13 @@ export default class MagicShot extends Component {
     .then(() => transition(0))
     .then(() => this.forceUpdate());
 
-    onShot(shot.text)
+    onShot()
   };
 
   render() {
     const {
-      shot,
-      options,
       updateShot,
+      children,
     } = this.props;
 
     const {
@@ -130,11 +127,7 @@ export default class MagicShot extends Component {
       <div style={root}>
         <Paper style={container}>
           <div style={editor}>
-            <ReactCodeMirror
-              value={shot.text}
-              onChange={(text) => updateShot({ text })}
-              options={options}
-            />
+          {children}
           </div>
           <div style={buttonContainer}>
             <FloatingActionButton secondary
