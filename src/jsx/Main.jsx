@@ -53,6 +53,7 @@ class Main extends Component {
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
     )),
+    portPostMessage: () => {},
 
   };
 
@@ -201,6 +202,11 @@ class Main extends Component {
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
+  handlePort = (ref) => {
+    const portPostMessage = (data) => ref.postMessage(data);
+    this.setState({ portPostMessage });
+  };
+
   render() {
     const {
       files, tabbedKeys, selectedKey,
@@ -211,6 +217,7 @@ class Main extends Component {
       reboot,
       palette, env,
       localization,
+      portPostMessage,
     } = this.state;
     const { player, config } = this.props;
 
@@ -247,6 +254,7 @@ class Main extends Component {
               handleEditorOptionChange={this.handleEditorOptionChange}
               openFileDialog={this.openFileDialog}
               localization={localization}
+              portPostMessage={portPostMessage}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
@@ -287,6 +295,7 @@ class Main extends Component {
             reboot={reboot}
             env={env}
             handlePopoutClose={this.handleTogglePopout}
+            portRef={this.handlePort}
           />
           <FileDialog
             ref={this.handleFileDialog}

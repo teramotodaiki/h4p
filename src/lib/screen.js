@@ -39,6 +39,14 @@ new Promise((resolve, reject) => {
   Object.assign(env, model.env);
   define('env', () => env);
 
+  port.onmessage = (e) => {
+    switch (e.data.query) {
+      case 'shot':
+        eval(e.data.value);
+        break;
+    }
+  };
+
   window.fetch = localFetch(model.files);
 
   bundle(model.files)

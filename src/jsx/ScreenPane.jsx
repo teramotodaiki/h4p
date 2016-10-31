@@ -48,6 +48,7 @@ export default class ScreenPane extends Component {
     reboot: PropTypes.bool.isRequired,
     env: PropTypes.array.isRequired,
     handlePopoutClose: PropTypes.func.isRequired,
+    portRef: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -97,7 +98,7 @@ export default class ScreenPane extends Component {
 
   prevent = null;
   start () {
-    const { files } = this.props;
+    const { files, portRef } = this.props;
     const env = composeEnv(this.props.env);
 
     this.prevent =
@@ -117,6 +118,7 @@ export default class ScreenPane extends Component {
               break;
           }
         };
+        portRef(channel.port1);
 
         frame.contentWindow.postMessage({
           files, env,

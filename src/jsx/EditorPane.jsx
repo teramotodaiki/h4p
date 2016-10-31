@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import Paper from 'material-ui/Paper';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { transparent, fullWhite, grey100 } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
@@ -20,6 +21,7 @@ import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import Preview from './Preview';
 import { makeFromType } from '../js/files';
 import { AddDialog } from '../FileDialog/';
+import MagicShot from './MagicShot';
 
 const CssScopeId = ('just-a-scope-' + Math.random()).replace('.', '');
 const AlreadySetSymbol = Symbol('set');
@@ -145,6 +147,7 @@ export default class EditorPane extends Component {
     handleEditorOptionChange: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
+    portPostMessage: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -174,6 +177,13 @@ export default class EditorPane extends Component {
     openFileDialog(AddDialog)
       .then(seed => makeFromType('text/javascript', seed))
       .then(file => addFile(file));
+  };
+
+  handleShot = (value) => {
+    const { portPostMessage } = this.props;
+    if (portPostMessage) {
+      portPostMessage({ query: 'shot', value });
+    }
   };
 
   render() {
@@ -229,7 +239,7 @@ export default class EditorPane extends Component {
         />
       ))}
       </div>
-      <div style={prepareStyles(tabContentContainer)}>
+      <Paper style={tabContentContainer}>
       {tabbedFiles.map(file => (
         <ChromeTabContent key={file.key} show={file === selectedFile}>
         {file.isText ? (
@@ -244,7 +254,12 @@ export default class EditorPane extends Component {
         )}
         </ChromeTabContent>
       ))}
-      </div>
+      {tabbedFiles.length === 0 ? (
+        <MagicShot
+          onShot={this.handleShot}
+        />
+      ): null}
+      </Paper>
       <FloatingActionButton secondary
         style={button}
         onClick={this.handleAdd}
