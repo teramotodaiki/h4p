@@ -161,6 +161,9 @@ class Main extends Component {
       // 'env' is reserved name
       return true;
     }
+    if (newFile.moduleName.indexOf('.') === 0) {
+      return true;
+    }
     return false;
   };
 
