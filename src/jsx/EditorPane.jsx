@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
@@ -48,7 +49,6 @@ const getStyles = (props, context) => {
       bottom: 23,
       zIndex: 1000,
     },
-
   };
 };
 
@@ -67,8 +67,7 @@ export default class EditorPane extends Component {
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
-    shot: PropTypes.object.isRequired,
-    updateShot: PropTypes.func.isRequired,
+    shot: PropTypes.object,
   };
 
   static contextTypes = {
@@ -82,9 +81,19 @@ export default class EditorPane extends Component {
       .then(file => addFile(file));
   };
 
+  handleAddShot = () => {
+    const { addFile } = this.props;
+
+    makeFromType('text/javascript', {
+      name: '.shot',
+      text: '',
+    })
+    .then(file => addFile(file));
+  };
+
   handleShot = () => {
     const { portPostMessage, shot } = this.props;
-    if (portPostMessage) {
+    if (shot && portPostMessage) {
       portPostMessage({ query: 'shot', value: shot.text });
     }
   };
@@ -99,7 +108,6 @@ export default class EditorPane extends Component {
       openFileDialog,
       localization,
       shot,
-      updateShot,
     } = this.props;
 
     const {
@@ -149,12 +157,20 @@ export default class EditorPane extends Component {
       ))}
       {tabbedFiles.length === 0 ? (
         <ShotFrame onShot={this.handleShot}>
+        {shot ? (
           <Editor
             file={shot}
             options={editorOptions}
             getFiles={() => files}
-            onChange={(text) => updateShot({ text })}
+            onChange={(text) => updateFile(shot, { text })}
           />
+        ) : (
+          <IconButton
+            onTouchTap={this.handleAddShot}
+          >
+            <ContentAdd />
+          </IconButton>
+        )}
         </ShotFrame>
       ): null}
       </div>

@@ -35,7 +35,7 @@ class Main extends Component {
     primaryWidth: 400,
     secondaryHeight: 400,
 
-    files: [],
+    files: this.props.config.files,
     isPopout: false,
     reboot: false,
 
@@ -48,13 +48,12 @@ class Main extends Component {
       lineWrapping: false,
     },
 
-    palette: {},
-    env: [],
+    palette: this.props.config.palette,
+    env: this.props.config.env,
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
     )),
     portPostMessage: () => {},
-    shot: this.props.config.shot,
 
   };
 
@@ -68,17 +67,19 @@ class Main extends Component {
     return tabbedKeys.map(key => files.find(file => key === file.key));
   }
 
-  componentDidMount() {
-    const { player, config: { files, env, palette } } = this.props;
+  get shot() {
+    return this.state.files.find(f => f.name === '.shot');
+  }
 
-    const tabbedKeys = files
+  componentDidMount() {
+    const tabbedKeys = this.props.config.files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
+
     this.setState({
       reboot: true,
-      files, tabbedKeys, selectedKey,
-      env, palette,
+      tabbedKeys, selectedKey,
     });
   }
 
@@ -208,11 +209,6 @@ class Main extends Component {
     this.setState({ portPostMessage });
   };
 
-  updateShot = (change) => {
-    const shot = Object.assign({}, this.state.shot, change);
-    this.setState({ shot });
-  };
-
   render() {
     const {
       files, tabbedKeys, selectedKey,
@@ -224,7 +220,6 @@ class Main extends Component {
       palette, env,
       localization,
       portPostMessage,
-      shot,
     } = this.state;
     const { player, config } = this.props;
 
@@ -262,8 +257,7 @@ class Main extends Component {
               openFileDialog={this.openFileDialog}
               localization={localization}
               portPostMessage={portPostMessage}
-              shot={shot}
-              updateShot={this.updateShot}
+              shot={this.shot}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
