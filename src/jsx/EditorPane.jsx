@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Paper from 'material-ui/Paper';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { transparent, fullWhite, grey100 } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
@@ -65,7 +64,7 @@ const getStyles = (props, context) => {
       borderStyle: 'solid',
       borderWidth: 0,
       borderLeftWidth: sizerWidth,
-      backgroundColor: palette.canvasColor,
+      backgroundColor: transparent,
     },
     button: {
       position: 'absolute',
@@ -148,6 +147,8 @@ export default class EditorPane extends Component {
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
+    shot: PropTypes.object.isRequired,
+    updateShot: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -195,6 +196,8 @@ export default class EditorPane extends Component {
       handleEditorOptionChange,
       openFileDialog,
       localization,
+      shot,
+      updateShot,
     } = this.props;
 
     const {
@@ -239,7 +242,7 @@ export default class EditorPane extends Component {
         />
       ))}
       </div>
-      <Paper style={tabContentContainer}>
+      <div style={tabContentContainer}>
       {tabbedFiles.map(file => (
         <ChromeTabContent key={file.key} show={file === selectedFile}>
         {file.isText ? (
@@ -256,10 +259,13 @@ export default class EditorPane extends Component {
       ))}
       {tabbedFiles.length === 0 ? (
         <MagicShot
+          shot={shot}
+          options={options(shot)}
           onShot={this.handleShot}
+          updateShot={updateShot}
         />
       ): null}
-      </Paper>
+      </div>
       <FloatingActionButton secondary
         style={button}
         onClick={this.handleAdd}

@@ -1,5 +1,5 @@
 import Player from './Player';
-import { makeFromElements } from './files';
+import { makeFromElements, makeFromType } from './files';
 import { importEnv } from './env';
 
 // Initialize player from DOM
@@ -19,18 +19,27 @@ export default () => {
     const {
       env,
       palette,
+      shot,
     } = (elem => {
       if (!elem) return {};
       const exported = JSON.parse(elem.textContent);
       return {
         env: importEnv(exported.env),
         palette: exported.palette,
+        shot: Object.assign({}, exported.shot || {}, {
+          name: '', text: ''
+        }),
       };
     })(document.querySelector('x-exports' + elem.getAttribute('data-target') + '__exports'));
 
-    return makeFromElements(scripts).then(files => {
+    return Promise.all([
+      makeFromElements(scripts),
+      makeFromType('text/javascript', shot),
+    ])
+    .then(([files, shot]) => {
+      console.log(files, shot);
       // An instance of h4p.Player
-      const player = new Player({ files, env, palette });
+      const player = new Player({ files, env, palette, shot });
       player.start();
       return player;
     });

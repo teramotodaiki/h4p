@@ -54,6 +54,7 @@ class Main extends Component {
       navigator.languages || [navigator.language]
     )),
     portPostMessage: () => {},
+    shot: this.props.config.shot,
 
   };
 
@@ -77,7 +78,7 @@ class Main extends Component {
     this.setState({
       reboot: true,
       files, tabbedKeys, selectedKey,
-      env, palette
+      env, palette,
     });
   }
 
@@ -207,6 +208,11 @@ class Main extends Component {
     this.setState({ portPostMessage });
   };
 
+  updateShot = (change) => {
+    const shot = Object.assign({}, this.state.shot, change);
+    this.setState({ shot });
+  };
+
   render() {
     const {
       files, tabbedKeys, selectedKey,
@@ -218,6 +224,7 @@ class Main extends Component {
       palette, env,
       localization,
       portPostMessage,
+      shot,
     } = this.state;
     const { player, config } = this.props;
 
@@ -255,6 +262,8 @@ class Main extends Component {
               openFileDialog={this.openFileDialog}
               localization={localization}
               portPostMessage={portPostMessage}
+              shot={shot}
+              updateShot={this.updateShot}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
