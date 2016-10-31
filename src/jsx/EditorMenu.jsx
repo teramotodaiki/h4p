@@ -7,6 +7,7 @@ import HardwareKeyboardTab from 'material-ui/svg-icons/hardware/keyboard-tab';
 import ActionSettings from 'material-ui/svg-icons/action/settings';
 import ImageFilterBAndW from 'material-ui/svg-icons/image/filter-b-and-w';
 import EditorWrapText from 'material-ui/svg-icons/editor/wrap-text';
+import AvWeb from 'material-ui/svg-icons/av/web';
 
 
 const getStyles = (props, context) => {
@@ -68,6 +69,12 @@ export default class EditorMenu extends Component {
           style={root}
           menuStyle={menu}
         >
+          <MenuItem
+            rightIcon={<AvWeb />}
+            primaryText={editorMenu.unlimited}
+            onTouchTap={() => this.toggleOption('unlimited')}
+            checked={editorOptions.unlimited}
+          />
           <MenuItem
             rightIcon={<EditorWrapText />}
             primaryText={editorMenu.lineWrapping}

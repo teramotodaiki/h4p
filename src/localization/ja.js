@@ -32,6 +32,7 @@ export default {
     title: 'カラーパレット',
   },
   editorMenu: {
+    unlimited: 'すべて表示',
     lineWrapping: '行のおり返し',
     tabVisibility: 'インデントの表示',
     darkness: 'ダークネス',

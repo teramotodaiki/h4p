@@ -43,6 +43,7 @@ class Main extends Component {
     tabbedKeys: [],
 
     editorOptions: {
+      unlimited: true,
       tabVisibility: false,
       darkness: false,
       lineWrapping: false,
