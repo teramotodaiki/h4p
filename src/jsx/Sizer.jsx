@@ -29,7 +29,7 @@ const getStyles = (props, context) => {
       cursor: 'col-resize',
       backgroundColor: palette.primary1Color,
       transform: `skewY(${-SkewY}deg)`,
-      zIndex: 100,
+      zIndex: 4000,
       transition: transitions.easeOut(null, 'box-shadow'),
     },
   };
