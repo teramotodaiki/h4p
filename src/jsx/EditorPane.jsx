@@ -94,7 +94,7 @@ export default class EditorPane extends Component {
   handleShot = () => {
     const { portPostMessage, shot } = this.props;
     if (shot && portPostMessage) {
-      portPostMessage({ query: 'shot', value: shot.text });
+      portPostMessage({ query: 'shot', value: shot });
     }
   };
 

@@ -42,7 +42,10 @@ new Promise((resolve, reject) => {
   port.onmessage = (e) => {
     switch (e.data.query) {
       case 'shot':
-        eval(e.data.value);
+        requirejs(
+          ['require', 'exports', 'module'],
+          new Function('require, exports, module', e.data.value.text)
+        );
         break;
     }
   };
@@ -74,7 +77,8 @@ function bundle(files) {
 
   const entryPoins = files
     .filter(file => file.options.isEntryPoint)
-    .map(file => file.moduleName);
+    .map(file => file.moduleName)
+    .concat('env');
 
   return new Promise((resolve, reject) => {
     requirejs(config, entryPoins, resolve);
