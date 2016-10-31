@@ -60,11 +60,6 @@ const getStyles = (props, context) => {
     tabContentContainer: {
       flex: '1 1 auto',
       position: 'relative',
-      borderColor: transparent,
-      borderStyle: 'solid',
-      borderWidth: 0,
-      borderLeftWidth: sizerWidth,
-      backgroundColor: transparent,
     },
     button: {
       position: 'absolute',
@@ -110,6 +105,9 @@ const getStyles = (props, context) => {
         border-color: ${palette.borderColor};
         background-color: ${palette.canvasColor};
         filter: invert(${darkness ? 100 : 0}%);
+        padding-left: ${sizerWidth}px;
+      }
+      #${CssScopeId} .CodeMirror-gutter:first-child {
       }
       #${CssScopeId} .CodeMirror-matchingbracket {
         color: ${palette.primary1Color};

@@ -27,7 +27,7 @@ const getStyles = (props, context, state) => {
       boxSizing: 'border-box',
       padding: 0,
       paddingRight: spacing.desktopGutterMini,
-      paddingLeft: spacing.desktopGutterMini,
+      paddingLeft: spacing.desktopGutterMore,
       zIndex: 2000,
     }),
     container: {
