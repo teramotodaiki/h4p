@@ -118,6 +118,7 @@ export default class Menu extends Component {
         >
           <PlayCircleOutline color={alternateTextColor} />
         </IconButton>
+        {null /*
         <IconButton
           tooltip={menu.shutdown}
           onTouchTap={this.handlePowerOff}
@@ -125,6 +126,7 @@ export default class Menu extends Component {
         >
           <PowerSettingsNew color={alternateTextColor} />
         </IconButton>
+        */}
         <IconButton
           tooltip={menu.popout}
           onTouchTap={handleTogglePopout}
