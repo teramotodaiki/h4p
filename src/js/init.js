@@ -37,7 +37,6 @@ export default () => {
       makeFromType('text/javascript', shot),
     ])
     .then(([files, shot]) => {
-      console.log(files, shot);
       // An instance of h4p.Player
       const player = new Player({ files, env, palette, shot });
       player.start();
