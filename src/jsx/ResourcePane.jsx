@@ -9,15 +9,26 @@ import SearchBar from '../SearchBar/';
 import { allVisibleFiles } from '../SearchBar/';
 
 const getStyles = (props, context) => {
-  const { prepareStyles } = context.muiTheme;
+  const {
+    spacing,
+    prepareStyles,
+  } = context.muiTheme;
 
   return {
     root: prepareStyles({
       flex: '1 1 auto',
-      backgroundColor: faintBlack,
-      overflowY: 'scroll',
-      boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px inset, rgba(0, 0, 0, 0.227451) 0px 3px 10px inset',
+      position: 'relative',
+      overflow: 'hidden',
     }),
+    scroll: prepareStyles({
+      position: 'absolute',
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      paddingTop: spacing.desktopGutterMore,
+      paddingBottom: spacing.desktopGutterMore,
+      overflowY: 'scroll',
+    })
   };
 };
 
@@ -112,13 +123,16 @@ export default class ResourcePane extends Component {
     };
 
     const {
-      root
+      root,
+      scroll,
     } = getStyles(this.props, this.context);
 
     return (
       <div style={root}>
         <SearchBar filterRef={(filter) => this.setState({ filter })} />
-        <Hierarchy files={files.filter(filter)} {...transfer} />
+        <div style={scroll}>
+          <Hierarchy files={files.filter(filter)} {...transfer} />
+        </div>
       </div>
     );
   }
