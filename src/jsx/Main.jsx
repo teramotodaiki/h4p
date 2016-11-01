@@ -169,6 +169,9 @@ class Main extends Component {
   };
 
   handleResize = (primaryWidth, secondaryHeight) => {
+    if (!this.state.editorOptions.unlimited) {
+      secondaryHeight = 40;
+    }
     this.setState({ primaryWidth, secondaryHeight });
   };
 
@@ -182,8 +185,16 @@ class Main extends Component {
   };
 
   handleEditorOptionChange = (change) => {
+    const changeLimited = 'unlimited' in change;
     const editorOptions = Object.assign({}, this.state.editorOptions, change);
-    this.setState({ editorOptions });
+    this.setState({ editorOptions }, () => {
+      if (changeLimited) {
+        this.setState({
+          secondaryHeight: this.state.editorOptions.unlimited ? 400 : 40,
+          tabbedKeys: [],
+        });
+      }
+    });
   };
 
   updatePalette = (change) => new Promise((resolve, reject) => {
