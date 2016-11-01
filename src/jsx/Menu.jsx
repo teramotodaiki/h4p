@@ -55,6 +55,7 @@ export default class Menu extends Component {
     env: PropTypes.array.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
+    editorOptions: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
   };
@@ -94,6 +95,7 @@ export default class Menu extends Component {
       isPopout,
       handleRun,
       handleTogglePopout,
+      editorOptions: { unlimited },
       localization: { menu },
       setLocalization,
     } = this.props;
@@ -109,49 +111,65 @@ export default class Menu extends Component {
       palette: { alternateTextColor }
     } = this.context.muiTheme;
 
+    const tooltipPosition = unlimited ? 'bottom-center' : 'top-center';
+
     return (
       <Paper rounded={false} style={root}>
+      {unlimited ? (
         <IconButton
           tooltip={menu.run}
           onTouchTap={handleRun}
+          tooltipPosition={tooltipPosition}
           style={button}
         >
           <PlayCircleOutline color={alternateTextColor} />
         </IconButton>
+      ) : null}
         {null /*
         <IconButton
           tooltip={menu.shutdown}
           onTouchTap={this.handlePowerOff}
+          tooltipPosition={tooltipPosition}
           style={button}
         >
           <PowerSettingsNew color={alternateTextColor} />
         </IconButton>
         */}
+      {unlimited ? (
         <IconButton
           tooltip={menu.popout}
           onTouchTap={handleTogglePopout}
+          tooltipPosition={tooltipPosition}
           style={button}
           iconStyle={popoutIcon}
         >
           <OpenInBrowser color={alternateTextColor} />
         </IconButton>
+      ) : null}
         <IconButton
           tooltip={menu.palette}
           onTouchTap={this.handlePalette}
+          tooltipPosition={tooltipPosition}
           style={button}
         >
           <ImagePalette color={alternateTextColor} />
         </IconButton>
+      {unlimited ? (
         <IconButton
           tooltip={menu.env}
           onTouchTap={this.handleEnv}
+          tooltipPosition={tooltipPosition}
           style={button}
         >
           <ImageTune color={alternateTextColor} />
         </IconButton>
+      ) : null}
         <IconMenu
           iconButtonElement={(
-            <IconButton tooltip={menu.language}>
+            <IconButton
+              tooltip={menu.language}
+              tooltipPosition={tooltipPosition}
+            >
               <ActionLanguage color={alternateTextColor} />
             </IconButton>
           )}
@@ -172,6 +190,7 @@ export default class Menu extends Component {
         <IconButton
           tooltip={menu.download}
           onTouchTap={this.handleDownload}
+          tooltipPosition={tooltipPosition}
           style={button}
         >
           <FileDownload color={alternateTextColor} />

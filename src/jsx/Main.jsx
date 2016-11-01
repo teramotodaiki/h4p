@@ -287,6 +287,7 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
+              editorOptions={editorOptions}
               localization={localization}
               setLocalization={this.setLocalization}
               availableLanguages={this.availableLanguages}
