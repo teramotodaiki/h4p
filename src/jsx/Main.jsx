@@ -42,13 +42,6 @@ class Main extends Component {
     selectedKey: null,
     tabbedKeys: [],
 
-    editorOptions: {
-      unlimited: true,
-      tabVisibility: false,
-      darkness: false,
-      lineWrapping: false,
-    },
-
     palette: this.props.config.palette,
     env: this.props.config.env,
     localization: getLocalization(...(
@@ -72,11 +65,27 @@ class Main extends Component {
     return this.state.files.find(f => f.name === '.shot');
   }
 
+  get options() {
+    const defaultOptions = {
+      unlimited: true,
+      tabVisibility: false,
+      darkness: false,
+      lineWrapping: false,
+    };
+    const file = this.state.files.find(f => f.name === '.options');
+    return Object.assign({}, defaultOptions, file ? file.json : {});
+  }
+
   componentDidMount() {
     const tabbedKeys = this.props.config.files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
+
+    if (this.options.unlimited === false) {
+      this.setState({ reboot: true, secondaryHeight: 40 });
+      return;
+    }
 
     this.setState({
       reboot: true,
@@ -154,7 +163,11 @@ class Main extends Component {
 
   inspection = (newFile, reject) => {
     const { files } = this.state;
-    if (files.some(file => file.moduleName === newFile.moduleName && file.key !== newFile.key)) {
+    if (files.some(file =>
+      file.moduleName &&
+      file.moduleName === newFile.moduleName &&
+      file.key !== newFile.key
+    )) {
       // file.moduleName should be unique
       return true;
     }
@@ -169,7 +182,7 @@ class Main extends Component {
   };
 
   handleResize = (primaryWidth, secondaryHeight) => {
-    if (!this.state.editorOptions.unlimited) {
+    if (!this.options.unlimited) {
       secondaryHeight = 40;
     }
     this.setState({ primaryWidth, secondaryHeight });
@@ -184,13 +197,27 @@ class Main extends Component {
     this.setState({ isPopout, reboot: true });
   };
 
-  handleEditorOptionChange = (change) => {
-    const changeLimited = 'unlimited' in change;
-    const editorOptions = Object.assign({}, this.state.editorOptions, change);
-    this.setState({ editorOptions }, () => {
-      if (changeLimited) {
+  handleOptionChange = (change) => {
+    Promise.resolve()
+    .then(() => {
+      const optionFile = this.state.files.find(f => f.name === '.options');
+
+      if (!optionFile) {
+        return makeFromType('application/json', {
+          name: '.options',
+          text: JSON.stringify(change),
+        })
+        .then(file => this.addFile(file));
+      }
+      const json = Object.assign(JSON.parse(optionFile.text), change);
+      const text = JSON.stringify(json);
+      return this.updateFile(optionFile, { json, text });
+    })
+    .then((file) => {
+
+      if ('unlimited' in change) {
         this.setState({
-          secondaryHeight: this.state.editorOptions.unlimited ? 400 : 40,
+          secondaryHeight: file.json.unlimited ? 400 : 40,
           tabbedKeys: [],
         });
       }
@@ -229,7 +256,6 @@ class Main extends Component {
       files, tabbedKeys, selectedKey,
       dialogContent,
       primaryWidth, secondaryHeight,
-      editorOptions,
       isPopout,
       reboot,
       palette, env,
@@ -267,8 +293,8 @@ class Main extends Component {
               selectFile={this.selectFile}
               closeTab={this.closeTab}
               handleRun={this.handleRun}
-              editorOptions={editorOptions}
-              handleEditorOptionChange={this.handleEditorOptionChange}
+              options={this.options}
+              handleOptionChange={this.handleOptionChange}
               openFileDialog={this.openFileDialog}
               localization={localization}
               portPostMessage={portPostMessage}
@@ -287,7 +313,7 @@ class Main extends Component {
               env={env}
               updatePalette={this.updatePalette}
               updateEnv={this.updateEnv}
-              editorOptions={editorOptions}
+              options={this.options}
               localization={localization}
               setLocalization={this.setLocalization}
               availableLanguages={this.availableLanguages}

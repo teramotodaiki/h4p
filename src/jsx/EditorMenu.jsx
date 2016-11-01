@@ -34,8 +34,8 @@ const getStyles = (props, context) => {
 export default class EditorMenu extends Component {
 
   static propTypes = {
-    editorOptions: PropTypes.object.isRequired,
-    handleEditorOptionChange: PropTypes.func.isRequired,
+    options: PropTypes.object.isRequired,
+    handleOptionChange: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
@@ -44,13 +44,13 @@ export default class EditorMenu extends Component {
   };
 
   toggleOption = (propName) => {
-    const current = this.props.editorOptions[propName];
-    this.props.handleEditorOptionChange({ [propName]: !current });
+    const current = this.props.options[propName];
+    this.props.handleOptionChange({ [propName]: !current });
   };
 
   render() {
     const {
-      editorOptions,
+      options,
       localization: { editorMenu },
     } = this.props;
 
@@ -73,25 +73,25 @@ export default class EditorMenu extends Component {
             rightIcon={<AvWeb />}
             primaryText={editorMenu.unlimited}
             onTouchTap={() => this.toggleOption('unlimited')}
-            checked={editorOptions.unlimited}
+            checked={options.unlimited}
           />
           <MenuItem
             rightIcon={<EditorWrapText />}
             primaryText={editorMenu.lineWrapping}
             onTouchTap={() => this.toggleOption('lineWrapping')}
-            checked={editorOptions.lineWrapping}
+            checked={options.lineWrapping}
           />
           <MenuItem
             rightIcon={<HardwareKeyboardTab />}
             primaryText={editorMenu.tabVisibility}
             onTouchTap={() => this.toggleOption('tabVisibility')}
-            checked={editorOptions.tabVisibility}
+            checked={options.tabVisibility}
           />
           <MenuItem
             rightIcon={<ImageFilterBAndW />}
             primaryText={editorMenu.darkness}
             onTouchTap={() => this.toggleOption('darkness')}
-            checked={editorOptions.darkness}
+            checked={options.darkness}
           />
         </IconMenu>
     );

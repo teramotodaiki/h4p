@@ -55,7 +55,7 @@ export default class Menu extends Component {
     env: PropTypes.array.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
-    editorOptions: PropTypes.object.isRequired,
+    options: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
   };
@@ -95,7 +95,7 @@ export default class Menu extends Component {
       isPopout,
       handleRun,
       handleTogglePopout,
-      editorOptions: { unlimited },
+      options: { unlimited },
       localization: { menu },
       setLocalization,
     } = this.props;
