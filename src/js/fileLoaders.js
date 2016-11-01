@@ -2,6 +2,11 @@ import { separate } from './files';
 
 export default [
   {
+    test: /^(text|application)\/json$/,
+    loader: (type, seed) => textLoader(type, seed).then(jsonLoader),
+    composer: (file) => Promise.resolve(file.text)
+  },
+  {
     test: /^(text|application)\//,
     loader: (type, seed) => textLoader(type, seed),
     composer: (file) => Promise.resolve(file.text)
@@ -100,6 +105,12 @@ export const blobLoader = (type, seed) =>
       blobURL: URL.createObjectURL(blob),
       options: Object.assign({}, defaultValue.options, seed.options)
     }));
+  });
+
+export const jsonLoader = (file) =>
+  new Promise((resolve, reject) => {
+    const json = JSON.parse(file.text);
+    resolve(Object.assign({}, file, { json }));
   });
 
 const blobToBase64 = (blob) =>

@@ -32,6 +32,7 @@ export default {
     title: 'Color Palette',
   },
   editorMenu: {
+    unlimited: 'Unlimited Mode',
     lineWrapping: 'Line Wrapping',
     tabVisibility: 'Tab Visibility',
     darkness: 'Darkness',

@@ -62,8 +62,8 @@ export default class EditorPane extends Component {
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
-    editorOptions: PropTypes.object.isRequired,
-    handleEditorOptionChange: PropTypes.func.isRequired,
+    options: PropTypes.object.isRequired,
+    handleOptionChange: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
@@ -103,8 +103,8 @@ export default class EditorPane extends Component {
       files, selectedFile, tabbedFiles,
       updateFile, selectFile, closeTab,
       handleRun,
-      editorOptions,
-      handleEditorOptionChange,
+      options,
+      handleOptionChange,
       openFileDialog,
       localization,
       shot,
@@ -122,8 +122,8 @@ export default class EditorPane extends Component {
     return (
     <div style={prepareStyles(root)}>
       <EditorMenu
-        editorOptions={editorOptions}
-        handleEditorOptionChange={handleEditorOptionChange}
+        options={options}
+        handleOptionChange={handleOptionChange}
         localization={localization}
       />
       <div style={prepareStyles(tabContainer)}>
@@ -145,7 +145,7 @@ export default class EditorPane extends Component {
         {file.isText ? (
           <Editor
             file={file}
-            options={editorOptions}
+            options={options}
             getFiles={() => files}
             onChange={(text) => updateFile(file, { text })}
             gutterMarginWidth={SizerWidth}
@@ -160,7 +160,7 @@ export default class EditorPane extends Component {
         {shot ? (
           <Editor
             file={shot}
-            options={editorOptions}
+            options={options}
             getFiles={() => files}
             onChange={(text) => updateFile(shot, { text })}
           />

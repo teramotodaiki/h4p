@@ -98,7 +98,8 @@ export default class ScreenPane extends Component {
 
   prevent = null;
   start () {
-    const { files, portRef } = this.props;
+    const { portRef } = this.props;
+    const files = this.props.files.filter(f => f.moduleName);
     const env = composeEnv(this.props.env);
 
     this.prevent =
