@@ -5,6 +5,18 @@ import { faintBlack } from 'material-ui/styles/colors';
 import { SignDialog } from '../FileDialog/';
 import { makeFromFile, changeName, changeDir } from '../js/files';
 import Hierarchy from '../Hierarchy/';
+const getStyles = (props, context) => {
+  const { prepareStyles } = context.muiTheme;
+
+  return {
+    root: prepareStyles({
+      flex: '1 1 auto',
+      backgroundColor: faintBlack,
+      overflowY: 'scroll',
+      boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px inset, rgba(0, 0, 0, 0.227451) 0px 3px 10px inset',
+    }),
+  };
+};
 
 export default class ResourcePane extends Component {
 
@@ -17,6 +29,10 @@ export default class ResourcePane extends Component {
     selectFile: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   state = {
@@ -90,14 +106,12 @@ export default class ResourcePane extends Component {
       handleNameChange: this.handleNameChange,
     };
 
-    const style = Object.assign({}, this.props.style, {
-      backgroundColor: faintBlack,
-      overflowY: 'scroll',
-      boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px inset, rgba(0, 0, 0, 0.227451) 0px 3px 10px inset',
-    });
+    const {
+      root
+    } = getStyles(this.props, this.context);
 
     return (
-      <div style={style}>
+      <div style={root}>
         <Hierarchy files={files} {...transfer} />
       </div>
     );
