@@ -327,7 +327,6 @@ class Main extends Component {
               selectFile={this.selectFile}
               closeTab={this.closeTab}
               openFileDialog={this.openFileDialog}
-              style={{ flex: '1 1 auto' }}
             />
           </Dock>
           <ScreenPane

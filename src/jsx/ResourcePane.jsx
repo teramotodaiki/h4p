@@ -5,6 +5,32 @@ import { faintBlack } from 'material-ui/styles/colors';
 import { SignDialog } from '../FileDialog/';
 import { makeFromFile, changeName, changeDir } from '../js/files';
 import Hierarchy from '../Hierarchy/';
+import SearchBar from '../SearchBar/';
+import { allVisibleFiles } from '../SearchBar/';
+
+const getStyles = (props, context) => {
+  const {
+    spacing,
+    prepareStyles,
+  } = context.muiTheme;
+
+  return {
+    root: prepareStyles({
+      flex: '1 1 auto',
+      position: 'relative',
+      overflow: 'hidden',
+    }),
+    scroll: prepareStyles({
+      position: 'absolute',
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%',
+      paddingTop: spacing.desktopGutterMore,
+      paddingBottom: spacing.desktopGutterMore,
+      overflowY: 'scroll',
+    })
+  };
+};
 
 export default class ResourcePane extends Component {
 
@@ -19,8 +45,13 @@ export default class ResourcePane extends Component {
     openFileDialog: PropTypes.func.isRequired,
   };
 
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
   state = {
-    openedPaths: ['']
+    openedPaths: [''],
+    filter: allVisibleFiles(),
   };
 
   handleNativeDrop = (files, dir) => {
@@ -78,6 +109,7 @@ export default class ResourcePane extends Component {
 
   render() {
     const { files, selectFile, selectedFile, tabbedFiles } = this.props;
+    const { filter } = this.state;
 
     const transfer = {
       selectedFile,
@@ -90,15 +122,17 @@ export default class ResourcePane extends Component {
       handleNameChange: this.handleNameChange,
     };
 
-    const style = Object.assign({}, this.props.style, {
-      backgroundColor: faintBlack,
-      overflowY: 'scroll',
-      boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px inset, rgba(0, 0, 0, 0.227451) 0px 3px 10px inset',
-    });
+    const {
+      root,
+      scroll,
+    } = getStyles(this.props, this.context);
 
     return (
-      <div style={style}>
-        <Hierarchy files={files} {...transfer} />
+      <div style={root}>
+        <SearchBar files={files} filterRef={(filter) => this.setState({ filter })} />
+        <div style={scroll}>
+          <Hierarchy files={files.filter(filter)} {...transfer} />
+        </div>
       </div>
     );
   }
