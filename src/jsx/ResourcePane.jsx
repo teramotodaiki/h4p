@@ -129,7 +129,7 @@ export default class ResourcePane extends Component {
 
     return (
       <div style={root}>
-        <SearchBar filterRef={(filter) => this.setState({ filter })} />
+        <SearchBar files={files} filterRef={(filter) => this.setState({ filter })} />
         <div style={scroll}>
           <Hierarchy files={files.filter(filter)} {...transfer} />
         </div>

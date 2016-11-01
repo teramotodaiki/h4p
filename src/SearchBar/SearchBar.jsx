@@ -43,6 +43,7 @@ const getStyles = (props, context, state) => {
 export default class SearchBar extends Component {
 
   static propTypes = {
+    files: PropTypes.array.isRequired,
     filterRef: PropTypes.func.isRequired,
   };
 
@@ -60,21 +61,25 @@ export default class SearchBar extends Component {
 
   render() {
     const {
+      secondaryTextColor,
+    } = this.context.muiTheme.palette;
+    const fileNames = this.props.files
+      .map(f => f.moduleName)
+      .filter(s => s);
+
+    const {
       root,
       bar,
       icon,
     } = getStyles(this.props, this.context, this.state);
-    const { focus } = this.state;
-    const {
-      secondaryTextColor,
-    } = this.context.muiTheme.palette;
 
     return (
       <div style={root}>
         <Paper zDepth={3} style={bar}>
           <ActionSearch style={icon} color={secondaryTextColor} />
           <AutoComplete id="search"
-            dataSource={[]}
+            dataSource={fileNames}
+            maxSearchResults={5}
             onNewRequest={this.handleUpdate}
             onUpdateInput={this.handleUpdate}
             onFocus={() => this.setState({ focus: true })}
