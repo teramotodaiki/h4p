@@ -8,7 +8,6 @@ export default function getHierarchy(items, path = '') {
   const dirs = [];
 
   items
-    .filter(item => item.moduleName) // Invisible file
     .filter(item => item.name.indexOf(path) === 0)
     .forEach((item, i, all) => {
       const relativePath = item.name.replace(path, '');

@@ -5,6 +5,9 @@ import { faintBlack } from 'material-ui/styles/colors';
 import { SignDialog } from '../FileDialog/';
 import { makeFromFile, changeName, changeDir } from '../js/files';
 import Hierarchy from '../Hierarchy/';
+import SearchBar from '../SearchBar/';
+import { allVisibleFiles } from '../SearchBar/';
+
 const getStyles = (props, context) => {
   const { prepareStyles } = context.muiTheme;
 
@@ -36,7 +39,8 @@ export default class ResourcePane extends Component {
   };
 
   state = {
-    openedPaths: ['']
+    openedPaths: [''],
+    filter: allVisibleFiles(),
   };
 
   handleNativeDrop = (files, dir) => {
@@ -94,6 +98,7 @@ export default class ResourcePane extends Component {
 
   render() {
     const { files, selectFile, selectedFile, tabbedFiles } = this.props;
+    const { filter } = this.state;
 
     const transfer = {
       selectedFile,
@@ -112,7 +117,8 @@ export default class ResourcePane extends Component {
 
     return (
       <div style={root}>
-        <Hierarchy files={files} {...transfer} />
+        <SearchBar filterRef={(filter) => this.setState({ filter })} />
+        <Hierarchy files={files.filter(filter)} {...transfer} />
       </div>
     );
   }
