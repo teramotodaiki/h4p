@@ -31,7 +31,7 @@ const getStyles = (props, context) => {
       alignItems: 'center',
       height: 40,
       backgroundColor: palette.primary1Color,
-      zIndex: 1,
+      zIndex: 1000,
     },
     button: {
       marginRight: 20
