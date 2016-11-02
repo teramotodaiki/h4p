@@ -23,7 +23,7 @@ const config = {
       {
         test: /\.(jsx?)$/,
         loaders: ["babel"],
-        exclude: /node_modules/,
+        exclude: /node_modules|lib/,
       },
       {
         test: /\.css$/,
