@@ -209,6 +209,7 @@ class Main extends Component {
   };
 
   handleOptionChange = (change) => {
+    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
     return Promise.resolve()
       .then(() => {
         const optionFile = this.state.files.find(f => f.name === '.options');
@@ -217,14 +218,14 @@ class Main extends Component {
           const json = Object.assign({}, this.options, change);
           return makeFromType('application/json', {
             name: '.options',
-            text: JSON.stringify(json, null, '\t'),
+            text: JSON.stringify(json, null, indent),
             options: { isReadOnly: true }
           })
           .then((file) => this.addFile(file));
         }
         const text = JSON.stringify(
           Object.assign(JSON.parse(optionFile.text), change),
-          null, '\t'
+          null, indent
         );
         const json = JSON.parse(text);
         return this.updateFile(optionFile, { json, text });
@@ -242,13 +243,14 @@ class Main extends Component {
   };
 
   handlePaletteChange = (change) => {
+    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
     const paletteFile = this.state.files.find(f => f.name === '.palette');
 
     if (!paletteFile) {
       const json = Object.assign({}, this.palette, change);
       return makeFromType('application/json', {
         name: '.palette',
-        text: JSON.stringify(json, null, '\t'),
+        text: JSON.stringify(json, null, indent),
         options: { isReadOnly: true }
       })
       .then((file) => this.addFile(file))
@@ -256,7 +258,7 @@ class Main extends Component {
     }
     const text = JSON.stringify(
       Object.assign(JSON.parse(paletteFile.text), change),
-      null, '\t'
+      null, indent
     );
     const json = JSON.parse(text);
     return this.updateFile(paletteFile, { json, text })
@@ -264,13 +266,14 @@ class Main extends Component {
   };
 
   handleEnvChange = (change) => {
+    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
     const envFile = this.state.files.find(f => f.name === '.env');
 
     if (!envFile) {
       const json = Object.assign({}, this.env, change);
       return makeFromType('application/json', {
         name: '.env',
-        text: JSON.stringify(json, null, '\t'),
+        text: JSON.stringify(json, null, indent),
         options: { isReadOnly: true }
       })
       .then((file) => this.addFile(file))
@@ -278,7 +281,7 @@ class Main extends Component {
     }
     const text = JSON.stringify(
       Object.assign(JSON.parse(envFile.text), change),
-      null, '\t'
+      null, indent
     );
     const json = JSON.parse(text);
     return this.updateFile(envFile, { json, text })
