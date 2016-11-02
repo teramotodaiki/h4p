@@ -68,6 +68,7 @@ class Main extends Component {
       tabVisibility: false,
       darkness: false,
       lineWrapping: false,
+      indentUnit4: false,
     };
     const file = this.state.files.find(f => f.name === '.options');
     return Object.assign({}, defaultOptions, file ? file.json : {});

@@ -36,6 +36,7 @@ export default {
     lineWrapping: 'Line Wrapping',
     tabVisibility: 'Tab Visibility',
     darkness: 'Darkness',
+    indentUnit4: '4 spaces indent',
   },
 
 
