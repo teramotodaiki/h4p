@@ -8,6 +8,7 @@ import ActionSettings from 'material-ui/svg-icons/action/settings';
 import ImageFilterBAndW from 'material-ui/svg-icons/image/filter-b-and-w';
 import EditorWrapText from 'material-ui/svg-icons/editor/wrap-text';
 import AvWeb from 'material-ui/svg-icons/av/web';
+import EditorFormatIndentIncrease from 'material-ui/svg-icons/editor/format-indent-increase';
 
 
 const getStyles = (props, context) => {
@@ -92,6 +93,12 @@ export default class EditorMenu extends Component {
             primaryText={editorMenu.darkness}
             onTouchTap={() => this.toggleOption('darkness')}
             checked={options.darkness}
+          />
+          <MenuItem
+            rightIcon={<EditorFormatIndentIncrease />}
+            primaryText={editorMenu.indentUnit4}
+            onTouchTap={() => this.toggleOption('indentUnit4')}
+            checked={options.indentUnit4}
           />
         </IconMenu>
     );

@@ -31,7 +31,7 @@ const getStyles = (props, context) => {
       alignItems: 'center',
       height: 40,
       backgroundColor: palette.primary1Color,
-      zIndex: 1,
+      zIndex: 1000,
     },
     button: {
       marginRight: 20
@@ -52,7 +52,7 @@ export default class Menu extends Component {
     openFileDialog: PropTypes.func.isRequired,
     handleTogglePopout: PropTypes.func.isRequired,
     palette: PropTypes.object.isRequired,
-    env: PropTypes.array.isRequired,
+    env: PropTypes.object.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
@@ -69,9 +69,9 @@ export default class Menu extends Component {
   };
 
   handleDownload = () => {
-    const { files, env, palette, openFileDialog } = this.props;
+    const { files, openFileDialog } = this.props;
 
-    openFileDialog(DownloadDialog, { files, env, palette })
+    openFileDialog(DownloadDialog, { files })
       .then(content => {
         openFileDialog(SaveDialog, { content });
       })

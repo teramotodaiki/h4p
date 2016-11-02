@@ -1,6 +1,6 @@
 import Player from './Player';
-import { makeFromElements, makeFromType } from './files';
-import { importEnv } from './env';
+import { makeFromElements } from './files';
+
 
 // Initialize player from DOM
 export default () => {
@@ -16,22 +16,11 @@ export default () => {
     document.querySelectorAll(`.${CSS_PREFIX}app`)
   ).map(elem => {
     const scripts = document.querySelectorAll('script' + elem.getAttribute('data-target'));
-    const {
-      env,
-      palette,
-    } = (elem => {
-      if (!elem) return {};
-      const exported = JSON.parse(elem.textContent);
-      return {
-        env: importEnv(exported.env),
-        palette: exported.palette,
-      };
-    })(document.querySelector('x-exports' + elem.getAttribute('data-target') + '__exports'));
 
     return makeFromElements(scripts)
       .then(files => {
         // An instance of h4p.Player
-        const player = new Player({ files, env, palette });
+        const player = new Player({ files });
         player.start();
         return player;
       });

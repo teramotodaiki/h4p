@@ -13,8 +13,7 @@ injectTapEventPlugin();
 
 import getLocalization from '../localization/';
 import { makeFromFile, makeFromType } from '../js/files';
-import { makeEnv } from '../js/env';
-import getCustomTheme from '../js/getCustomTheme';
+import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import Dock from './Dock';
 import Menu from './Menu';
 import EditorPane from './EditorPane';
@@ -42,8 +41,6 @@ class Main extends Component {
     selectedKey: null,
     tabbedKeys: [],
 
-    palette: this.props.config.palette,
-    env: this.props.config.env,
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
     )),
@@ -71,9 +68,23 @@ class Main extends Component {
       tabVisibility: false,
       darkness: false,
       lineWrapping: false,
+      indentUnit4: false,
     };
     const file = this.state.files.find(f => f.name === '.options');
     return Object.assign({}, defaultOptions, file ? file.json : {});
+  }
+
+  get env() {
+    const defaultEnv = {
+      DEBUG: [true, 'boolean', 'A flag means test mode'],
+    };
+    const file = this.state.files.find(f => f.name === '.env');
+    return Object.assign({}, defaultEnv, file ? file.json : {});
+  }
+
+  get palette() {
+    const file = this.state.files.find(f => f.name === '.palette');
+    return Object.assign({}, defaultPalette, file ? file.json : {});
   }
 
   componentDidMount() {
@@ -198,46 +209,84 @@ class Main extends Component {
   };
 
   handleOptionChange = (change) => {
-    Promise.resolve()
-    .then(() => {
-      const optionFile = this.state.files.find(f => f.name === '.options');
+    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
+    return Promise.resolve()
+      .then(() => {
+        const optionFile = this.state.files.find(f => f.name === '.options');
 
-      if (!optionFile) {
-        return makeFromType('application/json', {
-          name: '.options',
-          text: JSON.stringify(change),
-        })
-        .then(file => this.addFile(file));
-      }
-      const json = Object.assign(JSON.parse(optionFile.text), change);
-      const text = JSON.stringify(json);
-      return this.updateFile(optionFile, { json, text });
-    })
-    .then((file) => {
+        if (!optionFile) {
+          const json = Object.assign({}, this.options, change);
+          return makeFromType('application/json', {
+            name: '.options',
+            text: JSON.stringify(json, null, indent),
+            options: { isReadOnly: true }
+          })
+          .then((file) => this.addFile(file));
+        }
+        const text = JSON.stringify(
+          Object.assign(JSON.parse(optionFile.text), change),
+          null, indent
+        );
+        const json = JSON.parse(text);
+        return this.updateFile(optionFile, { json, text });
+      })
+      .then((file) => {
 
-      if ('unlimited' in change) {
-        this.setState({
-          secondaryHeight: file.json.unlimited ? 400 : 40,
-          tabbedKeys: [],
-        });
-      }
-    });
+        if ('unlimited' in change) {
+          this.setState({
+            secondaryHeight: file.json.unlimited ? 400 : 40,
+            tabbedKeys: [],
+          });
+        }
+        return Promise.resolve(file.json);
+      });
   };
 
-  updatePalette = (change) => new Promise((resolve, reject) => {
-    const palette = Object.assign({}, this.state.palette, change);
+  handlePaletteChange = (change) => {
+    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
+    const paletteFile = this.state.files.find(f => f.name === '.palette');
 
-    this.setState({ palette }, () => resolve(palette));
-  });
+    if (!paletteFile) {
+      const json = Object.assign({}, this.palette, change);
+      return makeFromType('application/json', {
+        name: '.palette',
+        text: JSON.stringify(json, null, indent),
+        options: { isReadOnly: true }
+      })
+      .then((file) => this.addFile(file))
+      .then((file) => file.json);
+    }
+    const text = JSON.stringify(
+      Object.assign(JSON.parse(paletteFile.text), change),
+      null, indent
+    );
+    const json = JSON.parse(text);
+    return this.updateFile(paletteFile, { json, text })
+      .then((file) => file.json);
+  };
 
-  updateEnv = (change, index = -1) => new Promise((resolve, reject) => {
-    const merged = index in this.state.env ?
-      this.state.env.map((item, i) => i === index ? change : item) :
-      this.state.env.concat(change);
-    const env = merged.filter(e => e);
+  handleEnvChange = (change) => {
+    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
+    const envFile = this.state.files.find(f => f.name === '.env');
 
-    this.setState({ env }, () => resolve(env));
-  });
+    if (!envFile) {
+      const json = Object.assign({}, this.env, change);
+      return makeFromType('application/json', {
+        name: '.env',
+        text: JSON.stringify(json, null, indent),
+        options: { isReadOnly: true }
+      })
+      .then((file) => this.addFile(file))
+      .then((file) => file.json);
+    }
+    const text = JSON.stringify(
+      Object.assign(JSON.parse(envFile.text), change),
+      null, indent
+    );
+    const json = JSON.parse(text);
+    return this.updateFile(envFile, { json, text })
+      .then((file) => file.json);
+  };
 
   setLocalization = (localization) => {
     this.setState({ localization });
@@ -258,7 +307,6 @@ class Main extends Component {
       primaryWidth, secondaryHeight,
       isPopout,
       reboot,
-      palette, env,
       localization,
       portPostMessage,
     } = this.state;
@@ -276,7 +324,7 @@ class Main extends Component {
     };
 
     return (
-      <MuiThemeProvider muiTheme={getCustomTheme({ palette })}>
+      <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.palette })}>
         <div style={{ backgroundColor: 'inherit' }}>
           <Dock config={config} style={primaryDockStyle}>
             <Sizer
@@ -309,10 +357,10 @@ class Main extends Component {
               handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
               handleTogglePopout={this.handleTogglePopout}
-              palette={palette}
-              env={env}
-              updatePalette={this.updatePalette}
-              updateEnv={this.updateEnv}
+              palette={this.palette}
+              env={this.env}
+              updatePalette={this.handlePaletteChange}
+              updateEnv={this.handleEnvChange}
               options={this.options}
               localization={localization}
               setLocalization={this.setLocalization}
@@ -337,7 +385,7 @@ class Main extends Component {
             files={files}
             isPopout={isPopout}
             reboot={reboot}
-            env={env}
+            env={this.env}
             handlePopoutClose={this.handleTogglePopout}
             portRef={this.handlePort}
           />

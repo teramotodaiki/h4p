@@ -36,6 +36,7 @@ export default {
     lineWrapping: '行のおり返し',
     tabVisibility: 'インデントの表示',
     darkness: 'ダークネス',
+    indentUnit4: '４文字ずつそろえる',
   },
 
 

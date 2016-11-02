@@ -8,7 +8,9 @@ const TapTwiceQuickly = 'Tap twice quickly';
 
 export default class EditableLabel extends Component {
 
-  static propTypes = TextField.propTypes;
+  static propTypes = Object.assign({
+    onEditEnd: PropTypes.func,
+  }, TextField.propTypes);
 
   state = {
     isEditing: false
@@ -27,11 +29,20 @@ export default class EditableLabel extends Component {
     this.setState({ isEditing: false });
   };
 
+  handleKeyPress = () => {
+    if (event.key === 'Enter') {
+      this.setState({ isEditing: false });
+    }
+  };
+
   componentDidUpdate(prevProps, prevState) {
+    if (!this.input) return;
+
     if (!prevState.isEditing && this.state.isEditing) {
-      if (this.input) {
-        this.input.focus();
-      }
+      this.input.focus();
+    }
+    if (prevState.isEditing && !this.state.isEditing) {
+      this.props.onEditEnd(this.input.value);
     }
   }
 
@@ -48,11 +59,15 @@ export default class EditableLabel extends Component {
       borderBottom: `1px dashed ${grey600}`
     });
 
+    const props = Object.assign({}, this.props);
+    delete props.onEditEnd;
+
     return isEditing ? (
       <TextField
-        {...this.props}
-        onBlur={this.handleBlur}
+        {...props}
         ref={(ref) => ref && (this.input = ref.input)}
+        onBlur={this.handleBlur}
+        onKeyPress={this.handleKeyPress}
       />
     ) : labelText ? (
       <div

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Popout from '../lib/ReactPopout';
 
 
-import { composeEnv } from '../js/env';
+import composeEnv from '../js/composeEnv';
 import template from '../html/screen';
 import screenJs from '../js/screen';
 import popoutTemplate from '../html/popout';
@@ -46,7 +46,7 @@ export default class ScreenPane extends Component {
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
-    env: PropTypes.array.isRequired,
+    env: PropTypes.object.isRequired,
     handlePopoutClose: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
   };

@@ -138,7 +138,7 @@ export default class Editor extends Component {
     const options = Object.assign({
       lineNumbers: true,
       mode: 'javascript',
-      indentUnit: 4,
+      indentUnit: this.props.options.indentUnit4 ? 4 : 2,
       indentWithTabs: true,
       matchBrackets: true,
       autoCloseBrackets: true,

@@ -6,7 +6,6 @@ import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
 import { compose } from '../js/files';
 import download from '../html/download';
-import { exportEnv } from '../js/env';
 
 export default class DownloadDialog extends Component {
 
@@ -14,8 +13,6 @@ export default class DownloadDialog extends Component {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     files: PropTypes.array.isRequired,
-    env: PropTypes.array.isRequired,
-    palette: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
@@ -28,16 +25,12 @@ export default class DownloadDialog extends Component {
   componentDidMount() {
     Promise.all(this.props.files.map(compose))
     .then(files => {
-      const exports = JSON.stringify({
-        env: exportEnv(this.props.env),
-        palette: this.props.palette
-      });
-      const bundleWithURL = this.bundle({ files, exports, useCDN: true });
+      const bundleWithURL = this.bundle({ files, useCDN: true });
       this.setState({ bundleWithURL });
 
-      return [files, exports];
+      return files;
     })
-    .then(([files, exports]) => fetch(CORE_CDN_URL, { mode: 'cors' })
+    .then((files) => fetch(CORE_CDN_URL, { mode: 'cors' })
       .then(response => {
         if (!response.ok) {
           throw response.error ? response.error() : new Error(response.statusText);
@@ -46,7 +39,7 @@ export default class DownloadDialog extends Component {
       })
       .then(lib => {
         const raw = encodeURIComponent(lib);
-        const bundleWithRaw = this.bundle({ files, exports, raw });
+        const bundleWithRaw = this.bundle({ files, raw });
         this.setState({ bundleWithRaw });
       })
     )
