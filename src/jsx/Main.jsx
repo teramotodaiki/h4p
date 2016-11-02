@@ -208,34 +208,34 @@ class Main extends Component {
   };
 
   handleOptionChange = (change) => {
-    Promise.resolve()
-    .then(() => {
-      const optionFile = this.state.files.find(f => f.name === '.options');
+    return Promise.resolve()
+      .then(() => {
+        const optionFile = this.state.files.find(f => f.name === '.options');
 
-      if (!optionFile) {
-        const json = Object.assign({}, this.options, change);
-        return makeFromType('application/json', {
-          name: '.options',
-          text: JSON.stringify(json),
-        })
-        .then((file) => this.addFile(file));
-      }
-      const text = JSON.stringify(
-        Object.assign(JSON.parse(optionFile.text), change)
-      );
-      const json = JSON.parse(text);
-      return this.updateFile(optionFile, { json, text });
-    })
-    .then((file) => {
+        if (!optionFile) {
+          const json = Object.assign({}, this.options, change);
+          return makeFromType('application/json', {
+            name: '.options',
+            text: JSON.stringify(json),
+          })
+          .then((file) => this.addFile(file));
+        }
+        const text = JSON.stringify(
+          Object.assign(JSON.parse(optionFile.text), change)
+        );
+        const json = JSON.parse(text);
+        return this.updateFile(optionFile, { json, text });
+      })
+      .then((file) => {
 
-      if ('unlimited' in change) {
-        this.setState({
-          secondaryHeight: file.json.unlimited ? 400 : 40,
-          tabbedKeys: [],
-        });
-      }
-      return Promise.resolve(file.json);
-    });
+        if ('unlimited' in change) {
+          this.setState({
+            secondaryHeight: file.json.unlimited ? 400 : 40,
+            tabbedKeys: [],
+          });
+        }
+        return Promise.resolve(file.json);
+      });
   };
 
   handlePaletteChange = (change) => {
