@@ -17,13 +17,11 @@ export default () => {
   ).map(elem => {
     const scripts = document.querySelectorAll('script' + elem.getAttribute('data-target'));
     const {
-      env,
       palette,
     } = (elem => {
       if (!elem) return {};
       const exported = JSON.parse(elem.textContent);
       return {
-        env: importEnv(exported.env),
         palette: exported.palette,
       };
     })(document.querySelector('x-exports' + elem.getAttribute('data-target') + '__exports'));
@@ -31,7 +29,7 @@ export default () => {
     return makeFromElements(scripts)
       .then(files => {
         // An instance of h4p.Player
-        const player = new Player({ files, env, palette });
+        const player = new Player({ files, palette });
         player.start();
         return player;
       });

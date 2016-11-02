@@ -6,7 +6,6 @@ import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
 import { compose } from '../js/files';
 import download from '../html/download';
-import { exportEnv } from '../js/env';
 
 export default class DownloadDialog extends Component {
 
@@ -14,7 +13,6 @@ export default class DownloadDialog extends Component {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     files: PropTypes.array.isRequired,
-    env: PropTypes.array.isRequired,
     palette: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
   };
@@ -29,7 +27,6 @@ export default class DownloadDialog extends Component {
     Promise.all(this.props.files.map(compose))
     .then(files => {
       const exports = JSON.stringify({
-        env: exportEnv(this.props.env),
         palette: this.props.palette
       });
       const bundleWithURL = this.bundle({ files, exports, useCDN: true });
