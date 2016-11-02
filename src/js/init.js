@@ -1,6 +1,6 @@
 import Player from './Player';
 import { makeFromElements, makeFromType } from './files';
-import { importEnv } from './env';
+
 
 // Initialize player from DOM
 export default () => {

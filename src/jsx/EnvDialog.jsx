@@ -12,31 +12,33 @@ import ContentClear from 'material-ui/svg-icons/content/clear';
 import AvPlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 
 
-import { makeEnv, validateEnv, EnvTypes } from '../js/env';
 import EditableLabel from './EditableLabel';
-
-const InvalidValue = 'Invalid value';
 
 export default class EnvDialog extends Component {
 
   static propTypes = {
-    env: PropTypes.array.isRequired,
+    env: PropTypes.object.isRequired,
     updateEnv: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
   state = {
-    env: this.props.env
+    env: this.props.env,
   };
 
-  updateEnv = (change, index = -1) => {
-    this.props.updateEnv(change, index)
-      .then(env => this.setState({ env }));
+  handleUpdateEnv = (change) => {
+    this.props.updateEnv(change)
+      .then((env) => this.setState({ env }));
+  };
+
+  addItem = (value, type, tooltip = '') => {
+    this.handleUpdateEnv({ ['']: [value, type, tooltip] });
   };
 
   render() {
     const {
+      updateEnv,
       onRequestClose,
       localization: { envDialog },
     } = this.props;
@@ -52,19 +54,19 @@ export default class EnvDialog extends Component {
         label="Bool"
         icon={<ToggleCheckBox />}
         style={actionStyle}
-        onTouchTap={() => this.updateEnv(makeEnv('', false))}
+        onTouchTap={() => this.addItem(false, 'boolean')}
       />,
       <RaisedButton primary
         label="Number"
         icon={<ImageLooksOne />}
         style={actionStyle}
-        onTouchTap={() => this.updateEnv(makeEnv('', 0))}
+        onTouchTap={() => this.addItem(0, 'number')}
       />,
       <RaisedButton primary
         label="String"
         icon={<ContentFontDownload />}
         style={actionStyle}
-        onTouchTap={() => this.updateEnv(makeEnv('', ''))}
+        onTouchTap={() => this.addItem('', 'string')}
       />,
     ];
 
@@ -75,11 +77,12 @@ export default class EnvDialog extends Component {
         actions={addActions}
         onRequestClose={onRequestClose}
       >
-      {env.map((item, index) => (
+      {Object.keys(env).map((key) => (
         <EnvItem
-          key={item.key}
-          item={item}
-          onChange={change => this.updateEnv(change, index)}
+          key={key}
+          itemKey={key}
+          item={env[key]}
+          updateEnv={this.handleUpdateEnv}
         />
       ))}
       </Dialog>
@@ -90,57 +93,45 @@ export default class EnvDialog extends Component {
 class EnvItem extends Component {
 
   static propTypes = {
-    item: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired
+    item: PropTypes.array.isRequired,
+    itemKey: PropTypes.any.isRequired,
+    updateEnv: PropTypes.func.isRequired
   };
 
-  handleKeyNameChange = (event) => {
-    const { item, onChange } = this.props;
+  changeKey = (key) => {
+    const { itemKey, updateEnv } = this.props;
+    const [...item] = this.props.item;
 
-    const keyName = event.target.value;
-    const change = Object.assign({}, item, { keyName });
-    onChange(change);
+    updateEnv({
+      [itemKey]: undefined,
+      [key]: item
+    });
   };
 
-  handleTooltipChange = (event) => {
-    const { item, onChange } = this.props;
+  changeValue = (value) => {
+    const { itemKey, updateEnv } = this.props;
+    const [, type, tooltip] = this.props.item;
 
-    const tooltip = event.target.value;
-    const change = Object.assign({}, item, { tooltip });
-    onChange(change);
+    const item = [value, type, tooltip];
+    updateEnv({ [itemKey]: item });
   };
 
-  handleRemove = () => {
-    const { onChange } = this.props;
-    onChange(null);
+  changeTooltip = (tooltip) => {
+    const { itemKey, updateEnv } = this.props;
+    const [value, type] = this.props.item;
+
+    const item = [value, type, tooltip];
+    updateEnv({ [itemKey]: item });
   };
 
-  renderConfiguable = () => {
-    const { item, onChange } = this.props;
-
-    const handleChange = (value) => {
-      onChange(Object.assign({}, item, { value }));
-    };
-    const childProps = Object.assign(
-      {
-        type: item.type,
-        value: item.value,
-        onChange: handleChange
-      },
-      validateEnv(item) ? {} : {
-        errorText: InvalidValue
-      }
-    );
-
-    return (
-      item.type === EnvTypes.Bool ? (<ConfigureCheckbox {...childProps} />) :
-      item.type === EnvTypes.Number ||
-      item.type === EnvTypes.String ? (<ConfigureText {...childProps} />) : null
-    );
+  removeItem = () => {
+    const { itemKey, updateEnv } = this.props;
+    updateEnv({ [itemKey]: undefined });
   };
 
   render() {
-    const { keyName, value, tooltip } = this.props.item;
+    const { itemKey } = this.props;
+    const [value, type, tooltip] = this.props.item;
 
     const divStyle = {
       display: 'flex',
@@ -171,22 +162,26 @@ class EnvItem extends Component {
       <div style={divStyle}>
         <EditableLabel
           id="tf1"
-          defaultValue={keyName}
+          defaultValue={itemKey}
           style={keyStyle}
-          onChange={this.handleKeyNameChange}
+          onEditEnd={this.changeKey}
         />
         <div style={valueStyle}>
-        {this.renderConfiguable()}
+          <Configurable
+            type={type}
+            value={value}
+            onChange={this.changeValue}
+          />
         </div>
         <EditableLabel
           id="tf2"
           defaultValue={tooltip}
           style={tooltipStyle}
-          onChange={this.handleTooltipChange}
+          onEditEnd={this.changeTooltip}
         />
         <IconButton
           tooltip="Remove"
-          onTouchTap={this.handleRemove}
+          onTouchTap={this.removeItem}
         >
           <ContentClear />
         </IconButton>
@@ -195,20 +190,39 @@ class EnvItem extends Component {
   }
 }
 
-const ConfigureCheckbox = (props) => (
-  <Checkbox
-    checked={props.value}
-    style={{ width: 40 }}
-    onCheck={(e, value) => props.onChange(value)}
-  />
-);
-
-const ConfigureText = (props) => (
-  <TextField
-    id="tf"
-    value={props.value}
-    errorText={props.errorText}
-    multiLine={props.type === EnvTypes.String}
-    onChange={e => props.onChange(e.target.value)}
-  />
-);
+const Configurable = (props) => {
+  switch (props.type) {
+    case 'boolean':
+      return (
+        <Checkbox
+          defaultChecked={props.value}
+          style={{ width: 40 }}
+          onCheck={(e, value) => props.onChange(value)}
+        />
+      );
+    case 'number':
+      return (
+        <TextField
+          id="tf"
+          defaultValue={props.value}
+          inputStyle={{ textAlign: 'right' }}
+          onChange={(e) => {
+            const float = parseFloat(e.target.value);
+            if (!isNaN(float)) {
+              props.onChange(float);
+            }
+          }}
+        />
+      );
+    case 'string':
+      return (
+        <TextField multiLine
+          id="tf"
+          defaultValue={props.value}
+          onChange={(e) => props.onChange(e.target.value)}
+        />
+      );
+    default:
+      return null;
+  }
+};
