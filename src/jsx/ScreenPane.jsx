@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import Popout from '../lib/ReactPopout';
+import Popout from './ReactPopout';
 
 
 import composeEnv from '../js/composeEnv';
 import template from '../html/screen';
-import screenJs from '../js/screen';
+import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen from './Screen';
 
