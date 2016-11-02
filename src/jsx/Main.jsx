@@ -13,7 +13,7 @@ injectTapEventPlugin();
 
 import getLocalization from '../localization/';
 import { makeFromFile, makeFromType } from '../js/files';
-import getCustomTheme from '../js/getCustomTheme';
+import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import Dock from './Dock';
 import Menu from './Menu';
 import EditorPane from './EditorPane';
@@ -41,7 +41,6 @@ class Main extends Component {
     selectedKey: null,
     tabbedKeys: [],
 
-    palette: this.props.config.palette,
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
     )),
@@ -80,6 +79,11 @@ class Main extends Component {
     };
     const file = this.state.files.find(f => f.name === '.env');
     return Object.assign({}, defaultEnv, file ? file.json : {});
+  }
+
+  get palette() {
+    const file = this.state.files.find(f => f.name === '.palette');
+    return Object.assign({}, defaultPalette, file ? file.json : {});
   }
 
   componentDidMount() {
@@ -234,13 +238,27 @@ class Main extends Component {
     });
   };
 
-  updatePalette = (change) => new Promise((resolve, reject) => {
-    const palette = Object.assign({}, this.state.palette, change);
+  handlePaletteChange = (change) => {
+    const paletteFile = this.state.files.find(f => f.name === '.palette');
 
-    this.setState({ palette }, () => resolve(palette));
-  });
+    if (!paletteFile) {
+      const json = Object.assign({}, this.palette, change);
+      return makeFromType('application/json', {
+        name: '.palette',
+        text: JSON.stringify(json),
+      })
+      .then((file) => this.addFile(file))
+      .then((file) => file.json);
+    }
+    const text = JSON.stringify(
+      Object.assign(JSON.parse(paletteFile.text), change)
+    );
+    const json = JSON.parse(text);
+    return this.updateFile(paletteFile, { json, text })
+      .then((file) => file.json);
+  };
 
-  updateEnv = (change) => {
+  handleEnvChange = (change) => {
     const envFile = this.state.files.find(f => f.name === '.env');
 
     if (!envFile) {
@@ -279,7 +297,6 @@ class Main extends Component {
       primaryWidth, secondaryHeight,
       isPopout,
       reboot,
-      palette,
       localization,
       portPostMessage,
     } = this.state;
@@ -297,7 +314,7 @@ class Main extends Component {
     };
 
     return (
-      <MuiThemeProvider muiTheme={getCustomTheme({ palette })}>
+      <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.palette })}>
         <div style={{ backgroundColor: 'inherit' }}>
           <Dock config={config} style={primaryDockStyle}>
             <Sizer
@@ -330,10 +347,10 @@ class Main extends Component {
               handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
               handleTogglePopout={this.handleTogglePopout}
-              palette={palette}
+              palette={this.palette}
               env={this.env}
-              updatePalette={this.updatePalette}
-              updateEnv={this.updateEnv}
+              updatePalette={this.handlePaletteChange}
+              updateEnv={this.handleEnvChange}
               options={this.options}
               localization={localization}
               setLocalization={this.setLocalization}

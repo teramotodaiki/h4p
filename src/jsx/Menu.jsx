@@ -69,9 +69,9 @@ export default class Menu extends Component {
   };
 
   handleDownload = () => {
-    const { files, env, palette, openFileDialog } = this.props;
+    const { files, openFileDialog } = this.props;
 
-    openFileDialog(DownloadDialog, { files, palette })
+    openFileDialog(DownloadDialog, { files })
       .then(content => {
         openFileDialog(SaveDialog, { content });
       })
