@@ -186,9 +186,9 @@ export default class ChromeTabs extends Component {
             <a
               href="#"
               style={prepareStyles(styles.label)}
-              title={file.moduleName}
+              title={file.moduleName || file.name}
             >
-            {file.moduleName}
+            {file.moduleName || file.name}
             </a>
             <IconButton
               style={styles.rightButton}

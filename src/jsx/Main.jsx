@@ -216,12 +216,14 @@ class Main extends Component {
           const json = Object.assign({}, this.options, change);
           return makeFromType('application/json', {
             name: '.options',
-            text: JSON.stringify(json),
+            text: JSON.stringify(json, null, '\t'),
+            options: { isReadOnly: true }
           })
           .then((file) => this.addFile(file));
         }
         const text = JSON.stringify(
-          Object.assign(JSON.parse(optionFile.text), change)
+          Object.assign(JSON.parse(optionFile.text), change),
+          null, '\t'
         );
         const json = JSON.parse(text);
         return this.updateFile(optionFile, { json, text });
@@ -245,13 +247,15 @@ class Main extends Component {
       const json = Object.assign({}, this.palette, change);
       return makeFromType('application/json', {
         name: '.palette',
-        text: JSON.stringify(json),
+        text: JSON.stringify(json, null, '\t'),
+        options: { isReadOnly: true }
       })
       .then((file) => this.addFile(file))
       .then((file) => file.json);
     }
     const text = JSON.stringify(
-      Object.assign(JSON.parse(paletteFile.text), change)
+      Object.assign(JSON.parse(paletteFile.text), change),
+      null, '\t'
     );
     const json = JSON.parse(text);
     return this.updateFile(paletteFile, { json, text })
@@ -265,13 +269,15 @@ class Main extends Component {
       const json = Object.assign({}, this.env, change);
       return makeFromType('application/json', {
         name: '.env',
-        text: JSON.stringify(json),
+        text: JSON.stringify(json, null, '\t'),
+        options: { isReadOnly: true }
       })
       .then((file) => this.addFile(file))
       .then((file) => file.json);
     }
     const text = JSON.stringify(
-      Object.assign(JSON.parse(envFile.text), change)
+      Object.assign(JSON.parse(envFile.text), change),
+      null, '\t'
     );
     const json = JSON.parse(text);
     return this.updateFile(envFile, { json, text })
