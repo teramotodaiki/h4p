@@ -6,12 +6,13 @@ import template from '../html/screen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
-
+console.log(SrcDocEnabled);
 
 const ConnectionTimeout = SrcDocEnabled ? 1000 : 5000;
 const frameSrcDoc = SrcDocEnabled ?
   template({ title: 'app', screenJs }) :
   template({ title: 'app', screenJs }).replace(/\"/g, '\\"');
+console.log(frameSrcDoc);
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
