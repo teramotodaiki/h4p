@@ -5,13 +5,10 @@ import composeEnv from '../js/composeEnv';
 import template from '../html/screen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
-import Screen, { SrcDocEnabled } from './Screen';
+import Screen from './Screen';
 
-
-const ConnectionTimeout = SrcDocEnabled ? 1000 : 5000;
-const frameSrcDoc = SrcDocEnabled ?
-  template({ title: 'app', screenJs }) :
-  template({ title: 'app', screenJs }).replace(/\"/g, '\\"');
+const ConnectionTimeout = 1000;
+const frameSrcDoc = template({ title: 'app', screenJs });
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
@@ -109,11 +106,7 @@ export default class ScreenPane extends Component {
         this.iframe.onload = () => resolve(this.iframe);
         // this.iframe.srcdoc = frameSrcDoc;
         // srcDoc.set(this.iframe, frameSrcDoc);
-        if (SrcDocEnabled) {
-          this.iframe.srcdoc = frameSrcDoc;
-        } else {
-          this.iframe.src = `javascript: "${frameSrcDoc}"`;
-        }
+        this.iframe.src = `javascript: "${frameSrcDoc.replace(/\"/g, '\\"')}"`;
         console.log(this.iframe.src);
 
         setTimeout(reject, ConnectionTimeout);
