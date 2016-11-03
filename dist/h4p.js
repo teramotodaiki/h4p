@@ -42796,6 +42796,8 @@ var Screen = function Screen(_ref) {
 
 
 
+console.log(__WEBPACK_IMPORTED_MODULE_9_srcdoc_polyfill___default.a);
+console.log(!!("srcdoc" in document.createElement("iframe")));
 
 
 
@@ -54521,13 +54523,11 @@ module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,"
 var Handlebars = __webpack_require__(248);
 function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
 module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
+    var helper;
 
   return "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <title>"
-    + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</title>\n    <style media=\"screen\">\n    body {\n      margin: 0;\n      padding: 0;\n      border: 0 none;\n      overflow: hidden;\n    }\n    </style>\n    <script type=\"text/javascript\">\n        console.log('In the shell');\n    </script>\n  </head>\n  <body>\n    <script type=\"text/javascript\">\n    "
-    + ((stack1 = ((helper = (helper = helpers.screenJs || (depth0 != null ? depth0.screenJs : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"screenJs","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "\n    </script>\n  </body>\n</html>\n";
+    + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"title","hash":{},"data":data}) : helper)))
+    + "</title>\n    <style media=\"screen\">\n    body {\n      margin: 0;\n      padding: 0;\n      border: 0 none;\n      overflow: hidden;\n    }\n    </style>\n    <script type=\"text/javascript\">\n        console.log('In the shell');\n    </script>\n  </head>\n  <body>\n      Hello world\n  </body>\n</html>\n";
 },"useData":true});
 
 /***/ },
