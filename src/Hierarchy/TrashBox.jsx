@@ -7,6 +7,30 @@ import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 
 import { Types } from './FileCard';
 
+const getStyles = (props, context, state) => {
+  const { isOver } = props;
+  const {
+    palette,
+    spacing,
+    prepareStyles,
+  } = context.muiTheme;
+
+  const size = 40;
+  const borderWidth = isOver ? 4 : 0;
+
+  return {
+    icon: {
+      width: size,
+      height: size,
+      boxSizing: 'border-box',
+      padding: (size - spacing.iconSize) / 2 - borderWidth,
+      borderWidth,
+      borderStyle: 'dashed',
+      borderColor: palette.primary1Color,
+      transition: 'none',
+    },
+  };
+};
 
 class _TrashBox extends Component {
 
@@ -30,9 +54,13 @@ class _TrashBox extends Component {
     } = this.props;
     const { palette } = this.context.muiTheme;
 
+    const {
+      icon,
+    } = getStyles(this.props, this.context);
+
     return connectDropTarget(
       <div>
-        <IconButton onTouchTap={onTouchTap}>
+        <IconButton style={icon} onTouchTap={onTouchTap}>
         {showTrashes ? (
           <NavigationArrowBack color={palette.secondaryTextColor} />
         ) : (
