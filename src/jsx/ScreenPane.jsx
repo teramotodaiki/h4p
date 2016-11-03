@@ -123,13 +123,11 @@ export default class ScreenPane extends Component {
               break;
           }
         };
-        console.log('port1', channel.port1);
         portRef(channel.port1);
 
         frame.contentWindow.postMessage({
           files, env,
         }, '*', [channel.port2]);
-        console.log('send postMessage');
       })
       .catch((err) => console.error(err) || err);
   }
