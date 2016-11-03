@@ -4,8 +4,6 @@ import Paper from 'material-ui/Paper';
 import ActionSearch from 'material-ui/svg-icons/action/search';
 
 
-import { search } from './filters';
-
 const getStyles = (props, context, state) => {
   const {
     palette,
@@ -56,7 +54,16 @@ export default class SearchBar extends Component {
   };
 
   handleUpdate = (value) => {
-    this.props.filterRef(search(value));
+    const { filterRef } = this.props;
+
+    if (value.indexOf('.') === 0) {
+      filterRef((file) =>
+        file.name.indexOf(value) === 0);
+    } else {
+      filterRef((file) =>
+        file.moduleName &&
+        file.name.includes(value))
+    }
   }
 
   render() {
