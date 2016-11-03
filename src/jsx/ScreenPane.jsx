@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from './ReactPopout';
-import srcDoc from 'srcdoc-polyfill';
-console.log(srcDoc);
-console.log(!!("srcdoc" in document.createElement("iframe")));
 
 import composeEnv from '../js/composeEnv';
 import template from '../html/screen';
@@ -108,7 +105,10 @@ export default class ScreenPane extends Component {
         this.iframe.onerror = (e) => console.error('iframe error', e);
         this.iframe.onload = () => resolve(this.iframe);
         // this.iframe.srcdoc = frameSrcDoc;
-        srcDoc.set(this.iframe, frameSrcDoc);
+        // srcDoc.set(this.iframe, frameSrcDoc);
+        this.iframe.src = `javascript: "${frameSrcDoc.replace(/\"/g, '\\"')}"`;
+        console.log(this.iframe.src);
+
         setTimeout(reject, ConnectionTimeout);
 
         console.time('screen');

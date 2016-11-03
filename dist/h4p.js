@@ -71,7 +71,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1197);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1196);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -40263,9 +40263,9 @@ EditableLabel.propTypes = __WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_obje
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_codemirror_addon_edit_matchbrackets___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_codemirror_addon_edit_matchbrackets__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_codemirror_keymap_sublime__ = __webpack_require__(500);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_codemirror_keymap_sublime___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15_codemirror_keymap_sublime__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_codemirror_lib_codemirror_css__ = __webpack_require__(1194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_codemirror_lib_codemirror_css__ = __webpack_require__(1193);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_codemirror_lib_codemirror_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16_codemirror_lib_codemirror_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_codemirror_addon_hint_show_hint_css__ = __webpack_require__(1193);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_codemirror_addon_hint_show_hint_css__ = __webpack_require__(1192);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_codemirror_addon_hint_show_hint_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_17_codemirror_addon_hint_show_hint_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__js_codemirror_hint_extension__ = __webpack_require__(470);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__js_codemirror_hint_extension___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_18__js_codemirror_hint_extension__);
@@ -41772,7 +41772,7 @@ Main.propTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_material_ui_svg_icons_image_tune___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15_material_ui_svg_icons_image_tune__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_material_ui_svg_icons_action_language__ = __webpack_require__(979);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_material_ui_svg_icons_action_language___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16_material_ui_svg_icons_action_language__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_whatwg_fetch__ = __webpack_require__(1196);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_whatwg_fetch__ = __webpack_require__(1195);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_whatwg_fetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_17_whatwg_fetch__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__localization___ = __webpack_require__(305);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__FileDialog___ = __webpack_require__(152);
@@ -42745,7 +42745,6 @@ var Screen = function Screen(_ref) {
     'div',
     { style: style },
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('iframe', {
-      sandbox: 'allow-scripts',
       style: frameStyle,
       ref: frameRef
     })
@@ -42776,16 +42775,14 @@ var Screen = function Screen(_ref) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ReactPopout__ = __webpack_require__(484);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_srcdoc_polyfill__ = __webpack_require__(1192);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_srcdoc_polyfill___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_srcdoc_polyfill__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__js_composeEnv__ = __webpack_require__(471);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__html_screen__ = __webpack_require__(766);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__html_screen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__html_screen__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__lib_screen__ = __webpack_require__(451);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__lib_screen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__lib_screen__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__html_popout__ = __webpack_require__(765);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__html_popout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__html_popout__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__Screen__ = __webpack_require__(485);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_composeEnv__ = __webpack_require__(471);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__html_screen__ = __webpack_require__(766);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__html_screen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__html_screen__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__lib_screen__ = __webpack_require__(451);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__lib_screen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__lib_screen__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__html_popout__ = __webpack_require__(765);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__html_popout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__html_popout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__Screen__ = __webpack_require__(485);
 
 
 
@@ -42795,9 +42792,6 @@ var Screen = function Screen(_ref) {
 
 
 
-
-console.log(__WEBPACK_IMPORTED_MODULE_9_srcdoc_polyfill___default.a);
-console.log(!!("srcdoc" in document.createElement("iframe")));
 
 
 
@@ -42806,8 +42800,8 @@ console.log(!!("srcdoc" in document.createElement("iframe")));
 
 
 var ConnectionTimeout = 1000;
-var frameSrcDoc = __WEBPACK_IMPORTED_MODULE_11__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_12__lib_screen___default.a });
-var popoutURL = URL.createObjectURL(new Blob([__WEBPACK_IMPORTED_MODULE_13__html_popout___default()()], { type: 'text/html' }));
+var frameSrcDoc = __WEBPACK_IMPORTED_MODULE_10__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_11__lib_screen___default.a });
+var popoutURL = URL.createObjectURL(new Blob([__WEBPACK_IMPORTED_MODULE_12__html_popout___default()()], { type: 'text/html' }));
 
 var getStyle = function getStyle(props, context) {
   var config = props.config;
@@ -42885,7 +42879,7 @@ var ScreenPane = function (_Component) {
       var files = this.props.files.filter(function (f) {
         return f.moduleName;
       });
-      var env = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_10__js_composeEnv__["a" /* default */])(this.props.env);
+      var env = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_9__js_composeEnv__["a" /* default */])(this.props.env);
 
       this.prevent = (this.prevent || __WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_promise___default.a.resolve()).then(function () {
         return new __WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_promise___default.a(function (resolve, reject) {
@@ -42896,7 +42890,10 @@ var ScreenPane = function (_Component) {
             return resolve(_this3.iframe);
           };
           // this.iframe.srcdoc = frameSrcDoc;
-          __WEBPACK_IMPORTED_MODULE_9_srcdoc_polyfill___default.a.set(_this3.iframe, frameSrcDoc);
+          // srcDoc.set(this.iframe, frameSrcDoc);
+          _this3.iframe.src = 'javascript: "' + frameSrcDoc.replace(/\"/g, '\\"') + '"';
+          console.log(_this3.iframe.src);
+
           setTimeout(reject, ConnectionTimeout);
 
           console.time('screen');
@@ -42969,7 +42966,7 @@ var ScreenPane = function (_Component) {
           },
           onClosing: this.handlePopoutClose
         },
-        __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_14__Screen__["a" /* default */], { display: true, frameRef: function frameRef(ref) {
+        __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* default */], { display: true, frameRef: function frameRef(ref) {
             return ref && (_this4.popoutFrame = ref);
           } })
       ) : null;
@@ -42981,7 +42978,7 @@ var ScreenPane = function (_Component) {
           'div',
           { style: prepareStyles(container) },
           popout,
-          __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_14__Screen__["a" /* default */], { display: !isPopout, frameRef: function frameRef(ref) {
+          __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* default */], { display: !isPopout, frameRef: function frameRef(ref) {
               return ref && (_this4.inlineFrame = ref);
             } })
         )
@@ -43620,7 +43617,7 @@ module.exports = { "default": __webpack_require__(515), __esModule: true };
 
 !function (name, definition) {
   if (typeof module != 'undefined' && module.exports) module.exports = definition()
-  else if (true) __webpack_require__(1195)(name, definition)
+  else if (true) __webpack_require__(1194)(name, definition)
   else this[name] = definition()
 }('bowser', function () {
   /**
@@ -96053,94 +96050,6 @@ function symbolObservablePonyfill(root) {
 /* 1192 */
 /***/ function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(root, factory) {
-	// `root` does not resolve to the global window object in a Browserified
-	// bundle, so a direct reference to that object is used instead.
-	var _srcDoc = window.srcDoc;
-
-	if (true) {
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_RESULT__ = function(exports) {
-			factory(exports, _srcDoc);
-			root.srcDoc = exports;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else if (typeof exports === "object") {
-		factory(exports, _srcDoc);
-	} else {
-		root.srcDoc = {};
-		factory(root.srcDoc, _srcDoc);
-	}
-})(this, function(exports, _srcDoc) {
-	var idx, iframes;
-	var isCompliant = !!("srcdoc" in document.createElement("iframe"));
-	var implementations = {
-		compliant: function( iframe, content ) {
-
-			if (content) {
-				iframe.setAttribute("srcdoc", content);
-			}
-		},
-		legacy: function( iframe, content ) {
-
-			var jsUrl;
-
-			if (!iframe || !iframe.getAttribute) {
-				return;
-			}
-
-			if (!content) {
-				content = iframe.getAttribute("srcdoc");
-			} else {
-				iframe.setAttribute("srcdoc", content);
-			}
-
-			if (content) {
-				// The value returned by a script-targeted URL will be used as
-				// the iFrame's content. Create such a URL which returns the
-				// iFrame element's `srcdoc` attribute.
-				jsUrl = "javascript: window.frameElement.getAttribute('srcdoc');";
-
-				iframe.setAttribute("src", jsUrl);
-
-				// Explicitly set the iFrame's window.location for
-				// compatability with IE9, which does not react to changes in
-				// the `src` attribute when it is a `javascript:` URL, for
-				// some reason
-				if (iframe.contentWindow) {
-					iframe.contentWindow.location = jsUrl;
-				}
-			}
-		}
-	};
-	var srcDoc = exports;
-	// Assume the best
-	srcDoc.set = implementations.compliant;
-	srcDoc.noConflict = function() {
-		window.srcDoc = _srcDoc;
-		return srcDoc;
-	};
-
-	// If the browser supports srcdoc, no shimming is necessary
-	if (isCompliant) {
-		return;
-	}
-
-	srcDoc.set = implementations.legacy;
-
-	// Automatically shim any iframes already present in the document
-	iframes = document.getElementsByTagName("iframe");
-	idx = iframes.length;
-
-	while (idx--) {
-		srcDoc.set( iframes[idx] );
-	}
-
-});
-
-
-/***/ },
-/* 1193 */
-/***/ function(module, exports, __webpack_require__) {
-
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
@@ -96164,7 +96073,7 @@ if(false) {
 }
 
 /***/ },
-/* 1194 */
+/* 1193 */
 /***/ function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -96190,14 +96099,14 @@ if(false) {
 }
 
 /***/ },
-/* 1195 */
+/* 1194 */
 /***/ function(module, exports) {
 
 module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 1196 */
+/* 1195 */
 /***/ function(module, exports) {
 
 (function(self) {
@@ -96636,7 +96545,7 @@ module.exports = function() { throw new Error("define cannot be used indirect");
 
 
 /***/ },
-/* 1197 */
+/* 1196 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -19,7 +19,6 @@ const Screen = ({ display, frameRef }) => {
   return (
     <div style={style}>
       <iframe
-        sandbox="allow-scripts"
         style={frameStyle}
         ref={frameRef}
       ></iframe>
