@@ -5,7 +5,6 @@ import { SignDialog } from '../FileDialog/';
 import { makeFromFile, changeName, changeDir } from '../js/files';
 import Root from './Root';
 import SearchBar from './SearchBar';
-import TrashBox from './TrashBox';
 
 const getStyles = (props, context) => {
   const {
@@ -17,18 +16,6 @@ const getStyles = (props, context) => {
     root: prepareStyles({
       flex: '1 1 auto',
       position: 'relative',
-    }),
-    affix: prepareStyles({
-      display: 'flex',
-      alignItems: 'center',
-      position: 'absolute',
-      boxSizing: 'border-box',
-      width: '100%',
-      height: 40,
-      top: spacing.desktopGutterMini,
-      paddingRight: spacing.desktopGutterMini,
-      paddingLeft: spacing.desktopGutterMini,
-      zIndex: 100,
     }),
     scroll: prepareStyles({
       position: 'absolute',
@@ -61,7 +48,7 @@ export default class Hierarchy extends Component {
 
   state = {
     openedPaths: [''],
-    filter: (file) => !!file.moduleName,
+    filter: (file) => false,
   };
 
   handleNativeDrop = (files, dir) => {
@@ -140,16 +127,16 @@ export default class Hierarchy extends Component {
 
     const {
       root,
-      affix,
       scroll,
     } = getStyles(this.props, this.context);
 
     return (
       <div style={root}>
-        <div style={affix}>
-          <TrashBox updateFile={updateFile} />
-          <SearchBar files={files} filterRef={(filter) => this.setState({ filter })} />
-        </div>
+        <SearchBar
+          files={files}
+          filterRef={(filter) => this.setState({ filter })}
+          updateFile={updateFile}
+        />
         <div style={scroll}>
           <Root files={files.filter(filter)} {...transfer} />
         </div>

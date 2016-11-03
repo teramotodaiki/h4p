@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import IconButton from 'material-ui/IconButton';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
+import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 
 
 import { Types } from './FileCard';
@@ -10,6 +11,7 @@ import { Types } from './FileCard';
 class _TrashBox extends Component {
 
   static propTypes = {
+    showTrashes: PropTypes.bool.isRequired,
     updateFile: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
@@ -22,14 +24,20 @@ class _TrashBox extends Component {
 
   render() {
     const {
+      showTrashes,
       connectDropTarget,
+      onTouchTap,
     } = this.props;
     const { palette } = this.context.muiTheme;
 
     return connectDropTarget(
       <div>
-        <IconButton>
+        <IconButton onTouchTap={onTouchTap}>
+        {showTrashes ? (
+          <NavigationArrowBack color={palette.secondaryTextColor} />
+        ) : (
           <ActionDelete color={palette.secondaryTextColor} />
+        )}
         </IconButton>
       </div>
     );

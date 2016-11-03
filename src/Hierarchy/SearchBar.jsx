@@ -4,18 +4,30 @@ import Paper from 'material-ui/Paper';
 import ActionSearch from 'material-ui/svg-icons/action/search';
 
 
+import TrashBox from './TrashBox';
+import search, { getOptions } from './search';
+
 const getStyles = (props, context, state) => {
   const {
     palette,
     spacing,
+    prepareStyles,
   } = context.muiTheme;
   const { focus } = state;
 
   return {
-    root: {
-      flex: '1 1 auto',
+    root: prepareStyles({
+      display: 'flex',
+      alignItems: 'center',
+      position: 'absolute',
+      boxSizing: 'border-box',
+      width: '100%',
+      height: 40,
+      top: spacing.desktopGutterMini,
+      paddingRight: spacing.desktopGutterMini,
+      paddingLeft: spacing.desktopGutterMini,
       zIndex: 100,
-    },
+    }),
     bar: {
       display: 'flex',
       alignItems: 'center',
@@ -38,6 +50,7 @@ export default class SearchBar extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     filterRef: PropTypes.func.isRequired,
+    updateFile: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -46,22 +59,26 @@ export default class SearchBar extends Component {
 
   state = {
     focus: false,
+    showTrashes: false,
   };
 
-  handleUpdate = (value) => {
-    const { filterRef } = this.props;
+  componentDidMount() {
+    this.handleUpdate('');
+  }
 
-    if (value.indexOf('.') === 0) {
-      filterRef((file) =>
-        file.name.indexOf(value) === 0);
-    } else {
-      filterRef((file) =>
-        file.moduleName &&
-        file.name.includes(value))
-    }
+  handleUpdate = (query) => {
+    const { filterRef } = this.props;
+    const { showTrashes } = this.state;
+
+    const options = getOptions(query);
+    filterRef((file) => search(file, query, options));
+
+    this.setState({ showTrashes: options.showTrashes });
   }
 
   render() {
+    const { updateFile } = this.props;
+    const { showTrashes } = this.state;
     const {
       secondaryTextColor,
     } = this.context.muiTheme.palette;
@@ -77,6 +94,7 @@ export default class SearchBar extends Component {
 
     return (
       <div style={root}>
+        <TrashBox showTrashes={showTrashes} updateFile={updateFile} />
         <Paper zDepth={3} style={bar}>
           <ActionSearch style={icon} color={secondaryTextColor} />
           <AutoComplete id="search"
