@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 
-export const SrcDocEnabled = !!("srcdoc" in document.createElement('iframe'));
+export const SrcDocEnabled = !!("sandbox" in document.createElement('iframe'));
 
 const Screen = ({ display, frameRef }) => {
 

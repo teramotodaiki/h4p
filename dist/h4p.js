@@ -42723,7 +42723,7 @@ PopoutWindow.propTypes = {
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return SrcDocEnabled; });
 
 
-var SrcDocEnabled = !!("srcdoc" in document.createElement('iframe'));
+var SrcDocEnabled = !!("sandbox" in document.createElement('iframe'));
 
 var Screen = function Screen(_ref) {
   var display = _ref.display;
@@ -42805,11 +42805,9 @@ var Screen = function Screen(_ref) {
 
 
 
-console.log(__WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* SrcDocEnabled */]);
 
 var ConnectionTimeout = __WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* SrcDocEnabled */] ? 1000 : 5000;
 var frameSrcDoc = __WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* SrcDocEnabled */] ? __WEBPACK_IMPORTED_MODULE_10__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_11__lib_screen___default.a }) : __WEBPACK_IMPORTED_MODULE_10__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_11__lib_screen___default.a }).replace(/\"/g, '\\"');
-console.log(frameSrcDoc);
 var popoutURL = URL.createObjectURL(new Blob([__WEBPACK_IMPORTED_MODULE_12__html_popout___default()()], { type: 'text/html' }));
 
 var getStyle = function getStyle(props, context) {
