@@ -10,7 +10,7 @@ import EditorDragHandle from 'material-ui/svg-icons/editor/drag-handle';
 import Filename from './Filename';
 
 export const Types = {
-  FILE: Symbol('FILE'),
+  FILE: 'FILE',
 };
 
 const getStyles = (props, context) => {
