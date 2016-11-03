@@ -60,6 +60,7 @@ export default class SearchBar extends Component {
   state = {
     focus: false,
     showTrashes: false,
+    query: '',
   };
 
   componentDidMount() {
@@ -73,12 +74,25 @@ export default class SearchBar extends Component {
     const options = getOptions(query);
     filterRef((file) => search(file, query, options));
 
-    this.setState({ showTrashes: options.showTrashes });
+    this.setState({
+      query,
+      showTrashes: options.showTrashes
+    });
   }
+
+  handleTrashBoxTap = () => {
+    const { query, showTrashes } = this.state;
+
+    if (!showTrashes) {
+      this.handleUpdate(':trash ' + query);
+    } else {
+      this.handleUpdate(query.replace(/(^|\s)\:trash(\s|$)/g, '$1'));
+    }
+  };
 
   render() {
     const { updateFile } = this.props;
-    const { showTrashes } = this.state;
+    const { showTrashes, query } = this.state;
     const {
       secondaryTextColor,
     } = this.context.muiTheme.palette;
@@ -94,10 +108,15 @@ export default class SearchBar extends Component {
 
     return (
       <div style={root}>
-        <TrashBox showTrashes={showTrashes} updateFile={updateFile} />
+        <TrashBox
+          showTrashes={showTrashes}
+          updateFile={updateFile}
+          onTouchTap={this.handleTrashBoxTap}
+        />
         <Paper zDepth={3} style={bar}>
           <ActionSearch style={icon} color={secondaryTextColor} />
           <AutoComplete id="search"
+            searchText={query}
             dataSource={fileNames}
             maxSearchResults={5}
             onNewRequest={this.handleUpdate}
