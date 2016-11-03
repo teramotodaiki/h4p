@@ -13,12 +13,7 @@ const getStyles = (props, context, state) => {
 
   return {
     root: {
-      position: 'absolute',
-      boxSizing: 'border-box',
-      width: '100%',
-      top: spacing.desktopGutterMini,
-      paddingRight: spacing.desktopGutterMini,
-      paddingLeft: spacing.desktopGutterMini,
+      flex: '1 1 auto',
       zIndex: 100,
     },
     bar: {

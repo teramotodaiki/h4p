@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { faintBlack } from 'material-ui/styles/colors';
 
 
 import { SignDialog } from '../FileDialog/';
 import { makeFromFile, changeName, changeDir } from '../js/files';
 import Root from './Root';
 import SearchBar from './SearchBar';
+import TrashBox from './TrashBox';
 
 const getStyles = (props, context) => {
   const {
@@ -17,7 +17,18 @@ const getStyles = (props, context) => {
     root: prepareStyles({
       flex: '1 1 auto',
       position: 'relative',
-      overflow: 'hidden',
+    }),
+    affix: prepareStyles({
+      display: 'flex',
+      alignItems: 'center',
+      position: 'absolute',
+      boxSizing: 'border-box',
+      width: '100%',
+      height: 40,
+      top: spacing.desktopGutterMini,
+      paddingRight: spacing.desktopGutterMini,
+      paddingLeft: spacing.desktopGutterMini,
+      zIndex: 100,
     }),
     scroll: prepareStyles({
       position: 'absolute',
@@ -107,7 +118,13 @@ export default class Hierarchy extends Component {
   };
 
   render() {
-    const { files, selectFile, selectedFile, tabbedFiles } = this.props;
+    const {
+      files,
+      selectFile,
+      selectedFile,
+      tabbedFiles,
+      updateFile,
+    } = this.props;
     const { filter } = this.state;
 
     const transfer = {
@@ -123,12 +140,16 @@ export default class Hierarchy extends Component {
 
     const {
       root,
+      affix,
       scroll,
     } = getStyles(this.props, this.context);
 
     return (
       <div style={root}>
-        <SearchBar files={files} filterRef={(filter) => this.setState({ filter })} />
+        <div style={affix}>
+          <TrashBox updateFile={updateFile} />
+          <SearchBar files={files} filterRef={(filter) => this.setState({ filter })} />
+        </div>
         <div style={scroll}>
           <Root files={files.filter(filter)} {...transfer} />
         </div>
