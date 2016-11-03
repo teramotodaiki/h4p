@@ -51,7 +51,7 @@ const spec = {
 
     files.forEach((file) => {
       const options = Object.assign({}, file.options, {
-        isTrashed: true,
+        isTrashed: !file.options.isTrashed,
       });
       updateFile(file, { options });
     });
