@@ -17,7 +17,7 @@ import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import Dock from './Dock';
 import Menu from './Menu';
 import EditorPane from './EditorPane';
-import ResourcePane from './ResourcePane';
+import Hierarchy from '../Hierarchy/';
 import ScreenPane from './ScreenPane';
 import Sizer from './Sizer';
 
@@ -366,7 +366,7 @@ class Main extends Component {
               setLocalization={this.setLocalization}
               availableLanguages={this.availableLanguages}
             />
-            <ResourcePane
+            <Hierarchy
               files={files}
               selectedFile={this.selectedFile}
               tabbedFiles={this.tabbedFiles}

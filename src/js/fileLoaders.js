@@ -36,6 +36,7 @@ export const defaultValue = {
   options: {
     isEntryPoint: false,
     isReadOnly: false,
+    isTrashed: false,
   },
   author: {
     name: '',
