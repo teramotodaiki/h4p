@@ -1,3 +1,6 @@
+import 'babel-polyfill';
+
+
 import Player from './js/Player';
 import init from './js/init';
 
