@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from './ReactPopout';
 import srcDoc from 'srcdoc-polyfill';
-console.log(srcDoc);
-console.log(!!("srcdoc" in document.createElement("iframe")));
+
 
 import composeEnv from '../js/composeEnv';
 import template from '../html/screen';
