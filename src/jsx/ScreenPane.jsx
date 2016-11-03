@@ -9,7 +9,9 @@ import popoutTemplate from '../html/popout';
 import Screen from './Screen';
 
 const ConnectionTimeout = 1000;
-const frameSrcDoc = template({ title: 'app', screenJs });
+const frameURL = URL.createObjectURL(
+  new Blob([template({ title: 'app', screenJs })], { type: 'text/html' })
+);
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
@@ -104,7 +106,7 @@ export default class ScreenPane extends Component {
       (this.prevent || Promise.resolve())
       .then(() => new Promise((resolve, reject) => {
         this.iframe.onload = () => resolve(this.iframe);
-        this.iframe.srcdoc = frameSrcDoc;
+        this.iframe.src = frameURL;
         setTimeout(reject, ConnectionTimeout);
       }))
       .then(frame => {
