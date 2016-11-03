@@ -42888,7 +42888,7 @@ var Screen = function Screen(_ref) {
 
 
 
-var ConnectionTimeout = 100000;
+var ConnectionTimeout = 1000;
 var frameSrcDoc = __WEBPACK_IMPORTED_MODULE_10__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_11__lib_screen___default.a });
 var popoutURL = URL.createObjectURL(new Blob([__WEBPACK_IMPORTED_MODULE_12__html_popout___default()()], { type: 'text/html' }));
 
@@ -42981,7 +42981,6 @@ var ScreenPane = function (_Component) {
           _this3.iframe.srcdoc = frameSrcDoc;
           setTimeout(reject, ConnectionTimeout);
 
-          console.log('src set', _this3.iframe, _this3.iframe.src);
           console.time('screen');
         });
       }).then(function (frame) {
@@ -54610,7 +54609,7 @@ module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,"
 
   return "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <title>"
     + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</title>\n    <style media=\"screen\">\n    body {\n      margin: 0;\n      padding: 0;\n      border: 0 none;\n      overflow: hidden;\n    }\n    </style>\n  </head>\n  <body>\n    <script type=\"text/javascript\">\n    "
+    + "</title>\n    <style media=\"screen\">\n    body {\n      margin: 0;\n      padding: 0;\n      border: 0 none;\n      overflow: hidden;\n    }\n    </style>\n    <script type=\"text/javascript\">\n        console.log('In the shell');\n    </script>\n  </head>\n  <body>\n    <script type=\"text/javascript\">\n    "
     + ((stack1 = ((helper = (helper = helpers.screenJs || (depth0 != null ? depth0.screenJs : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"screenJs","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "\n    </script>\n  </body>\n</html>\n";
 },"useData":true});
