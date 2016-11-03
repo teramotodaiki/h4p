@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
 
+
+export const SrcDocEnabled = !!("sandbox" in document.createElement('iframe'));
+
 const Screen = ({ display, frameRef }) => {
 
   const style = {
@@ -16,9 +19,13 @@ const Screen = ({ display, frameRef }) => {
     flex: '0 0 auto'
   };
 
+  const SafeSandbox = "allow-scripts";
+  const BrokenSandbox = "allow-scripts allow-same-domain";
+
   return (
     <div style={style}>
       <iframe
+        sandbox={SrcDocEnabled ? SafeSandbox : BrokenSandbox}
         style={frameStyle}
         ref={frameRef}
       ></iframe>

@@ -42720,7 +42720,10 @@ PopoutWindow.propTypes = {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return SrcDocEnabled; });
 
+
+var SrcDocEnabled = !!("sandbox" in document.createElement('iframe'));
 
 var Screen = function Screen(_ref) {
   var display = _ref.display;
@@ -42741,17 +42744,21 @@ var Screen = function Screen(_ref) {
     flex: '0 0 auto'
   };
 
+  var SafeSandbox = "allow-scripts";
+  var BrokenSandbox = "allow-scripts allow-same-domain";
+
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
     'div',
     { style: style },
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('iframe', {
+      sandbox: SrcDocEnabled ? SafeSandbox : BrokenSandbox,
       style: frameStyle,
       ref: frameRef
     })
   );
 };
 
-/* harmony default export */ exports["a"] = Screen;
+/* harmony default export */ exports["b"] = Screen;
 
 /***/ },
 /* 486 */
@@ -42799,8 +42806,8 @@ var Screen = function Screen(_ref) {
 
 
 
-var ConnectionTimeout = 1000;
-var frameSrcDoc = __WEBPACK_IMPORTED_MODULE_10__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_11__lib_screen___default.a });
+var ConnectionTimeout = __WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* SrcDocEnabled */] ? 1000 : 5000;
+var frameSrcDoc = __WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* SrcDocEnabled */] ? __WEBPACK_IMPORTED_MODULE_10__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_11__lib_screen___default.a }) : __WEBPACK_IMPORTED_MODULE_10__html_screen___default()({ title: 'app', screenJs: __WEBPACK_IMPORTED_MODULE_11__lib_screen___default.a }).replace(/\"/g, '\\"');
 var popoutURL = URL.createObjectURL(new Blob([__WEBPACK_IMPORTED_MODULE_12__html_popout___default()()], { type: 'text/html' }));
 
 var getStyle = function getStyle(props, context) {
@@ -42891,7 +42898,11 @@ var ScreenPane = function (_Component) {
           };
           // this.iframe.srcdoc = frameSrcDoc;
           // srcDoc.set(this.iframe, frameSrcDoc);
-          _this3.iframe.src = 'javascript: "' + frameSrcDoc.replace(/\"/g, '\\"') + '"';
+          if (__WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* SrcDocEnabled */]) {
+            _this3.iframe.srcdoc = frameSrcDoc;
+          } else {
+            _this3.iframe.src = 'javascript: "' + frameSrcDoc + '"';
+          }
           console.log(_this3.iframe.src);
 
           setTimeout(reject, ConnectionTimeout);
@@ -42966,7 +42977,7 @@ var ScreenPane = function (_Component) {
           },
           onClosing: this.handlePopoutClose
         },
-        __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* default */], { display: true, frameRef: function frameRef(ref) {
+        __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__Screen__["b" /* default */], { display: true, frameRef: function frameRef(ref) {
             return ref && (_this4.popoutFrame = ref);
           } })
       ) : null;
@@ -42978,7 +42989,7 @@ var ScreenPane = function (_Component) {
           'div',
           { style: prepareStyles(container) },
           popout,
-          __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__Screen__["a" /* default */], { display: !isPopout, frameRef: function frameRef(ref) {
+          __WEBPACK_IMPORTED_MODULE_7_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_13__Screen__["b" /* default */], { display: !isPopout, frameRef: function frameRef(ref) {
               return ref && (_this4.inlineFrame = ref);
             } })
         )
@@ -54520,11 +54531,13 @@ module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,"
 var Handlebars = __webpack_require__(248);
 function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
 module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var helper;
+    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
 
   return "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <title>"
-    + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"title","hash":{},"data":data}) : helper)))
-    + "</title>\n    <style media=\"screen\">\n    body {\n      margin: 0;\n      padding: 0;\n      border: 0 none;\n      overflow: hidden;\n    }\n    </style>\n    <script type=\"text/javascript\">\n        console.log('In the shell');\n    </script>\n  </head>\n  <body>\n      Hello world\n  </body>\n</html>\n";
+    + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</title>\n    <style media=\"screen\">\n    body {\n      margin: 0;\n      padding: 0;\n      border: 0 none;\n      overflow: hidden;\n    }\n    </style>\n  </head>\n  <body>\n    <script type=\"text/javascript\">\n    "
+    + ((stack1 = ((helper = (helper = helpers.screenJs || (depth0 != null ? depth0.screenJs : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"screenJs","hash":{},"data":data}) : helper))) != null ? stack1 : "")
+    + "\n    </script>\n  </body>\n</html>\n";
 },"useData":true});
 
 /***/ },
