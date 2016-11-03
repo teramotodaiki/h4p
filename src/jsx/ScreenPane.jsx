@@ -8,7 +8,7 @@ import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen from './Screen';
 
-const ConnectionTimeout = 1000;
+const ConnectionTimeout = 100000;
 const frameSrcDoc = template({ title: 'app', screenJs });
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
@@ -103,13 +103,19 @@ export default class ScreenPane extends Component {
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => new Promise((resolve, reject) => {
+        this.iframe.onerror = (e) => console.error('iframe error', e);
         this.iframe.onload = () => resolve(this.iframe);
         this.iframe.srcdoc = frameSrcDoc;
         setTimeout(reject, ConnectionTimeout);
+
+        console.log('src set', this.iframe, this.iframe.src);
+        console.time('screen');
       }))
       .then(frame => {
+        console.timeEnd('screen');
         const channel = new MessageChannel();
         channel.port1.onmessage = (e) => {
+          console.log('fetch message', e);
           switch (e.data.query) {
             case 'resize':
               const { width, height } = e.data.value;
