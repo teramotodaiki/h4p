@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from './ReactPopout';
+import srcDoc from 'srcdoc-polyfill';
 
 
 import composeEnv from '../js/composeEnv';
@@ -105,7 +106,8 @@ export default class ScreenPane extends Component {
       .then(() => new Promise((resolve, reject) => {
         this.iframe.onerror = (e) => console.error('iframe error', e);
         this.iframe.onload = () => resolve(this.iframe);
-        this.iframe.srcdoc = frameSrcDoc;
+        // this.iframe.srcdoc = frameSrcDoc;
+        srcDoc.set(this.iframe, frameSrcDoc);
         setTimeout(reject, ConnectionTimeout);
 
         console.time('screen');

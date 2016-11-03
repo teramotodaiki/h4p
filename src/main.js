@@ -1,5 +1,4 @@
 import 'babel-polyfill';
-import 'srcdoc-polyfill';
 
 
 import Player from './js/Player';
