@@ -4,17 +4,34 @@ import Popout from './ReactPopout';
 
 import composeEnv from '../js/composeEnv';
 import template from '../html/screen';
+import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
-import Screen from './Screen';
+import Screen, { SrcDocEnabled } from './Screen';
 
 const ConnectionTimeout = 1000;
-const frameURL = URL.createObjectURL(
-  new Blob([template({ title: 'app', screenJs })], { type: 'text/html' })
-);
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
+
+const frameLoader = (() => {
+  if (SrcDocEnabled) {
+    const screen = template({ title: 'app', screenJs });
+    return (frame, callback) => {
+      frame.onload = () => callback(frame);
+      frame.srcdoc = screen;
+    };
+  } else {
+    const fallback = fallbackTemplate({ title: 'app' });
+    return (frame, callback) =>  {
+      frame.onload = () => {
+        frame.contentWindow.postMessage(screenJs, '*');
+        callback(frame, 1);
+      };
+      frame.src = `javascript: '${fallback}'`;
+    };
+  }
+})();
 
 const getStyle = (props, context) => {
   const { config, primaryWidth, secondaryHeight } = props;
@@ -105,11 +122,12 @@ export default class ScreenPane extends Component {
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => new Promise((resolve, reject) => {
-        this.iframe.onload = () => resolve(this.iframe);
-        this.iframe.src = frameURL;
         setTimeout(reject, ConnectionTimeout);
+        frameLoader(this.iframe, resolve);
+        console.time('screen');
       }))
       .then(frame => {
+        console.timeEnd('screen');
         const channel = new MessageChannel();
         channel.port1.onmessage = (e) => {
           switch (e.data.query) {

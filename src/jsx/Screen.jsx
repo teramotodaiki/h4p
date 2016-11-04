@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
 
+
+export const SrcDocEnabled = !!('srcdoc' in document.createElement('iframe'));
+
 const Screen = ({ display, frameRef }) => {
 
   const style = {
@@ -16,10 +19,14 @@ const Screen = ({ display, frameRef }) => {
     flex: '0 0 auto'
   };
 
+  const sandbox = SrcDocEnabled ?
+    "allow-scripts" :
+    "allow-scripts allow-same-origin";
+
   return (
     <div style={style}>
       <iframe
-        sandbox="allow-scripts"
+        sandbox={sandbox}
         style={frameStyle}
         ref={frameRef}
       ></iframe>
