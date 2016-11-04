@@ -87,6 +87,14 @@ class Main extends Component {
     return Object.assign({}, defaultPalette, file ? file.json : {});
   }
 
+  get babelrc() {
+    const defaultBabelrc = {
+      presets: ['es2015'],
+    };
+    const file = this.state.files.find(f => f.name === '.babelrc');
+    return Object.assign({}, defaultBabelrc, file ? file.json : {});
+  }
+
   componentDidMount() {
     const tabbedKeys = this.props.config.files
       .filter(file => file.options.isEntryPoint)
@@ -347,6 +355,7 @@ class Main extends Component {
               localization={localization}
               portPostMessage={portPostMessage}
               shot={this.shot}
+              babelrc={this.babelrc}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
@@ -388,6 +397,7 @@ class Main extends Component {
             env={this.env}
             handlePopoutClose={this.handleTogglePopout}
             portRef={this.handlePort}
+            babelrc={this.babelrc}
           />
           <FileDialog
             ref={this.handleFileDialog}

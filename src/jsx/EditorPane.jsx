@@ -69,6 +69,7 @@ export default class EditorPane extends Component {
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
     shot: PropTypes.object,
+    babelrc: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -93,9 +94,9 @@ export default class EditorPane extends Component {
   };
 
   handleShot = () => {
-    const { portPostMessage, shot } = this.props;
+    const { portPostMessage, shot, babelrc } = this.props;
     if (shot && portPostMessage) {
-      const text = transform(shot.text, { presets: ['es2015', 'stage-0'] }).code;
+      const text = transform(shot.text, babelrc).code;
       const value = Object.assign({}, shot, { text });
       portPostMessage({ query: 'shot', value });
     }

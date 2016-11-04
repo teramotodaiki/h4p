@@ -67,6 +67,7 @@ export default class ScreenPane extends Component {
     env: PropTypes.object.isRequired,
     handlePopoutClose: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
+    babelrc: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -116,12 +117,12 @@ export default class ScreenPane extends Component {
 
   prevent = null;
   start () {
-    const { portRef } = this.props;
+    const { portRef, babelrc } = this.props;
     const files = this.props.files
       .filter((file) => file.moduleName)
       .map((file) => {
         if (file.isText && file.type === 'text/javascript') {
-          const text = transform(file.text, { presets: ['es2015', 'stage-0'] }).code;
+          const text = transform(file.text, babelrc).code;
           return Object.assign({}, file, { text });
         }
         return file;
