@@ -13,8 +13,9 @@
         </style>
         <script type="text/javascript">
         window.addEventListener("message", function once(e) {
-            eval(e.data);
+            console.info('feeles:[Notice] I will eval...', e);
             window.removeEventListener("message", once);
+            eval(e.data);
         });
         </script>
     </head>
