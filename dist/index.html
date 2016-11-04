@@ -30,7 +30,7 @@
 
     <!-- Files as a <script> -->
     <script class="example1" name="main.js" data-type="text/javascript" is-entry-point is-opened type="hack">
-    const message = require('sub/message');
+    import message from 'sub/message';
 
     const body = document.body;
     body.style.backgroundColor = 'white';
@@ -40,7 +40,7 @@
 
     </script>
     <script class="example1" name="sub/message.js" data-type="text/javascript" type="hack">
-    module.exports = "It's fine! :-)";
+    export default "It's fine! :-)";
 
     </script>
 

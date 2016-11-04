@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from './ReactPopout';
+import { transform } from 'babel-standalone';
 
 
 import composeEnv from '../js/composeEnv';
@@ -116,7 +117,16 @@ export default class ScreenPane extends Component {
   prevent = null;
   start () {
     const { portRef } = this.props;
-    const files = this.props.files.filter(f => f.moduleName);
+    const files = this.props.files
+      .filter((file) => file.moduleName)
+      .map((file) => {
+        if (file.isText && file.type === 'text/javascript') {
+          const text = transform(file.text, { presets: ['es2015', 'stage-0'] }).code;
+          return Object.assign({}, file, { text });
+        }
+        return file;
+      });
+
     const env = composeEnv(this.props.env);
 
     this.prevent =
