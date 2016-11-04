@@ -207,8 +207,8 @@ export default class ScreenPane extends Component {
       { width: this.parent.innerWidth, height: this.parent.innerHeight } :
       this.iframe.parentNode.getBoundingClientRect();
 
-    this.iframe.width = width;
-    this.iframe.height = height;
+    this.iframe.width = width + 'px';
+    this.iframe.height = height + 'px';
 
     const ratio = (size) => Math.max(size.height, 1) / Math.max(size.width, 1);
     const scale = ratio(screenRect) > ratio({ width, height }) ?

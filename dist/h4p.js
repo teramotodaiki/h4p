@@ -43112,8 +43112,8 @@ var _initialiseProps = function _initialiseProps() {
     }
     var screenRect = _this5.props.isPopout ? { width: _this5.parent.innerWidth, height: _this5.parent.innerHeight } : _this5.iframe.parentNode.getBoundingClientRect();
 
-    _this5.iframe.width = width;
-    _this5.iframe.height = height;
+    _this5.iframe.width = width + 'px';
+    _this5.iframe.height = height + 'px';
 
     var ratio = function ratio(size) {
       return Math.max(size.height, 1) / Math.max(size.width, 1);
