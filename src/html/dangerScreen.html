@@ -13,7 +13,6 @@
         </style>
         <script type="text/javascript">
         window.addEventListener("message", function once(e) {
-            console.info("dangerScreen fetch code: ...", e.data.substr(-100));
             eval(e.data);
             window.removeEventListener("message", once);
         });

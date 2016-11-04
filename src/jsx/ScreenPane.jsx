@@ -124,10 +124,8 @@ export default class ScreenPane extends Component {
       .then(() => new Promise((resolve, reject) => {
         setTimeout(reject, ConnectionTimeout);
         frameLoader(this.iframe, resolve);
-        console.time('screen');
       }))
       .then(frame => {
-        console.timeEnd('screen');
         const channel = new MessageChannel();
         channel.port1.onmessage = (e) => {
           switch (e.data.query) {
