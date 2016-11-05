@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import { transform } from 'babel-standalone';
 
 
 import EditorMenu from './EditorMenu';
@@ -68,6 +69,7 @@ export default class EditorPane extends Component {
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
     shot: PropTypes.object,
+    babelrc: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -92,9 +94,11 @@ export default class EditorPane extends Component {
   };
 
   handleShot = () => {
-    const { portPostMessage, shot } = this.props;
+    const { portPostMessage, shot, babelrc } = this.props;
     if (shot && portPostMessage) {
-      portPostMessage({ query: 'shot', value: shot });
+      const text = transform(shot.text, babelrc).code;
+      const value = Object.assign({}, shot, { text });
+      portPostMessage({ query: 'shot', value });
     }
   };
 

@@ -17,10 +17,9 @@ export default [
     composer: (file) => blobToBase64(file.blob)
   },
   {
-    // The Sentinel (will throw error)
     test: /./,
-    loader: null,
-    composer: null
+    loader: (type, seed) => textLoader('text/plain', seed),
+    composer: (file) => Promise.resolve(file.text)
   }
 ];
 

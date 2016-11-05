@@ -70,7 +70,7 @@ const jsOptions = {
 const jsSnippets = {
   "(": new Snippet({
     text: "() => {};",
-    displayText: '() => {}; [arrow function]',
+    displayText: '() => {}; [anonymous function]',
     pick: (from) => ({
       from: { line: from.line, ch: from.ch - 1 },
       to: { line: from.line, ch: from.ch + 1 },
@@ -88,15 +88,36 @@ const jsSnippets = {
       anchor: { line: from.line, ch: from.ch + 9 }
     }]
   }),
-  "req": new Snippet({
-    text: "const  = require('');",
-    displayText: '[require]',
+  "import": new Snippet({
+    text: "import  from '';",
+    displayText: '[import]',
     selections: (from) => [{
-      head: { line: from.line, ch: from.ch + 6 },
-      anchor: { line: from.line, ch: from.ch + 6 }
-    }, {
-      head: { line: from.line, ch: from.ch + 18 },
-      anchor: { line: from.line, ch: from.ch + 18 }
+      head: { line: from.line, ch: from.ch + 7 },
+      anchor: { line: from.line, ch: from.ch + 7 }
+    }]
+  }),
+  "import*": new Snippet({
+    text: "import * as  from '';",
+    displayText: '[import *]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 12 },
+      anchor: { line: from.line, ch: from.ch + 12 }
+    }]
+  }),
+  "exportd": new Snippet({
+    text: "export default ;",
+    displayText: '[export default]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 15 },
+      anchor: { line: from.line, ch: from.ch + 15 }
+    }]
+  }),
+  "export": new Snippet({
+    text: "export {  :  };",
+    displayText: '[export { name: var }]',
+    selections: (from) => [{
+      head: { line: from.line, ch: from.ch + 9 },
+      anchor: { line: from.line, ch: from.ch + 12 }
     }]
   }),
   "fetchblob": new Snippet({
@@ -118,16 +139,16 @@ const jsSnippets = {
     autoIndent: false,
   }),
   "f": new Snippet({
-    text: "() => {};",
-    displayText: '() => {}; [arrow function]',
+    text: "const  = () => {\n\t// \n};",
+    displayText: '() => {}; [function]',
     selections: (from) => [{
-      head: { line: from.line, ch: from.ch + 7 },
-      anchor: { line: from.line, ch: from.ch + 7 }
+      head: { line: from.line, ch: from.ch + 6 },
+      anchor: { line: from.line, ch: from.ch + 6 }
     }]
   }),
   "fun": new Snippet({
     text: "function () {}",
-    displayText: '[anonymous function]',
+    displayText: '[scoped anonymous function]',
     selections: (from) => [{
       head: { line: from.line, ch: from.ch + 13 },
       anchor: { line: from.line, ch: from.ch + 13 }
@@ -135,7 +156,7 @@ const jsSnippets = {
   }),
   "funcion": new Snippet({
     text: "function functionName() {\n\t// \n}",
-    displayText: '[function]',
+    displayText: '[scoped function]',
     selections: (from) => [{
       head: { line: from.line, ch: from.ch + 9 },
       anchor: { line: from.line, ch: from.ch + 21 }
