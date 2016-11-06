@@ -17,7 +17,7 @@ export default [
     composer: (file) => blobToBase64(file.blob)
   },
   {
-    test: /./,
+    test: /^/,
     loader: (type, seed) => textLoader('text/plain', seed),
     composer: (file) => Promise.resolve(file.text)
   }

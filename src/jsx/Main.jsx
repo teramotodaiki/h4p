@@ -96,10 +96,19 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const tabbedKeys = this.props.config.files
+    const { files } = this.props.config;
+    const tabbedKeys = files
       .filter(file => file.options.isEntryPoint)
       .map(file => file.key);
     const selectedKey = tabbedKeys[0] || null;
+
+    if (!files.find((file) => file.name === '.babelrc')) {
+      makeFromType('application/json', {
+        name: '.babelrc',
+        text: JSON.stringify({ presets: ['es2015'] }, null, '\t')
+      })
+      .then((file) => this.addFile(file));
+    }
 
     if (this.options.unlimited === false) {
       this.setState({ reboot: true, secondaryHeight: 40 });
