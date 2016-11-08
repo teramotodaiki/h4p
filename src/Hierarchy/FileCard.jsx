@@ -1,13 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
+import IconButton from 'material-ui/IconButton';
 import { transparent } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 import { fade } from 'material-ui/utils/colorManipulator';
 import EditorDragHandle from 'material-ui/svg-icons/editor/drag-handle';
+import ActionSettings from 'material-ui/svg-icons/action/settings';
 
 
 import Filename from './Filename';
+import { PreferenceDialog } from '../FileDialog/';
+import { changeName } from '../js/files';
 
 export const Types = {
   FILE: 'FILE',
@@ -71,7 +75,8 @@ class FileCard extends Component {
     selectedFile: PropTypes.object,
     tabbedFiles: PropTypes.array.isRequired,
     handleFileSelect: PropTypes.func.isRequired,
-    handleNameChange: PropTypes.func.isRequired,
+    openFileDialog: PropTypes.func.isRequired,
+    updateFile: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
@@ -81,9 +86,25 @@ class FileCard extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  handleConfirmSettings = (event) => {
+    const { file, openFileDialog, updateFile } = this.props;
+
+    event.stopPropagation();
+    openFileDialog(PreferenceDialog, {
+      content: file,
+    })
+    .then((change) => updateFile(file, change));
+  };
+
+  handleNameChange = (event, name) => {
+    const { file, updateFile } = this.props;
+
+    return updateFile(file, changeName(file, name));
+  };
+
   render() {
     const {
-      file, selectedFile, handleFileSelect, handleNameChange,
+      file, selectedFile, handleFileSelect,
       connectDragSource, connectDragPreview,
     } = this.props;
     const {
@@ -115,8 +136,11 @@ class FileCard extends Component {
             </div>
           )}
           <div style={prepareStyles(container)}>
-            <Filename file={file} onChange={handleNameChange} />
+            <Filename file={file} onChange={this.handleNameChange} />
           </div>
+          <IconButton onTouchTap={this.handleConfirmSettings}>
+            <ActionSettings color={secondaryTextColor} />
+          </IconButton>
         </Paper>
       </div>
     );

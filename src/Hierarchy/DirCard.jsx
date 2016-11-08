@@ -80,8 +80,9 @@ class _DirCard extends Component {
     handleDirToggle: PropTypes.func.isRequired,
     handleFileMove: PropTypes.func.isRequired,
     handleNativeDrop: PropTypes.func.isRequired,
-    handleNameChange: PropTypes.func.isRequired,
     isRoot: PropTypes.bool,
+    openFileDialog: PropTypes.func.isRequired,
+    updateFile: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -115,7 +116,8 @@ class _DirCard extends Component {
       handleDirToggle: this.props.handleDirToggle,
       handleFileMove: this.props.handleFileMove,
       handleNativeDrop: this.props.handleNativeDrop,
-      handleNameChange: this.props.handleNameChange,
+      openFileDialog: this.props.openFileDialog,
+      updateFile: this.props.updateFile,
     };
 
     const {
