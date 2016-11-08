@@ -71,7 +71,8 @@ class FileCard extends Component {
     selectedFile: PropTypes.object,
     tabbedFiles: PropTypes.array.isRequired,
     handleFileSelect: PropTypes.func.isRequired,
-    handleNameChange: PropTypes.func.isRequired,
+    openFileDialog: PropTypes.func.isRequired,
+    updateFile: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
@@ -81,9 +82,15 @@ class FileCard extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  handleNameChange = (event, name) => {
+    const { file, updateFile } = this.props;
+
+    return updateFile(file, changeName(file, name));
+  };
+
   render() {
     const {
-      file, selectedFile, handleFileSelect, handleNameChange,
+      file, selectedFile, handleFileSelect,
       connectDragSource, connectDragPreview,
     } = this.props;
     const {
@@ -115,7 +122,7 @@ class FileCard extends Component {
             </div>
           )}
           <div style={prepareStyles(container)}>
-            <Filename file={file} onChange={handleNameChange} />
+            <Filename file={file} onChange={this.handleNameChange} />
           </div>
         </Paper>
       </div>

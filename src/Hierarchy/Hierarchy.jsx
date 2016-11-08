@@ -94,12 +94,6 @@ export default class Hierarchy extends Component {
     }
   };
 
-  handleNameChange = (file, name) => {
-    const { updateFile } = this.props;
-
-    return updateFile(file, changeName(file, name));
-  };
-
   isDirOpened = (dir, passed, failed) => {
     return this.state.openedPaths.includes(dir.path) ? passed : failed;
   };
@@ -111,18 +105,20 @@ export default class Hierarchy extends Component {
       selectedFile,
       tabbedFiles,
       updateFile,
+      openFileDialog,
     } = this.props;
     const { filter } = this.state;
 
     const transfer = {
       selectedFile,
       tabbedFiles,
+      openFileDialog,
+      updateFile,
       isDirOpened: this.isDirOpened,
       handleFileSelect: this.handleFileSelect,
       handleDirToggle: this.handleDirToggle,
       handleFileMove: this.handleFileMove,
       handleNativeDrop: this.handleNativeDrop,
-      handleNameChange: this.handleNameChange,
     };
 
     const {

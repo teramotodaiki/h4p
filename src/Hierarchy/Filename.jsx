@@ -72,6 +72,10 @@ export default class Filename extends Component {
     setTimeout(() => this.touchFlag = false, 200);
   };
 
+  handleTextFieldTap = (event) => {
+    event.stopPropagation();
+  };
+
   render() {
     const { file } = this.props;
     const { isEditing } = this.state;
@@ -90,6 +94,7 @@ export default class Filename extends Component {
             defaultValue={plane}
             ref={this.handleInput}
             style={styles.textField}
+            onTouchTap={this.handleTextFieldTap}
           />
         ) : (
           <span
