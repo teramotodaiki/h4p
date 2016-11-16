@@ -10,6 +10,7 @@ import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
 import ImagePalette from 'material-ui/svg-icons/image/palette';
 import ImageTune from 'material-ui/svg-icons/image/tune';
 import ActionLanguage from 'material-ui/svg-icons/action/language';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import 'whatwg-fetch';
 
 
@@ -17,6 +18,7 @@ import getLocalization, { acceptedLanguages } from '../localization/';
 import { DownloadDialog, SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
+import AboutDialog from './AboutDialog';
 
 const getStyles = (props, context) => {
 
@@ -88,6 +90,12 @@ export default class Menu extends Component {
     const { openFileDialog, env, updateEnv } = this.props;
 
     openFileDialog(EnvDialog, { env, updateEnv });
+  };
+
+  handleAbout = () => {
+    const { openFileDialog } = this.props;
+
+    openFileDialog(AboutDialog);
   };
 
   render() {
@@ -194,6 +202,14 @@ export default class Menu extends Component {
           style={button}
         >
           <FileDownload color={alternateTextColor} />
+        </IconButton>
+        <IconButton
+          tooltip={menu.aboutFeeles}
+          onTouchTap={this.handleAbout}
+          tooltipPosition={tooltipPosition}
+          style={button}
+        >
+          <ActionAssignment color={alternateTextColor} />
         </IconButton>
       </Paper>
     );
