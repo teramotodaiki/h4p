@@ -11,7 +11,7 @@ import Preview from './Preview';
 import { makeFromType } from '../js/files';
 import { AddDialog } from '../FileDialog/';
 import Editor from './Editor';
-import ShotFrame from './ShotFrame';
+import Readme from './Readme';
 
 const SizerWidth = 24;
 
@@ -68,7 +68,7 @@ export default class EditorPane extends Component {
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
-    shot: PropTypes.object,
+    readme: PropTypes.string.isRequired,
     babelrc: PropTypes.object.isRequired,
   };
 
@@ -102,6 +102,14 @@ export default class EditorPane extends Component {
     }
   };
 
+  handleReadmeSelect = () => {
+    const { files, selectFile } = this.props;
+    const readme = files.find((file) => file.name === 'README.md');
+    if (readme) {
+      selectFile(readme);
+    }
+  };
+
   render() {
     const {
       files, selectedFile, tabbedFiles,
@@ -111,7 +119,7 @@ export default class EditorPane extends Component {
       handleOptionChange,
       openFileDialog,
       localization,
-      shot,
+      readme,
     } = this.props;
 
     const {
@@ -160,22 +168,12 @@ export default class EditorPane extends Component {
         </ChromeTabContent>
       ))}
       {tabbedFiles.length === 0 ? (
-        <ShotFrame onShot={this.handleShot}>
-        {shot ? (
-          <Editor
-            file={shot}
-            options={options}
-            getFiles={() => files}
-            onChange={(text) => updateFile(shot, { text })}
-          />
-        ) : (
-          <IconButton
-            onTouchTap={this.handleAddShot}
-          >
-            <ContentAdd />
-          </IconButton>
-        )}
-        </ShotFrame>
+        <Readme
+          readme={readme}
+          onShot={this.handleShot}
+          localization={localization}
+          onTouchTap={this.handleReadmeSelect}
+        />
       ): null}
       </div>
       <FloatingActionButton secondary

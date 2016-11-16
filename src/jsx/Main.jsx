@@ -98,7 +98,7 @@ class Main extends Component {
 
   get readme() {
     const file = this.state.files.find((file) => file.name === 'README.md');
-    return file ? file.text : '# README';
+    return file ? file.text : this.state.localization.readme.text;
   }
 
   componentDidMount() {
@@ -377,7 +377,7 @@ class Main extends Component {
               openFileDialog={this.openFileDialog}
               localization={localization}
               portPostMessage={portPostMessage}
-              shot={this.shot}
+              readme={this.readme}
               babelrc={this.babelrc}
             />
           </Dock>
