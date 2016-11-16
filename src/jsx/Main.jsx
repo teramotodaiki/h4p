@@ -96,6 +96,11 @@ class Main extends Component {
     return Object.assign({}, defaultBabelrc, file ? file.json : {});
   }
 
+  get readme() {
+    const file = this.state.files.find((file) => file.name === 'README.md');
+    return file ? file.text : '# README';
+  }
+
   componentDidMount() {
     const { files } = this.props.config;
     const tabbedKeys = files
@@ -107,6 +112,14 @@ class Main extends Component {
       makeFromType('application/json', {
         name: '.babelrc',
         text: JSON.stringify({ presets: ['es2015'] }, null, '\t')
+      })
+      .then((file) => this.addFile(file));
+    }
+
+    if (!files.find((file) => file.name === 'README.md')) {
+      makeFromType('text/x-markdown', {
+        name: 'README.md',
+        text: this.readme,
       })
       .then((file) => this.addFile(file));
     }
