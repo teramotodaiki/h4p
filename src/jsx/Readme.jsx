@@ -5,6 +5,8 @@ import CommunicationImportContacts from 'material-ui/svg-icons/communication/imp
 
 
 import MDReactComponent from '../../lib/MDReactComponent';
+import Editor from './Editor';
+import ShotFrame from './ShotFrame';
 
 const getStyle = (props, state, context) => {
   const {
@@ -74,8 +76,10 @@ export default class Readme extends Component {
 
   static propTypes = {
     readme: PropTypes.string.isRequired,
+    options: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
     onTouchTap: PropTypes.func.isRequired,
+    onShot: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -93,7 +97,23 @@ export default class Readme extends Component {
     if (tag === 'blockquote') {
       return <blockquote {...props}>{children}</blockquote>;
     }
-    
+    if (tag === 'pre') {
+      const [text] = children[0].props.children;
+      return (
+        <ShotFrame
+          key={props.key}
+          onShot={() => this.props.onShot(text)}
+        >
+          <Editor
+            file={{ text, options: {} }}
+            options={this.props.options}
+            getFiles={() => []}
+            onChange={(text) => {}}
+          />
+        </ShotFrame>
+      );
+    }
+
     return null;
 
   };

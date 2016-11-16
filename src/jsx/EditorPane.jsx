@@ -83,21 +83,12 @@ export default class EditorPane extends Component {
       .then(file => addFile(file));
   };
 
-  handleAddShot = () => {
-    const { addFile } = this.props;
-
-    makeFromType('text/javascript', {
-      name: '.shot',
-      text: '',
-    })
-    .then(file => addFile(file));
-  };
-
-  handleShot = () => {
-    const { portPostMessage, shot, babelrc } = this.props;
-    if (shot && portPostMessage) {
-      const text = transform(shot.text, babelrc).code;
-      const value = Object.assign({}, shot, { text });
+  handleShot = (text) => {
+    const { portPostMessage, babelrc } = this.props;
+    if (text && portPostMessage) {
+      const value = {
+        text: transform(text, babelrc).code,
+      };
       portPostMessage({ query: 'shot', value });
     }
   };
@@ -169,10 +160,11 @@ export default class EditorPane extends Component {
       ))}
       {tabbedFiles.length === 0 ? (
         <Readme
+          options={options}
           readme={readme}
-          onShot={this.handleShot}
           localization={localization}
           onTouchTap={this.handleReadmeSelect}
+          onShot={this.handleShot}
         />
       ): null}
       </div>
