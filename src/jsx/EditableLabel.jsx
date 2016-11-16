@@ -100,7 +100,7 @@ export default class EditableLabel extends Component {
       />
     ) : labelText ? (
       <div
-        style={prepareStyles(style)}
+        style={style}
         onTouchTap={this.handleTouch}
       >
       {labelText}

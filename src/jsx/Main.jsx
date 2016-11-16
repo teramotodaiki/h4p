@@ -77,6 +77,7 @@ class Main extends Component {
   get env() {
     const defaultEnv = {
       DEBUG: [true, 'boolean', 'A flag means test mode'],
+      TITLE: ['My App', 'string', 'A name of this app'],
     };
     const file = this.state.files.find(f => f.name === '.env');
     return Object.assign({}, defaultEnv, file ? file.json : {});
@@ -114,6 +115,8 @@ class Main extends Component {
       this.setState({ reboot: true, secondaryHeight: 40 });
       return;
     }
+
+    document.title = this.env.TITLE[0];
 
     this.setState({
       reboot: true,
@@ -301,6 +304,11 @@ class Main extends Component {
       null, indent
     );
     const json = JSON.parse(text);
+
+    if (json.TITLE) {
+      document.title = json.TITLE[0];
+    }
+
     return this.updateFile(envFile, { json, text })
       .then((file) => file.json);
   };
