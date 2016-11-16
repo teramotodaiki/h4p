@@ -121,7 +121,10 @@ export default class ScreenPane extends Component {
     const files = this.props.files
       .filter((file) => file.moduleName)
       .map((file) => {
-        if (file.isText && file.type === 'text/javascript') {
+        if (file.isText &&
+            file.type === 'text/javascript' &&
+            !file.options.noBabel)
+        {
           const text = transform(file.text, babelrc).code;
           return Object.assign({}, file, { text });
         }
