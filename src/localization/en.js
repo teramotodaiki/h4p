@@ -52,7 +52,11 @@ This is an application can do... ← You can write here
 3. Take a tab \`README\`
 ## Advanced
 If you have ordinary letters, **such things** or *like this* let's try it
-It seems to say \`Markdown\` how to write such a symbol. ~~Strange!~~
+\`\`\`
+\/\/ How, you can code here!
+alert('Hi!');
+\`\`\`
+> It seems to say \`Markdown\` how to write such a symbol. ~~Strange!~~
 - - -
 Thanks
 - When making this application,
