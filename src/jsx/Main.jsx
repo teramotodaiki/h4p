@@ -111,7 +111,7 @@ class Main extends Component {
     if (!files.find((file) => file.name === '.babelrc')) {
       makeFromType('application/json', {
         name: '.babelrc',
-        text: JSON.stringify({ presets: ['es2015'] }, null, '\t')
+        text: JSON.stringify(this.babelrc, null, '\t')
       })
       .then((file) => this.addFile(file));
     }
