@@ -14,6 +14,7 @@ export default class DownloadDialog extends Component {
     onRequestClose: PropTypes.func.isRequired,
     files: PropTypes.array.isRequired,
     localization: PropTypes.object.isRequired,
+    env: PropTypes.object.isRequired,
   };
 
   state = {
@@ -50,10 +51,13 @@ export default class DownloadDialog extends Component {
   }
 
   bundle(config) {
+    const { env } = this.props;
+
     const props = Object.assign({}, config, {
       EXPORT_VAR_NAME,
       CSS_PREFIX,
       CORE_CDN_URL,
+      TITLE: env.TITLE ? env.TITLE[0] : '',
     });
     return {
       name: 'download',
