@@ -50,7 +50,23 @@ const getStyle = (props, state, context) => {
       overflow: 'scroll',
       paddingLeft: spacing.desktopGutterMini,
       paddingRight: spacing.desktopGutterMini,
+      paddingBottom: spacing.desktopGutterMore,
     }),
+  };
+};
+
+const mdStyle = (props, state, context) => {
+  const {
+    palette,
+  } = context.muiTheme;
+
+  return {
+    blockquote: {
+      color: palette.secondaryTextColor,
+      marginLeft: '1rem',
+      paddingLeft: '1rem',
+      borderLeft: `5px solid ${palette.disabledColor}`,
+    },
   };
 };
 
@@ -70,12 +86,28 @@ export default class Readme extends Component {
 
   };
 
+  renderIterate(tag, props, children) {
+    if (tag === 'a') {
+      return <a {...props} target="_blank">{children}</a>;
+    }
+    if (tag === 'blockquote') {
+      return <blockquote {...props}>{children}</blockquote>;
+    }
+    
+    return null;
+
+  };
+
   render() {
     const {
       readme,
       localization,
       onTouchTap,
     } = this.props;
+
+    const {
+      prepareStyles,
+    } = this.context.muiTheme;
 
     const {
       root,
@@ -87,6 +119,18 @@ export default class Readme extends Component {
     const {
       gettingStarted,
     } = localization.readme;
+
+    const mdStyles = mdStyle(this.props, this.state, this.context);
+
+    const onIterate = (tag, props, children) => {
+      if (mdStyles[tag]) {
+        const style = prepareStyles(
+          Object.assign({}, props.style || {}, mdStyles[tag])
+        );
+        props = Object.assign({}, props, { style });
+      }
+      return this.renderIterate(tag, props, children);
+    };
 
     return (
       <div style={root}>
@@ -100,6 +144,7 @@ export default class Readme extends Component {
           <MDReactComponent
             text={readme}
             style={markdown}
+            onIterate={onIterate}
           />
         </Paper>
       </div>
