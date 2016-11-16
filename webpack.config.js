@@ -32,11 +32,15 @@ const config = {
       {
         test: /\.html$/,
         loaders: ["handlebars"]
+      },
+      {
+        test: /\.json$/,
+        loaders: ["json"]
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.html'],
+    extensions: ['.js', '.jsx', '.html', '.json'],
     modules: [
       path.resolve('./src'),
       'node_modules'
