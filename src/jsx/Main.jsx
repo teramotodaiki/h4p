@@ -103,10 +103,6 @@ class Main extends Component {
 
   componentDidMount() {
     const { files } = this.props.config;
-    const tabbedKeys = files
-      .filter(file => file.options.isEntryPoint)
-      .map(file => file.key);
-    const selectedKey = tabbedKeys[0] || null;
 
     if (!files.find((file) => file.name === '.babelrc')) {
       makeFromType('application/json', {
@@ -131,10 +127,7 @@ class Main extends Component {
 
     document.title = this.env.TITLE[0];
 
-    this.setState({
-      reboot: true,
-      tabbedKeys, selectedKey,
-    });
+    this.setState({ reboot: true });
   }
 
   componentDidUpdate() {
