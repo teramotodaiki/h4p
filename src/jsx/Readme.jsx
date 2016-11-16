@@ -23,7 +23,6 @@ const getStyle = (props, state, context) => {
       paddingRight: spacing.desktopGutterMini,
       paddingLeft: spacing.desktopGutterMore,
       zIndex: 2000,
-
     }),
     container: {
       boxSizing: 'border-box',
@@ -49,6 +48,8 @@ const getStyle = (props, state, context) => {
       flex: '1 1 auto',
       display: 'block',
       overflow: 'scroll',
+      paddingLeft: spacing.desktopGutterMini,
+      paddingRight: spacing.desktopGutterMini,
     }),
   };
 };
