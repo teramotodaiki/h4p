@@ -10,7 +10,8 @@ export default {
     palette: 'パレット',
     env: 'envのせってい',
     language: '言語',
-    download: 'ダウンロード'
+    download: 'ダウンロード',
+    aboutFeeles: 'この Feeles について',
   },
   downloadDialog: {
     title: 'ダウンロード方法をえらぶ',
@@ -30,6 +31,10 @@ export default {
   },
   paletteDialog: {
     title: 'カラーパレット',
+  },
+  aboutDialog: {
+    title: 'この Feeles について',
+    coreVersion: 'Feelse のバージョン',
   },
   editorMenu: {
     unlimited: 'すべて表示',

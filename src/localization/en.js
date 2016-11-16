@@ -10,7 +10,8 @@ export default {
     palette: 'Palette',
     env: 'Configure env',
     language: 'Language',
-    download: 'Download'
+    download: 'Download',
+    aboutFeeles: 'About Feeles',
   },
   downloadDialog: {
     title: 'Chose download type',
@@ -30,6 +31,10 @@ export default {
   },
   paletteDialog: {
     title: 'Color Palette',
+  },
+  aboutDialog: {
+    title: 'About Feeles',
+    coreVersion: 'Core Version',
   },
   editorMenu: {
     unlimited: 'Unlimited Mode',
