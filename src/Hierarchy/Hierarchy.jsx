@@ -53,7 +53,6 @@ export default class Hierarchy extends Component {
   };
 
   handleNativeDrop = (files, dir = null) => {
-    console.log(files);
     const { addFile, selectFile, openFileDialog } = this.props;
 
     files.map(file => () => {
