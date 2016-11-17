@@ -37,6 +37,7 @@ class _TrashBox extends Component {
   static propTypes = {
     showTrashes: PropTypes.bool.isRequired,
     updateFile: PropTypes.func.isRequired,
+    onTouchTap: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,

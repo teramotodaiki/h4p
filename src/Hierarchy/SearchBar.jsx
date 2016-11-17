@@ -6,6 +6,7 @@ import ActionSearch from 'material-ui/svg-icons/action/search';
 
 import TrashBox from './TrashBox';
 import search, { getOptions } from './search';
+import OpenFile from './OpenFile';
 
 const getStyles = (props, context, state) => {
   const {
@@ -51,6 +52,7 @@ export default class SearchBar extends Component {
     files: PropTypes.array.isRequired,
     filterRef: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
+    onOpen: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -91,7 +93,7 @@ export default class SearchBar extends Component {
   };
 
   render() {
-    const { updateFile } = this.props;
+    const { updateFile, onOpen } = this.props;
     const { showTrashes, query } = this.state;
     const {
       secondaryTextColor,
@@ -126,6 +128,9 @@ export default class SearchBar extends Component {
             fullWidth
           />
         </Paper>
+        <OpenFile
+          onOpen={onOpen}
+        />
       </div>
     );
   }
