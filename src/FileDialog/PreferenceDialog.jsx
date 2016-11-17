@@ -7,12 +7,8 @@ import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 
 
+import { MimeTypes } from '../jsx/Editor';
 import { Confirm, Abort } from './Buttons';
-
-const TextTypes = [
-  'text/javascript',
-  'application/json',
-];
 
 const getStyles = (props, context) => {
 
@@ -122,7 +118,7 @@ export default class RenameDialog extends Component {
                   value={type}
                   onChange={this.handleTypeChange}
                 >
-                {TextTypes.map((t) => (
+                {Object.keys(MimeTypes).map((t) => (
                   <MenuItem key={t} value={t} primaryText={t} />
                 ))}
                 </DropDownMenu>

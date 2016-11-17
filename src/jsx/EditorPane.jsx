@@ -80,7 +80,7 @@ export default class EditorPane extends Component {
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(AddDialog)
-      .then(seed => makeFromType('text/javascript', seed))
+      .then(seed => makeFromType(seed.type, seed))
       .then(file => addFile(file));
   };
 

@@ -4,10 +4,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
 
-const extensions = {
-  'text/javascript': '.js',
-  'text/html': '.html',
-};
+import { MimeTypes } from '../jsx/Editor';
 
 const getUniqueId = (i => () => ++i)(0);
 
@@ -32,7 +29,7 @@ export default class FilenameInput extends Component {
 
   get value() {
     const { name, type } = this.state;
-    return name + extensions[type];
+    return name + MimeTypes[type];
   }
 
   get name() {
@@ -95,8 +92,8 @@ export default class FilenameInput extends Component {
           onChange={this.handleTypeChange}
           style={dropDownStyle}
         >
-        {Object.keys(extensions).map(type => (
-          <MenuItem key={type} value={type} primaryText={extensions[type]} />
+        {Object.keys(MimeTypes).map(type => (
+          <MenuItem key={type} value={type} primaryText={MimeTypes[type]} />
         ))}
         </DropDownMenu>
       </div>
