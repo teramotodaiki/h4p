@@ -58,10 +58,6 @@ class Main extends Component {
     return tabbedKeys.map(key => files.find(file => key === file.key));
   }
 
-  get shot() {
-    return this.state.files.find(f => f.name === '.shot');
-  }
-
   get options() {
     const defaultOptions = {
       unlimited: true,
