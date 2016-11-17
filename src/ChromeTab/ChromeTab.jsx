@@ -7,7 +7,7 @@ import { emphasize, fade } from 'material-ui/utils/colorManipulator';
 
 
 const MaxTabWidth = 160;
-const MinTabWidth = 60;
+const MinTabWidth = 0;
 const TabHeight = 32;
 const TabSkewX = 24;
 
@@ -45,10 +45,10 @@ const getStyles = (props, context, state) => {
 
   return {
     root: {
-      flex: '0 0 auto',
+      flex: '1 1 auto',
       position: 'relative',
       boxSizing: 'border-box',
-      width: tabWidth,
+      maxWidth: MaxTabWidth,
       height: tabHeight,
       marginBottom: isSelected ? -1 : 0,
       zIndex: isSelected ? 2 : 1,
