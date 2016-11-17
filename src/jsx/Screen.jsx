@@ -20,8 +20,8 @@ const Screen = ({ display, frameRef }) => {
   };
 
   const sandbox = SrcDocEnabled ?
-    "allow-scripts allow-modals" :
-    "allow-scripts allow-modals allow-same-origin";
+    "allow-scripts allow-modals allow-popups" :
+    "allow-scripts allow-modals allow-popups allow-same-origin";
 
   return (
     <div style={style}>
