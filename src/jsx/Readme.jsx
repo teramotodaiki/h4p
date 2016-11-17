@@ -60,7 +60,10 @@ const getStyle = (props, state, context) => {
 const mdStyle = (props, state, context) => {
   const {
     palette,
+    spacing,
   } = context.muiTheme;
+
+  const tableBorder = `1px solid ${palette.disabledColor}`;
 
   return {
     blockquote: {
@@ -71,6 +74,22 @@ const mdStyle = (props, state, context) => {
     },
     img: {
       maxWidth: '100%',
+    },
+    table: {
+      margin: '1rem 0',
+      borderLeft: tableBorder,
+      borderSpacing: 0,
+    },
+    th: {
+      padding: spacing.desktopGutterMini,
+      borderTop: tableBorder,
+      borderRight: tableBorder,
+      borderBottom: tableBorder,
+    },
+    td: {
+      padding: spacing.desktopGutterMini,
+      borderRight: tableBorder,
+      borderBottom: tableBorder,
     },
   };
 };
@@ -101,11 +120,11 @@ export default class Readme extends Component {
   }
 
   renderIterate(tag, props, children) {
+    if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
+      return React.createElement(tag, props, children);
+    }
     if (tag === 'a') {
       return <a {...props} target="_blank">{children}</a>;
-    }
-    if (tag === 'blockquote') {
-      return <blockquote {...props}>{children}</blockquote>;
     }
     if (tag === 'img') {
       const file = this.props.files.find((file) =>
