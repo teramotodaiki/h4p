@@ -158,15 +158,13 @@ export default class EditorPane extends Component {
         )}
         </ChromeTabContent>
       ))}
-      {tabbedFiles.length === 0 ? (
-        <Readme
-          options={options}
-          readme={readme}
-          localization={localization}
-          onTouchTap={this.handleReadmeSelect}
-          onShot={this.handleShot}
-        />
-      ): null}
+      <Readme
+        options={options}
+        readme={readme}
+        localization={localization}
+        onTouchTap={this.handleReadmeSelect}
+        onShot={this.handleShot}
+      />
       </div>
       <FloatingActionButton secondary
         style={button}

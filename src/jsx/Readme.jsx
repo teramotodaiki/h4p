@@ -24,7 +24,7 @@ const getStyle = (props, state, context) => {
       padding: 0,
       paddingRight: spacing.desktopGutterMini,
       paddingLeft: spacing.desktopGutterMore,
-      zIndex: 2000,
+      zIndex: 1,
     }),
     container: {
       boxSizing: 'border-box',
@@ -87,8 +87,14 @@ export default class Readme extends Component {
   };
 
   state = {
-
+    updates: {},
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.readme !== nextProps.readme) {
+      this.setState({ updates: {} });
+    }
+  }
 
   renderIterate(tag, props, children) {
     if (tag === 'a') {
@@ -98,7 +104,14 @@ export default class Readme extends Component {
       return <blockquote {...props}>{children}</blockquote>;
     }
     if (tag === 'pre') {
-      const [text] = children[0].props.children;
+      const { updates } = this.state;
+      const text = typeof updates[props.key] === 'string' ?
+        updates[props.key] :
+        children[0].props.children[0];
+      const onChange = (text) => this.setState({
+        updates: Object.assign({}, updates, { [props.key]: text })
+      });
+
       return (
         <ShotFrame
           key={props.key}
@@ -108,7 +121,7 @@ export default class Readme extends Component {
             file={{ text, options: {} }}
             options={this.props.options}
             getFiles={() => []}
-            onChange={(text) => {}}
+            onChange={onChange}
           />
         </ShotFrame>
       );
