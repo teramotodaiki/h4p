@@ -11,7 +11,7 @@ import Preview from './Preview';
 import { makeFromType } from '../js/files';
 import { AddDialog } from '../FileDialog/';
 import Editor from './Editor';
-import ShotFrame from './ShotFrame';
+import Readme from './Readme';
 
 const SizerWidth = 24;
 
@@ -68,7 +68,7 @@ export default class EditorPane extends Component {
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
-    shot: PropTypes.object,
+    readme: PropTypes.string.isRequired,
     babelrc: PropTypes.object.isRequired,
   };
 
@@ -83,22 +83,21 @@ export default class EditorPane extends Component {
       .then(file => addFile(file));
   };
 
-  handleAddShot = () => {
-    const { addFile } = this.props;
-
-    makeFromType('text/javascript', {
-      name: '.shot',
-      text: '',
-    })
-    .then(file => addFile(file));
+  handleShot = (text) => {
+    const { portPostMessage, babelrc } = this.props;
+    if (text && portPostMessage) {
+      const value = {
+        text: transform(text, babelrc).code,
+      };
+      portPostMessage({ query: 'shot', value });
+    }
   };
 
-  handleShot = () => {
-    const { portPostMessage, shot, babelrc } = this.props;
-    if (shot && portPostMessage) {
-      const text = transform(shot.text, babelrc).code;
-      const value = Object.assign({}, shot, { text });
-      portPostMessage({ query: 'shot', value });
+  handleReadmeSelect = () => {
+    const { files, selectFile } = this.props;
+    const readme = files.find((file) => file.name === 'README.md');
+    if (readme) {
+      selectFile(readme);
     }
   };
 
@@ -111,7 +110,7 @@ export default class EditorPane extends Component {
       handleOptionChange,
       openFileDialog,
       localization,
-      shot,
+      readme,
     } = this.props;
 
     const {
@@ -159,31 +158,23 @@ export default class EditorPane extends Component {
         )}
         </ChromeTabContent>
       ))}
-      {tabbedFiles.length === 0 ? (
-        <ShotFrame onShot={this.handleShot}>
-        {shot ? (
-          <Editor
-            file={shot}
-            options={options}
-            getFiles={() => files}
-            onChange={(text) => updateFile(shot, { text })}
-          />
-        ) : (
-          <IconButton
-            onTouchTap={this.handleAddShot}
-          >
-            <ContentAdd />
-          </IconButton>
-        )}
-        </ShotFrame>
-      ): null}
+      <Readme
+        files={files}
+        options={options}
+        readme={readme}
+        localization={localization}
+        onTouchTap={this.handleReadmeSelect}
+        onShot={this.handleShot}
+      />
       </div>
-      <FloatingActionButton secondary
-        style={button}
-        onClick={this.handleAdd}
-      >
-        <ContentAdd />
-      </FloatingActionButton>
+      {tabbedFiles.length > 0 ? (
+        <FloatingActionButton secondary
+          style={button}
+          onClick={this.handleAdd}
+        >
+          <ContentAdd />
+        </FloatingActionButton>
+      ) : null}
     </div>
     );
   }

@@ -96,17 +96,26 @@ class Main extends Component {
     return Object.assign({}, defaultBabelrc, file ? file.json : {});
   }
 
+  get readme() {
+    const file = this.state.files.find((file) => file.name === 'README.md');
+    return file ? file.text : this.state.localization.readme.text;
+  }
+
   componentDidMount() {
     const { files } = this.props.config;
-    const tabbedKeys = files
-      .filter(file => file.options.isEntryPoint)
-      .map(file => file.key);
-    const selectedKey = tabbedKeys[0] || null;
 
     if (!files.find((file) => file.name === '.babelrc')) {
       makeFromType('application/json', {
         name: '.babelrc',
-        text: JSON.stringify({ presets: ['es2015'] }, null, '\t')
+        text: JSON.stringify(this.babelrc, null, '\t')
+      })
+      .then((file) => this.addFile(file));
+    }
+
+    if (!files.find((file) => file.name === 'README.md')) {
+      makeFromType('text/x-markdown', {
+        name: 'README.md',
+        text: this.readme,
       })
       .then((file) => this.addFile(file));
     }
@@ -118,10 +127,7 @@ class Main extends Component {
 
     document.title = this.env.TITLE[0];
 
-    this.setState({
-      reboot: true,
-      tabbedKeys, selectedKey,
-    });
+    this.setState({ reboot: true });
   }
 
   componentDidUpdate() {
@@ -371,7 +377,7 @@ class Main extends Component {
               openFileDialog={this.openFileDialog}
               localization={localization}
               portPostMessage={portPostMessage}
-              shot={this.shot}
+              readme={this.readme}
               babelrc={this.babelrc}
             />
           </Dock>

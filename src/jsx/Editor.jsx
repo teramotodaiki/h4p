@@ -105,7 +105,7 @@ export default class Editor extends Component {
     CssScopeId: ('just-a-scope-' + Math.random()).replace('.', '')
   };
 
-  handleCodemirror (ref, file) {
+  handleCodemirror = (ref) => {
     if (!ref) return;
     if (!ref[AlreadySetSymbol]) {
       const cm = ref.getCodeMirror();
@@ -150,7 +150,7 @@ export default class Editor extends Component {
       <div id={CssScopeId}>
         <style>{codemirror}</style>
         <ReactCodeMirror
-          ref={(ref) => this.handleCodemirror(ref, file)}
+          ref={this.handleCodemirror}
           value={file.text}
           onChange={onChange}
           options={options}
