@@ -150,7 +150,7 @@ export default class Readme extends Component {
           onShot={() => this.props.onShot(text)}
         >
           <Editor
-            file={{ text, options: {} }}
+            file={{ text, type: 'text/javascript', options: {} }}
             options={this.props.options}
             getFiles={() => []}
             onChange={onChange}
