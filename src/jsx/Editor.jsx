@@ -3,7 +3,10 @@ import ReactCodeMirror from 'react-codemirror';
 import { transparent, grey100 } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/meta';
 import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/edit/matchbrackets';
@@ -137,7 +140,7 @@ export default class Editor extends Component {
 
     const options = Object.assign({
       lineNumbers: true,
-      mode: 'javascript',
+      mode: CodeMirror.findModeByMIME(file.type).mode,
       indentUnit: this.props.options.indentUnit4 ? 4 : 2,
       indentWithTabs: true,
       matchBrackets: true,

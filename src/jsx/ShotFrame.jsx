@@ -21,6 +21,7 @@ const getStyles = (props, context, state) => {
       position: 'relative',
       width: '100%',
       height: 300,
+      margin: '1rem 0',
     }),
     editor: {
       position: 'absolute',
@@ -75,11 +76,11 @@ export default class ShotFrame extends Component {
 
     Promise.resolve()
     .then(() => transition(1))
+    .then(() => onShot())
     .then(() => transition(2))
     .then(() => transition(0))
     .then(() => this.forceUpdate());
 
-    onShot();
   };
 
   render() {
