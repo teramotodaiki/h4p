@@ -71,6 +71,7 @@ export default class EditorPane extends Component {
     portPostMessage: PropTypes.func.isRequired,
     readme: PropTypes.string.isRequired,
     babelrc: PropTypes.object.isRequired,
+    findFile: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -95,8 +96,8 @@ export default class EditorPane extends Component {
   };
 
   handleReadmeSelect = () => {
-    const { files, selectFile } = this.props;
-    const readme = files.find((file) => file.name === 'README.md');
+    const { findFile, selectFile } = this.props;
+    const readme = findFile('README.md')
     if (readme) {
       selectFile(readme);
     }
