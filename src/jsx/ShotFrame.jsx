@@ -21,6 +21,7 @@ const getStyles = (props, context, state) => {
       position: 'relative',
       width: '100%',
       height: 300,
+      margin: '1rem 0',
     }),
     editor: {
       position: 'absolute',
