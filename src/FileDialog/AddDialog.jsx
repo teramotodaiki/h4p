@@ -5,6 +5,13 @@ import Dialog from 'material-ui/Dialog';
 import { Confirm, Abort } from './Buttons';
 import FilenameInput from './FilenameInput';
 
+const getSeed = (type) => {
+  if (type === 'application/json') {
+    return '{}';
+  }
+  return '';
+};
+
 export default class AddDialog extends Component {
 
   static propTypes = {
@@ -16,7 +23,7 @@ export default class AddDialog extends Component {
     const { resolve, onRequestClose } = this.props;
     const { value, type } = this.input;
 
-    resolve({ name: value, type, text: '', options: { isOpened: true } });
+    resolve({ name: value, type, text: getSeed(type), options: { isOpened: true } });
     onRequestClose();
   };
 
