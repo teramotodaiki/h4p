@@ -6,7 +6,7 @@ import ActionSearch from 'material-ui/svg-icons/action/search';
 
 import TrashBox from './TrashBox';
 import search, { getOptions } from './search';
-import OpenFile from './OpenFile';
+import DesktopFile from './DesktopFile';
 
 const getStyles = (props, context, state) => {
   const {
@@ -53,6 +53,7 @@ export default class SearchBar extends Component {
     filterRef: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
     onOpen: PropTypes.func.isRequired,
+    openFileDialog: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -93,7 +94,7 @@ export default class SearchBar extends Component {
   };
 
   render() {
-    const { updateFile, onOpen } = this.props;
+    const { updateFile, onOpen, openFileDialog } = this.props;
     const { showTrashes, query } = this.state;
     const {
       secondaryTextColor,
@@ -115,6 +116,10 @@ export default class SearchBar extends Component {
           updateFile={updateFile}
           onTouchTap={this.handleTrashBoxTap}
         />
+        <DesktopFile
+          onOpen={onOpen}
+          openFileDialog={openFileDialog}
+        />
         <Paper zDepth={3} style={bar}>
           <ActionSearch style={icon} color={secondaryTextColor} />
           <AutoComplete id="search"
@@ -128,9 +133,6 @@ export default class SearchBar extends Component {
             fullWidth
           />
         </Paper>
-        <OpenFile
-          onOpen={onOpen}
-        />
       </div>
     );
   }

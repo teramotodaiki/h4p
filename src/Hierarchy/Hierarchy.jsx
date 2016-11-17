@@ -134,6 +134,7 @@ export default class Hierarchy extends Component {
           filterRef={(filter) => this.setState({ filter })}
           updateFile={updateFile}
           onOpen={this.handleNativeDrop}
+          openFileDialog={openFileDialog}
         />
         <div style={scroll}>
           <Root files={files.filter(filter)} {...transfer} />
