@@ -52,7 +52,7 @@ export default class Hierarchy extends Component {
     filter: (file) => false,
   };
 
-  handleNativeDrop = (files, dir) => {
+  handleNativeDrop = (files, dir = null) => {
     const { addFile, selectFile, openFileDialog } = this.props;
 
     files.map(file => () => {
@@ -62,7 +62,7 @@ export default class Hierarchy extends Component {
         openFileDialog(SignDialog, { content })
       ])
       .then(([file, author]) => Object.assign({}, file, { author }))
-      .then(file => changeDir(file, dir.path))
+      .then(file => dir ? changeDir(file, dir.path) : file)
       .then(addFile)
       .then(selectFile);
     })
@@ -133,6 +133,7 @@ export default class Hierarchy extends Component {
           files={files}
           filterRef={(filter) => this.setState({ filter })}
           updateFile={updateFile}
+          onOpen={this.handleNativeDrop}
         />
         <div style={scroll}>
           <Root files={files.filter(filter)} {...transfer} />
