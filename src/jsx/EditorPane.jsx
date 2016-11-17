@@ -166,12 +166,14 @@ export default class EditorPane extends Component {
         onShot={this.handleShot}
       />
       </div>
-      <FloatingActionButton secondary
-        style={button}
-        onClick={this.handleAdd}
-      >
-        <ContentAdd />
-      </FloatingActionButton>
+      {tabbedFiles.length > 0 ? (
+        <FloatingActionButton secondary
+          style={button}
+          onClick={this.handleAdd}
+        >
+          <ContentAdd />
+        </FloatingActionButton>
+      ) : null}
     </div>
     );
   }
