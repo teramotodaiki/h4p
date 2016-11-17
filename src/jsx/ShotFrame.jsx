@@ -75,11 +75,11 @@ export default class ShotFrame extends Component {
 
     Promise.resolve()
     .then(() => transition(1))
+    .then(() => onShot())
     .then(() => transition(2))
     .then(() => transition(0))
     .then(() => this.forceUpdate());
 
-    onShot();
   };
 
   render() {
