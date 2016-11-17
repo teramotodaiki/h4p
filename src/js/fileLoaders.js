@@ -7,6 +7,11 @@ export default [
     composer: (file) => Promise.resolve(file.text)
   },
   {
+    test: /^(text)\/markdown$/,
+    loader: (type, seed) => textLoader('text/x-markdown', seed),
+    composer: (file) => Promise.resolve(file.text)
+  },
+  {
     test: /^(text|application)\//,
     loader: (type, seed) => textLoader(type, seed),
     composer: (file) => Promise.resolve(file.text)
