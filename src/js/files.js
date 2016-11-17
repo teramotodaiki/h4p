@@ -27,6 +27,8 @@ export const makeFromElement = (script) => {
   const options = {
     isEntryPoint: script.hasAttribute('is-entry-point'),
     isReadOnly: script.hasAttribute('is-read-only'),
+    isTrashed: script.hasAttribute('is-trashed'),
+    noBabel: script.hasAttribute('no-babel'),
   };
   const text = (code => {
     // Indent
