@@ -69,12 +69,16 @@ const mdStyle = (props, state, context) => {
       paddingLeft: '1rem',
       borderLeft: `5px solid ${palette.disabledColor}`,
     },
+    img: {
+      maxWidth: '100%',
+    },
   };
 };
 
 export default class Readme extends Component {
 
   static propTypes = {
+    files: PropTypes.array.isRequired,
     readme: PropTypes.string.isRequired,
     options: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
@@ -102,6 +106,15 @@ export default class Readme extends Component {
     }
     if (tag === 'blockquote') {
       return <blockquote {...props}>{children}</blockquote>;
+    }
+    if (tag === 'img') {
+      const file = this.props.files.find((file) =>
+        file.name === props.src ||
+        file.moduleName === props.src
+      );
+      if (file) {
+        return <img {...props} src={file.blobURL} />
+      }
     }
     if (tag === 'pre') {
       const { updates } = this.state;
