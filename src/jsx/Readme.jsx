@@ -128,8 +128,9 @@ export default class Readme extends Component {
     }
     if (tag === 'img') {
       const file = this.props.files.find((file) =>
+        !file.options.isTrashed && (
         file.name === props.src ||
-        file.moduleName === props.src
+        file.moduleName === props.src)
       );
       if (file) {
         return <img {...props} src={file.blobURL} />

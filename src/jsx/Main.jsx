@@ -66,7 +66,7 @@ class Main extends Component {
       lineWrapping: false,
       indentUnit4: false,
     };
-    const file = this.state.files.find(f => f.name === '.options');
+    const file = this.findFile('.options');
     return Object.assign({}, defaultOptions, file ? file.json : {});
   }
 
@@ -75,12 +75,12 @@ class Main extends Component {
       DEBUG: [true, 'boolean', 'A flag means test mode'],
       TITLE: ['My App', 'string', 'A name of this app'],
     };
-    const file = this.state.files.find(f => f.name === '.env');
+    const file = this.findFile('.env');
     return Object.assign({}, defaultEnv, file ? file.json : {});
   }
 
   get palette() {
-    const file = this.state.files.find(f => f.name === '.palette');
+    const file = this.findFile('.palette');
     return Object.assign({}, defaultPalette, file ? file.json : {});
   }
 
@@ -88,19 +88,26 @@ class Main extends Component {
     const defaultBabelrc = {
       presets: ['es2015'],
     };
-    const file = this.state.files.find(f => f.name === '.babelrc');
+    const file = this.findFile('.babelrc');
     return Object.assign({}, defaultBabelrc, file ? file.json : {});
   }
 
   get readme() {
-    const file = this.state.files.find((file) => file.name === 'README.md');
+    const file = this.findFile('README.md');
     return file ? file.text : this.state.localization.readme.text;
   }
+
+  findFile = (name) => {
+    return this.state.files.find((file) =>
+      !file.options.isTrashed &&
+      file.name === name
+    );
+  };
 
   componentDidMount() {
     const { files } = this.props.config;
 
-    if (!files.find((file) => file.name === '.babelrc')) {
+    if (!this.findFile('.babelrc')) {
       makeFromType('application/json', {
         name: '.babelrc',
         text: JSON.stringify(this.babelrc, null, '\t')
@@ -108,7 +115,7 @@ class Main extends Component {
       .then((file) => this.addFile(file));
     }
 
-    if (!files.find((file) => file.name === 'README.md')) {
+    if (!this.findFile('README.md')) {
       makeFromType('text/x-markdown', {
         name: 'README.md',
         text: this.readme,
@@ -234,7 +241,7 @@ class Main extends Component {
     const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
     return Promise.resolve()
       .then(() => {
-        const optionFile = this.state.files.find(f => f.name === '.options');
+        const optionFile = this.findFile('.options');
 
         if (!optionFile) {
           const json = Object.assign({}, this.options, change);
@@ -266,7 +273,7 @@ class Main extends Component {
 
   handlePaletteChange = (change) => {
     const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
-    const paletteFile = this.state.files.find(f => f.name === '.palette');
+    const paletteFile = this.findFile('.palette');
 
     if (!paletteFile) {
       const json = Object.assign({}, this.palette, change);
@@ -289,7 +296,7 @@ class Main extends Component {
 
   handleEnvChange = (change) => {
     const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
-    const envFile = this.state.files.find(f => f.name === '.env');
+    const envFile = this.findFile('.env');
 
     if (!envFile) {
       const json = Object.assign({}, this.env, change);
@@ -375,6 +382,7 @@ class Main extends Component {
               portPostMessage={portPostMessage}
               readme={this.readme}
               babelrc={this.babelrc}
+              findFile={this.findFile}
             />
           </Dock>
           <Dock config={config} style={secondaryDockStyle}>
