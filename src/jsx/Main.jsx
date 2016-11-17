@@ -204,6 +204,7 @@ class Main extends Component {
   inspection = (newFile, reject) => {
     const { files } = this.state;
     if (files.some(file =>
+      !file.options.isTrashed &&
       file.moduleName &&
       file.moduleName === newFile.moduleName &&
       file.key !== newFile.key
