@@ -15,6 +15,10 @@ CodeMirror.hint.javascript = (instance, options) => {
     return { list: [], from, to };
   }
 
+  if (token.type === null && token.string !== '(') {
+    return { list: [], from, to };
+  }
+
   options = Object.assign({}, options, jsOptions);
 
   const result = jsHint(instance, options) || { list: [], from, to };

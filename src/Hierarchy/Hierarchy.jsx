@@ -25,6 +25,7 @@ const getStyles = (props, context) => {
       paddingTop: spacing.desktopGutterMore,
       paddingBottom: spacing.desktopGutterMore,
       overflowY: 'scroll',
+      direction: 'rtl',
     })
   };
 };

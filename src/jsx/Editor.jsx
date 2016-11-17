@@ -19,6 +19,12 @@ import '../js/codemirror-hint-extension';
 
 const AlreadySetSymbol = Symbol('AlreadySetSymbol');
 
+export const MimeTypes = {
+  'text/javascript': '.js',
+  'text/x-markdown': '.md',
+  'application/json': '.json',
+};
+
 const getStyles = (props, context, state) => {
   const {
     options: {

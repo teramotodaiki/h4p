@@ -12,6 +12,7 @@ const getStyles = (props, context) => {
       boxSizing: 'border-box',
       width: '100%',
       fontFamily,
+      direction: 'ltr',
     },
   };
 };

@@ -31,13 +31,13 @@ const getStyles = (props, context) => {
       alignItems: 'flex-end',
       height: 32,
       paddingTop: spacing.desktopGutterMini,
+      paddingRight: spacing.desktopGutterLess,
       paddingBottom: 10,
       paddingLeft: spacing.desktopGutterLess,
       marginRight: spacing.desktopGutterMore,
       marginBottom: -10,
       marginLeft: SizerWidth,
-      overflowX: 'scroll',
-      overflowY: 'hidden',
+      overflow: 'hidden',
       zIndex: 10,
     },
     tabContentContainer: {
@@ -62,6 +62,7 @@ export default class EditorPane extends Component {
     addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
+    closeTab: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
     handleOptionChange: PropTypes.func.isRequired,
@@ -79,7 +80,7 @@ export default class EditorPane extends Component {
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(AddDialog)
-      .then(seed => makeFromType('text/javascript', seed))
+      .then(seed => makeFromType(seed.type, seed))
       .then(file => addFile(file));
   };
 
