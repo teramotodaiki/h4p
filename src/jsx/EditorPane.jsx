@@ -62,6 +62,7 @@ export default class EditorPane extends Component {
     addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
+    closeTab: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
     handleOptionChange: PropTypes.func.isRequired,
