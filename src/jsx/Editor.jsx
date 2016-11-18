@@ -100,6 +100,7 @@ export default class Editor extends Component {
     onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
     gutterMarginWidth: PropTypes.number,
+    handleRun: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -137,6 +138,7 @@ export default class Editor extends Component {
     const {
       file,
       onChange,
+      handleRun,
     } = this.props;
     const { CssScopeId } = this.state;
 
@@ -153,6 +155,10 @@ export default class Editor extends Component {
       autoCloseBrackets: true,
       keyMap: 'sublime',
       readOnly: file.options.isReadOnly,
+      extraKeys: {
+        'Ctrl-Enter': handleRun,
+        'Cmd-Enter': handleRun,
+      },
     }, this.props.options);
 
     return (

@@ -154,6 +154,7 @@ export default class EditorPane extends Component {
             getFiles={() => files}
             onChange={(text) => updateFile(file, { text })}
             gutterMarginWidth={SizerWidth}
+            handleRun={handleRun}
           />
         ) : (
           <Preview file={file} />

@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from './ReactPopout';
 import { transform } from 'babel-standalone';
+import IconButton from 'material-ui/IconButton';
+import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
 
 
 import composeEnv from '../js/composeEnv';
@@ -68,6 +70,7 @@ export default class ScreenPane extends Component {
     handlePopoutClose: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
     babelrc: PropTypes.object.isRequired,
+    handleRun: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -231,7 +234,7 @@ export default class ScreenPane extends Component {
 
   render() {
     const { width, height } = this.state;
-    const { isPopout, reboot } = this.props;
+    const { isPopout, reboot, handleRun } = this.props;
 
     const { root, container } = getStyle(this.props, this.context);
     const { prepareStyles } = this.context.muiTheme;
@@ -248,7 +251,11 @@ export default class ScreenPane extends Component {
         }}
         onClosing={this.handlePopoutClose}
       >
-        <Screen display frameRef={(ref) => ref && (this.popoutFrame = ref)} />
+        <Screen display
+          frameRef={(ref) => ref && (this.popoutFrame = ref)}
+          handleRun={handleRun}
+          reboot={reboot}
+        />
       </Popout>
     ) : null;
 
@@ -256,7 +263,12 @@ export default class ScreenPane extends Component {
       <div style={prepareStyles(root)}>
         <div style={prepareStyles(container)}>
           {popout}
-          <Screen display={!isPopout} frameRef={(ref) => ref && (this.inlineFrame = ref)} />
+          <Screen animation
+            display={!isPopout}
+            frameRef={(ref) => ref && (this.inlineFrame = ref)}
+            handleRun={handleRun}
+            reboot={reboot}
+          />
         </div>
       </div>
     );

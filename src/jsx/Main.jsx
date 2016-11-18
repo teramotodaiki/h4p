@@ -391,7 +391,6 @@ class Main extends Component {
               player={player}
               files={files}
               isPopout={isPopout}
-              handleRun={this.handleRun}
               openFileDialog={this.openFileDialog}
               handleTogglePopout={this.handleTogglePopout}
               palette={this.palette}
@@ -426,6 +425,7 @@ class Main extends Component {
             handlePopoutClose={this.handleTogglePopout}
             portRef={this.handlePort}
             babelrc={this.babelrc}
+            handleRun={this.handleRun}
           />
           <FileDialog
             ref={this.handleFileDialog}
