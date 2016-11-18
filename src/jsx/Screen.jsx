@@ -72,6 +72,8 @@ export default class Screen extends Component {
       backgroundColor: transparent,
       border: 'none',
       outline: 'none',
+      zIndex: 1,
+      cursor: 'pointer',
     };
 
     const svgStyle = {
