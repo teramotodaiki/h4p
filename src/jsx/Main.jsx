@@ -426,6 +426,7 @@ class Main extends Component {
             handlePopoutClose={this.handleTogglePopout}
             portRef={this.handlePort}
             babelrc={this.babelrc}
+            handleRun={this.handleRun}
           />
           <FileDialog
             ref={this.handleFileDialog}
