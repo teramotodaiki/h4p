@@ -155,6 +155,7 @@ export default class Readme extends Component {
             options={this.props.options}
             getFiles={() => []}
             onChange={onChange}
+            handleRun={() => this.props.onShot(text)}
           />
         </ShotFrame>
       );
