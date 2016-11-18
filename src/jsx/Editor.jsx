@@ -156,9 +156,9 @@ export default class Editor extends Component {
       keyMap: 'sublime',
       readOnly: file.options.isReadOnly,
       extraKeys: {
-  			'Ctrl-Enter': handleRun,
-  			'Cmd-Enter': handleRun,
-  		},
+        'Ctrl-Enter': handleRun,
+        'Cmd-Enter': handleRun,
+      },
     }, this.props.options);
 
     return (
