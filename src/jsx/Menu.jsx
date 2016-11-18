@@ -5,7 +5,6 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
-import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
 import ImagePalette from 'material-ui/svg-icons/image/palette';
 import ImageTune from 'material-ui/svg-icons/image/tune';
@@ -50,7 +49,6 @@ export default class Menu extends Component {
     player: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
-    handleRun: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     handleTogglePopout: PropTypes.func.isRequired,
     palette: PropTypes.object.isRequired,
@@ -101,7 +99,6 @@ export default class Menu extends Component {
   render() {
     const {
       isPopout,
-      handleRun,
       handleTogglePopout,
       options: { unlimited },
       localization: { menu },
@@ -123,16 +120,6 @@ export default class Menu extends Component {
 
     return (
       <Paper rounded={false} style={root}>
-      {unlimited ? (
-        <IconButton
-          tooltip={menu.run}
-          onTouchTap={handleRun}
-          tooltipPosition={tooltipPosition}
-          style={button}
-        >
-          <PlayCircleOutline color={alternateTextColor} />
-        </IconButton>
-      ) : null}
         {null /*
         <IconButton
           tooltip={menu.shutdown}
