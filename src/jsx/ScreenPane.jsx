@@ -11,6 +11,7 @@ import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
+import babelWorker from '../workers/babel-worker';
 
 const ConnectionTimeout = 1000;
 const popoutURL = URL.createObjectURL(
@@ -121,28 +122,22 @@ export default class ScreenPane extends Component {
   prevent = null;
   start () {
     const { portRef, babelrc } = this.props;
-    const files = this.props.files
-      .filter((file) => file.moduleName)
-      .map((file) => {
-        if (file.isText &&
-            file.type === 'text/javascript' &&
-            !file.options.noBabel)
-        {
-          const text = transform(file.text, babelrc).code;
-          return Object.assign({}, file, { text });
-        }
-        return file;
-      });
 
     const env = composeEnv(this.props.env);
 
     this.prevent =
       (this.prevent || Promise.resolve())
-      .then(() => new Promise((resolve, reject) => {
-        setTimeout(reject, ConnectionTimeout);
-        frameLoader(this.iframe, resolve);
-      }))
-      .then(frame => {
+      .then(() => Promise.all([
+        new Promise((resolve, reject) => {
+          setTimeout(reject, ConnectionTimeout);
+          frameLoader(this.iframe, resolve);
+        }),
+        ...this.props.files
+          .filter((file) => file.moduleName)
+          .filter((file) => !file.options.isTrashed)
+          .map((file) => babelWorker(file, babelrc)),
+      ]))
+      .then(([frame, ...files]) => {
         const channel = new MessageChannel();
         channel.port1.onmessage = (e) => {
           switch (e.data.query) {
