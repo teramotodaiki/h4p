@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Popout from './ReactPopout';
 import { transform } from 'babel-standalone';
 import IconButton from 'material-ui/IconButton';
+import LinearProgress from 'material-ui/LinearProgress';
 import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
 
 
@@ -11,6 +12,7 @@ import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
+import babelWorker from '../workers/babel-worker';
 
 const ConnectionTimeout = 1000;
 const popoutURL = URL.createObjectURL(
@@ -36,8 +38,9 @@ const frameLoader = (() => {
   }
 })();
 
-const getStyle = (props, context) => {
+const getStyle = (props, context, state) => {
   const { config, primaryWidth, secondaryHeight } = props;
+  const { progress } = state;
 
   return {
     root: {
@@ -53,6 +56,15 @@ const getStyle = (props, context) => {
       height: config.height,
       paddingRight: primaryWidth,
       paddingBottom: secondaryHeight,
+    },
+    linear1: {
+      marginTop: 0,
+      zIndex: 1,
+    },
+    linear2: {
+      opacity: progress < 1 ? 1 : 0,
+      marginTop: -2,
+      zIndex: 2,
     },
   };
 };
@@ -80,6 +92,7 @@ export default class ScreenPane extends Component {
   state = {
     width: 300,
     height: 150,
+    progress: 0,
   };
 
   popoutOptions = {
@@ -121,28 +134,31 @@ export default class ScreenPane extends Component {
   prevent = null;
   start () {
     const { portRef, babelrc } = this.props;
-    const files = this.props.files
-      .filter((file) => file.moduleName)
-      .map((file) => {
-        if (file.isText &&
-            file.type === 'text/javascript' &&
-            !file.options.noBabel)
-        {
-          const text = transform(file.text, babelrc).code;
-          return Object.assign({}, file, { text });
-        }
-        return file;
-      });
 
     const env = composeEnv(this.props.env);
 
+    let sent = 0;
+    const workerProcess = this.props.files
+      .filter((file) => file.moduleName)
+      .filter((file) => !file.options.isTrashed)
+      .map((file, i, send) => babelWorker(file, babelrc)
+      .then((file) => {
+        // To indicate
+        const progress = Math.min(1, ++sent / send.length);
+        this.setState({ progress });
+        return file;
+      }));
+
     this.prevent =
       (this.prevent || Promise.resolve())
-      .then(() => new Promise((resolve, reject) => {
-        setTimeout(reject, ConnectionTimeout);
-        frameLoader(this.iframe, resolve);
-      }))
-      .then(frame => {
+      .then(() => Promise.all([
+        new Promise((resolve, reject) => {
+          setTimeout(reject, ConnectionTimeout);
+          frameLoader(this.iframe, resolve);
+        }),
+        ...workerProcess,
+      ]))
+      .then(([frame, ...files]) => {
         const channel = new MessageChannel();
         channel.port1.onmessage = (e) => {
           switch (e.data.query) {
@@ -233,10 +249,15 @@ export default class ScreenPane extends Component {
   };
 
   render() {
-    const { width, height } = this.state;
+    const { width, height, progress } = this.state;
     const { isPopout, reboot, handleRun } = this.props;
 
-    const { root, container } = getStyle(this.props, this.context);
+    const {
+      root,
+      container,
+      linear1,
+      linear2
+    } = getStyle(this.props, this.context, this.state);
     const { prepareStyles } = this.context.muiTheme;
 
     const popout = isPopout && !reboot ? (
@@ -269,6 +290,13 @@ export default class ScreenPane extends Component {
             handleRun={handleRun}
             reboot={reboot}
           />
+          <LinearProgress
+            max={1}
+            value={progress}
+            mode="determinate"
+            style={linear1}
+          />
+          <LinearProgress mode="indeterminate" style={linear2} />
         </div>
       </div>
     );

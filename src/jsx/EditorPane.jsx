@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import { transform } from 'babel-standalone';
 
 
 import EditorMenu from './EditorMenu';
@@ -12,6 +11,7 @@ import { makeFromType } from '../js/files';
 import { AddDialog } from '../FileDialog/';
 import Editor from './Editor';
 import Readme from './Readme';
+import babelWorker from '../workers/babel-worker';
 
 const SizerWidth = 24;
 
@@ -88,10 +88,9 @@ export default class EditorPane extends Component {
   handleShot = (text) => {
     const { portPostMessage, babelrc } = this.props;
     if (text && portPostMessage) {
-      const value = {
-        text: transform(text, babelrc).code,
-      };
-      portPostMessage({ query: 'shot', value });
+      Promise.resolve({ text, type: 'text/javascript' })
+      .then((file) => babelWorker(file, babelrc))
+      .then((file) => portPostMessage({ query: 'shot', value: file }));
     }
   };
 
