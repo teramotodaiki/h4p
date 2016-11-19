@@ -19,7 +19,8 @@ export default function (file, babelrc) {
     if (
       file.type === 'text/javascript' &&
       file.options &&
-      file.options.noBabel === false
+      file.options.noBabel === false &&
+      file.text.length < 100000
     ) {
       const id = getUniqueId();
 
