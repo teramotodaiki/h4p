@@ -12,7 +12,6 @@ import ImagePalette from 'material-ui/svg-icons/image/palette';
 import ImageTune from 'material-ui/svg-icons/image/tune';
 import ActionLanguage from 'material-ui/svg-icons/action/language';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import 'whatwg-fetch';
 
 
 import getLocalization, { acceptedLanguages } from '../localization/';
