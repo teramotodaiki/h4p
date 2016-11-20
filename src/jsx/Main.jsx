@@ -14,12 +14,31 @@ injectTapEventPlugin();
 import getLocalization from '../localization/';
 import { makeFromFile, makeFromType } from '../js/files';
 import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
-import Dock from './Dock';
 import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
 
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
+
+
+const getStyle = (props, palette) => {
+  return {
+    root: {
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      backgroundColor: palette.backgroundColor,
+    },
+    left: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    },
+  };
+};
 
 class Main extends Component {
 
@@ -29,8 +48,10 @@ class Main extends Component {
   };
 
   state = {
-    primaryWidth: 400,
-    secondaryHeight: 400,
+    monitorSize: {
+      width: 400,
+      height: 400,
+    },
 
     files: this.props.config.files,
     isPopout: false,
@@ -220,11 +241,12 @@ class Main extends Component {
     return false;
   };
 
-  handleResize = (primaryWidth, secondaryHeight) => {
-    if (!this.options.unlimited) {
-      secondaryHeight = 40;
-    }
-    this.setState({ primaryWidth, secondaryHeight });
+  handleResize = (width, height) => {
+    // if (!this.options.unlimited) {
+    //   secondaryHeight = 40;
+    // }
+    const monitorSize = { width, height };
+    this.setState({ monitorSize });
   };
 
   handleRun = () => {
@@ -337,7 +359,7 @@ class Main extends Component {
     const {
       files, tabbedKeys, selectedKey,
       dialogContent,
-      primaryWidth, secondaryHeight,
+      monitorSize,
       isPopout,
       reboot,
       localization,
@@ -345,86 +367,69 @@ class Main extends Component {
     } = this.state;
     const { player, config } = this.props;
 
-    const primaryDockStyle = {
-      width: primaryWidth,
-      zIndex: 2,
-    }
+    const { root, left } = getStyle(this.props, this.palette);
 
-    const secondaryDockStyle = {
-      height: secondaryHeight,
-      paddingRight: primaryWidth,
-      zIndex: 1,
+    const editorPaneProps = {
+      selectedFile: this.selectedFile,
+      tabbedFiles: this.tabbedFiles,
+      files: files,
+      addFile: this.addFile,
+      updateFile: this.updateFile,
+      selectFile: this.selectFile,
+      closeTab: this.closeTab,
+      handleRun: this.handleRun,
+      options: this.options,
+      handleOptionChange: this.handleOptionChange,
+      openFileDialog: this.openFileDialog,
+      localization: localization,
+      portPostMessage: portPostMessage,
+      readme: this.readme,
+      babelrc: this.babelrc,
+      findFile: this.findFile,
     };
+
+    const monitorProps = {
+      monitorSize,
+      player: player,
+      config: config,
+      files: files,
+      isPopout: isPopout,
+      reboot: reboot,
+      env: this.env,
+      palette: this.palette,
+      portRef: this.handlePort,
+      babelrc: this.babelrc,
+      handleResize: this.handleResize,
+      openFileDialog: this.openFileDialog,
+      togglePopout: this.handleTogglePopout,
+      handleRun: this.handleRun,
+      updatePalette: this.handlePaletteChange,
+      updateEnv: this.handleEnvChange,
+      options: this.options,
+      localization: localization,
+      setLocalization: this.setLocalization,
+    };
+
+    const hierarchyProps = {
+      files: files,
+      selectedFile: this.selectedFile,
+      tabbedFiles: this.tabbedFiles,
+      addFile: this.addFile,
+      updateFile: this.updateFile,
+      selectFile: this.selectFile,
+      closeTab: this.closeTab,
+      openFileDialog: this.openFileDialog,
+    };
+    console.log();
 
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.palette })}>
-        <div style={{ backgroundColor: 'inherit' }}>
-          <Dock config={config} style={primaryDockStyle}>
-            <Sizer
-              handleResize={this.handleResize}
-              primaryWidth={primaryWidth}
-              secondaryHeight={secondaryHeight}
-            />
-            <EditorPane
-              selectedFile={this.selectedFile}
-              tabbedFiles={this.tabbedFiles}
-              files={files}
-              addFile={this.addFile}
-              updateFile={this.updateFile}
-              selectFile={this.selectFile}
-              closeTab={this.closeTab}
-              handleRun={this.handleRun}
-              options={this.options}
-              handleOptionChange={this.handleOptionChange}
-              openFileDialog={this.openFileDialog}
-              localization={localization}
-              portPostMessage={portPostMessage}
-              readme={this.readme}
-              babelrc={this.babelrc}
-              findFile={this.findFile}
-            />
-          </Dock>
-          <Dock config={config} style={secondaryDockStyle}>
-            <Menu
-              player={player}
-              files={files}
-              isPopout={isPopout}
-              openFileDialog={this.openFileDialog}
-              handleTogglePopout={this.handleTogglePopout}
-              palette={this.palette}
-              env={this.env}
-              updatePalette={this.handlePaletteChange}
-              updateEnv={this.handleEnvChange}
-              options={this.options}
-              localization={localization}
-              setLocalization={this.setLocalization}
-              availableLanguages={this.availableLanguages}
-            />
-            <Hierarchy
-              files={files}
-              selectedFile={this.selectedFile}
-              tabbedFiles={this.tabbedFiles}
-              addFile={this.addFile}
-              updateFile={this.updateFile}
-              selectFile={this.selectFile}
-              closeTab={this.closeTab}
-              openFileDialog={this.openFileDialog}
-            />
-          </Dock>
-          <Monitor
-            player={player}
-            config={config}
-            primaryWidth={primaryWidth}
-            secondaryHeight={secondaryHeight}
-            files={files}
-            isPopout={isPopout}
-            reboot={reboot}
-            env={this.env}
-            handlePopoutClose={this.handleTogglePopout}
-            portRef={this.handlePort}
-            babelrc={this.babelrc}
-            handleRun={this.handleRun}
-          />
+        <div style={root}>
+          <div style={left}>
+            <Monitor {...monitorProps} />
+            <Hierarchy {...hierarchyProps} />
+          </div>
+          <EditorPane {...editorPaneProps} />
           <FileDialog
             ref={this.handleFileDialog}
             localization={localization}

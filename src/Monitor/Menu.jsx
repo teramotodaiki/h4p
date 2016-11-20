@@ -32,7 +32,7 @@ const getStyles = (props, context) => {
       alignItems: 'center',
       height: 40,
       backgroundColor: palette.primary1Color,
-      zIndex: 1000,
+      zIndex: 100,
     },
     button: {
       marginRight: 20
@@ -46,11 +46,10 @@ const getStyles = (props, context) => {
 export default class Menu extends Component {
 
   static propTypes = {
-    player: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
     openFileDialog: PropTypes.func.isRequired,
-    handleTogglePopout: PropTypes.func.isRequired,
+    togglePopout: PropTypes.func.isRequired,
     palette: PropTypes.object.isRequired,
     env: PropTypes.object.isRequired,
     updatePalette: PropTypes.func.isRequired,
@@ -58,15 +57,18 @@ export default class Menu extends Component {
     options: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
+    hover: PropTypes.bool.isRequired,
+    onMouseEnter: PropTypes.func.isRequired,
+    onMouseLeave: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
 
-  handlePowerOff = () => {
-    this.props.player.close();
-  };
+  // handlePowerOff = () => {
+  //   this.props.player.close();
+  // };
 
   handleDownload = () => {
     const { files, env, openFileDialog } = this.props;
@@ -102,10 +104,13 @@ export default class Menu extends Component {
   render() {
     const {
       isPopout,
-      handleTogglePopout,
+      togglePopout,
       options: { unlimited },
       localization: { menu },
       setLocalization,
+      hover,
+      onMouseEnter,
+      onMouseLeave,
     } = this.props;
 
     const {
@@ -122,7 +127,13 @@ export default class Menu extends Component {
     const tooltipPosition = unlimited ? 'bottom-center' : 'top-center';
 
     return (
-      <Paper rounded={false} style={root}>
+      <Paper
+        rounded={false}
+        zDepth={hover ? 2 : 1}
+        style={root}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
         {null /*
         <IconButton
           tooltip={menu.shutdown}
@@ -136,7 +147,7 @@ export default class Menu extends Component {
       {unlimited ? (
         <IconButton
           tooltip={menu.popout}
-          onTouchTap={handleTogglePopout}
+          onTouchTap={togglePopout}
           tooltipPosition={tooltipPosition}
           style={button}
           iconStyle={popoutIcon}
