@@ -247,7 +247,6 @@ class Menu extends Component {
 
 const spec = {
   beginDrag(props) {
-    console.log('beginDrag', props);
     return {
       width: props.monitorWidth,
       height: props.monitorHeight,

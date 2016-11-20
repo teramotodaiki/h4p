@@ -43,14 +43,15 @@ class Main extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
+    rootStyle: PropTypes.object.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
   };
 
   state = {
-    monitorWidth: 400,
-    monitorHeight: 400,
+    monitorWidth: this.rootWidth / 2,
+    monitorHeight: this.rootHeight,
 
     files: this.props.files,
     isPopout: false,
@@ -64,6 +65,14 @@ class Main extends Component {
     )),
     portPostMessage: () => {},
   };
+
+  get rootWidth() {
+    return parseInt(this.props.rootStyle.width, 10);
+  }
+
+  get rootHeight() {
+    return parseInt(this.props.rootStyle.height, 10);
+  }
 
   get selectedFile() {
     const { files, selectedKey } = this.state;
@@ -241,6 +250,8 @@ class Main extends Component {
 
   resize = ((waitFlag = false) =>
   (monitorWidth, monitorHeight, forceFlag = false) => {
+    monitorWidth = Math.max(0, Math.min(this.rootWidth, monitorWidth));
+    monitorHeight = Math.max(0, Math.min(this.rootHeight, monitorHeight));
     if (
       waitFlag && !forceFlag ||
       monitorWidth === this.state.monitorWidth &&
