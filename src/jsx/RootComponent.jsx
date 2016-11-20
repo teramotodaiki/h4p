@@ -9,11 +9,17 @@ class RootComponent extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
+    rootElement: PropTypes.object.isRequired,
   };
 
   render() {
+    const {
+      rootElement,
+    } = this.props;
+
+    const rootStyle = getComputedStyle(rootElement);
     return (
-      <Main {...this.props} />
+      <Main {...this.props} rootStyle={rootStyle} />
     );
   }
 }
