@@ -4,6 +4,8 @@ import { transform } from 'babel-standalone';
 import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
+import { faintBlack } from 'material-ui/styles/colors';
+import transitions from 'material-ui/styles/transitions';
 
 
 import composeEnv from '../js/composeEnv';
@@ -12,9 +14,10 @@ import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
-import Menu from './Menu';
+import Menu, { MenuHeight } from './Menu';
 import Sizer from './Sizer';
 import babelWorker from '../workers/babel-worker';
+
 
 const ConnectionTimeout = 1000;
 const popoutURL = URL.createObjectURL(
@@ -42,24 +45,25 @@ const frameLoader = (() => {
 
 const getStyle = (props, context, state) => {
   const {
+    isResizing,
     isPopout,
-    monitorSize: { width, height },
+    monitorWidth,
+    monitorHeight,
   } = props;
   const { progress } = state;
-
-  const menuHeight = 40;
 
   return {
     root: {
       position: 'relative',
       flex: '0 0 auto',
-      width,
-      height: isPopout ? 0 : height,
+      width: monitorWidth,
+      height: isPopout ? 0 : monitorHeight,
       maxWidth: '100%',
       maxHeight: '100%',
       minWidth: 0,
-      minHeight: menuHeight,
+      minHeight: MenuHeight,
       zIndex: 300,
+      transition: transitions.easeOut(),
     },
     container: {
       position: 'relative',
@@ -72,14 +76,27 @@ const getStyle = (props, context, state) => {
     },
     linear1: {
       position: 'absolute',
-      bottom: menuHeight - 6,
+      bottom: MenuHeight - 6,
       zIndex: 201,
     },
     linear2: {
       position: 'absolute',
-      bottom: menuHeight - 4,
+      bottom: MenuHeight - 4,
       opacity: progress < 1 ? 1 : 0,
       zIndex: 202,
+    },
+    dropCover: {
+      position: 'absolute',
+      opacity: isResizing ? 1 : 0,
+      width: isResizing ? '100%' : 0,
+      height: isResizing ? '100%' : 0,
+      left: 0,
+      top: 0,
+      boxSizing: 'border-box',
+      paddingBottom: MenuHeight,
+      backgroundColor: faintBlack,
+      zIndex: 1,
+      transition: transitions.easeOut(null, 'opacity'),
     },
   };
 };
@@ -87,8 +104,9 @@ const getStyle = (props, context, state) => {
 export default class Monitor extends Component {
 
   static propTypes = {
-    monitorSize: PropTypes.object.isRequired,
-    handleResize: PropTypes.func.isRequired,
+    monitorWidth: PropTypes.number.isRequired,
+    monitorHeight: PropTypes.number.isRequired,
+    isResizing: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     options: PropTypes.object.isRequired,
     isPopout: PropTypes.bool.isRequired,
@@ -140,10 +158,7 @@ export default class Monitor extends Component {
       this.popoutClosed = true; // Use delay
     }
 
-    if (
-      this.props.monitorSize.width !== prevProps.monitorSize.width ||
-      this.props.monitorSize.height !== prevProps.monitorSize.height
-    ) {
+    if (prevProps.isResizing && !this.props.isResizing) {
       this.handleResize();
     }
   }
@@ -241,23 +256,25 @@ export default class Monitor extends Component {
     }
   };
 
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
   handleResize = () => {
     const { width, height } = this.state;
-    const { isPopout } = this.props;
-    if (!this.iframe || !this.iframe.parentNode || (isPopout && this.parent && this.parent.closed)) {
+    const {
+      isPopout,
+      isResizing,
+      monitorWidth,
+      monitorHeight,
+    } = this.props;
+
+    if (!this.iframe ||
+      !this.iframe.parentNode ||
+      (isPopout && this.parent && this.parent.closed) ||
+      isResizing
+    ) {
       return;
     }
     const screenRect = this.props.isPopout ?
       { width: this.parent.innerWidth, height: this.parent.innerHeight } :
-      this.iframe.parentNode.getBoundingClientRect();
+      { width: monitorWidth, height: monitorHeight - MenuHeight };
 
     this.iframe.width = width + 'px';
     this.iframe.height = height + 'px';
@@ -285,11 +302,12 @@ export default class Monitor extends Component {
       hover,
     } = this.state;
     const {
-      monitorSize,
       isPopout,
       reboot,
       handleRun,
       handleResize,
+      monitorWidth,
+      monitorHeight,
     } = this.props;
 
     const menuProps = {
@@ -306,6 +324,8 @@ export default class Monitor extends Component {
       availableLanguages: this.props.availableLanguages,
       isPopout,
       hover,
+      monitorWidth,
+      monitorHeight,
       onMouseEnter: this.handleMouseEnter,
       onMouseLeave: this.handleMouseLeave,
     };
@@ -314,7 +334,8 @@ export default class Monitor extends Component {
       root,
       container,
       linear1,
-      linear2
+      linear2,
+      dropCover,
     } = getStyle(this.props, this.context, this.state);
     const { prepareStyles } = this.context.muiTheme;
 
@@ -356,14 +377,14 @@ export default class Monitor extends Component {
           />
           <LinearProgress mode="indeterminate" style={linear2} />
           <Menu {...menuProps} />
+          <div style={prepareStyles(dropCover)} />
         </div>
         <Sizer
-          width={monitorSize.width}
-          height={monitorSize.height}
+          width={monitorWidth}
+          height={monitorHeight}
           hover={hover}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
-          handleResize={handleResize}
         />
       </div>
     );

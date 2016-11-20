@@ -1,8 +1,7 @@
 import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom';
 
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
+import { DropTarget } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -17,9 +16,8 @@ import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
-
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
-
+import DragTypes from '../utils/dragTypes';
 
 const getStyle = (props, palette) => {
   return {
@@ -44,17 +42,18 @@ const getStyle = (props, palette) => {
 class Main extends Component {
 
   static propTypes = {
-    player: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired
+    files: PropTypes.array.isRequired,
+    rootStyle: PropTypes.object.isRequired,
+
+    connectDropTarget: PropTypes.func.isRequired,
+    isResizing: PropTypes.bool.isRequired,
   };
 
   state = {
-    monitorSize: {
-      width: 400,
-      height: 400,
-    },
+    monitorWidth: this.rootWidth / 2,
+    monitorHeight: this.rootHeight,
 
-    files: this.props.config.files,
+    files: this.props.files,
     isPopout: false,
     reboot: false,
 
@@ -65,8 +64,15 @@ class Main extends Component {
       navigator.languages || [navigator.language]
     )),
     portPostMessage: () => {},
-
   };
+
+  get rootWidth() {
+    return parseInt(this.props.rootStyle.width, 10);
+  }
+
+  get rootHeight() {
+    return parseInt(this.props.rootStyle.height, 10);
+  }
 
   get selectedFile() {
     const { files, selectedKey } = this.state;
@@ -125,7 +131,7 @@ class Main extends Component {
   };
 
   componentDidMount() {
-    const { files } = this.props.config;
+    const { files } = this.props;
 
     if (!this.findFile('.babelrc')) {
       makeFromType('application/json', {
@@ -242,13 +248,22 @@ class Main extends Component {
     return false;
   };
 
-  handleResize = (width, height) => {
-    // if (!this.options.unlimited) {
-    //   secondaryHeight = 40;
-    // }
-    const monitorSize = { width, height };
-    this.setState({ monitorSize });
-  };
+  resize = ((waitFlag = false) =>
+  (monitorWidth, monitorHeight, forceFlag = false) => {
+    monitorWidth = Math.max(0, Math.min(this.rootWidth, monitorWidth));
+    monitorHeight = Math.max(0, Math.min(this.rootHeight, monitorHeight));
+    if (
+      waitFlag && !forceFlag ||
+      monitorWidth === this.state.monitorWidth &&
+      monitorHeight === this.state.monitorHeight
+    ) {
+      return;
+    }
+    this.setState({ monitorWidth, monitorHeight }, () => {
+      setTimeout(() => (waitFlag = false), 400);
+    });
+    waitFlag = true;
+  })();
 
   handleRun = () => {
     this.setState({ reboot: true });
@@ -358,22 +373,30 @@ class Main extends Component {
 
   render() {
     const {
+      connectDropTarget,
+      isResizing,
+    } = this.props;
+
+    const {
       files, tabbedKeys, selectedKey,
       dialogContent,
-      monitorSize,
+      monitorWidth, monitorHeight,
       isPopout,
       reboot,
       localization,
       portPostMessage,
     } = this.state;
-    const { player, config } = this.props;
 
     const { root, left } = getStyle(this.props, this.palette);
+
+    const commonProps = {
+      files,
+      isResizing,
+    };
 
     const editorPaneProps = {
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
-      files: files,
       addFile: this.addFile,
       updateFile: this.updateFile,
       selectFile: this.selectFile,
@@ -390,17 +413,14 @@ class Main extends Component {
     };
 
     const monitorProps = {
-      monitorSize,
-      player: player,
-      config: config,
-      files: files,
+      monitorWidth,
+      monitorHeight,
       isPopout: isPopout,
       reboot: reboot,
       env: this.env,
       palette: this.palette,
       portRef: this.handlePort,
       babelrc: this.babelrc,
-      handleResize: this.handleResize,
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
@@ -412,7 +432,6 @@ class Main extends Component {
     };
 
     const hierarchyProps = {
-      files: files,
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
       addFile: this.addFile,
@@ -421,24 +440,53 @@ class Main extends Component {
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
     };
-    console.log();
 
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.palette })}>
+      {connectDropTarget(
         <div style={root}>
           <div style={left}>
-            <Monitor {...monitorProps} />
-            <Hierarchy {...hierarchyProps} />
+            <Monitor {...commonProps} {...monitorProps} />
+            <Hierarchy {...commonProps} {...hierarchyProps} />
           </div>
-          <EditorPane {...editorPaneProps} />
+          <EditorPane {...commonProps} {...editorPaneProps} />
           <FileDialog
             ref={this.handleFileDialog}
             localization={localization}
           />
         </div>
+      )}
       </MuiThemeProvider>
     );
   }
 }
 
-export default DragDropContext(HTML5Backend)(Main);
+const spec = {
+  drop(props, monitor, component) {
+    const offset = monitor.getDifferenceFromInitialOffset();
+    const init = monitor.getItem();
+    component.resize(
+      init.width + offset.x,
+      init.height + offset.y,
+      true
+    );
+    return {};
+  },
+  hover(props, monitor, component) {
+    const offset = monitor.getDifferenceFromInitialOffset();
+    if (offset) {
+      const init = monitor.getItem();
+      component.resize(
+        init.width + offset.x,
+        init.height + offset.y
+      );
+    }
+  },
+};
+
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isResizing: monitor.isOver({ shallow: true }),
+});
+
+export default DropTarget(DragTypes.Sizer, spec, collect)(Main);

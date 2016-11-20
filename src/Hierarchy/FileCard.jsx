@@ -12,10 +12,8 @@ import ActionSettings from 'material-ui/svg-icons/action/settings';
 import Filename from './Filename';
 import { PreferenceDialog } from '../FileDialog/';
 import { changeName } from '../js/files';
+import DragTypes from '../utils/dragTypes';
 
-export const Types = {
-  FILE: 'FILE',
-};
 
 const getStyles = (props, context) => {
   const {
@@ -79,6 +77,7 @@ class FileCard extends Component {
     updateFile: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
+    connectDragPreview: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
   };
 
@@ -159,4 +158,4 @@ const collect = (connect, monitor) => ({
   isDragging: monitor.isDragging()
 });
 
-export default DragSource(Types.FILE, spec, collect)(FileCard)
+export default DragSource(DragTypes.File, spec, collect)(FileCard)

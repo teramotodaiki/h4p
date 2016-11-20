@@ -1,8 +1,10 @@
 import React, { PropTypes, Component } from 'react';
+import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import { transparent } from 'material-ui/styles/colors';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
@@ -10,7 +12,6 @@ import ImagePalette from 'material-ui/svg-icons/image/palette';
 import ImageTune from 'material-ui/svg-icons/image/tune';
 import ActionLanguage from 'material-ui/svg-icons/action/language';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import 'whatwg-fetch';
 
 
 import getLocalization, { acceptedLanguages } from '../localization/';
@@ -18,6 +19,9 @@ import { DownloadDialog, SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
+import DragTypes from '../utils/dragTypes';
+
+export const MenuHeight = 40;
 
 const getStyles = (props, context) => {
 
@@ -27,23 +31,34 @@ const getStyles = (props, context) => {
   return {
     root: {
       flex: '0 0 auto',
+      zIndex: 100,
+    },
+    bar: {
       display: 'flex',
       flexDirection: 'row-reverse',
       alignItems: 'center',
-      height: 40,
-      backgroundColor: palette.primary1Color,
-      zIndex: 100,
+      height: MenuHeight,
+      backgroundColor: transparent,
     },
     button: {
-      marginRight: 20
+      marginRight: 20,
+      zIndex: 2,
     },
     popoutIcon: {
       transform: isPopout ? 'rotate(180deg)' : '',
-    }
+    },
+    preview: {
+      position: 'absolute',
+      bottom: 0,
+      backgroundColor: palette.primary1Color,
+      height: MenuHeight,
+      width: '100%',
+      zIndex: 1,
+    },
   };
 };
 
-export default class Menu extends Component {
+class Menu extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
@@ -55,11 +70,15 @@ export default class Menu extends Component {
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
+    monitorWidth: PropTypes.number.isRequired,
+    monitorHeight: PropTypes.number.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
     hover: PropTypes.bool.isRequired,
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
+
+    connectDragSource: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -111,12 +130,17 @@ export default class Menu extends Component {
       hover,
       onMouseEnter,
       onMouseLeave,
+
+      connectDragSource,
+      connectDragPreview,
     } = this.props;
 
     const {
       root,
+      bar,
       button,
-      popoutIcon
+      popoutIcon,
+      preview,
     } = getStyles(this.props, this.context);
 
     const {
@@ -126,11 +150,11 @@ export default class Menu extends Component {
 
     const tooltipPosition = unlimited ? 'bottom-center' : 'top-center';
 
-    return (
+    return connectDragSource(<div style={prepareStyles(root)}>
       <Paper
         rounded={false}
         zDepth={hover ? 2 : 1}
-        style={root}
+        style={bar}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
@@ -213,6 +237,27 @@ export default class Menu extends Component {
           <ActionAssignment color={alternateTextColor} />
         </IconButton>
       </Paper>
-    );
+    {connectDragPreview(
+      <div style={prepareStyles(preview)} />
+    )}
+    </div>);
   }
 }
+
+
+const spec = {
+  beginDrag(props) {
+    return {
+      width: props.monitorWidth,
+      height: props.monitorHeight,
+    };
+  },
+};
+
+const collect = (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
+  isDragging: monitor.isDragging()
+});
+
+export default DragSource(DragTypes.Sizer, spec, collect)(Menu)

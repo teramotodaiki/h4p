@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Main from './Main';
+import RootComponent from './RootComponent';
 
-export default ({ player, config }, rootElement) =>
-  ReactDOM.render(<Main player={player} config={config} />, rootElement);
+export default ({ config }, rootElement) =>
+  ReactDOM.render(<RootComponent {...config} rootElement={rootElement} />, rootElement);

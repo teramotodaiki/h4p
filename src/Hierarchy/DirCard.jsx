@@ -5,8 +5,9 @@ import transitions from 'material-ui/styles/transitions';
 import { NativeTypes } from 'react-dnd-html5-backend';
 
 
-import FileCard, { Types } from './FileCard';
+import FileCard from './FileCard';
 import getHierarchy from './getHierarchy';
+import DragTypes from '../utils/dragTypes';
 
 const getStyles = (props, context) => {
   const {
@@ -159,7 +160,7 @@ const spec = {
     }
     const { files } = monitor.getItem();
     switch (monitor.getItemType()) {
-      case Types.FILE:
+      case DragTypes.File:
         files
           .filter(file => !props.dir.files.includes(file))
           .forEach(file => props.handleFileMove(file, props.dir));
@@ -178,7 +179,7 @@ const collect = (connect, monitor) => ({
   dragSource: monitor.getItem(),
 });
 
-const DirCard = DropTarget([Types.FILE, NativeTypes.FILE], spec, collect)(_DirCard);
+const DirCard = DropTarget([DragTypes.File, NativeTypes.FILE], spec, collect)(_DirCard);
 export default DirCard;
 
 
