@@ -6,7 +6,7 @@ import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import { transparent } from 'material-ui/styles/colors';
 
 
-import { Types } from './FileCard';
+import DragTypes from '../utils/dragTypes';
 
 const getStyles = (props, state, context) => {
   const { isOver } = props;
@@ -90,5 +90,5 @@ const collect = (connect, monitor) => ({
   isOver: monitor.isOver({ shallow: true }),
 });
 
-const TrashBox = DropTarget(Types.FILE, spec, collect)(_TrashBox);
+const TrashBox = DropTarget(DragTypes.File, spec, collect)(_TrashBox);
 export default TrashBox;

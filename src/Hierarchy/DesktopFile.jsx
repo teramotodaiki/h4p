@@ -5,8 +5,8 @@ import HardwareComputer from 'material-ui/svg-icons/hardware/computer';
 import { transparent } from 'material-ui/styles/colors';
 
 
-import { Types } from './FileCard';
 import { SaveDialog } from '../FileDialog/';
+import DragTypes from '../utils/dragTypes';
 
 const getStyles = (props, context, state) => {
   const { isOver } = props;
@@ -112,5 +112,5 @@ const collect = (connect, monitor) => ({
   isOver: monitor.isOver({ shallow: true }),
 });
 
-const DesktopFile = DropTarget(Types.FILE, spec, collect)(_DesktopFile);
+const DesktopFile = DropTarget(DragTypes.File, spec, collect)(_DesktopFile);
 export default DesktopFile;
