@@ -378,10 +378,14 @@ class Main extends Component {
 
     const { root, left } = getStyle(this.props, this.palette);
 
+    const commonProps = {
+      files,
+      isResizing,
+    };
+
     const editorPaneProps = {
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
-      files: files,
       addFile: this.addFile,
       updateFile: this.updateFile,
       selectFile: this.selectFile,
@@ -400,8 +404,6 @@ class Main extends Component {
     const monitorProps = {
       monitorWidth,
       monitorHeight,
-      isResizing,
-      files: files,
       isPopout: isPopout,
       reboot: reboot,
       env: this.env,
@@ -419,7 +421,6 @@ class Main extends Component {
     };
 
     const hierarchyProps = {
-      files: files,
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
       addFile: this.addFile,
@@ -434,10 +435,10 @@ class Main extends Component {
       {connectDropTarget(
         <div style={root}>
           <div style={left}>
-            <Monitor {...monitorProps} />
-            <Hierarchy {...hierarchyProps} />
+            <Monitor {...commonProps} {...monitorProps} />
+            <Hierarchy {...commonProps} {...hierarchyProps} />
           </div>
-          <EditorPane {...editorPaneProps} />
+          <EditorPane {...commonProps} {...editorPaneProps} />
           <FileDialog
             ref={this.handleFileDialog}
             localization={localization}

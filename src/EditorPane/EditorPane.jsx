@@ -72,11 +72,19 @@ export default class EditorPane extends Component {
     readme: PropTypes.string.isRequired,
     babelrc: PropTypes.object.isRequired,
     findFile: PropTypes.func.isRequired,
+    isResizing: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.isResizing) {
+      return false;
+    }
+    return true;
+  }
 
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;

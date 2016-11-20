@@ -42,6 +42,7 @@ export default class Hierarchy extends Component {
     selectFile: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
+    isResizing: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -52,6 +53,13 @@ export default class Hierarchy extends Component {
     openedPaths: [''],
     filter: (file) => false,
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.isResizing) {
+      return false;
+    }
+    return true;
+  }
 
   handleNativeDrop = (files, dir = null) => {
     const { addFile, selectFile, openFileDialog } = this.props;
