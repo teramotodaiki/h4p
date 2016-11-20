@@ -73,7 +73,10 @@ export default class Menu extends Component {
 
     openFileDialog(DownloadDialog, { files, env })
       .then(content => {
-        openFileDialog(SaveDialog, { content });
+        openFileDialog(SaveDialog, {
+          content,
+          defaultType: 'text/html'
+        });
       })
       .catch((err) => alert(err.message));
   };

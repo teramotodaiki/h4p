@@ -11,7 +11,8 @@ export default class SaveDialog extends Component {
 
   static propTypes = {
     onRequestClose: PropTypes.func.isRequired,
-    content: PropTypes.any
+    content: PropTypes.any,
+    defaultType: PropTypes.string,
   };
 
   state = {
@@ -51,7 +52,12 @@ export default class SaveDialog extends Component {
   };
 
   render() {
-    const { open, content, onRequestClose } = this.props;
+    const {
+      open,
+      content,
+      defaultType,
+      onRequestClose,
+    } = this.props;
     const { fallbackHref } = this.state;
 
     const actions = [
@@ -85,7 +91,7 @@ export default class SaveDialog extends Component {
         <FilenameInput
           ref={(input) => this.input = input}
           defaultName={content.name}
-          defaultType={content.type}
+          defaultType={defaultType || content.type}
           disabled={this.isFallback}
         />
       </Dialog>
