@@ -1,8 +1,6 @@
 import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom';
 
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -44,8 +42,7 @@ const getStyle = (props, palette) => {
 class Main extends Component {
 
   static propTypes = {
-    player: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired
+    files: PropTypes.array.isRequired,
   };
 
   state = {
@@ -54,7 +51,7 @@ class Main extends Component {
       height: 400,
     },
 
-    files: this.props.config.files,
+    files: this.props.files,
     isPopout: false,
     reboot: false,
 
@@ -125,7 +122,7 @@ class Main extends Component {
   };
 
   componentDidMount() {
-    const { files } = this.props.config;
+    const { files } = this.props;
 
     if (!this.findFile('.babelrc')) {
       makeFromType('application/json', {
@@ -366,7 +363,6 @@ class Main extends Component {
       localization,
       portPostMessage,
     } = this.state;
-    const { player, config } = this.props;
 
     const { root, left } = getStyle(this.props, this.palette);
 
@@ -391,8 +387,6 @@ class Main extends Component {
 
     const monitorProps = {
       monitorSize,
-      player: player,
-      config: config,
       files: files,
       isPopout: isPopout,
       reboot: reboot,
