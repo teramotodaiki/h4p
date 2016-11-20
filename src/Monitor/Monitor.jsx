@@ -12,6 +12,8 @@ import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
+import Menu from './Menu';
+import Sizer from './Sizer';
 import babelWorker from '../workers/babel-worker';
 
 const ConnectionTimeout = 1000;
@@ -39,32 +41,45 @@ const frameLoader = (() => {
 })();
 
 const getStyle = (props, context, state) => {
-  const { config, primaryWidth, secondaryHeight } = props;
+  const {
+    isPopout,
+    monitorSize: { width, height },
+  } = props;
   const { progress } = state;
+
+  const menuHeight = 40;
 
   return {
     root: {
-      position: 'absolute',
-      width: 0,
-      height: 0,
-      top: 0,
-      left: 0,
+      position: 'relative',
+      flex: '0 0 auto',
+      width,
+      height: isPopout ? 0 : height,
+      maxWidth: '100%',
+      maxHeight: '100%',
+      minWidth: 0,
+      minHeight: menuHeight,
+      zIndex: 300,
     },
     container: {
-      boxSizing: 'border-box',
-      width: config.width,
-      height: config.height,
-      paddingRight: primaryWidth,
-      paddingBottom: secondaryHeight,
-    },
-    linear1: {
-      marginTop: 0,
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch',
       zIndex: 1,
     },
+    linear1: {
+      position: 'absolute',
+      bottom: menuHeight - 6,
+      zIndex: 201,
+    },
     linear2: {
+      position: 'absolute',
+      bottom: menuHeight - 4,
       opacity: progress < 1 ? 1 : 0,
-      marginTop: -2,
-      zIndex: 2,
+      zIndex: 202,
     },
   };
 };
@@ -72,17 +87,22 @@ const getStyle = (props, context, state) => {
 export default class Monitor extends Component {
 
   static propTypes = {
-    config: PropTypes.object.isRequired,
-    primaryWidth: PropTypes.number.isRequired,
-    secondaryHeight: PropTypes.number.isRequired,
+    monitorSize: PropTypes.object.isRequired,
+    handleResize: PropTypes.func.isRequired,
     files: PropTypes.array.isRequired,
+    options: PropTypes.object.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
     env: PropTypes.object.isRequired,
-    handlePopoutClose: PropTypes.func.isRequired,
+    togglePopout: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
     babelrc: PropTypes.object.isRequired,
     handleRun: PropTypes.func.isRequired,
+    updatePalette: PropTypes.func.isRequired,
+    updateEnv: PropTypes.func.isRequired,
+    openFileDialog: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
+    setLocalization: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -93,6 +113,7 @@ export default class Monitor extends Component {
     width: 300,
     height: 150,
     progress: 0,
+    hover: false,
   };
 
   popoutOptions = {
@@ -120,8 +141,8 @@ export default class Monitor extends Component {
     }
 
     if (
-      this.props.primaryWidth !== prevProps.primaryWidth ||
-      this.props.secondaryHeight !== prevProps.secondaryHeight
+      this.props.monitorSize.width !== prevProps.monitorSize.width ||
+      this.props.monitorSize.height !== prevProps.monitorSize.height
     ) {
       this.handleResize();
     }
@@ -216,7 +237,7 @@ export default class Monitor extends Component {
       this.parent.removeEventListener('resize', this.handleResize);
     }
     if (!this.props.reboot) {
-      this.props.handlePopoutClose();
+      this.props.togglePopout();
     }
   };
 
@@ -248,9 +269,46 @@ export default class Monitor extends Component {
     this.iframe.style.transform = `scale(${scale})`;
   };
 
+  handleMouseEnter = () => {
+    this.setState({ hover: true });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({ hover: false });
+  };
+
   render() {
-    const { width, height, progress } = this.state;
-    const { isPopout, reboot, handleRun } = this.props;
+    const {
+      width,
+      height,
+      progress,
+      hover,
+    } = this.state;
+    const {
+      monitorSize,
+      isPopout,
+      reboot,
+      handleRun,
+      handleResize,
+    } = this.props;
+
+    const menuProps = {
+      files: this.props.files,
+      options: this.props.options,
+      palette: this.props.palette,
+      env: this.props.env,
+      updatePalette: this.props.updatePalette,
+      updateEnv: this.props.updateEnv,
+      openFileDialog: this.props.openFileDialog,
+      togglePopout: this.props.togglePopout,
+      localization: this.props.localization,
+      setLocalization: this.props.setLocalization,
+      availableLanguages: this.props.availableLanguages,
+      isPopout,
+      hover,
+      onMouseEnter: this.handleMouseEnter,
+      onMouseLeave: this.handleMouseLeave,
+    };
 
     const {
       root,
@@ -291,13 +349,22 @@ export default class Monitor extends Component {
             reboot={reboot}
           />
           <LinearProgress
+            mode="determinate"
             max={1}
             value={progress}
-            mode="determinate"
             style={linear1}
           />
           <LinearProgress mode="indeterminate" style={linear2} />
+          <Menu {...menuProps} />
         </div>
+        <Sizer
+          width={monitorSize.width}
+          height={monitorSize.height}
+          hover={hover}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+          handleResize={handleResize}
+        />
       </div>
     );
   }

@@ -13,24 +13,35 @@ const MenuHeight = 40;
 
 const getStyles = (props, context) => {
 
-  const { secondaryHeight } = props;
-  const { palette } = context.muiTheme;
+  const { width, height } = props;
+  const {
+    palette,
+    spacing,
+  } = context.muiTheme;
 
   const blade = SizerWidth * Math.tan(SkewY / 180 * Math.PI);
+  const margin = 8;
 
   return {
     root: {
       position: 'absolute',
-      boxSizing: 'border-box',
-      height: '100%',
+      top: 0,
+      left: width,
       width: SizerWidth,
-      bottom: secondaryHeight - MenuHeight + blade / 2,
-
+      height,
+      paddingRight: spacing.desktopGutterMini,
+      paddingBottom: spacing.desktopGutterMini,
+      overflow: 'hidden',
       cursor: 'col-resize',
-      backgroundColor: palette.primary1Color,
-      transform: `skewY(${-SkewY}deg)`,
-      zIndex: 4000,
+      zIndex: 2,
       transition: transitions.easeOut(null, 'box-shadow'),
+    },
+    color: {
+      width: '100%',
+      height: '100%',
+      marginTop: -blade / 2,
+      transform: `skewY(${-SkewY}deg)`,
+      backgroundColor: palette.primary1Color,
     },
   };
 
@@ -40,8 +51,11 @@ export default class Sizer extends Component {
 
   static propTypes = {
     handleResize: PropTypes.func.isRequired,
-    primaryWidth: PropTypes.number.isRequired,
-    secondaryHeight: PropTypes.number.isRequired
+    hover: PropTypes.bool.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    onMouseEnter: PropTypes.func.isRequired,
+    onMouseLeave: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -50,7 +64,6 @@ export default class Sizer extends Component {
 
   state = {
     isActive: false,
-    hover: false,
   };
 
   prevent = {};
@@ -71,24 +84,16 @@ export default class Sizer extends Component {
     const movementY = clientY - this.prevent.clientY;
     this.prevent = { clientX, clientY };
 
-    const primaryWidth = Math.min(window.innerWidth, Math.max(0,
-      this.props.primaryWidth - movementX
+    const width = Math.min(window.innerWidth, Math.max(0,
+      this.props.width + movementX
     ));
-    const secondaryHeight = Math.min(window.innerHeight, Math.max(0,
-      this.props.secondaryHeight - movementY
+    const height = Math.min(window.innerHeight, Math.max(MenuHeight,
+      this.props.height + movementY
     ));
 
-    this.props.handleResize(primaryWidth, secondaryHeight);
+    this.props.handleResize(width, height);
 
     getSelection().removeAllRanges();
-  };
-
-  handleMouseEnter = () => {
-    this.setState({ hover: true });
-  };
-
-  handleMouseLeave = () => {
-    this.setState({ hover: false });
   };
 
   componentDidMount() {
@@ -102,25 +107,32 @@ export default class Sizer extends Component {
   }
 
   render() {
-    const { hover } = this.state;
+    const {
+      hover,
+      onMouseEnter,
+      onMouseLeave,
+    } = this.props;
 
-    const { root } = getStyles(this.props, this.context);
+    const { root, color } = getStyles(this.props, this.context);
 
     const events = isTouchEnabled ? {
       onTouchStart: this.handleMouseDown
     } : {
       onMouseDown: this.handleMouseDown,
-      onMouseEnter: this.handleMouseEnter,
-      onMouseLeave: this.handleMouseLeave
+      onMouseEnter,
+      onMouseLeave,
     };
 
     return (
-      <Paper
-        rounded={false}
-        zDepth={hover ? 2 : 0}
-        style={root}
-        {...events}
-      />
+      <div style={root}>
+        <Paper
+          rounded={false}
+          zDepth={hover ? 2 : 1}
+          style={color}
+          {...events}
+        />
+      </div>
+
     );
   }
 }
