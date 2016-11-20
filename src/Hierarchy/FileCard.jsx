@@ -77,6 +77,7 @@ class FileCard extends Component {
     updateFile: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
+    connectDragPreview: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
   };
 
