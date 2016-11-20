@@ -19,6 +19,8 @@ import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
 
+export const MenuHeight = 40;
+
 const getStyles = (props, context) => {
 
   const { isPopout } = props;
@@ -30,7 +32,7 @@ const getStyles = (props, context) => {
       display: 'flex',
       flexDirection: 'row-reverse',
       alignItems: 'center',
-      height: 40,
+      height: MenuHeight,
       backgroundColor: palette.primary1Color,
       zIndex: 100,
     },

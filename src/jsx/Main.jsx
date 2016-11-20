@@ -1,6 +1,7 @@
 import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom';
 
+import { DropTarget } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -15,9 +16,8 @@ import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
-
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
-
+import DragTypes from '../utils/dragTypes';
 
 const getStyle = (props, palette) => {
   return {
@@ -43,13 +43,14 @@ class Main extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
+
+    connectDropTarget: PropTypes.func.isRequired,
+    isResizing: PropTypes.bool.isRequired,
   };
 
   state = {
-    monitorSize: {
-      width: 400,
-      height: 400,
-    },
+    monitorWidth: 400,
+    monitorHeight: 400,
 
     files: this.props.files,
     isPopout: false,
@@ -62,7 +63,6 @@ class Main extends Component {
       navigator.languages || [navigator.language]
     )),
     portPostMessage: () => {},
-
   };
 
   get selectedFile() {
@@ -239,13 +239,20 @@ class Main extends Component {
     return false;
   };
 
-  handleResize = (width, height) => {
-    // if (!this.options.unlimited) {
-    //   secondaryHeight = 40;
-    // }
-    const monitorSize = { width, height };
-    this.setState({ monitorSize });
-  };
+  resize = ((waitFlag = false) =>
+  (monitorWidth, monitorHeight, forceFlag = false) => {
+    if (
+      waitFlag && !forceFlag ||
+      monitorWidth === this.state.monitorWidth &&
+      monitorHeight === this.state.monitorHeight
+    ) {
+      return;
+    }
+    this.setState({ monitorWidth, monitorHeight }, () => {
+      setTimeout(() => (waitFlag = false), 400);
+    });
+    waitFlag = true;
+  })();
 
   handleRun = () => {
     this.setState({ reboot: true });
@@ -355,9 +362,14 @@ class Main extends Component {
 
   render() {
     const {
+      connectDropTarget,
+      isResizing,
+    } = this.props;
+
+    const {
       files, tabbedKeys, selectedKey,
       dialogContent,
-      monitorSize,
+      monitorWidth, monitorHeight,
       isPopout,
       reboot,
       localization,
@@ -386,7 +398,9 @@ class Main extends Component {
     };
 
     const monitorProps = {
-      monitorSize,
+      monitorWidth,
+      monitorHeight,
+      isResizing,
       files: files,
       isPopout: isPopout,
       reboot: reboot,
@@ -394,7 +408,6 @@ class Main extends Component {
       palette: this.palette,
       portRef: this.handlePort,
       babelrc: this.babelrc,
-      handleResize: this.handleResize,
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
@@ -415,10 +428,10 @@ class Main extends Component {
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
     };
-    console.log();
 
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.palette })}>
+      {connectDropTarget(
         <div style={root}>
           <div style={left}>
             <Monitor {...monitorProps} />
@@ -430,9 +443,38 @@ class Main extends Component {
             localization={localization}
           />
         </div>
+      )}
       </MuiThemeProvider>
     );
   }
 }
 
-export default DragDropContext(HTML5Backend)(Main);
+const spec = {
+  drop(props, monitor, component) {
+    const offset = monitor.getDifferenceFromInitialOffset();
+    const init = monitor.getItem();
+    component.resize(
+      init.width + offset.x,
+      init.height + offset.y,
+      true
+    );
+    return {};
+  },
+  hover(props, monitor, component) {
+    const offset = monitor.getDifferenceFromInitialOffset();
+    if (offset) {
+      const init = monitor.getItem();
+      component.resize(
+        init.width + offset.x,
+        init.height + offset.y
+      );
+    }
+  },
+};
+
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isResizing: monitor.isOver({ shallow: true }),
+});
+
+export default DropTarget(DragTypes.Sizer, spec, collect)(Main);

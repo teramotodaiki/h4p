@@ -62,7 +62,9 @@ export default class Screen extends Component {
       border: '0 none',
       flex: '0 0 auto',
       opacity: loading ? 0 : 1,
-      transition: loading ? 'none' : transitions.easeOut(),
+      transition: loading ?
+        'none' :
+        transitions.easeOut(null, 'opacity'),
     };
 
     const buttonStyle = {
