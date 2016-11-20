@@ -4,7 +4,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
 
-import { MimeTypes } from '../jsx/Editor';
+import { MimeTypes } from '../EditorPane/';
 
 const getUniqueId = (i => () => ++i)(0);
 

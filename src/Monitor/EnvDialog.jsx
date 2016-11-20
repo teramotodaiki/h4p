@@ -12,7 +12,7 @@ import ContentClear from 'material-ui/svg-icons/content/clear';
 import AvPlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 
 
-import EditableLabel from './EditableLabel';
+import EditableLabel from '../jsx/EditableLabel';
 
 export default class EnvDialog extends Component {
 

@@ -7,7 +7,7 @@ import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 
 
-import { MimeTypes } from '../jsx/Editor';
+import { MimeTypes } from '../EditorPane/';
 import { Confirm, Abort } from './Buttons';
 
 const getStyles = (props, context) => {
