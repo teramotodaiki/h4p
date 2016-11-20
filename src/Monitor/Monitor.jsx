@@ -324,6 +324,8 @@ export default class Monitor extends Component {
       availableLanguages: this.props.availableLanguages,
       isPopout,
       hover,
+      monitorWidth,
+      monitorHeight,
       onMouseEnter: this.handleMouseEnter,
       onMouseLeave: this.handleMouseLeave,
     };
