@@ -23,6 +23,7 @@ export const MimeTypes = {
   'text/javascript': '.js',
   'text/x-markdown': '.md',
   'application/json': '.json',
+  'text/html': '.html',
 };
 
 const getStyles = (props, context, state) => {
