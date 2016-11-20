@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Popout from './ReactPopout';
+import Popout from '../jsx/ReactPopout';
 import { transform } from 'babel-standalone';
 import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -69,7 +69,7 @@ const getStyle = (props, context, state) => {
   };
 };
 
-export default class ScreenPane extends Component {
+export default class Monitor extends Component {
 
   static propTypes = {
     config: PropTypes.object.isRequired,

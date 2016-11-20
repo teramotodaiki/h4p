@@ -15,7 +15,7 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
 
 
-import '../js/codemirror-hint-extension';
+import './codemirror-hint-extension';
 
 const AlreadySetSymbol = Symbol('AlreadySetSymbol');
 

@@ -15,11 +15,9 @@ import getLocalization from '../localization/';
 import { makeFromFile, makeFromType } from '../js/files';
 import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import Dock from './Dock';
-import Menu from './Menu';
-import EditorPane from './EditorPane';
+import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
-import ScreenPane from './ScreenPane';
-import Sizer from './Sizer';
+import Monitor, { Sizer, Menu } from '../Monitor/';
 
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 
@@ -413,7 +411,7 @@ class Main extends Component {
               openFileDialog={this.openFileDialog}
             />
           </Dock>
-          <ScreenPane
+          <Monitor
             player={player}
             config={config}
             primaryWidth={primaryWidth}
