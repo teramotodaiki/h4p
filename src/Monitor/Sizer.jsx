@@ -87,7 +87,7 @@ export default class Sizer extends Component {
     const width = Math.min(window.innerWidth, Math.max(0,
       this.props.width + movementX
     ));
-    const height = Math.min(window.innerHeight, Math.max(0,
+    const height = Math.min(window.innerHeight, Math.max(MenuHeight,
       this.props.height + movementY
     ));
 

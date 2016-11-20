@@ -31,6 +31,7 @@ const getStyle = (props, palette) => {
       flexDirection: 'row',
       alignItems: 'stretch',
       backgroundColor: palette.backgroundColor,
+      overflow: 'hidden',
     },
     left: {
       display: 'flex',
