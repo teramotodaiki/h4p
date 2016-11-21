@@ -6,7 +6,7 @@
     <title>{{TITLE}}</title>
     {{#useCDN}}
     <!-- h4p.js -->
-    <script src="{{CORE_CDN_URL}}" onload="h4p()"></script>
+    <script src="{{CORE_CDN_URL}}" onload="{{EXPORT_VAR_NAME}}()"></script>
     {{/useCDN}}
     <style media="screen">
     .{{CSS_PREFIX}}container {
