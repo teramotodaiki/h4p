@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
+import TouchBackend from 'react-dnd-touch-backend';
 import { DragDropContext } from 'react-dnd';
 
 
@@ -24,4 +25,6 @@ class RootComponent extends Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(RootComponent);
+
+const dndBackend = 'ontouchend' in document ? TouchBackend : HTML5Backend;
+export default DragDropContext(dndBackend)(RootComponent);

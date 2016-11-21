@@ -77,6 +77,7 @@ class Menu extends Component {
     hover: PropTypes.bool.isRequired,
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
+    tooltipPosition: PropTypes.string.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
   };
@@ -130,6 +131,7 @@ class Menu extends Component {
       hover,
       onMouseEnter,
       onMouseLeave,
+      tooltipPosition,
 
       connectDragSource,
       connectDragPreview,
@@ -148,26 +150,17 @@ class Menu extends Component {
       palette: { alternateTextColor }
     } = this.context.muiTheme;
 
-    const tooltipPosition = unlimited ? 'bottom-center' : 'top-center';
-
-    return connectDragSource(<div style={prepareStyles(root)}>
+    return connectDragSource(
+    <div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={prepareStyles(root)}
+    >
       <Paper
         rounded={false}
         zDepth={hover ? 2 : 1}
         style={bar}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
       >
-        {null /*
-        <IconButton
-          tooltip={menu.shutdown}
-          onTouchTap={this.handlePowerOff}
-          tooltipPosition={tooltipPosition}
-          style={button}
-        >
-          <PowerSettingsNew color={alternateTextColor} />
-        </IconButton>
-        */}
       {unlimited ? (
         <IconButton
           tooltip={menu.popout}
@@ -240,7 +233,7 @@ class Menu extends Component {
     {connectDragPreview(
       <div style={prepareStyles(preview)} />
     )}
-    </div>);
+  </div>);
   }
 }
 

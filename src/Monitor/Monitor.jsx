@@ -106,6 +106,7 @@ export default class Monitor extends Component {
   static propTypes = {
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
+    rootHeight: PropTypes.number.isRequired,
     isResizing: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     options: PropTypes.object.isRequired,
@@ -308,6 +309,7 @@ export default class Monitor extends Component {
       handleResize,
       monitorWidth,
       monitorHeight,
+      rootHeight,
     } = this.props;
 
     const menuProps = {
@@ -328,6 +330,8 @@ export default class Monitor extends Component {
       monitorHeight,
       onMouseEnter: this.handleMouseEnter,
       onMouseLeave: this.handleMouseLeave,
+      tooltipPosition: rootHeight - monitorHeight > 40 ?
+        'bottom-center' : 'top-center',
     };
 
     const {
