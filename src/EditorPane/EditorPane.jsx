@@ -170,6 +170,7 @@ export default class EditorPane extends Component {
             onChange={(text) => updateFile(file, { text })}
             gutterMarginWidth={SizerWidth}
             handleRun={handleRun}
+            isSelected={file === selectedFile}
           />
         ) : (
           <Preview file={file} />
@@ -183,6 +184,7 @@ export default class EditorPane extends Component {
         localization={localization}
         onTouchTap={this.handleReadmeSelect}
         onShot={this.handleShot}
+        isSelected={!tabbedFiles.length}
       />
       </div>
       {tabbedFiles.length > 0 ? (

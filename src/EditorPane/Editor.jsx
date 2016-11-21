@@ -102,6 +102,7 @@ export default class Editor extends Component {
     getFiles: PropTypes.func.isRequired,
     gutterMarginWidth: PropTypes.number,
     handleRun: PropTypes.func.isRequired,
+    isSelected: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -115,6 +116,13 @@ export default class Editor extends Component {
   state = {
     CssScopeId: ('just-a-scope-' + Math.random()).replace('.', '')
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!nextProps.isSelected) {
+      return false;
+    }
+    return true;
+  }
 
   handleCodemirror = (ref) => {
     if (!ref) return;
