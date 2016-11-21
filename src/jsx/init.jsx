@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import RootComponent from './RootComponent';
 import { makeFromElements } from '../js/files';
 
-// Initialize player from DOM
 export default () => {
 
   window.addEventListener('beforeunload', (event) => {
