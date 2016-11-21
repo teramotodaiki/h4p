@@ -9,12 +9,15 @@
     <script src="{{CORE_CDN_URL}}" onload="{{EXPORT_VAR_NAME}}()"></script>
     {{/useCDN}}
     <style media="screen">
-    .{{CSS_PREFIX}}container {
-        position: absolute;
-        padding: 0px;
-        margin: 0px;
-        left: 0px;
-        top: 0px;
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    .{{CSS_PREFIX}}app {
+        padding: 0;
+        margin: 0;
+        left: 0;
+        top: 0;
         width: 100vw;
         height: 100vh;
     }

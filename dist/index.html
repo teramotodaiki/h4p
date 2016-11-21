@@ -6,18 +6,18 @@
     <title>HackforPlay Example</title>
     <script async type="text/javascript" src="h4p.js" onload="h4p()"></script>
     <style media="screen">
-    .h4p__container {
-        display: none;
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    .h4p__app {
         position: absolute;
-        padding: 0px;
-        margin: 0px;
-        left: 0px;
-        top: 0px;
+        padding: 0;
+        margin: 0;
+        left: 0;
+        top: 0;
         width: 100vw;
         height: 100vh;
-    }
-    .h4p__container-open {
-        display: block;
     }
     </style>
   </head>
@@ -25,7 +25,7 @@
     <h1>h4p example</h1>
 
     <!-- Config of the app -->
-    <div class= "h4p__app" data-target=".example1"></div>
+    <div class="h4p__app" data-target=".example1"></div>
 
     <!-- Files as a <script> -->
     <script class="example1" name="main.js" data-type="text/javascript" is-entry-point is-opened type="hack">
