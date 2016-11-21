@@ -150,13 +150,16 @@ class Menu extends Component {
       palette: { alternateTextColor }
     } = this.context.muiTheme;
 
-    return connectDragSource(<div style={prepareStyles(root)}>
+    return connectDragSource(
+    <div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={prepareStyles(root)}
+    >
       <Paper
         rounded={false}
         zDepth={hover ? 2 : 1}
         style={bar}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
       >
         {null /*
         <IconButton
@@ -240,7 +243,7 @@ class Menu extends Component {
     {connectDragPreview(
       <div style={prepareStyles(preview)} />
     )}
-    </div>);
+  </div>);
   }
 }
 
