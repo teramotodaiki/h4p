@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-
+import 'whatwg-fetch';
 
 import Player from './js/Player';
 import init from './js/init';
