@@ -4,7 +4,6 @@ export default {
   native: 'English',
 
   menu: {
-    run: 'Run',
     shutdown: 'Shutdown',
     popout: 'Pop-out Screen',
     palette: 'Palette',
@@ -37,7 +36,6 @@ export default {
     coreVersion: 'Core Version',
   },
   editorMenu: {
-    unlimited: 'Unlimited Mode',
     lineWrapping: 'Line Wrapping',
     tabVisibility: 'Tab Visibility',
     darkness: 'Darkness',
