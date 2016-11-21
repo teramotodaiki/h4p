@@ -109,7 +109,6 @@ export default class Monitor extends Component {
     rootHeight: PropTypes.number.isRequired,
     isResizing: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
-    options: PropTypes.object.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
     env: PropTypes.object.isRequired,
@@ -314,7 +313,6 @@ export default class Monitor extends Component {
 
     const menuProps = {
       files: this.props.files,
-      options: this.props.options,
       palette: this.props.palette,
       env: this.props.env,
       updatePalette: this.props.updatePalette,

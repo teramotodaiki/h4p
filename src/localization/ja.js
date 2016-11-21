@@ -4,7 +4,6 @@ export default {
   native: '日本語',
 
   menu: {
-    run: 'スタート',
     shutdown: 'とじる',
     popout: 'ポップアウト',
     palette: 'パレット',
@@ -37,7 +36,6 @@ export default {
     coreVersion: 'Feelse のバージョン',
   },
   editorMenu: {
-    unlimited: 'すべて表示',
     lineWrapping: '行のおり返し',
     tabVisibility: 'インデントの表示',
     darkness: 'ダークネス',

@@ -69,7 +69,6 @@ class Menu extends Component {
     env: PropTypes.object.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
-    options: PropTypes.object.isRequired,
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
     localization: PropTypes.object.isRequired,
@@ -121,7 +120,6 @@ class Menu extends Component {
     const {
       isPopout,
       togglePopout,
-      options: { unlimited },
       localization: { menu },
       setLocalization,
       hover,
@@ -157,35 +155,6 @@ class Menu extends Component {
         zDepth={hover ? 2 : 1}
         style={bar}
       >
-      {unlimited ? (
-        <IconButton
-          tooltip={menu.popout}
-          onTouchTap={togglePopout}
-          tooltipPosition={tooltipPosition}
-          style={button}
-          iconStyle={popoutIcon}
-        >
-          <OpenInBrowser color={alternateTextColor} />
-        </IconButton>
-      ) : null}
-        <IconButton
-          tooltip={menu.palette}
-          onTouchTap={this.handlePalette}
-          tooltipPosition={tooltipPosition}
-          style={button}
-        >
-          <ImagePalette color={alternateTextColor} />
-        </IconButton>
-      {unlimited ? (
-        <IconButton
-          tooltip={menu.env}
-          onTouchTap={this.handleEnv}
-          tooltipPosition={tooltipPosition}
-          style={button}
-        >
-          <ImageTune color={alternateTextColor} />
-        </IconButton>
-      ) : null}
         <IconMenu
           iconButtonElement={(
             <IconButton
@@ -209,6 +178,31 @@ class Menu extends Component {
           />
         ))}
         </IconMenu>
+        <IconButton
+          tooltip={menu.palette}
+          onTouchTap={this.handlePalette}
+          tooltipPosition={tooltipPosition}
+          style={button}
+        >
+          <ImagePalette color={alternateTextColor} />
+        </IconButton>
+        <IconButton
+          tooltip={menu.env}
+          onTouchTap={this.handleEnv}
+          tooltipPosition={tooltipPosition}
+          style={button}
+        >
+          <ImageTune color={alternateTextColor} />
+        </IconButton>
+        <IconButton
+          tooltip={menu.popout}
+          onTouchTap={togglePopout}
+          tooltipPosition={tooltipPosition}
+          style={button}
+          iconStyle={popoutIcon}
+        >
+          <OpenInBrowser color={alternateTextColor} />
+        </IconButton>
         <IconButton
           tooltip={menu.download}
           onTouchTap={this.handleDownload}

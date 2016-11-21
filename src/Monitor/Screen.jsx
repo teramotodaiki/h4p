@@ -56,6 +56,7 @@ export default class Screen extends Component {
       display: display ? 'flex' : 'none',
       justifyContent: 'center',
       alignItems: 'center',
+      overflow: 'hidden',
     };
 
     const frameStyle = {

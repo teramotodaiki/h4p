@@ -86,7 +86,6 @@ class Main extends Component {
 
   get options() {
     const defaultOptions = {
-      unlimited: true,
       tabVisibility: false,
       darkness: false,
       lineWrapping: false,
@@ -147,11 +146,6 @@ class Main extends Component {
         text: this.readme,
       })
       .then((file) => this.addFile(file));
-    }
-
-    if (this.options.unlimited === false) {
-      this.setState({ reboot: true, secondaryHeight: 40 });
-      return;
     }
 
     document.title = this.env.TITLE[0];
@@ -297,13 +291,6 @@ class Main extends Component {
         return this.updateFile(optionFile, { json, text });
       })
       .then((file) => {
-
-        if ('unlimited' in change) {
-          this.setState({
-            secondaryHeight: file.json.unlimited ? 400 : 40,
-            tabbedKeys: [],
-          });
-        }
         return Promise.resolve(file.json);
       });
   };
@@ -433,7 +420,6 @@ class Main extends Component {
       handleRun: this.handleRun,
       updatePalette: this.handlePaletteChange,
       updateEnv: this.handleEnvChange,
-      options: this.options,
       localization: localization,
       setLocalization: this.setLocalization,
     };
