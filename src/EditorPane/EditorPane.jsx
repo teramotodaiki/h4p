@@ -73,6 +73,7 @@ export default class EditorPane extends Component {
     babelrc: PropTypes.object.isRequired,
     findFile: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
+    isShrinked: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -80,7 +81,10 @@ export default class EditorPane extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.isResizing) {
+    if (!this.props.isShrinked && nextProps.isShrinked) {
+      return true;
+    }
+    if (nextProps.isResizing || nextProps.isShrinked) {
       return false;
     }
     return true;
@@ -111,6 +115,10 @@ export default class EditorPane extends Component {
   };
 
   render() {
+    if (this.props.isShrinked) {
+      return null;
+    }
+
     const {
       files, selectedFile, tabbedFiles,
       updateFile, selectFile, closeTab,

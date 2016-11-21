@@ -392,9 +392,9 @@ class Main extends Component {
     const commonProps = {
       files,
       isResizing,
-      rootWidth: this.rootWidth,
-      rootHeight: this.rootHeight,
     };
+
+    const isShrinked = (width, height) => width < 100 || height < 40;
 
     const editorPaneProps = {
       selectedFile: this.selectedFile,
@@ -412,11 +412,16 @@ class Main extends Component {
       readme: this.readme,
       babelrc: this.babelrc,
       findFile: this.findFile,
+      isShrinked: isShrinked(
+        this.rootWidth - monitorWidth,
+        this.rootHeight
+      ),
     };
 
     const monitorProps = {
       monitorWidth,
       monitorHeight,
+      rootHeight: this.rootHeight,
       isPopout: isPopout,
       reboot: reboot,
       env: this.env,
@@ -441,6 +446,10 @@ class Main extends Component {
       selectFile: this.selectFile,
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
+      isShrinked: isShrinked(
+        this.rootWidth,
+        this.rootHeight - monitorHeight
+      ),
     };
 
     return (

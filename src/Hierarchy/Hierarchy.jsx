@@ -43,6 +43,7 @@ export default class Hierarchy extends Component {
     closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
+    isShrinked: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -55,7 +56,7 @@ export default class Hierarchy extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.isResizing) {
+    if (nextProps.isResizing || nextProps.isShrinked) {
       return false;
     }
     return true;
