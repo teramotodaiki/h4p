@@ -1,6 +1,9 @@
-import Player from './Player';
-import { makeFromElements } from './files';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
+
+import RootComponent from './RootComponent';
+import { makeFromElements } from '../js/files';
 
 // Initialize player from DOM
 export default () => {
@@ -14,15 +17,17 @@ export default () => {
 
   return Array.from(
     document.querySelectorAll(`.${CSS_PREFIX}app`)
-  ).map(elem => {
-    const scripts = document.querySelectorAll('script' + elem.getAttribute('data-target'));
+  ).map(appRoot => {
+    const scripts = document.querySelectorAll('script' + appRoot.getAttribute('data-target'));
 
     return makeFromElements(scripts)
       .then(files => {
-        // An instance of h4p.Player
-        const player = new Player({ files });
-        player.start();
-        return player;
+
+        return ReactDOM.render(
+          <RootComponent files={files} rootElement={appRoot} />,
+          appRoot
+        );
+
       });
   });
 }
