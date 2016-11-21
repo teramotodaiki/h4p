@@ -103,6 +103,7 @@ export default class Readme extends Component {
     localization: PropTypes.object.isRequired,
     onTouchTap: PropTypes.func.isRequired,
     onShot: PropTypes.func.isRequired,
+    isSelected: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -112,6 +113,13 @@ export default class Readme extends Component {
   state = {
     updates: {},
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!nextProps.isSelected) {
+      return false;
+    }
+    return true;
+  }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.readme !== nextProps.readme) {
@@ -150,7 +158,7 @@ export default class Readme extends Component {
           key={props.key}
           onShot={() => this.props.onShot(text)}
         >
-          <Editor
+          <Editor isSelected
             file={{ text, type: 'text/javascript', options: {} }}
             options={this.props.options}
             getFiles={() => []}

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { DropTarget } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { faintBlack } from 'material-ui/styles/colors';
+import transitions from 'material-ui/styles/transitions';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
@@ -20,6 +22,8 @@ import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialo
 import DragTypes from '../utils/dragTypes';
 
 const getStyle = (props, palette) => {
+  const { isResizing } = props;
+
   return {
     root: {
       position: 'relative',
@@ -35,6 +39,15 @@ const getStyle = (props, palette) => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
+    },
+    dropCover: {
+      position: 'absolute',
+      opacity: isResizing ? 1 : 0,
+      width: isResizing ? '100%' : 0,
+      height: isResizing ? '100%' : 0,
+      backgroundColor: faintBlack,
+      zIndex: 2000,
+      transition: transitions.easeOut(null, 'opacity'),
     },
   };
 };
@@ -374,7 +387,11 @@ class Main extends Component {
       portPostMessage,
     } = this.state;
 
-    const { root, left } = getStyle(this.props, this.palette);
+    const {
+      root,
+      left,
+      dropCover,
+    } = getStyle(this.props, this.palette);
 
     const commonProps = {
       files,
@@ -442,6 +459,7 @@ class Main extends Component {
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.palette })}>
       {connectDropTarget(
         <div style={root}>
+          <div style={dropCover}></div>
           <div style={left}>
             <Monitor {...commonProps} {...monitorProps} />
             <Hierarchy {...commonProps} {...hierarchyProps} />
