@@ -161,16 +161,6 @@ class Menu extends Component {
         zDepth={hover ? 2 : 1}
         style={bar}
       >
-        {null /*
-        <IconButton
-          tooltip={menu.shutdown}
-          onTouchTap={this.handlePowerOff}
-          tooltipPosition={tooltipPosition}
-          style={button}
-        >
-          <PowerSettingsNew color={alternateTextColor} />
-        </IconButton>
-        */}
       {unlimited ? (
         <IconButton
           tooltip={menu.popout}
