@@ -51,16 +51,16 @@ export default class DownloadDialog extends Component {
   }
 
   bundle(config) {
-    const { env } = this.props;
+    const [TITLE] = this.props.env.TITLE || [''];
 
     const props = Object.assign({}, config, {
       EXPORT_VAR_NAME,
       CSS_PREFIX,
       CORE_CDN_URL,
-      TITLE: env.TITLE ? env.TITLE[0] : '',
+      TITLE,
     });
     return {
-      name: 'download',
+      name: TITLE,
       type: 'text/html',
       isText: true,
       text: download(props)
