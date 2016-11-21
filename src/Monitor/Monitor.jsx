@@ -4,7 +4,6 @@ import { transform } from 'babel-standalone';
 import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
-import { faintBlack } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 
 
@@ -84,19 +83,6 @@ const getStyle = (props, context, state) => {
       bottom: MenuHeight - 4,
       opacity: progress < 1 ? 1 : 0,
       zIndex: 202,
-    },
-    dropCover: {
-      position: 'absolute',
-      opacity: isResizing ? 1 : 0,
-      width: isResizing ? '100%' : 0,
-      height: isResizing ? '100%' : 0,
-      left: 0,
-      top: 0,
-      boxSizing: 'border-box',
-      paddingBottom: MenuHeight,
-      backgroundColor: faintBlack,
-      zIndex: 1,
-      transition: transitions.easeOut(null, 'opacity'),
     },
   };
 };
@@ -337,7 +323,6 @@ export default class Monitor extends Component {
       container,
       linear1,
       linear2,
-      dropCover,
     } = getStyle(this.props, this.context, this.state);
     const { prepareStyles } = this.context.muiTheme;
 
@@ -379,7 +364,6 @@ export default class Monitor extends Component {
           />
           <LinearProgress mode="indeterminate" style={linear2} />
           <Menu {...menuProps} />
-          <div style={prepareStyles(dropCover)} />
         </div>
         <Sizer
           width={monitorWidth}
