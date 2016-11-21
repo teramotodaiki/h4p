@@ -6,8 +6,19 @@
     <title>{{TITLE}}</title>
     {{#useCDN}}
     <!-- h4p.js -->
-    <script src="{{CORE_CDN_URL}}" onload="{{EXPORT_VAR_NAME}}();"></script>
+    <script src="{{CORE_CDN_URL}}" onload="h4p()"></script>
     {{/useCDN}}
+    <style media="screen">
+    .{{CSS_PREFIX}}container {
+        position: absolute;
+        padding: 0px;
+        margin: 0px;
+        left: 0px;
+        top: 0px;
+        width: 100vw;
+        height: 100vh;
+    }
+    </style>
   </head>
   <body>
     <!-- Config of the app -->
