@@ -86,10 +86,6 @@ class Menu extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
-  // handlePowerOff = () => {
-  //   this.props.player.close();
-  // };
-
   handleDownload = () => {
     const { files, env, openFileDialog } = this.props;
 

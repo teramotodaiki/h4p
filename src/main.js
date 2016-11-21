@@ -1,8 +1,8 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
 
-import Player from './js/Player';
-import init from './js/init';
+import init from './jsx/init';
+import { default as Feeles } from './jsx/RootComponent';
 
 const h4p = (...args) =>
   new Promise((resolve, reject) => {
@@ -14,7 +14,7 @@ const h4p = (...args) =>
   });
 
 h4p.init = init;
-h4p.Player = Player;
+h4p.Feeles = Feeles;
 
 // export
 module.exports = h4p;
