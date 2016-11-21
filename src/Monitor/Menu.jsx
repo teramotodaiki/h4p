@@ -77,6 +77,7 @@ class Menu extends Component {
     hover: PropTypes.bool.isRequired,
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
+    tooltipPosition: PropTypes.string.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
   };
@@ -130,6 +131,7 @@ class Menu extends Component {
       hover,
       onMouseEnter,
       onMouseLeave,
+      tooltipPosition,
 
       connectDragSource,
       connectDragPreview,
@@ -147,8 +149,6 @@ class Menu extends Component {
       prepareStyles,
       palette: { alternateTextColor }
     } = this.context.muiTheme;
-
-    const tooltipPosition = unlimited ? 'bottom-center' : 'top-center';
 
     return connectDragSource(<div style={prepareStyles(root)}>
       <Paper

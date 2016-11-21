@@ -392,6 +392,8 @@ class Main extends Component {
     const commonProps = {
       files,
       isResizing,
+      rootWidth: this.rootWidth,
+      rootHeight: this.rootHeight,
     };
 
     const editorPaneProps = {
