@@ -164,6 +164,7 @@ export default class Readme extends Component {
             getFiles={() => []}
             onChange={onChange}
             handleRun={() => this.props.onShot(text)}
+            closeSelectedTab={() => {}}
           />
         </ShotFrame>
       );

@@ -170,6 +170,7 @@ export default class EditorPane extends Component {
             onChange={(text) => updateFile(file, { text })}
             gutterMarginWidth={SizerWidth}
             handleRun={handleRun}
+            closeSelectedTab={() => closeTab(selectedFile)}
             isSelected={file === selectedFile}
           />
         ) : (

@@ -104,6 +104,7 @@ export default class Editor extends Component {
     getFiles: PropTypes.func.isRequired,
     gutterMarginWidth: PropTypes.number,
     handleRun: PropTypes.func.isRequired,
+    closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
   };
 
@@ -150,6 +151,7 @@ export default class Editor extends Component {
       file,
       onChange,
       handleRun,
+      closeSelectedTab,
     } = this.props;
     const { CssScopeId } = this.state;
 
@@ -169,6 +171,8 @@ export default class Editor extends Component {
       extraKeys: {
         'Ctrl-Enter': handleRun,
         'Cmd-Enter': handleRun,
+        'Ctrl-W': closeSelectedTab,
+        'Cmd-W': closeSelectedTab,
       },
     }, this.props.options);
 
