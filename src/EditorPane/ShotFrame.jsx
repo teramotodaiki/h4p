@@ -35,7 +35,7 @@ const getStyles = (props, context, state) => {
       opacity: anim === 0 ? 1 : 0.1,
       transition: transitions.easeOut(durations[anim] + 'ms'),
     },
-    button: {
+    shoot: {
       position: 'absolute',
       bottom: 4,
       left: 2,
@@ -95,7 +95,7 @@ export default class ShotFrame extends Component {
       label,
       editor,
       buttonContainer,
-      button,
+      shoot,
     } = getStyles(this.props, this.context, this.state);
 
     return (
@@ -106,7 +106,7 @@ export default class ShotFrame extends Component {
         <FloatingActionButton secondary
           disabled={anim !== 0}
           onTouchTap={this.shoot}
-          style={button}
+          style={shoot}
         >
         {anim === 0 ? (
           <AvPlayArrow />
