@@ -1,5 +1,4 @@
 export default function excessiveCare (cm, change) {
-  console.log('care', cm, change);
 
 	if (
     change.origin === "+input" ||
