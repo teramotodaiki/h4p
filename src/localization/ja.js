@@ -65,6 +65,8 @@ alert('こんにちは！');
 `,
     gettingStarted: 'はじめに',
   },
-
+  hierarchy: {
+    emptyTrashBox: '空にする',
+  },
 
 };

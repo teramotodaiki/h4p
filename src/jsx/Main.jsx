@@ -396,6 +396,7 @@ class Main extends Component {
     const commonProps = {
       files,
       isResizing,
+      localization,
     };
 
     const isShrinked = (width, height) => width < 100 || height < 40;
@@ -446,6 +447,7 @@ class Main extends Component {
       tabbedFiles: this.tabbedFiles,
       addFile: this.addFile,
       updateFile: this.updateFile,
+      deleteFile: this.deleteFile,
       selectFile: this.selectFile,
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,

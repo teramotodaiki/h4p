@@ -34,6 +34,8 @@ export default {
   aboutDialog: {
     title: 'About Feeles',
     coreVersion: 'Core Version',
+    changeVersion: 'Change Version',
+    change: 'Change',
   },
   editorMenu: {
     lineWrapping: 'Line Wrapping',
@@ -63,6 +65,8 @@ Thanks
 `,
     gettingStarted: 'Getting Started',
   },
-
+  hierarchy: {
+    emptyTrashBox: 'Empty trash',
+  },
 
 };

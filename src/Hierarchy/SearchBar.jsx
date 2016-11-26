@@ -2,11 +2,15 @@ import React, { Component, PropTypes } from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 import ActionSearch from 'material-ui/svg-icons/action/search';
+import RaisedButton from 'material-ui/RaisedButton';
+import ActionDeleteForever from 'material-ui/svg-icons/action/delete-forever';
 
 
 import TrashBox from './TrashBox';
 import search, { getOptions } from './search';
 import DesktopFile from './DesktopFile';
+
+const SearchBarHeight = 40;
 
 const getStyles = (props, context, state) => {
   const {
@@ -23,7 +27,7 @@ const getStyles = (props, context, state) => {
       position: 'absolute',
       boxSizing: 'border-box',
       width: '100%',
-      height: 40,
+      height: SearchBarHeight,
       top: spacing.desktopGutterMini,
       paddingRight: spacing.desktopGutterMini,
       paddingLeft: spacing.desktopGutterMini,
@@ -33,7 +37,7 @@ const getStyles = (props, context, state) => {
       display: 'flex',
       alignItems: 'center',
       width: '100%',
-      height: 40,
+      height: SearchBarHeight,
       paddingRight: spacing.desktopGutterLess,
       paddingLeft: spacing.desktopGutterMini,
       backgroundColor: palette.canvasColor,
@@ -42,7 +46,12 @@ const getStyles = (props, context, state) => {
     icon: {
       marginTop: 4,
       marginRight: focus ? 8 : 0,
-    }
+    },
+    empty: {
+      flex: '1 0 auto',
+      height: SearchBarHeight,
+      marginLeft: spacing.desktopGutterMini,
+    },
   };
 };
 
@@ -52,8 +61,10 @@ export default class SearchBar extends Component {
     files: PropTypes.array.isRequired,
     filterRef: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
+    deleteAll: PropTypes.func.isRequired,
     onOpen: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -94,10 +105,16 @@ export default class SearchBar extends Component {
   };
 
   render() {
-    const { updateFile, onOpen, openFileDialog } = this.props;
+    const {
+      updateFile,
+      onOpen,
+      openFileDialog,
+      deleteAll,
+    } = this.props;
     const { showTrashes, query } = this.state;
     const {
       secondaryTextColor,
+      alternateTextColor,
     } = this.context.muiTheme.palette;
     const fileNames = this.props.files
       .map(f => f.moduleName)
@@ -107,7 +124,10 @@ export default class SearchBar extends Component {
       root,
       bar,
       icon,
+      empty,
     } = getStyles(this.props, this.context, this.state);
+
+    const { hierarchy } = this.props.localization;
 
     return (
       <div style={root}>
@@ -133,6 +153,14 @@ export default class SearchBar extends Component {
             fullWidth
           />
         </Paper>
+        {showTrashes ? (
+          <RaisedButton secondary
+            label={hierarchy.emptyTrashBox}
+            icon={<ActionDeleteForever color={alternateTextColor} />}
+            style={empty}
+            onTouchTap={deleteAll}
+          />
+        ) : null}
       </div>
     );
   }
