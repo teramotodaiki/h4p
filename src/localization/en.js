@@ -65,6 +65,8 @@ Thanks
 `,
     gettingStarted: 'Getting Started',
   },
-
+  hierarchy: {
+    emptyTrashBox: 'Empty trash',
+  },
 
 };
