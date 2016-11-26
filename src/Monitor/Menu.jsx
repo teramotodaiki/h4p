@@ -111,9 +111,11 @@ class Menu extends Component {
   };
 
   handleAbout = () => {
-    const { openFileDialog } = this.props;
+    const { openFileDialog, files, env } = this.props;
 
-    openFileDialog(AboutDialog);
+    openFileDialog(AboutDialog, {
+      files, env,
+    });
   };
 
   render() {
