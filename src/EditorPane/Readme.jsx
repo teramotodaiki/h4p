@@ -51,7 +51,7 @@ const getStyle = (props, state, context) => {
       display: 'block',
       overflow: 'scroll',
       paddingLeft: spacing.desktopGutterMini,
-      paddingRight: spacing.desktopGutterMini,
+      paddingRight: spacing.desktopGutterMore,
       paddingBottom: spacing.desktopGutterMore,
     }),
   };
@@ -164,6 +164,8 @@ export default class Readme extends Component {
             getFiles={() => []}
             onChange={onChange}
             handleRun={() => this.props.onShot(text)}
+            closeSelectedTab={() => {}}
+            isCared
           />
         </ShotFrame>
       );

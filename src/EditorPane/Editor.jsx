@@ -10,12 +10,16 @@ import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/comment/comment';
 import 'codemirror/keymap/sublime';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
 
 
 import './codemirror-hint-extension';
+import '../css/codemirror-extension.css';
+
+import excessiveCare from './excessiveCare';
 
 const AlreadySetSymbol = Symbol('AlreadySetSymbol');
 
@@ -102,11 +106,14 @@ export default class Editor extends Component {
     getFiles: PropTypes.func.isRequired,
     gutterMarginWidth: PropTypes.number,
     handleRun: PropTypes.func.isRequired,
+    closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
+    isCared: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
     gutterMarginWidth: 0,
+    isCared: false,
   };
 
   static contextTypes = {
@@ -134,13 +141,17 @@ export default class Editor extends Component {
   }
 
   showHint(cm) {
-    const { getFiles } = this.props;
+    const { getFiles, isCared } = this.props;
 
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
       cm.showHint({ completeSingle: false, files: getFiles() });
     });
+
+    if (isCared) {
+      cm.on('beforeChange', excessiveCare);
+    }
   }
 
   render() {
@@ -148,6 +159,7 @@ export default class Editor extends Component {
       file,
       onChange,
       handleRun,
+      closeSelectedTab,
     } = this.props;
     const { CssScopeId } = this.state;
 
@@ -167,6 +179,8 @@ export default class Editor extends Component {
       extraKeys: {
         'Ctrl-Enter': handleRun,
         'Cmd-Enter': handleRun,
+        'Ctrl-W': closeSelectedTab,
+        'Cmd-W': closeSelectedTab,
       },
     }, this.props.options);
 
