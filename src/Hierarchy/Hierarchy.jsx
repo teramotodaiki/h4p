@@ -38,11 +38,13 @@ export default class Hierarchy extends Component {
     tabbedFiles: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
     updateFile: PropTypes.func.isRequired,
+    deleteFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
     isShrinked: PropTypes.bool.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -108,6 +110,11 @@ export default class Hierarchy extends Component {
     return this.state.openedPaths.includes(dir.path) ? passed : failed;
   };
 
+  handleDelete = () => {
+    this.props.files.filter(this.state.filter)
+      .map((file) => this.props.deleteFile(file));
+  };
+
   render() {
     const {
       files,
@@ -116,6 +123,7 @@ export default class Hierarchy extends Component {
       tabbedFiles,
       updateFile,
       openFileDialog,
+      localization,
     } = this.props;
     const { filter } = this.state;
 
@@ -142,8 +150,10 @@ export default class Hierarchy extends Component {
           files={files}
           filterRef={(filter) => this.setState({ filter })}
           updateFile={updateFile}
+          deleteAll={this.handleDelete}
           onOpen={this.handleNativeDrop}
           openFileDialog={openFileDialog}
+          localization={localization}
         />
         <div style={scroll}>
           <Root files={files.filter(filter)} {...transfer} />
