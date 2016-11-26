@@ -51,7 +51,7 @@ const getStyle = (props, state, context) => {
       display: 'block',
       overflow: 'scroll',
       paddingLeft: spacing.desktopGutterMini,
-      paddingRight: spacing.desktopGutterMini,
+      paddingRight: spacing.desktopGutterMore,
       paddingBottom: spacing.desktopGutterMore,
     }),
   };
