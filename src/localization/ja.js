@@ -34,6 +34,8 @@ export default {
   aboutDialog: {
     title: 'この Feeles について',
     coreVersion: 'Feelse のバージョン',
+    changeVersion: 'バージョンを変更する',
+    change: '変更する',
   },
   editorMenu: {
     lineWrapping: '行のおり返し',
