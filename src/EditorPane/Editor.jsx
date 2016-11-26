@@ -19,6 +19,8 @@ import 'codemirror/addon/hint/show-hint.css';
 import './codemirror-hint-extension';
 import '../css/codemirror-extension.css';
 
+import excessiveCare from './excessiveCare';
+
 const AlreadySetSymbol = Symbol('AlreadySetSymbol');
 
 export const MimeTypes = {
@@ -106,10 +108,12 @@ export default class Editor extends Component {
     handleRun: PropTypes.func.isRequired,
     closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
+    isCared: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
     gutterMarginWidth: 0,
+    isCared: false,
   };
 
   static contextTypes = {
@@ -137,13 +141,17 @@ export default class Editor extends Component {
   }
 
   showHint(cm) {
-    const { getFiles } = this.props;
+    const { getFiles, isCared } = this.props;
 
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
       cm.showHint({ completeSingle: false, files: getFiles() });
     });
+
+    if (isCared) {
+      cm.on('beforeChange', excessiveCare);
+    }
   }
 
   render() {

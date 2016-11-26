@@ -165,6 +165,7 @@ export default class Readme extends Component {
             onChange={onChange}
             handleRun={() => this.props.onShot(text)}
             closeSelectedTab={() => {}}
+            isCared
           />
         </ShotFrame>
       );
