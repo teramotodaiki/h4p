@@ -146,17 +146,21 @@ export default class Readme extends Component {
     }
     if (tag === 'pre') {
       const { updates } = this.state;
-      const text = typeof updates[props.key] === 'string' ?
-        updates[props.key] :
-        children[0].props.children[0];
+      const hasUpdate = typeof updates[props.key] === 'string';
+      const text = hasUpdate ? updates[props.key] : children[0].props.children[0];
       const onChange = (text) => this.setState({
         updates: Object.assign({}, updates, { [props.key]: text })
+      });
+      const onRestore = () => this.setState({
+        updates: Object.assign({}, updates, { [props.key]: null }),
       });
 
       return (
         <ShotFrame
           key={props.key}
           onShot={() => this.props.onShot(text)}
+          onRestore={onRestore}
+          canRestore={hasUpdate}
         >
           <Editor isSelected
             file={{ text, type: 'text/javascript', options: {} }}

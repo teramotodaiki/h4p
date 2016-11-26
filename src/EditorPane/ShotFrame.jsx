@@ -3,6 +3,7 @@ import Paper from 'material-ui/Paper';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import AvPlayArrow from 'material-ui/svg-icons/av/play-arrow';
 import AvStop from 'material-ui/svg-icons/av/stop';
+import ActionRestore from 'material-ui/svg-icons/action/restore';
 import transitions from 'material-ui/styles/transitions';
 
 
@@ -35,12 +36,17 @@ const getStyles = (props, context, state) => {
       opacity: anim === 0 ? 1 : 0.1,
       transition: transitions.easeOut(durations[anim] + 'ms'),
     },
-    button: {
+    shoot: {
       position: 'absolute',
       bottom: 4,
       left: 2,
       transform: `
         rotateY(${anim === 0 ? 180 : 0}deg)`,
+    },
+    restore: {
+      position: 'absolute',
+      bottom: 4,
+      right: 2,
     },
   };
 };
@@ -48,7 +54,9 @@ const getStyles = (props, context, state) => {
 export default class ShotFrame extends Component {
 
   static propTypes = {
+    canRestore: PropTypes.bool.isRequired,
     onShot: PropTypes.func.isRequired,
+    onRestore: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
   };
 
@@ -85,8 +93,10 @@ export default class ShotFrame extends Component {
 
   render() {
     const {
+      canRestore,
       updateShot,
       children,
+      onRestore,
     } = this.props;
     const { anim } = this.state;
 
@@ -94,8 +104,8 @@ export default class ShotFrame extends Component {
       root,
       label,
       editor,
-      buttonContainer,
-      button,
+      shoot,
+      restore,
     } = getStyles(this.props, this.context, this.state);
 
     return (
@@ -106,13 +116,21 @@ export default class ShotFrame extends Component {
         <FloatingActionButton secondary
           disabled={anim !== 0}
           onTouchTap={this.shoot}
-          style={button}
+          style={shoot}
         >
         {anim === 0 ? (
           <AvPlayArrow />
         ) : (
           <AvStop />
         )}
+        </FloatingActionButton>
+        <FloatingActionButton mini
+          disabled={!canRestore}
+          onTouchTap={onRestore}
+          style={restore}
+          zDepth={1}
+        >
+          <ActionRestore />
         </FloatingActionButton>
       </div>
     );
