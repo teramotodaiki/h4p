@@ -8,6 +8,8 @@ import TrashBox from './TrashBox';
 import search, { getOptions } from './search';
 import DesktopFile from './DesktopFile';
 
+const SearchBarHeight = 40;
+
 const getStyles = (props, context, state) => {
   const {
     palette,
@@ -23,7 +25,7 @@ const getStyles = (props, context, state) => {
       position: 'absolute',
       boxSizing: 'border-box',
       width: '100%',
-      height: 40,
+      height: SearchBarHeight,
       top: spacing.desktopGutterMini,
       paddingRight: spacing.desktopGutterMini,
       paddingLeft: spacing.desktopGutterMini,
@@ -33,7 +35,7 @@ const getStyles = (props, context, state) => {
       display: 'flex',
       alignItems: 'center',
       width: '100%',
-      height: 40,
+      height: SearchBarHeight,
       paddingRight: spacing.desktopGutterLess,
       paddingLeft: spacing.desktopGutterMini,
       backgroundColor: palette.canvasColor,
