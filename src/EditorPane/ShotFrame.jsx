@@ -94,7 +94,6 @@ export default class ShotFrame extends Component {
       root,
       label,
       editor,
-      buttonContainer,
       shoot,
     } = getStyles(this.props, this.context, this.state);
 
