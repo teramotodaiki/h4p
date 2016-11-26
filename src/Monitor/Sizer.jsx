@@ -7,7 +7,7 @@ import transitions from 'material-ui/styles/transitions';
 import DragTypes from '../utils/dragTypes';
 
 const SkewY = 66;
-const SizerWidth = 24;
+export const SizerWidth = 24;
 
 const getStyles = (props, context) => {
 
