@@ -6,7 +6,9 @@ const exportVarName = process.env.EXPORT_VAR_NAME || "h4p";
 const cssPrefix = process.env.CSS_PREFIX || (exportVarName + "__");
 
 const CORE_VERSION = 'alpha-28';
-const CORE_NAME = 'h4p-' + CORE_VERSION;
+const corePrefix = 'h4p-';
+const CORE_NAME = corePrefix + CORE_VERSION;
+const CORE_CDN_PREFIX = 'https://embed.hackforplay.xyz/open-source/core/' + corePrefix;
 
 const config = {
   entry: {
@@ -51,7 +53,8 @@ const config = {
       CSS_PREFIX: JSON.stringify(cssPrefix),
       EXPORT_VAR_NAME: JSON.stringify(exportVarName),
       CORE_VERSION: JSON.stringify(CORE_VERSION),
-      CORE_CDN_URL: JSON.stringify(`https://embed.hackforplay.xyz/open-source/core/${CORE_NAME}.js`)
+      CORE_CDN_PREFIX: JSON.stringify(CORE_CDN_PREFIX),
+      CORE_CDN_URL: JSON.stringify(`${CORE_CDN_PREFIX}${CORE_NAME}.js`)
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
