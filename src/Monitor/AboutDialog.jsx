@@ -5,9 +5,6 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
 
-import { compose } from '../js/files';
-import download from '../html/download';
-
 const getStyles = (props, context) => {
 
   return {
@@ -20,10 +17,9 @@ const getStyles = (props, context) => {
 export default class AboutDialog extends Component {
 
   static propTypes = {
-    files: PropTypes.array.isRequired,
-    env: PropTypes.object.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
+    bundle: PropTypes.func.isRequired,
   };
 
   state = {
@@ -37,29 +33,20 @@ export default class AboutDialog extends Component {
 
   handleChangeVersion = () => {
     const { inputCoreVersion } = this.state;
-    const [TITLE] = this.props.env.TITLE || [''];
 
-    Promise.all(this.props.files.map(compose))
-    .then(files => {
-      const html = download({
-        files,
-        useCDN: true,
-        CORE_CDN_URL: `${CORE_CDN_PREFIX}${inputCoreVersion}.js`,
-        EXPORT_VAR_NAME,
-        CSS_PREFIX,
-        TITLE,
-      });
-
+    this.props.bundle({
+      CORE_CDN_URL: `${CORE_CDN_PREFIX}${inputCoreVersion}.js`,
+    })
+    .then((html) => {
       const url = URL.createObjectURL(
         new Blob([html], { type: 'text/html' })
       );
       location.assign(url);
     });
   };
-  
+
   render() {
     const {
-      updateEnv,
       onRequestClose,
       localization: { aboutDialog },
     } = this.props;

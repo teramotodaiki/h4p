@@ -18,12 +18,15 @@ export default () => {
     document.querySelectorAll(`.${CSS_PREFIX}app`)
   ).map(appRoot => {
     const scripts = document.querySelectorAll('script' + appRoot.getAttribute('data-target'));
+    const provider = ((elem) => {
+      return elem ? JSON.parse(elem.getAttribute('content')) : null;
+    })(document.querySelector('meta[name="feeles-provider"]'));
 
     return makeFromElements(scripts)
       .then(files => {
 
         return ReactDOM.render(
-          <RootComponent files={files} rootElement={appRoot} />,
+          <RootComponent files={files} provider={provider} rootElement={appRoot} />,
           appRoot
         );
 

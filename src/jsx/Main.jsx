@@ -57,6 +57,7 @@ class Main extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     rootStyle: PropTypes.object.isRequired,
+    provider: PropTypes.object,
 
     connectDropTarget: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
@@ -375,6 +376,7 @@ class Main extends Component {
     const {
       connectDropTarget,
       isResizing,
+      provider,
     } = this.props;
 
     const {
@@ -440,6 +442,8 @@ class Main extends Component {
       updateEnv: this.handleEnvChange,
       localization: localization,
       setLocalization: this.setLocalization,
+      canDeploy: !!(provider && provider.publishUrl),
+      provider,
     };
 
     const hierarchyProps = {
