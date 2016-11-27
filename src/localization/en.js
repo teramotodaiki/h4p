@@ -11,6 +11,7 @@ export default {
     language: 'Language',
     download: 'Download',
     aboutFeeles: 'About Feeles',
+    deploy: 'Deploy This App',
   },
   downloadDialog: {
     title: 'Chose download type',

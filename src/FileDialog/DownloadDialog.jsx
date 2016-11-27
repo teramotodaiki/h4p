@@ -4,17 +4,14 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
-import { compose } from '../js/files';
-import download from '../html/download';
-
 export default class DownloadDialog extends Component {
 
   static propTypes = {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    files: PropTypes.array.isRequired,
     localization: PropTypes.object.isRequired,
     env: PropTypes.object.isRequired,
+    bundle: PropTypes.func.isRequired,
   };
 
   state = {
@@ -24,14 +21,10 @@ export default class DownloadDialog extends Component {
   };
 
   componentDidMount() {
-    Promise.all(this.props.files.map(compose))
-    .then(files => {
-      const bundleWithURL = this.bundle({ files, useCDN: true });
-      this.setState({ bundleWithURL });
+    this.bundle()
+      .then((bundleWithURL) => this.setState({ bundleWithURL }));
 
-      return files;
-    })
-    .then((files) => fetch(CORE_CDN_URL, { mode: 'cors' })
+    fetch(CORE_CDN_URL, { mode: 'cors' })
       .then(response => {
         if (!response.ok) {
           throw response.error ? response.error() : new Error(response.statusText);
@@ -40,31 +33,24 @@ export default class DownloadDialog extends Component {
       })
       .then(lib => {
         const raw = encodeURIComponent(lib);
-        const bundleWithRaw = this.bundle({ files, raw });
-        this.setState({ bundleWithRaw });
+        this.bundle({ useCDN: false, raw })
+          .then((bundleWithRaw) => this.setState({ bundleWithRaw }));
       })
-    )
-    .catch(err => {
-      console.error(err);
-      this.setState({ errorInFetch: err });
-    });
+      .catch(err => {
+        console.error(err);
+        this.setState({ errorInFetch: err });
+      });
   }
 
   bundle(config) {
     const [TITLE] = this.props.env.TITLE || [''];
 
-    const props = Object.assign({}, config, {
-      EXPORT_VAR_NAME,
-      CSS_PREFIX,
-      CORE_CDN_URL,
-      TITLE,
-    });
-    return {
+    return this.props.bundle(config).then((text) => ({
       name: TITLE,
       type: 'text/html',
       isText: true,
-      text: download(props)
-    };
+      text,
+    }));
   }
 
   handleDownload = (content) => {

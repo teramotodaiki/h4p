@@ -7,6 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import { transparent } from 'material-ui/styles/colors';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
+import FileCloudUpload from 'material-ui/svg-icons/file/cloud-upload';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
 import ImagePalette from 'material-ui/svg-icons/image/palette';
 import ImageTune from 'material-ui/svg-icons/image/tune';
@@ -20,6 +21,8 @@ import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
 import DragTypes from '../utils/dragTypes';
+import { compose } from '../js/files';
+import download from '../html/download';
 
 export const MenuHeight = 40;
 
@@ -77,6 +80,8 @@ class Menu extends Component {
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
     tooltipPosition: PropTypes.string.isRequired,
+    canDeploy: PropTypes.bool.isRequired,
+    provider: PropTypes.object,
 
     connectDragSource: PropTypes.func.isRequired,
   };
@@ -86,9 +91,9 @@ class Menu extends Component {
   };
 
   handleDownload = () => {
-    const { files, env, openFileDialog } = this.props;
+    const { env, openFileDialog } = this.props;
 
-    openFileDialog(DownloadDialog, { files, env })
+    openFileDialog(DownloadDialog, { env, bundle: this.bundle })
       .then(content => {
         openFileDialog(SaveDialog, {
           content,
@@ -111,11 +116,54 @@ class Menu extends Component {
   };
 
   handleAbout = () => {
-    const { openFileDialog, files, env } = this.props;
+    const { openFileDialog } = this.props;
 
     openFileDialog(AboutDialog, {
-      files, env,
+      bundle: this.bundle,
     });
+  };
+
+  handleDeploy = () => {
+    const task = (event) => {
+      if (event.source === popout) {
+        window.removeEventListener('message', task);
+        const [port] = event.ports;
+        const provider = event.data;
+
+        this.bundle({ provider })
+          .then((html) => port.postMessage(html));
+      }
+    };
+
+    window.addEventListener('message', task);
+
+    const popout = window.open(
+      this.props.provider.publishUrl,
+      '_blank',
+      'width=400,height=400');
+
+    if (popout) {
+      window.addEventListener('unload', () => popout.close());
+    }
+  };
+
+  bundle = (config) => {
+    const { env, provider } = this.props;
+    const [TITLE] = env.TITLE || [''];
+
+    return Promise.all(
+      this.props.files.map(compose)
+    )
+    .then(([...files]) => Object.assign({
+      useCDN: true,
+      files,
+      EXPORT_VAR_NAME,
+      CSS_PREFIX,
+      CORE_CDN_URL,
+      TITLE,
+      provider: JSON.stringify(provider),
+    }, config))
+    .then(download);
   };
 
   render() {
@@ -128,6 +176,7 @@ class Menu extends Component {
       onMouseEnter,
       onMouseLeave,
       tooltipPosition,
+      canDeploy,
 
       connectDragSource,
       connectDragPreview,
@@ -221,6 +270,16 @@ class Menu extends Component {
         >
           <ActionAssignment color={alternateTextColor} />
         </IconButton>
+        {canDeploy ? (
+          <IconButton
+            tooltip={menu.deploy}
+            onTouchTap={this.handleDeploy}
+            tooltipPosition={tooltipPosition}
+            style={button}
+          >
+            <FileCloudUpload color={alternateTextColor} />
+          </IconButton>
+        ) : null}
       </Paper>
     {connectDragPreview(
       <div style={prepareStyles(preview)} />

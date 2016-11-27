@@ -11,6 +11,7 @@ export default {
     language: '言語',
     download: 'ダウンロード',
     aboutFeeles: 'この Feeles について',
+    deploy: 'この作品をデプロイ',
   },
   downloadDialog: {
     title: 'ダウンロード方法をえらぶ',
