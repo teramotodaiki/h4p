@@ -54,7 +54,7 @@ const config = {
       EXPORT_VAR_NAME: JSON.stringify(exportVarName),
       CORE_VERSION: JSON.stringify(CORE_VERSION),
       CORE_CDN_PREFIX: JSON.stringify(CORE_CDN_PREFIX),
-      CORE_CDN_URL: JSON.stringify(`${CORE_CDN_PREFIX}${CORE_NAME}.js`)
+      CORE_CDN_URL: JSON.stringify(`${CORE_CDN_PREFIX}${CORE_VERSION}.js`)
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
