@@ -317,6 +317,7 @@ export default class Monitor extends Component {
       hover,
       monitorWidth,
       monitorHeight,
+      onSizer,
       onMouseEnter: this.handleMouseEnter,
       onMouseLeave: this.handleMouseLeave,
       tooltipPosition: rootHeight - monitorHeight > 40 ?
