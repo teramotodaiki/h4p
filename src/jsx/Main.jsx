@@ -14,7 +14,7 @@ injectTapEventPlugin();
 
 import { ConfigFile } from '../File/';
 import getLocalization from '../localization/';
-import { makeFromFile, makeFromType } from '../js/files';
+import { makeFromType } from '../js/files';
 import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
