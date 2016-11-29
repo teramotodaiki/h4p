@@ -400,7 +400,7 @@ class Main extends Component {
       localization,
     };
 
-    const isShrinked = (width, height) => width < 100 || height < 40;
+    const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
       selectedFile: this.selectedFile,
@@ -456,7 +456,7 @@ class Main extends Component {
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
       isShrinked: isShrinked(
-        this.rootWidth,
+        monitorWidth,
         this.rootHeight - monitorHeight
       ),
     };
