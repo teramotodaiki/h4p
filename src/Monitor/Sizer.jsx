@@ -10,7 +10,7 @@ export const SizerWidth = 24;
 
 const getStyles = (props, context) => {
 
-  const { width, height } = props;
+  const { monitorWidth, monitorHeight } = props;
   const {
     palette,
     spacing,
@@ -22,9 +22,9 @@ const getStyles = (props, context) => {
     root: {
       position: 'absolute',
       top: 0,
-      left: width,
+      left: monitorWidth,
       width: SizerWidth,
-      height,
+      height: monitorHeight,
       maxHeight: '100%',
       paddingRight: spacing.desktopGutterMini,
       paddingBottom: spacing.desktopGutterMini,
@@ -53,8 +53,8 @@ class Sizer extends Component {
 
   static propTypes = {
     hover: PropTypes.bool.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
+    monitorWidth: PropTypes.number.isRequired,
+    monitorHeight: PropTypes.number.isRequired,
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
     onSizer: PropTypes.func.isRequired,
@@ -73,6 +73,16 @@ class Sizer extends Component {
   };
 
   prevent = {};
+
+  componentWillReceiveProps(nextProps) {
+    const { isDragging, onSizer } = this.props;
+
+    if (!isDragging && nextProps.isDragging) {
+      onSizer(true);
+    } else if (isDragging && !nextProps.isDragging) {
+      onSizer(false);
+    }
+  }
 
   render() {
     const {

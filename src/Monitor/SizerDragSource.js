@@ -5,17 +5,10 @@ import DragTypes from '../utils/dragTypes';
 
 const spec = {
   beginDrag(props) {
-    const {
-      width,
-      height,
-      onSizer,
-    } = props;
-
-    setTimeout(() => onSizer(true), 0);
-    return { width, height };
-  },
-  endDrag(props) {
-    props.onSizer(false);
+    return { 
+      width: props.monitorWidth,
+      height: props.monitorHeight,
+    };
   },
 };
 

@@ -373,8 +373,8 @@ export default class Monitor extends Component {
           <Menu {...menuProps} />
         </div>
         <Sizer
-          width={monitorWidth}
-          height={monitorHeight}
+          monitorWidth={monitorWidth}
+          monitorHeight={monitorHeight}
           hover={hover}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
