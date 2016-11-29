@@ -45,7 +45,10 @@ export default class EditorMenu extends Component {
 
   toggleOption = (propName) => {
     const current = this.props.options[propName];
-    this.props.handleOptionChange({ [propName]: !current });
+    const change = { [propName]: !current };
+
+    const options = Object.assign({}, this.props.options, change);
+    this.props.handleOptionChange(options);
   };
 
   render() {

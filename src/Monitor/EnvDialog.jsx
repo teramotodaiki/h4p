@@ -28,7 +28,9 @@ export default class EnvDialog extends Component {
   };
 
   handleUpdateEnv = (change) => {
-    this.props.updateEnv(change)
+    const env = Object.assign({}, this.state.env, change);
+    this.props.updateEnv(env)
+      .then((file) => file.json)
       .then((env) => this.setState({ env }));
   };
 

@@ -117,7 +117,12 @@ export default class CustomDialog extends Component {
 
     const { r, g, b, a } = structure.rgb;
     const color = ({ type: 'rgba', values: [r, g, b, a] });
-    updatePalette({ [key]: convertColorToString(color) })
+
+    const palette = Object.assign({}, this.state.palette, {
+      [key]: convertColorToString(color),
+    });
+    updatePalette(palette)
+      .then((file) => file.json)
       .then(palette => this.setState({ palette }));
   };
 
