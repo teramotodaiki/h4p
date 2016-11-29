@@ -63,6 +63,10 @@ export const makeFromFile = (file) => {
 };
 
 export const compose = (file) => {
+  if (typeof file.compose === 'function') {
+    return file.compose();
+  }
+
   const composer = fileLoaders.find(ft => file.type.search(ft.test) === 0).composer;
   if (composer === null) {
     Promise.reject(new Error(`Invalid file type: ${type}. See the src/js/fileLoaders.js`));
