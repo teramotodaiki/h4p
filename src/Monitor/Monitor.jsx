@@ -109,6 +109,7 @@ export default class Monitor extends Component {
     setLocalization: PropTypes.func.isRequired,
     canDeploy: PropTypes.bool.isRequired,
     provider: PropTypes.object,
+    onSizer: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -298,6 +299,7 @@ export default class Monitor extends Component {
       monitorWidth,
       monitorHeight,
       rootHeight,
+      onSizer,
     } = this.props;
 
     const menuProps = {
@@ -315,6 +317,7 @@ export default class Monitor extends Component {
       hover,
       monitorWidth,
       monitorHeight,
+      onSizer,
       onMouseEnter: this.handleMouseEnter,
       onMouseLeave: this.handleMouseLeave,
       tooltipPosition: rootHeight - monitorHeight > 40 ?
@@ -371,11 +374,12 @@ export default class Monitor extends Component {
           <Menu {...menuProps} />
         </div>
         <Sizer
-          width={monitorWidth}
-          height={monitorHeight}
+          monitorWidth={monitorWidth}
+          monitorHeight={monitorHeight}
           hover={hover}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
+          onSizer={onSizer}
         />
       </div>
     );

@@ -81,10 +81,7 @@ export default class EditorPane extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!this.props.isShrinked && nextProps.isShrinked) {
-      return true;
-    }
-    if (nextProps.isResizing || nextProps.isShrinked) {
+    if (nextProps.isResizing) {
       return false;
     }
     return true;

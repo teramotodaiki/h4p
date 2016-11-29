@@ -1,17 +1,16 @@
 import React, { Component, PropTypes } from 'react';
-import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import transitions from 'material-ui/styles/transitions';
 
 
-import DragTypes from '../utils/dragTypes';
+import SizerDragSource from './SizerDragSource';
 
 const SkewY = 66;
 export const SizerWidth = 24;
 
 const getStyles = (props, context) => {
 
-  const { width, height } = props;
+  const { monitorWidth, monitorHeight } = props;
   const {
     palette,
     spacing,
@@ -23,9 +22,9 @@ const getStyles = (props, context) => {
     root: {
       position: 'absolute',
       top: 0,
-      left: width,
+      left: monitorWidth,
       width: SizerWidth,
-      height,
+      height: monitorHeight,
       maxHeight: '100%',
       paddingRight: spacing.desktopGutterMini,
       paddingBottom: spacing.desktopGutterMini,
@@ -54,10 +53,11 @@ class Sizer extends Component {
 
   static propTypes = {
     hover: PropTypes.bool.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
+    monitorWidth: PropTypes.number.isRequired,
+    monitorHeight: PropTypes.number.isRequired,
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
+    onSizer: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -73,6 +73,16 @@ class Sizer extends Component {
   };
 
   prevent = {};
+
+  componentWillReceiveProps(nextProps) {
+    const { isDragging, onSizer } = this.props;
+
+    if (!isDragging && nextProps.isDragging) {
+      onSizer(true);
+    } else if (isDragging && !nextProps.isDragging) {
+      onSizer(false);
+    }
+  }
 
   render() {
     const {
@@ -110,17 +120,4 @@ class Sizer extends Component {
 }
 
 
-const spec = {
-  beginDrag(props) {
-    const { width, height } = props;
-    return { width, height };
-  },
-};
-
-const collect = (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  connectDragPreview: connect.dragPreview(),
-  isDragging: monitor.isDragging()
-});
-
-export default DragSource(DragTypes.Sizer, spec, collect)(Sizer)
+export default SizerDragSource(Sizer);

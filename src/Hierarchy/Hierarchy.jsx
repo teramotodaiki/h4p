@@ -57,7 +57,7 @@ export default class Hierarchy extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.isResizing || nextProps.isShrinked) {
+    if (nextProps.isResizing) {
       return false;
     }
     return true;
@@ -116,6 +116,10 @@ export default class Hierarchy extends Component {
   };
 
   render() {
+    if (this.props.isShrinked) {
+      return null;
+    }
+    
     const {
       files,
       selectFile,

@@ -1,5 +1,4 @@
 import React, { PropTypes, Component } from 'react';
-import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -20,9 +19,9 @@ import { DownloadDialog, SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
-import DragTypes from '../utils/dragTypes';
 import { compose } from '../js/files';
 import download from '../html/download';
+import SizerDragSource from './SizerDragSource';
 
 export const MenuHeight = 40;
 
@@ -82,13 +81,26 @@ class Menu extends Component {
     tooltipPosition: PropTypes.string.isRequired,
     canDeploy: PropTypes.bool.isRequired,
     provider: PropTypes.object,
+    onSizer: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
+    connectDragPreview: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { isDragging, onSizer } = this.props;
+
+    if (!isDragging && nextProps.isDragging) {
+      onSizer(true);
+    } else if (isDragging && !nextProps.isDragging) {
+      onSizer(false);
+    }
+  }
 
   handleDownload = () => {
     const { env, openFileDialog } = this.props;
@@ -289,19 +301,4 @@ class Menu extends Component {
 }
 
 
-const spec = {
-  beginDrag(props) {
-    return {
-      width: props.monitorWidth,
-      height: props.monitorHeight,
-    };
-  },
-};
-
-const collect = (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  connectDragPreview: connect.dragPreview(),
-  isDragging: monitor.isDragging()
-});
-
-export default DragSource(DragTypes.Sizer, spec, collect)(Menu)
+export default SizerDragSource(Menu);

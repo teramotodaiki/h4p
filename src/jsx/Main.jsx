@@ -21,8 +21,8 @@ import Monitor, { Sizer, Menu } from '../Monitor/';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 
-const getStyle = (props, palette) => {
-  const { isResizing } = props;
+const getStyle = (props, state, palette) => {
+  const { isResizing } = state;
 
   return {
     root: {
@@ -60,12 +60,12 @@ class Main extends Component {
     provider: PropTypes.object,
 
     connectDropTarget: PropTypes.func.isRequired,
-    isResizing: PropTypes.bool.isRequired,
   };
 
   state = {
     monitorWidth: this.rootWidth / 2,
     monitorHeight: this.rootHeight,
+    isResizing: false,
 
     files: this.props.files,
     isPopout: false,
@@ -375,14 +375,13 @@ class Main extends Component {
   render() {
     const {
       connectDropTarget,
-      isResizing,
       provider,
     } = this.props;
 
     const {
       files, tabbedKeys, selectedKey,
       dialogContent,
-      monitorWidth, monitorHeight,
+      monitorWidth, monitorHeight, isResizing,
       isPopout,
       reboot,
       localization,
@@ -393,7 +392,7 @@ class Main extends Component {
       root,
       left,
       dropCover,
-    } = getStyle(this.props, this.palette);
+    } = getStyle(this.props, this.state, this.palette);
 
     const commonProps = {
       files,
@@ -401,7 +400,7 @@ class Main extends Component {
       localization,
     };
 
-    const isShrinked = (width, height) => width < 100 || height < 40;
+    const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
       selectedFile: this.selectedFile,
@@ -444,6 +443,7 @@ class Main extends Component {
       setLocalization: this.setLocalization,
       canDeploy: !!(provider && provider.publishUrl),
       provider,
+      onSizer: (isResizing) => this.setState({ isResizing }),
     };
 
     const hierarchyProps = {
@@ -456,7 +456,7 @@ class Main extends Component {
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
       isShrinked: isShrinked(
-        this.rootWidth,
+        monitorWidth,
         this.rootHeight - monitorHeight
       ),
     };
@@ -507,7 +507,6 @@ const spec = {
 
 const collect = (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
-  isResizing: monitor.isOver({ shallow: true }),
 });
 
 export default DropTarget(DragTypes.Sizer, spec, collect)(Main);
