@@ -193,16 +193,6 @@ class Main extends Component {
     this.setState({ files }, () => resolve(nextFile));
   });
 
-  updateFile = (file, updated) => new Promise((resolve, reject) => {
-    const nextFile = Object.assign({}, file, updated);
-    if (this.inspection(nextFile)) {
-      resolve(file);
-      return;
-    }
-    const files = this.state.files.map((item) => item === file ? nextFile : item);
-    this.setState({ files }, () => resolve(nextFile));
-  });
-
   deleteFile = (file) => new Promise((resolve, reject) => {
     const files = this.state.files.filter((item) => item.key !== file.key);
     this.setState({ files }, () => resolve());
@@ -352,7 +342,7 @@ class Main extends Component {
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
       addFile: this.addFile,
-      updateFile: this.updateFile,
+      putFile: this.putFile,
       selectFile: this.selectFile,
       closeTab: this.closeTab,
       handleRun: this.handleRun,
@@ -396,7 +386,7 @@ class Main extends Component {
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
       addFile: this.addFile,
-      updateFile: this.updateFile,
+      putFile: this.putFile,
       deleteFile: this.deleteFile,
       selectFile: this.selectFile,
       closeTab: this.closeTab,

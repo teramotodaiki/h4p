@@ -60,7 +60,7 @@ export default class EditorPane extends Component {
     files: PropTypes.array.isRequired,
     tabbedFiles: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
-    updateFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
@@ -118,7 +118,7 @@ export default class EditorPane extends Component {
 
     const {
       files, selectedFile, tabbedFiles,
-      updateFile, selectFile, closeTab,
+      putFile, selectFile, closeTab,
       handleRun,
       options,
       handleOptionChange,
@@ -164,7 +164,7 @@ export default class EditorPane extends Component {
             file={file}
             options={options}
             getFiles={() => files}
-            onChange={(text) => updateFile(file, { text })}
+            onChange={(text) => putFile(file, Object.assign({}, file, { text }))}
             gutterMarginWidth={SizerWidth}
             handleRun={handleRun}
             closeSelectedTab={() => closeTab(selectedFile)}

@@ -85,7 +85,6 @@ class _DesktopFile extends Component {
 
 const spec = {
   drop(props, monitor, component) {
-    // const { updateFile } = props;
     const { files } = monitor.getItem();
     files.forEach((file) => {
       const a = document.createElement('a');

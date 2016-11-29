@@ -37,7 +37,7 @@ export default class Hierarchy extends Component {
     selectedFile: PropTypes.object,
     tabbedFiles: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
-    updateFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
     deleteFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
@@ -91,9 +91,9 @@ export default class Hierarchy extends Component {
   };
 
   handleFileMove = (file, dir) => {
-    const { updateFile } = this.props;
+    const { putFile } = this.props;
 
-    return updateFile(file, changeDir(file, dir.path));
+    return putFile(file, changeDir(file, dir.path));
   };
 
   handleFileSelect = (file) => {
@@ -119,13 +119,13 @@ export default class Hierarchy extends Component {
     if (this.props.isShrinked) {
       return null;
     }
-    
+
     const {
       files,
       selectFile,
       selectedFile,
       tabbedFiles,
-      updateFile,
+      putFile,
       openFileDialog,
       localization,
     } = this.props;
@@ -135,7 +135,7 @@ export default class Hierarchy extends Component {
       selectedFile,
       tabbedFiles,
       openFileDialog,
-      updateFile,
+      putFile,
       isDirOpened: this.isDirOpened,
       handleFileSelect: this.handleFileSelect,
       handleDirToggle: this.handleDirToggle,
@@ -153,7 +153,7 @@ export default class Hierarchy extends Component {
         <SearchBar
           files={files}
           filterRef={(filter) => this.setState({ filter })}
-          updateFile={updateFile}
+          putFile={putFile}
           deleteAll={this.handleDelete}
           onOpen={this.handleNativeDrop}
           openFileDialog={openFileDialog}

@@ -60,7 +60,7 @@ export default class SearchBar extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     filterRef: PropTypes.func.isRequired,
-    updateFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
     deleteAll: PropTypes.func.isRequired,
     onOpen: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
@@ -106,7 +106,7 @@ export default class SearchBar extends Component {
 
   render() {
     const {
-      updateFile,
+      putFile,
       onOpen,
       openFileDialog,
       deleteAll,
@@ -133,7 +133,7 @@ export default class SearchBar extends Component {
       <div style={root}>
         <TrashBox
           showTrashes={showTrashes}
-          updateFile={updateFile}
+          putFile={putFile}
           onTouchTap={this.handleTrashBoxTap}
         />
         <DesktopFile

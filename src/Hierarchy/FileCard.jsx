@@ -74,7 +74,7 @@ class FileCard extends Component {
     tabbedFiles: PropTypes.array.isRequired,
     handleFileSelect: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
-    updateFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -86,19 +86,19 @@ class FileCard extends Component {
   };
 
   handleConfirmSettings = (event) => {
-    const { file, openFileDialog, updateFile } = this.props;
+    const { file, openFileDialog, putFile } = this.props;
 
     event.stopPropagation();
     openFileDialog(PreferenceDialog, {
       content: file,
     })
-    .then((change) => updateFile(file, change));
+    .then((change) => putFile(file, Object.assign({}, file, change)));
   };
 
   handleNameChange = (event, name) => {
-    const { file, updateFile } = this.props;
+    const { file, putFile } = this.props;
 
-    return updateFile(file, changeName(file, name));
+    return putFile(file, changeName(file, name));
   };
 
   render() {
