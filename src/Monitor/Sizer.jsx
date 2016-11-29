@@ -58,6 +58,7 @@ class Sizer extends Component {
     height: PropTypes.number.isRequired,
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
+    onSizer: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -112,8 +113,17 @@ class Sizer extends Component {
 
 const spec = {
   beginDrag(props) {
-    const { width, height } = props;
+    const {
+      width,
+      height,
+      onSizer,
+    } = props;
+
+    setTimeout(() => onSizer(true), 0);
     return { width, height };
+  },
+  endDrag(props) {
+    props.onSizer(false);
   },
 };
 
