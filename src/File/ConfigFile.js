@@ -55,4 +55,24 @@ export default class ConfigFile extends _File {
     return Promise.resolve(serialized);
   }
 
+  /**
+   * @param file File|Blob
+   * @return Promise gives ConfigFile
+   */
+  static load(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        resolve(
+          new ConfigFile({
+            type: file.type,
+            name: file.name,
+            text: e.data.result,
+          })
+        );
+      };
+      reader.readAsText(file);
+    });
+  }
+
 }

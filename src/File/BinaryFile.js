@@ -71,4 +71,18 @@ export default class BinaryFile extends _File {
     });
   }
 
+  /**
+   * @param file File|Blob
+   * @return Promise gives BinaryFile
+   */
+  static load(file) {
+    return Promise.resolve(
+      new BinaryFile({
+        type: file.type,
+        name: file.name,
+        blob: file,
+      })
+    );
+  }
+
 }
