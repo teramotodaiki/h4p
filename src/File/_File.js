@@ -1,4 +1,4 @@
-import { separate } from '../js/files';
+import { separate, validateType } from './';
 
 
 export default class _File {
@@ -39,13 +39,42 @@ export default class _File {
     return this._separate.moduleName;
   }
 
+  get path() {
+    return this._separate.path;
+  }
+
+  get plane() {
+    return this._separate.plane;
+  }
+
+  get ext() {
+    return this._separate.ext;
+  }
+
   get type() {
     return this.props.type;
   }
 
   is(name) {
-    const detector = fileTypeDetector[name];
-    return detector && detector.test(this.type);
+    return validateType(name, this.type);
+  }
+
+  rename(newName) {
+    const { path, ext } = this;
+    const name = path + newName + ext;
+
+    return this.set({ name });
+  }
+
+  move(newPath) {
+    if (newPath.lastIndexOf('/') !== newPath.length - 1) {
+      newPath += '/';
+    }
+
+    const { plane, ext } = this;
+    const name = newPath + plane + ext;
+
+    return this.set({ name });
   }
 
   serialize() {
@@ -59,7 +88,3 @@ export default class _File {
 }
 
 const getUniqueId = (i => () => '_File__' + ++i)(0);
-
-const fileTypeDetector = {
-  javascript: /^(text|application)\/javascript$/,
-};
