@@ -175,13 +175,12 @@ export default class Monitor extends Component {
         }
       })
       .filter((file) => file.isRunnable)
-      .map((file) => file.serialize())
       .map((file, i, send) => babelWorker(file, babelrc)
       .then((file) => {
         // To indicate
         const progress = Math.min(1, ++sent / send.length);
         this.setState({ progress });
-        return file;
+        return file.serialize();
       }));
 
     this.prevent =

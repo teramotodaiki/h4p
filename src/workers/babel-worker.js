@@ -17,8 +17,7 @@ export default function (file, babelrc) {
 
   return new Promise((resolve, reject) => {
     if (
-      file.type === 'text/javascript' &&
-      file.options &&
+      file.is('javascript') &&
       file.options.noBabel === false &&
       file.text.length < 100000
     ) {
@@ -27,11 +26,8 @@ export default function (file, babelrc) {
       worker.addEventListener('message', function task(event) {
         if (id === event.data.id) {
           worker.removeEventListener('message', task);
-
-          file = Object.assign({}, file, {
-            text: event.data.code,
-          });
-          resolve(file);
+          const text = event.data.code;
+          resolve(file.set({ text }));
         }
       });
 

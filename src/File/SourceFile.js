@@ -73,4 +73,8 @@ export default class SourceFile extends _File {
     });
   }
 
+  static shot(text) {
+    return new SourceFile({ type: 'text/javascript', name: '', text });
+  }
+
 }

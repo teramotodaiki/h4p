@@ -4,10 +4,10 @@ import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
+import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import Preview from './Preview';
-import { makeFromType } from '../js/files';
 import { AddDialog } from '../FileDialog/';
 import Editor from './Editor';
 import Readme from './Readme';
@@ -90,16 +90,16 @@ export default class EditorPane extends Component {
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(AddDialog)
-      .then(seed => makeFromType(seed.type, seed))
+      .then(seed => new SourceFile(seed))
       .then(file => addFile(file));
   };
 
   handleShot = (text) => {
     const { portPostMessage, babelrc } = this.props;
     if (text && portPostMessage) {
-      Promise.resolve({ text, type: 'text/javascript' })
+      Promise.resolve(SourceFile.shot(text))
       .then((file) => babelWorker(file, babelrc))
-      .then((file) => portPostMessage({ query: 'shot', value: file }));
+      .then((file) => portPostMessage({ query: 'shot', value: file.serialize() }));
     }
   };
 
