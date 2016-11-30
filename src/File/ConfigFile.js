@@ -11,7 +11,7 @@ export default class ConfigFile extends _File {
 
   static defaultOptions = {
     isEntryPoint: false,
-    isReadOnly: true,
+    isReadOnly: false,
     isTrashed: false,
     noBabel: false,
   }
@@ -20,6 +20,10 @@ export default class ConfigFile extends _File {
     name: '',
     url: '',
   };
+
+  static serialize = _File.serialize.concat(
+    'text'
+  );
 
   get text() {
     return this.props.text;
@@ -30,14 +34,16 @@ export default class ConfigFile extends _File {
     return this._json;
   }
 
+  isRunnable() {
+    return false;
+  }
+
   isText() {
     return true;
   }
 
   set(change) {
-    const seed = Object.assign(this.serialize(), {
-      text: this.text,
-    }, change);
+    const seed = Object.assign(this.serialize(), change);
 
     return new ConfigFile(seed);
   }

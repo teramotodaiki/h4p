@@ -7,6 +7,23 @@ export default class BinaryFile extends _File {
     blob: null,
   };
 
+  static defaultOptions = {
+    isEntryPoint: false,
+    isReadOnly: true,
+    isTrashed: false,
+    noBabel: false,
+  }
+
+  static defaultAuthor = {
+    name: '',
+    url: '',
+  };
+
+  static serialize = _File.serialize.concat(
+    'blob',
+    'blobURL'
+  );
+
   constructor(props) {
     if (props.blob && !props.blobURL) {
       const blobURL = URL.createObjectURL(props.blob);
@@ -14,10 +31,6 @@ export default class BinaryFile extends _File {
     }
 
     super(props);
-  }
-
-  isText() {
-    return false;
   }
 
   get blob() {
@@ -28,14 +41,19 @@ export default class BinaryFile extends _File {
     return this.props.blobURL;
   }
 
+  isRunnable() {
+    return !this.options.isTrashed;
+  }
+
+  isText() {
+    return false;
+  }
+
   set(change) {
     if (change.blob && this.blobURL) {
       URL.revokeObjectURL(this.blobURL);
     }
-    const seed = Object.assign({}, {
-      blob: this.blob,
-      blobURL: this.blobURL,
-    }, change);
+    const seed = Object.assign(this.serialize(), change);
 
     return new BinaryFile(seed);
   }

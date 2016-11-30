@@ -9,6 +9,15 @@ export default class _File {
 
   static defaultAuthor = {};
 
+  static serialize = [
+    'key',
+    'name',
+    'moduleName',
+    'type',
+    'options',
+    'author'
+  ];
+
   constructor(props) {
     this.key = getUniqueId();
 
@@ -40,13 +49,11 @@ export default class _File {
   }
 
   serialize() {
-    return {
-      key: this.key,
-      name: this.name,
-      type: this.type,
-      options: this.options,
-      author: this.author,
-    };
+    const obj = Object.create(null);
+    this.constructor.serialize.forEach((key) => {
+      obj[key] = this[key];
+    });
+    return obj;
   }
 
 }

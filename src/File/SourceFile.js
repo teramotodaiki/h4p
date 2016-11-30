@@ -7,8 +7,33 @@ export default class SourceFile extends _File {
     text: '',
   };
 
+  static defaultOptions = {
+    isEntryPoint: false,
+    isReadOnly: false,
+    isTrashed: false,
+    noBabel: false,
+  }
+
+  static defaultAuthor = {
+    name: '',
+    url: '',
+  };
+
+  static serialize = _File.serialize.concat(
+    'text',
+    'isScript'
+  );
+
   get text() {
     return this.props.text;
+  }
+
+  get isScript() {
+    return this.is('javascript');
+  }
+
+  isRunnable() {
+    return !this.options.isTrashed;
   }
 
   isText() {
