@@ -22,6 +22,7 @@ export default class ConfigFile extends _File {
   };
 
   static serialize = _File.serialize.concat(
+    'isText',
     'text'
   );
 
@@ -34,11 +35,11 @@ export default class ConfigFile extends _File {
     return this._json;
   }
 
-  isRunnable() {
+  get isRunnable() {
     return false;
   }
 
-  isText() {
+  get isText() {
     return true;
   }
 

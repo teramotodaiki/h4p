@@ -20,6 +20,7 @@ export default class SourceFile extends _File {
   };
 
   static serialize = _File.serialize.concat(
+    'isText',
     'text',
     'isScript'
   );
@@ -32,11 +33,11 @@ export default class SourceFile extends _File {
     return this.is('javascript');
   }
 
-  isRunnable() {
-    return !this.options.isTrashed;
+  get isRunnable() {
+    return !this.options.isTrashed && this.isScript;
   }
 
-  isText() {
+  get isText() {
     return true;
   }
 

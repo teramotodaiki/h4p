@@ -20,6 +20,7 @@ export default class BinaryFile extends _File {
   };
 
   static serialize = _File.serialize.concat(
+    'isText',
     'blob',
     'blobURL'
   );
@@ -41,11 +42,11 @@ export default class BinaryFile extends _File {
     return this.props.blobURL;
   }
 
-  isRunnable() {
+  get isRunnable() {
     return !this.options.isTrashed;
   }
 
-  isText() {
+  get isText() {
     return false;
   }
 
