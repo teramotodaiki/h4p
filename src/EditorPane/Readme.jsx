@@ -112,6 +112,8 @@ export default class Readme extends Component {
     localization: PropTypes.object.isRequired,
     onTouchTap: PropTypes.func.isRequired,
     onShot: PropTypes.func.isRequired,
+    findFile: PropTypes.func.isRequired,
+    selectFile: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -144,10 +146,23 @@ export default class Readme extends Component {
   };
 
   renderIterate(tag, props, children) {
+    const { findFile, selectFile } = this.props;
+
     if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
       return React.createElement(tag, props, children);
     }
     if (tag === 'a') {
+      const file = findFile(props.href);
+      if (file) {
+        props = props = Object.assign({}, props, {
+          href: 'javascript:void(0)',
+          onTouchTap: () => {
+            selectFile(file);
+            this.setState({ show: false });
+          }
+        });
+      }
+
       return <a {...props} target="_blank">{children}</a>;
     }
     if (tag === 'img') {

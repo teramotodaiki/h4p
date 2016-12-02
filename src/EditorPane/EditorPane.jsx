@@ -126,6 +126,7 @@ export default class EditorPane extends Component {
       openFileDialog,
       localization,
       readme,
+      findFile,
     } = this.props;
 
     const {
@@ -183,6 +184,8 @@ export default class EditorPane extends Component {
         localization={localization}
         onTouchTap={this.handleReadmeSelect}
         onShot={this.handleShot}
+        findFile={findFile}
+        selectFile={selectFile}
       />
       </div>
       {tabbedFiles.length > 0 ? (
