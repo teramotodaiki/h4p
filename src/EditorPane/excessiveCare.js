@@ -27,11 +27,4 @@ export default function excessiveCare (cm, change) {
 		}
 	}
 
-	if (change.origin == "+delete" && change.to.ch - change.from.ch == 1) {
-		var del = cm.doc.getRange(change.from, change.to);
-		if (del.match(/[,;=\(\)\[\]\']/g)) {
-			change.cancel();
-		}
-	}
-
 };
