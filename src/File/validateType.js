@@ -7,18 +7,17 @@ const mimes = new Map([
   ['image', /^image\/.*$/i],
 ]);
 
-const metas = new Map([
+const metas = [
   ['text', [
     mimes.get('javascript')
   ]],
   ['blob', [
     mimes.get('image')
   ]],
-])
-.entries((key, regExps) => [
+].map(([key, regExps]) => [
   key,
   new RegExp(
-    regExps.map((regExp) => regExps.source).join('|'), 'i'
+    regExps.map((regExp) => regExp.source).join('|'), 'i'
   )
 ]);
 
