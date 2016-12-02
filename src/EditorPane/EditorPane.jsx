@@ -104,9 +104,10 @@ export default class EditorPane extends Component {
   };
 
   handleReadmeSelect = () => {
-    const { findFile, selectFile } = this.props;
-    const readme = findFile('README.md')
-    if (readme) {
+    const { findFile, tabbedFiles, selectFile } = this.props;
+    const readme = findFile('README.md');
+
+    if (readme && !tabbedFiles.includes(readme)) {
       selectFile(readme);
     }
   };
@@ -182,7 +183,6 @@ export default class EditorPane extends Component {
         localization={localization}
         onTouchTap={this.handleReadmeSelect}
         onShot={this.handleShot}
-        isSelected={!tabbedFiles.length}
       />
       </div>
       {tabbedFiles.length > 0 ? (

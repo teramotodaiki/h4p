@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import transitions from 'material-ui/styles/transitions';
 import CommunicationImportContacts from 'material-ui/svg-icons/communication/import-contacts';
 
 
@@ -8,7 +9,12 @@ import MDReactComponent from '../../lib/MDReactComponent';
 import Editor from './Editor';
 import ShotFrame from './ShotFrame';
 
+const BarHeight = 36;
+
 const getStyle = (props, state, context) => {
+  const {
+    show,
+  } = state;
   const {
     palette,
     spacing,
@@ -19,12 +25,14 @@ const getStyle = (props, state, context) => {
     root: prepareStyles({
       position: 'absolute',
       width: '100%',
-      height: '100%',
+      height: show ? '100%' : BarHeight,
+      bottom: 0,
       boxSizing: 'border-box',
       padding: 0,
       paddingRight: spacing.desktopGutterMini,
       paddingLeft: spacing.desktopGutterMore,
-      zIndex: 1,
+      zIndex: 20,
+      transition: transitions.easeOut(),
     }),
     container: {
       boxSizing: 'border-box',
@@ -42,6 +50,7 @@ const getStyle = (props, state, context) => {
     },
     header: {
       flex: '0 0 auto',
+      height: BarHeight,
       color: palette.alternateTextColor,
       backgroundColor: palette.accent1Color,
       borderRadius: 0,
@@ -103,7 +112,6 @@ export default class Readme extends Component {
     localization: PropTypes.object.isRequired,
     onTouchTap: PropTypes.func.isRequired,
     onShot: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -111,11 +119,12 @@ export default class Readme extends Component {
   };
 
   state = {
+    show: true,
     updates: {},
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!nextProps.isSelected) {
+    if (!this.state.show && !nextState.show) {
       return false;
     }
     return true;
@@ -126,6 +135,13 @@ export default class Readme extends Component {
       this.setState({ updates: {} });
     }
   }
+
+  handleBarTouch = () => {
+    const show = !this.state.show;
+    this.setState({ show });
+
+    this.props.onTouchTap();
+  };
 
   renderIterate(tag, props, children) {
     if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
@@ -183,7 +199,6 @@ export default class Readme extends Component {
     const {
       readme,
       localization,
-      onTouchTap,
     } = this.props;
 
     const {
@@ -220,7 +235,7 @@ export default class Readme extends Component {
             label={gettingStarted}
             icon={<CommunicationImportContacts />}
             style={header}
-            onTouchTap={onTouchTap}
+            onTouchTap={this.handleBarTouch}
           />
           <MDReactComponent
             text={readme}
