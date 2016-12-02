@@ -20,7 +20,6 @@ import { DownloadDialog, SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
-import { compose } from '../js/files';
 import download from '../html/download';
 import SizerDragSource from './SizerDragSource';
 
