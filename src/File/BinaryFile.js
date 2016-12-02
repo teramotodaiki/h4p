@@ -19,7 +19,7 @@ export default class BinaryFile extends _File {
     url: '',
   };
 
-  static serialize = _File.serialize.concat(
+  static visible = _File.visible.concat(
     'isText',
     'blob',
     'blobURL'

@@ -9,7 +9,7 @@ export default class _File {
 
   static defaultAuthor = {};
 
-  static serialize = [
+  static visible = [
     'key',
     'name',
     'moduleName',
@@ -79,7 +79,7 @@ export default class _File {
 
   serialize() {
     const obj = Object.create(null);
-    this.constructor.serialize.forEach((key) => {
+    this.constructor.visible.forEach((key) => {
       obj[key] = this[key];
     });
     return obj;

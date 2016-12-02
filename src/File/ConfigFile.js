@@ -21,7 +21,7 @@ export default class ConfigFile extends _File {
     url: '',
   };
 
-  static serialize = _File.serialize.concat(
+  static visible = _File.visible.concat(
     'isText',
     'text'
   );
