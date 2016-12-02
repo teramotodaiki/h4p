@@ -80,11 +80,22 @@ export default class EditorPane extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  state = {
+    showReadme: true,
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.isResizing) {
       return false;
     }
     return true;
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    if (this.props.tabbedFiles.length !== nextProps.tabbedFiles.length) {
+      const showReadme = nextProps.tabbedFiles.length === 0;
+      this.setState({ showReadme });
+    }
   }
 
   handleAdd = () => {
@@ -103,13 +114,13 @@ export default class EditorPane extends Component {
     }
   };
 
-  handleReadmeSelect = () => {
-    const { findFile, tabbedFiles, selectFile } = this.props;
-    const readme = findFile('README.md');
+  handleReadmeShow = (showReadme) => {
+    this.setState({ showReadme });
+  };
 
-    if (readme && !tabbedFiles.includes(readme)) {
-      selectFile(readme);
-    }
+  handleSelectTab = (file) => {
+    this.props.selectFile(file);
+    this.handleReadmeShow(false);
   };
 
   render() {
@@ -126,7 +137,12 @@ export default class EditorPane extends Component {
       openFileDialog,
       localization,
       readme,
+      findFile,
     } = this.props;
+
+    const {
+      showReadme,
+    } = this.state;
 
     const {
       root,
@@ -151,7 +167,7 @@ export default class EditorPane extends Component {
           file={file}
           isSelected={file === selectedFile}
           tabbedFiles={tabbedFiles}
-          handleSelect={selectFile}
+          handleSelect={this.handleSelectTab}
           handleClose={closeTab}
           handleRun={handleRun}
         />
@@ -177,12 +193,14 @@ export default class EditorPane extends Component {
         </ChromeTabContent>
       ))}
       <Readme
-        files={files}
+        show={showReadme}
+        handleShow={this.handleReadmeShow}
         options={options}
         readme={readme}
         localization={localization}
-        onTouchTap={this.handleReadmeSelect}
         onShot={this.handleShot}
+        findFile={findFile}
+        selectFile={selectFile}
       />
       </div>
       {tabbedFiles.length > 0 ? (

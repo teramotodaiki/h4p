@@ -47,8 +47,8 @@ export default {
   readme: {
     text: `#The App Title
 This is an application can do... ← You can write here
-## How to use
-1. First click "Getting Started"
+## How to edit this
+1. First open [Getting Started](README.md)
 2. Next change the letters
 3. Take a tab \`README\`
 ## Advanced
