@@ -139,7 +139,7 @@ class Main extends Component {
   findFile = (name) => {
     return this.state.files.find((file) =>
       !file.options.isTrashed &&
-      file.name === name
+      (file.name === name || file.moduleName === name)
     );
   };
 
