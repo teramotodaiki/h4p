@@ -178,7 +178,6 @@ export default class EditorPane extends Component {
         </ChromeTabContent>
       ))}
       <Readme
-        files={files}
         options={options}
         readme={readme}
         localization={localization}

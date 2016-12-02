@@ -106,7 +106,6 @@ const mdStyle = (props, state, context) => {
 export default class Readme extends Component {
 
   static propTypes = {
-    files: PropTypes.array.isRequired,
     readme: PropTypes.string.isRequired,
     options: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
@@ -162,18 +161,16 @@ export default class Readme extends Component {
           }
         });
       }
-
       return <a {...props} target="_blank">{children}</a>;
     }
     if (tag === 'img') {
-      const file = this.props.files.find((file) =>
-        !file.options.isTrashed && (
-        file.name === props.src ||
-        file.moduleName === props.src)
-      );
+      const file = findFile(decodeURIComponent(props.src));
       if (file) {
-        return <img {...props} src={file.blobURL} />
+        props = Object.assign({}, props, {
+          src: file.blobURL,
+        });
       }
+      return <img {...props} />
     }
     if (tag === 'pre') {
       const { updates } = this.state;
