@@ -4,12 +4,16 @@ export default function validateType(name, mimeType) {
 
 const mimes = new Map([
   ['javascript', /^(text|application)\/javascript$/i],
+  ['json', /^(text|application)\/json$/i],
+  ['markdown', /^text\/(x-)?markdown$/i],
   ['image', /^image\/.*$/i],
 ]);
 
 const metas = [
   ['text', [
-    mimes.get('javascript')
+    mimes.get('javascript'),
+    mimes.get('json'),
+    mimes.get('markdown')
   ]],
   ['blob', [
     mimes.get('image')
