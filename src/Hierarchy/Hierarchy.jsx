@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 
 
+import { makeFromFile } from '../File/';
 import { SignDialog } from '../FileDialog/';
-import { makeFromFile, changeName, changeDir } from '../js/files';
 import Root from './Root';
 import SearchBar from './SearchBar';
 
@@ -72,8 +72,8 @@ export default class Hierarchy extends Component {
         makeFromFile(file),
         openFileDialog(SignDialog, { content })
       ])
-      .then(([file, author]) => Object.assign({}, file, { author }))
-      .then(file => dir ? changeDir(file, dir.path) : file)
+      .then(([file, author]) => file.set({ author }))
+      .then(file => dir ? file.move(dir.path) : file)
       .then(addFile)
       .then(selectFile);
     })
@@ -93,7 +93,7 @@ export default class Hierarchy extends Component {
   handleFileMove = (file, dir) => {
     const { putFile } = this.props;
 
-    return putFile(file, changeDir(file, dir.path));
+    return putFile(file, file.move(dir.path));
   };
 
   handleFileSelect = (file) => {

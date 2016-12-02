@@ -92,7 +92,7 @@ class FileCard extends Component {
     openFileDialog(PreferenceDialog, {
       content: file,
     })
-    .then((change) => putFile(file, Object.assign({}, file, change)));
+    .then((change) => putFile(file, file.set(change)));
   };
 
   handleNameChange = (event, name) => {

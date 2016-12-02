@@ -12,9 +12,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
-import { ConfigFile } from '../File/';
+import { BinaryFile, ConfigFile, SourceFile } from '../File/';
 import getLocalization from '../localization/';
-import { makeFromType } from '../js/files';
 import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
@@ -155,11 +154,13 @@ class Main extends Component {
     }
 
     if (!this.findFile('README.md')) {
-      makeFromType('text/x-markdown', {
-        name: 'README.md',
-        text: this.readme,
-      })
-      .then((file) => this.addFile(file));
+      this.addFile(
+        new SourceFile({
+          type: 'text/x-markdown',
+          name: 'README.md',
+          text: this.readme,
+        })
+      );
     }
 
     document.title = this.env.TITLE[0];

@@ -164,7 +164,7 @@ export default class EditorPane extends Component {
             file={file}
             options={options}
             getFiles={() => files}
-            onChange={(text) => putFile(file, Object.assign({}, file, { text }))}
+            onChange={(text) => putFile(file, file.set({ text }))}
             gutterMarginWidth={SizerWidth}
             handleRun={handleRun}
             closeSelectedTab={() => closeTab(selectedFile)}

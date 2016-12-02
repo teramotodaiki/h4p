@@ -165,15 +165,7 @@ class Menu extends Component {
     const [TITLE] = env.TITLE || [''];
 
     return Promise.all(
-      this.props.files.map((file) => {
-        if (file instanceof ConfigFile) {
-          return file.compose();
-        } else if (file.isText) {
-          return new SourceFile(file).compose();
-        } else {
-          return new BinaryFile(file).compose();
-        }
-      })
+      this.props.files.map((file) => file.compose())
     )
     .then(([...files]) => Object.assign({
       useCDN: true,

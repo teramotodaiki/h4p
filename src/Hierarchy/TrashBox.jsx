@@ -79,7 +79,7 @@ const spec = {
       const options = Object.assign({}, file.options, {
         isTrashed: !file.options.isTrashed,
       });
-      putFile(file, Object.assign({}, file, { options }));
+      putFile(file, file.set({ options }));
     });
     return {};
   }
