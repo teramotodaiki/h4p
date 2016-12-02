@@ -80,11 +80,22 @@ export default class EditorPane extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  state = {
+    showReadme: true,
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.isResizing) {
       return false;
     }
     return true;
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    if (this.props.tabbedFiles.length !== nextProps.tabbedFiles.length) {
+      const showReadme = nextProps.tabbedFiles.length === 0;
+      this.setState({ showReadme });
+    }
   }
 
   handleAdd = () => {
@@ -103,13 +114,8 @@ export default class EditorPane extends Component {
     }
   };
 
-  handleReadmeSelect = () => {
-    const { findFile, tabbedFiles, selectFile } = this.props;
-    const readme = findFile('README.md');
-
-    if (readme && !tabbedFiles.includes(readme)) {
-      selectFile(readme);
-    }
+  handleReadmeShow = (showReadme) => {
+    this.setState({ showReadme });
   };
 
   render() {
@@ -128,6 +134,10 @@ export default class EditorPane extends Component {
       readme,
       findFile,
     } = this.props;
+
+    const {
+      showReadme,
+    } = this.state;
 
     const {
       root,
@@ -178,10 +188,11 @@ export default class EditorPane extends Component {
         </ChromeTabContent>
       ))}
       <Readme
+        show={showReadme}
+        handleShow={this.handleReadmeShow}
         options={options}
         readme={readme}
         localization={localization}
-        onTouchTap={this.handleReadmeSelect}
         onShot={this.handleShot}
         findFile={findFile}
         selectFile={selectFile}

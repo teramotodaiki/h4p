@@ -14,7 +14,7 @@ const BarHeight = 36;
 const getStyle = (props, state, context) => {
   const {
     show,
-  } = state;
+  } = props;
   const {
     palette,
     spacing,
@@ -106,10 +106,11 @@ const mdStyle = (props, state, context) => {
 export default class Readme extends Component {
 
   static propTypes = {
+    show: PropTypes.bool.isRequired,
+    handleShow: PropTypes.func.isRequired,
     readme: PropTypes.string.isRequired,
     options: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
-    onTouchTap: PropTypes.func.isRequired,
     onShot: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
@@ -120,12 +121,11 @@ export default class Readme extends Component {
   };
 
   state = {
-    show: true,
     updates: {},
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!this.state.show && !nextState.show) {
+    if (!this.props.show && !nextProps.show) {
       return false;
     }
     return true;
@@ -137,15 +137,8 @@ export default class Readme extends Component {
     }
   }
 
-  handleBarTouch = () => {
-    const show = !this.state.show;
-    this.setState({ show });
-
-    this.props.onTouchTap();
-  };
-
   renderIterate(tag, props, children) {
-    const { findFile, selectFile } = this.props;
+    const { findFile, selectFile, handleShow } = this.props;
 
     if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
       return React.createElement(tag, props, children);
@@ -157,7 +150,7 @@ export default class Readme extends Component {
           href: 'javascript:void(0)',
           onTouchTap: () => {
             selectFile(file);
-            this.setState({ show: false });
+            handleShow(false);
           }
         });
       }
@@ -209,8 +202,10 @@ export default class Readme extends Component {
 
   render() {
     const {
+      show,
       readme,
       localization,
+      handleShow,
     } = this.props;
 
     const {
@@ -247,7 +242,7 @@ export default class Readme extends Component {
             label={gettingStarted}
             icon={<CommunicationImportContacts />}
             style={header}
-            onTouchTap={this.handleBarTouch}
+            onTouchTap={() => handleShow(!show)}
           />
           <MDReactComponent
             text={readme}
