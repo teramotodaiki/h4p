@@ -11,7 +11,6 @@ import ActionSettings from 'material-ui/svg-icons/action/settings';
 
 import Filename from './Filename';
 import { PreferenceDialog } from '../FileDialog/';
-import { changeName } from '../js/files';
 import DragTypes from '../utils/dragTypes';
 
 
@@ -98,7 +97,7 @@ class FileCard extends Component {
   handleNameChange = (event, name) => {
     const { file, putFile } = this.props;
 
-    return putFile(file, changeName(file, name));
+    return putFile(file, file.rename({ name }));
   };
 
   render() {
