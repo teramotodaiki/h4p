@@ -29,7 +29,7 @@ export default class Hierarchy extends Component {
     handleFileMove: PropTypes.func.isRequired,
     handleNativeDrop: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
-    updateFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -49,7 +49,7 @@ export default class Hierarchy extends Component {
       handleNativeDrop: this.props.handleNativeDrop,
       handleNameChange: this.props.handleNameChange,
       openFileDialog: this.props.openFileDialog,
-      updateFile: this.props.updateFile,
+      putFile: this.props.putFile,
     };
 
     const { root } = getStyles(this.props, this.context);

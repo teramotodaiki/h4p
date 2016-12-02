@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 
 import RootComponent from './RootComponent';
-import { makeFromElements } from '../js/files';
+import { makeFromElements } from '../File/';
 
 export default () => {
 

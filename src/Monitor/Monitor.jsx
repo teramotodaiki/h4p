@@ -7,7 +7,8 @@ import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
 import transitions from 'material-ui/styles/transitions';
 
 
-import composeEnv from '../js/composeEnv';
+import { BinaryFile, ConfigFile, SourceFile } from '../File/';
+import composeEnv from '../File/composeEnv';
 import template from '../html/screen';
 import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
@@ -164,14 +165,13 @@ export default class Monitor extends Component {
 
     let sent = 0;
     const workerProcess = this.props.files
-      .filter((file) => file.moduleName)
-      .filter((file) => !file.options.isTrashed)
+      .filter((file) => file.isRunnable)
       .map((file, i, send) => babelWorker(file, babelrc)
       .then((file) => {
         // To indicate
         const progress = Math.min(1, ++sent / send.length);
         this.setState({ progress });
-        return file;
+        return file.serialize();
       }));
 
     this.prevent =

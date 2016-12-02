@@ -32,7 +32,7 @@ class _TrashBox extends Component {
 
   static propTypes = {
     showTrashes: PropTypes.bool.isRequired,
-    updateFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
     onTouchTap: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
@@ -72,14 +72,14 @@ class _TrashBox extends Component {
 
 const spec = {
   drop(props, monitor, component) {
-    const { updateFile } = props;
+    const { putFile } = props;
     const { files } = monitor.getItem();
 
     files.forEach((file) => {
       const options = Object.assign({}, file.options, {
         isTrashed: !file.options.isTrashed,
       });
-      updateFile(file, { options });
+      putFile(file, file.set({ options }));
     });
     return {};
   }

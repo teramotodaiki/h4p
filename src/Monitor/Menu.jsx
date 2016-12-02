@@ -14,12 +14,12 @@ import ActionLanguage from 'material-ui/svg-icons/action/language';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 
+import { BinaryFile, ConfigFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
 import { DownloadDialog, SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
-import { compose } from '../js/files';
 import download from '../html/download';
 import SizerDragSource from './SizerDragSource';
 
@@ -164,7 +164,7 @@ class Menu extends Component {
     const [TITLE] = env.TITLE || [''];
 
     return Promise.all(
-      this.props.files.map(compose)
+      this.props.files.map((file) => file.compose())
     )
     .then(([...files]) => Object.assign({
       useCDN: true,

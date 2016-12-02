@@ -12,8 +12,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
+import { BinaryFile, ConfigFile, SourceFile } from '../File/';
 import getLocalization from '../localization/';
-import { makeFromFile, makeFromType } from '../js/files';
 import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
 import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
@@ -147,19 +147,20 @@ class Main extends Component {
     const { files } = this.props;
 
     if (!this.findFile('.babelrc')) {
-      makeFromType('application/json', {
+      this.addFile(new ConfigFile({
         name: '.babelrc',
         text: JSON.stringify(this.babelrc, null, '\t')
-      })
-      .then((file) => this.addFile(file));
+      }));
     }
 
     if (!this.findFile('README.md')) {
-      makeFromType('text/x-markdown', {
-        name: 'README.md',
-        text: this.readme,
-      })
-      .then((file) => this.addFile(file));
+      this.addFile(
+        new SourceFile({
+          type: 'text/x-markdown',
+          name: 'README.md',
+          text: this.readme,
+        })
+      );
     }
 
     document.title = this.env.TITLE[0];
@@ -171,6 +172,8 @@ class Main extends Component {
     if (this.state.reboot) {
       this.setState({ reboot: false });
     }
+
+    document.title = this.env.TITLE[0];
   }
 
   addFile = (file) => new Promise((resolve, reject) => {
@@ -182,13 +185,12 @@ class Main extends Component {
     this.setState({ files }, () => resolve(file));
   });
 
-  updateFile = (file, updated) => new Promise((resolve, reject) => {
-    const nextFile = Object.assign({}, file, updated);
+  putFile = (prevFile, nextFile) => new Promise((resolve, reject) => {
     if (this.inspection(nextFile)) {
-      resolve(file);
+      resolve(prevFile);
       return;
     }
-    const files = this.state.files.map((item) => item === file ? nextFile : item);
+    const files = this.state.files.map((item) => item === prevFile ? nextFile : item);
     this.setState({ files }, () => resolve(nextFile));
   });
 
@@ -282,82 +284,17 @@ class Main extends Component {
     this.setState({ isPopout, reboot: true });
   };
 
-  handleOptionChange = (change) => {
+  handleConfigChange = (name) => (config) => {
+    const configFile = this.findFile(name);
     const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
-    return Promise.resolve()
-      .then(() => {
-        const optionFile = this.findFile('.options');
 
-        if (!optionFile) {
-          const json = Object.assign({}, this.options, change);
-          return makeFromType('application/json', {
-            name: '.options',
-            text: JSON.stringify(json, null, indent),
-            options: { isReadOnly: true }
-          })
-          .then((file) => this.addFile(file));
-        }
-        const text = JSON.stringify(
-          Object.assign(JSON.parse(optionFile.text), change),
-          null, indent
-        );
-        const json = JSON.parse(text);
-        return this.updateFile(optionFile, { json, text });
-      })
-      .then((file) => {
-        return Promise.resolve(file.json);
-      });
-  };
-
-  handlePaletteChange = (change) => {
-    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
-    const paletteFile = this.findFile('.palette');
-
-    if (!paletteFile) {
-      const json = Object.assign({}, this.palette, change);
-      return makeFromType('application/json', {
-        name: '.palette',
-        text: JSON.stringify(json, null, indent),
-        options: { isReadOnly: true }
-      })
-      .then((file) => this.addFile(file))
-      .then((file) => file.json);
+    const text = JSON.stringify(config, null, indent);
+    if (configFile) {
+      return this.putFile(configFile, configFile.set({ text }));
+    } else {
+      const newFile = new ConfigFile({ name, text });
+      return this.addFile(newFile);
     }
-    const text = JSON.stringify(
-      Object.assign(JSON.parse(paletteFile.text), change),
-      null, indent
-    );
-    const json = JSON.parse(text);
-    return this.updateFile(paletteFile, { json, text })
-      .then((file) => file.json);
-  };
-
-  handleEnvChange = (change) => {
-    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
-    const envFile = this.findFile('.env');
-
-    if (!envFile) {
-      const json = Object.assign({}, this.env, change);
-      return makeFromType('application/json', {
-        name: '.env',
-        text: JSON.stringify(json, null, indent),
-        options: { isReadOnly: true }
-      })
-      .then((file) => this.addFile(file))
-      .then((file) => file.json);
-    }
-    const text = JSON.stringify(
-      Object.assign(JSON.parse(envFile.text), change),
-      null, indent
-    );
-    const json = JSON.parse(text);
-
-    if (json.TITLE) {
-      document.title = json.TITLE[0];
-    }
-
-    return this.updateFile(envFile, { json, text })
-      .then((file) => file.json);
   };
 
   setLocalization = (localization) => {
@@ -406,12 +343,12 @@ class Main extends Component {
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
       addFile: this.addFile,
-      updateFile: this.updateFile,
+      putFile: this.putFile,
       selectFile: this.selectFile,
       closeTab: this.closeTab,
       handleRun: this.handleRun,
       options: this.options,
-      handleOptionChange: this.handleOptionChange,
+      handleOptionChange: this.handleConfigChange('.options'),
       openFileDialog: this.openFileDialog,
       localization: localization,
       portPostMessage: portPostMessage,
@@ -437,8 +374,8 @@ class Main extends Component {
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
-      updatePalette: this.handlePaletteChange,
-      updateEnv: this.handleEnvChange,
+      updatePalette: this.handleConfigChange('.palette'),
+      updateEnv: this.handleConfigChange('.env'),
       localization: localization,
       setLocalization: this.setLocalization,
       canDeploy: !!(provider && provider.publishUrl),
@@ -450,7 +387,7 @@ class Main extends Component {
       selectedFile: this.selectedFile,
       tabbedFiles: this.tabbedFiles,
       addFile: this.addFile,
-      updateFile: this.updateFile,
+      putFile: this.putFile,
       deleteFile: this.deleteFile,
       selectFile: this.selectFile,
       closeTab: this.closeTab,
