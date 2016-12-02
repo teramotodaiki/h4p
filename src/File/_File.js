@@ -19,7 +19,7 @@ export default class _File {
   ];
 
   constructor(props) {
-    this.key = getUniqueId();
+    this.key = props.key || getUniqueId();
 
     const lock = (...args) => Object.freeze(
       Object.assign({}, ...args)
