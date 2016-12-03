@@ -24,8 +24,14 @@ export default class ConfigFile extends SourceFile {
 
   static visible = SourceFile.visible;
 
-  _json = JSON.parse(this.text);
+  model = Array.from(configs.values())
+    .find((config) => config.test.test(this.name));
+
   get json() {
+    if (!this._json) {
+      const { defaultValue } = this.model;
+      this._json = Object.assign({}, defaultValue, JSON.parse(this.text));
+    }
     return this._json;
   }
 
