@@ -271,19 +271,6 @@ class Main extends Component {
     this.setState({ isPopout, reboot: true });
   };
 
-  handleConfigChange = (name) => (config) => {
-    const configFile = this.findFile(name);
-    const indent = ' '.repeat(this.getConfig('options').indentUnit4 ? 4 : 2);
-
-    const text = JSON.stringify(config, null, indent);
-    if (configFile) {
-      return this.putFile(configFile, configFile.set({ text }));
-    } else {
-      const newFile = new ConfigFile({ name, text });
-      return this.addFile(newFile);
-    }
-  };
-
   setLocalization = (localization) => {
     this.setState({ localization });
   };
@@ -335,7 +322,6 @@ class Main extends Component {
       selectFile: this.selectFile,
       closeTab: this.closeTab,
       handleRun: this.handleRun,
-      handleOptionChange: this.handleConfigChange('.options'),
       openFileDialog: this.openFileDialog,
       localization: localization,
       portPostMessage: portPostMessage,
@@ -345,6 +331,7 @@ class Main extends Component {
         this.rootWidth - monitorWidth,
         this.rootHeight
       ),
+      setConfig: this.setConfig,
     };
 
     const monitorProps = {
@@ -357,8 +344,6 @@ class Main extends Component {
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
-      updatePalette: this.handleConfigChange('.palette'),
-      updateEnv: this.handleConfigChange('.env'),
       localization: localization,
       setLocalization: this.setLocalization,
       canDeploy: !!(provider && provider.publishUrl),
@@ -395,6 +380,7 @@ class Main extends Component {
             ref={this.handleFileDialog}
             localization={localization}
             getConfig={this.getConfig}
+            setConfig={this.setConfig}
           />
         </div>
       )}

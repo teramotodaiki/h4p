@@ -34,9 +34,9 @@ const getStyles = (props, context) => {
 export default class EditorMenu extends Component {
 
   static propTypes = {
-    handleOptionChange: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     getConfig: PropTypes.func.isRequired,
+    setConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -44,13 +44,13 @@ export default class EditorMenu extends Component {
   };
 
   toggleOption = (propName) => {
-    const { getConfig, handleOptionChange } = this.props;
+    const { getConfig, setConfig } = this.props;
 
     const current = getConfig('options')[propName];
     const change = { [propName]: !current };
 
     const options = Object.assign({}, getConfig('options'), change);
-    handleOptionChange(options);
+    setConfig('options', options);
   };
 
   render() {

@@ -64,7 +64,6 @@ export default class EditorPane extends Component {
     selectFile: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
-    handleOptionChange: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
@@ -73,6 +72,7 @@ export default class EditorPane extends Component {
     isResizing: PropTypes.bool.isRequired,
     isShrinked: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
+    setConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -131,12 +131,11 @@ export default class EditorPane extends Component {
       files, selectedFile, tabbedFiles,
       putFile, selectFile, closeTab,
       handleRun,
-      handleOptionChange,
       openFileDialog,
       localization,
       readme,
       findFile,
-      getConfig,
+      getConfig, setConfig,
     } = this.props;
 
     const {
@@ -155,9 +154,9 @@ export default class EditorPane extends Component {
     return (
     <div style={prepareStyles(root)}>
       <EditorMenu
-        handleOptionChange={handleOptionChange}
         localization={localization}
         getConfig={getConfig}
+        setConfig={setConfig}
       />
       <div style={prepareStyles(tabContainer)}>
       {tabbedFiles.map(file => (

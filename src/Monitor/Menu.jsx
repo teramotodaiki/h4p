@@ -67,8 +67,6 @@ class Menu extends Component {
     isPopout: PropTypes.bool.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     togglePopout: PropTypes.func.isRequired,
-    updatePalette: PropTypes.func.isRequired,
-    updateEnv: PropTypes.func.isRequired,
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
     localization: PropTypes.object.isRequired,
@@ -114,15 +112,15 @@ class Menu extends Component {
   };
 
   handlePalette = () => {
-    const { openFileDialog, updatePalette } = this.props;
+    const { openFileDialog } = this.props;
 
-    openFileDialog(PaletteDialog, { updatePalette });
+    openFileDialog(PaletteDialog);
   };
 
   handleEnv = () => {
-    const { openFileDialog, updateEnv } = this.props;
+    const { openFileDialog } = this.props;
 
-    openFileDialog(EnvDialog, { updateEnv });
+    openFileDialog(EnvDialog);
   };
 
   handleAbout = () => {

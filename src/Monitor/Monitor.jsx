@@ -101,8 +101,6 @@ export default class Monitor extends Component {
     togglePopout: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
-    updatePalette: PropTypes.func.isRequired,
-    updateEnv: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
@@ -303,8 +301,6 @@ export default class Monitor extends Component {
 
     const menuProps = {
       files: this.props.files,
-      updatePalette: this.props.updatePalette,
-      updateEnv: this.props.updateEnv,
       openFileDialog: this.props.openFileDialog,
       togglePopout: this.props.togglePopout,
       localization: this.props.localization,
