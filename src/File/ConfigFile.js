@@ -55,25 +55,36 @@ export default class ConfigFile extends SourceFile {
     });
   }
 
-  static get(files, key) {
+  static get (key) {
     if (!configs.has(key)) {
       throw new Error(`${key} is not exist in ConfigFiles`);
     }
+    return configs.get(key);
+  }
 
-    const { test, multiple, defaultValue } = configs.get(key);
+  static getFile(files, key) {
+    const { test, multiple } = ConfigFile.get(key);
 
-    if (!multiple) {
-      const file = files.find((file) => (
-        !file.options.isTrashed && test.test(file.name)
-      ));
-      return Object.assign({}, defaultValue, file ? file.json : {});
-    } else {
-      return files.filter((file) => (
-        !file.options.isTrashed && test.test(file.name)
-      )).reduce((p, c) => {
-        return Object.assign(p, c);
-      }, Object.assign({}, defaultValue));
+    const predicate = (file) => (
+      !file.options.isTrashed && test.test(file.name)
+    );
+
+    return multiple ?
+      files.filter(predicate) :
+      files.find(predicate);
+  }
+
+  static getValue(files, key) {
+    const target = ConfigFile.getFile(files, key);
+
+    if (!target) {
+      const { defaultValue } = ConfigFile.get(key);
+      return defaultValue;
     }
+
+    return target instanceof Array ?
+      target.reduce((p, c) => Object.assign(p, c.json), {}) :
+      target.json;
   }
 
 }
