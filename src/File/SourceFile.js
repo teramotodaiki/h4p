@@ -44,7 +44,7 @@ export default class SourceFile extends _File {
   set(change) {
     const seed = Object.assign(this.serialize(), change);
 
-    return new SourceFile(seed);
+    return new this.constructor(seed);
   }
 
   compose() {
