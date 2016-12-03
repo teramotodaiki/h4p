@@ -98,19 +98,16 @@ export default class Monitor extends Component {
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
-    env: PropTypes.object.isRequired,
     togglePopout: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
-    babelrc: PropTypes.object.isRequired,
     handleRun: PropTypes.func.isRequired,
-    updatePalette: PropTypes.func.isRequired,
-    updateEnv: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
     canDeploy: PropTypes.bool.isRequired,
     provider: PropTypes.object,
     onSizer: PropTypes.func.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -159,14 +156,14 @@ export default class Monitor extends Component {
 
   prevent = null;
   start () {
-    const { portRef, babelrc } = this.props;
+    const { portRef, getConfig } = this.props;
 
-    const env = composeEnv(this.props.env);
+    const env = composeEnv(getConfig('env'));
 
     let sent = 0;
     const workerProcess = this.props.files
-      .filter((file) => file.isRunnable)
-      .map((file, i, send) => babelWorker(file, babelrc)
+      .filter((file) => file.isModule)
+      .map((file, i, send) => babelWorker(file, getConfig('babelrc'))
       .then((file) => {
         // To indicate
         const progress = Math.min(1, ++sent / send.length);
@@ -304,10 +301,6 @@ export default class Monitor extends Component {
 
     const menuProps = {
       files: this.props.files,
-      palette: this.props.palette,
-      env: this.props.env,
-      updatePalette: this.props.updatePalette,
-      updateEnv: this.props.updateEnv,
       openFileDialog: this.props.openFileDialog,
       togglePopout: this.props.togglePopout,
       localization: this.props.localization,
@@ -324,6 +317,7 @@ export default class Monitor extends Component {
         'bottom-center' : 'top-center',
       canDeploy: this.props.canDeploy,
       provider: this.props.provider,
+      getConfig: this.props.getConfig,
     };
 
     const {

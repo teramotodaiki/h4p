@@ -85,8 +85,6 @@ const getStyles = (props, context, state) => {
 export default class CustomDialog extends Component {
 
   static propTypes = {
-    palette: PropTypes.object.isRequired,
-    updatePalette: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
@@ -96,7 +94,7 @@ export default class CustomDialog extends Component {
   };
 
   state = {
-    palette: this.props.palette,
+    palette: this.props.getConfig('palette'),
     open: false,
     key: null,
     anchorEl: null,
@@ -113,7 +111,7 @@ export default class CustomDialog extends Component {
 
   handleChangeComplete = (structure) => {
     const { key } = this.state;
-    const { updatePalette } = this.props;
+    const { setConfig } = this.props;
 
     const { r, g, b, a } = structure.rgb;
     const color = ({ type: 'rgba', values: [r, g, b, a] });
@@ -121,7 +119,7 @@ export default class CustomDialog extends Component {
     const palette = Object.assign({}, this.state.palette, {
       [key]: convertColorToString(color),
     });
-    updatePalette(palette)
+    setConfig('palette', palette)
       .then((file) => file.json)
       .then(palette => this.setState({ palette }));
   };

@@ -10,7 +10,6 @@ export default class DownloadDialog extends Component {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
-    env: PropTypes.object.isRequired,
     bundle: PropTypes.func.isRequired,
   };
 
@@ -43,7 +42,8 @@ export default class DownloadDialog extends Component {
   }
 
   bundle(config) {
-    const [TITLE] = this.props.env.TITLE || [''];
+    const { getConfig } = this.props;
+    const [TITLE] = getConfig('env').TITLE || [''];
 
     return this.props.bundle(config).then((text) => ({
       name: TITLE,

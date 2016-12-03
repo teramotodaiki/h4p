@@ -1,7 +1,8 @@
-import _File from './_File';
+import SourceFile from './SourceFile';
+import configs from './configs';
 
 
-export default class ConfigFile extends _File {
+export default class ConfigFile extends SourceFile {
 
   static defaultProps = {
     type: 'application/json',
@@ -21,39 +22,17 @@ export default class ConfigFile extends _File {
     url: '',
   };
 
-  static visible = _File.visible.concat(
-    'isText',
-    'text'
-  );
+  static visible = SourceFile.visible;
 
-  get text() {
-    return this.props.text;
-  }
+  model = Array.from(configs.values())
+    .find((config) => config.test.test(this.name));
 
-  _json = JSON.parse(this.text);
   get json() {
+    if (!this._json) {
+      const { defaultValue } = this.model;
+      this._json = Object.assign({}, defaultValue, JSON.parse(this.text));
+    }
     return this._json;
-  }
-
-  get isRunnable() {
-    return false;
-  }
-
-  get isText() {
-    return true;
-  }
-
-  set(change) {
-    const seed = Object.assign(this.serialize(), change);
-
-    return new ConfigFile(seed);
-  }
-
-  compose() {
-    const serialized = this.serialize();
-    serialized.composed = JSON.stringify(this.json);
-
-    return Promise.resolve(serialized);
   }
 
   /**
@@ -74,6 +53,38 @@ export default class ConfigFile extends _File {
       };
       reader.readAsText(file);
     });
+  }
+
+  static get (key) {
+    if (!configs.has(key)) {
+      throw new Error(`${key} is not exist in ConfigFiles`);
+    }
+    return configs.get(key);
+  }
+
+  static getFile(files, key) {
+    const { test, multiple } = ConfigFile.get(key);
+
+    const predicate = (file) => (
+      !file.options.isTrashed && test.test(file.name)
+    );
+
+    return multiple ?
+      files.filter(predicate) :
+      files.find(predicate);
+  }
+
+  static getValue(files, key) {
+    const target = ConfigFile.getFile(files, key);
+
+    if (!target) {
+      const { defaultValue } = ConfigFile.get(key);
+      return defaultValue;
+    }
+
+    return target instanceof Array ?
+      target.reduce((p, c) => Object.assign(p, c.json), {}) :
+      target.json;
   }
 
 }

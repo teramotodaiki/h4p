@@ -17,7 +17,7 @@ export default function (file, babelrc) {
 
   return new Promise((resolve, reject) => {
     if (
-      file.is('javascript') &&
+      file.isScript &&
       file.options.noBabel === false &&
       file.text.length < 100000
     ) {

@@ -42,8 +42,8 @@ export default class BinaryFile extends _File {
     return this.props.blobURL;
   }
 
-  get isRunnable() {
-    return !this.options.isTrashed;
+  get isModule() {
+    return !this.options.isTrashed && !!this.moduleName;
   }
 
   get isText() {

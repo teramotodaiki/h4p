@@ -33,8 +33,8 @@ export default class SourceFile extends _File {
     return this.is('javascript');
   }
 
-  get isRunnable() {
-    return !this.options.isTrashed && this.isScript;
+  get isModule() {
+    return !this.options.isTrashed && !!this.moduleName;
   }
 
   get isText() {
@@ -44,7 +44,7 @@ export default class SourceFile extends _File {
   set(change) {
     const seed = Object.assign(this.serialize(), change);
 
-    return new SourceFile(seed);
+    return new this.constructor(seed);
   }
 
   compose() {

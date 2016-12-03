@@ -109,11 +109,11 @@ export default class Readme extends Component {
     show: PropTypes.bool.isRequired,
     handleShow: PropTypes.func.isRequired,
     readme: PropTypes.string.isRequired,
-    options: PropTypes.object.isRequired,
     localization: PropTypes.object.isRequired,
     onShot: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -138,7 +138,12 @@ export default class Readme extends Component {
   }
 
   renderIterate(tag, props, children) {
-    const { findFile, selectFile, handleShow } = this.props;
+    const {
+      findFile,
+      selectFile,
+      handleShow,
+      getConfig,
+    } = this.props;
 
     if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
       return React.createElement(tag, props, children);
@@ -185,12 +190,13 @@ export default class Readme extends Component {
         >
           <Editor isSelected
             file={{ text, type: 'text/javascript', options: {} }}
-            options={this.props.options}
+            options={getConfig('options')}
             getFiles={() => []}
             onChange={onChange}
             handleRun={() => this.props.onShot(text)}
             closeSelectedTab={() => {}}
             isCared
+            getConfig={getConfig}
           />
         </ShotFrame>
       );

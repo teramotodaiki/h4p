@@ -17,19 +17,17 @@ import EditableLabel from '../jsx/EditableLabel';
 export default class EnvDialog extends Component {
 
   static propTypes = {
-    env: PropTypes.object.isRequired,
-    updateEnv: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
   state = {
-    env: this.props.env,
+    env: this.props.getConfig('env'),
   };
 
   handleUpdateEnv = (change) => {
     const env = Object.assign({}, this.state.env, change);
-    this.props.updateEnv(env)
+    this.props.setConfig('env', env)
       .then((file) => file.json)
       .then((env) => this.setState({ env }));
   };

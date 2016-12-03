@@ -64,16 +64,15 @@ export default class EditorPane extends Component {
     selectFile: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
-    options: PropTypes.object.isRequired,
-    handleOptionChange: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
     readme: PropTypes.string.isRequired,
-    babelrc: PropTypes.object.isRequired,
     findFile: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
     isShrinked: PropTypes.bool.isRequired,
+    getConfig: PropTypes.func.isRequired,
+    setConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -106,10 +105,10 @@ export default class EditorPane extends Component {
   };
 
   handleShot = (text) => {
-    const { portPostMessage, babelrc } = this.props;
+    const { portPostMessage, getConfig } = this.props;
     if (text && portPostMessage) {
       Promise.resolve(SourceFile.shot(text))
-      .then((file) => babelWorker(file, babelrc))
+      .then((file) => babelWorker(file, getConfig('babelrc')))
       .then((file) => portPostMessage({ query: 'shot', value: file.serialize() }));
     }
   };
@@ -132,12 +131,11 @@ export default class EditorPane extends Component {
       files, selectedFile, tabbedFiles,
       putFile, selectFile, closeTab,
       handleRun,
-      options,
-      handleOptionChange,
       openFileDialog,
       localization,
       readme,
       findFile,
+      getConfig, setConfig,
     } = this.props;
 
     const {
@@ -156,9 +154,9 @@ export default class EditorPane extends Component {
     return (
     <div style={prepareStyles(root)}>
       <EditorMenu
-        options={options}
-        handleOptionChange={handleOptionChange}
         localization={localization}
+        getConfig={getConfig}
+        setConfig={setConfig}
       />
       <div style={prepareStyles(tabContainer)}>
       {tabbedFiles.map(file => (
@@ -179,13 +177,13 @@ export default class EditorPane extends Component {
         {file.isText ? (
           <Editor
             file={file}
-            options={options}
             getFiles={() => files}
             onChange={(text) => putFile(file, file.set({ text }))}
             gutterMarginWidth={SizerWidth}
             handleRun={handleRun}
             closeSelectedTab={() => closeTab(selectedFile)}
             isSelected={file === selectedFile}
+            getConfig={getConfig}
           />
         ) : (
           <Preview file={file} />
@@ -195,12 +193,12 @@ export default class EditorPane extends Component {
       <Readme
         show={showReadme}
         handleShow={this.handleReadmeShow}
-        options={options}
         readme={readme}
         localization={localization}
         onShot={this.handleShot}
         findFile={findFile}
         selectFile={selectFile}
+        getConfig={getConfig}
       />
       </div>
       {tabbedFiles.length > 0 ? (
