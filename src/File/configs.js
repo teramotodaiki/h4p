@@ -10,11 +10,13 @@ export default new Map([
       lineWrapping: false,
       indentUnit4: false,
     },
+    defaultName: '.options',
   }],
   ['palette', {
     test: /^\.palette/i,
     multiple: false,
     defaultValue: defaultPalette,
+    defaultName: '.palette',
   }],
   ['env', {
     test: /^\.env/i,
@@ -23,6 +25,7 @@ export default new Map([
       DEBUG: [true, 'boolean', 'A flag means test mode'],
       TITLE: ['My App', 'string', 'A name of this app'],
     },
+    defaultName: '.env',
   }],
   ['babelrc', {
     test: /^\.babelrc/i,
@@ -30,5 +33,6 @@ export default new Map([
     defaultValue: {
       presets: ['es2015'],
     },
+    defaultName: '.babelrc',
   }],
 ]);

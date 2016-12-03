@@ -187,8 +187,31 @@ class Main extends Component {
     this.setState({ tabbedKeys }, () => resolve(file));
   });
 
+  _configs = new Map();
   getConfig = (key) => {
-    return ConfigFile.get(this.state.files, key);
+    if (this._configs.has(key)) {
+      return this._configs.get(key);
+    } else {
+      const value = ConfigFile.getValue(this.state.files, key);
+      this._configs.set(key, value);
+      return value;
+    }
+  };
+
+  setConfig = (key, config) => {
+    this._configs.delete(key);
+
+    const configFile = ConfigFile.getFile(this.state.files, key);
+    const indent = ' '.repeat(this.getConfig('options').indentUnit4 ? 4 : 2);
+
+    const text = JSON.stringify(config, null, indent);
+    if (configFile) {
+      return this.putFile(configFile, configFile.set({ text }));
+    } else {
+      const { defaultName } = ConfigFile.get(key);
+      const newFile = new ConfigFile({ name: defaultName, text });
+      return this.addFile(newFile);
+    }
   };
 
   closeTab = (file) => new Promise((resolve, reject) => {
