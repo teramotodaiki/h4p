@@ -33,8 +33,8 @@ export default class SourceFile extends _File {
     return this.is('javascript');
   }
 
-  get isRunnable() {
-    return !this.options.isTrashed && this.isScript;
+  get isModule() {
+    return !this.options.isTrashed && !!this.moduleName;
   }
 
   get isText() {

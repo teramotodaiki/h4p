@@ -165,7 +165,7 @@ export default class Monitor extends Component {
 
     let sent = 0;
     const workerProcess = this.props.files
-      .filter((file) => file.isRunnable)
+      .filter((file) => file.isModule)
       .map((file, i, send) => babelWorker(file, babelrc)
       .then((file) => {
         // To indicate
