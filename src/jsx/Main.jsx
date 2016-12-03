@@ -14,7 +14,7 @@ injectTapEventPlugin();
 
 import { BinaryFile, ConfigFile, SourceFile } from '../File/';
 import getLocalization from '../localization/';
-import getCustomTheme, { defaultPalette } from '../js/getCustomTheme';
+import getCustomTheme from '../js/getCustomTheme';
 import EditorPane from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
@@ -98,39 +98,6 @@ class Main extends Component {
     return tabbedKeys.map(key => files.find(file => key === file.key));
   }
 
-  get options() {
-    const defaultOptions = {
-      tabVisibility: false,
-      darkness: false,
-      lineWrapping: false,
-      indentUnit4: false,
-    };
-    const file = this.findFile('.options');
-    return Object.assign({}, defaultOptions, file ? file.json : {});
-  }
-
-  get env() {
-    const defaultEnv = {
-      DEBUG: [true, 'boolean', 'A flag means test mode'],
-      TITLE: ['My App', 'string', 'A name of this app'],
-    };
-    const file = this.findFile('.env');
-    return Object.assign({}, defaultEnv, file ? file.json : {});
-  }
-
-  get palette() {
-    const file = this.findFile('.palette');
-    return Object.assign({}, defaultPalette, file ? file.json : {});
-  }
-
-  get babelrc() {
-    const defaultBabelrc = {
-      presets: ['es2015'],
-    };
-    const file = this.findFile('.babelrc');
-    return Object.assign({}, defaultBabelrc, file ? file.json : {});
-  }
-
   get readme() {
     const file = this.findFile('README.md');
     return file ? file.text : this.state.localization.readme.text;
@@ -146,13 +113,6 @@ class Main extends Component {
   componentDidMount() {
     const { files } = this.props;
 
-    if (!this.findFile('.babelrc')) {
-      this.addFile(new ConfigFile({
-        name: '.babelrc',
-        text: JSON.stringify(this.babelrc, null, '\t')
-      }));
-    }
-
     if (!this.findFile('README.md')) {
       this.addFile(
         new SourceFile({
@@ -163,7 +123,7 @@ class Main extends Component {
       );
     }
 
-    document.title = this.env.TITLE[0];
+    document.title = this.getConfig('env').TITLE[0];
 
     this.setState({ reboot: true });
   }
@@ -173,7 +133,7 @@ class Main extends Component {
       this.setState({ reboot: false });
     }
 
-    document.title = this.env.TITLE[0];
+    document.title = this.getConfig('env').TITLE[0];
   }
 
   addFile = (file) => new Promise((resolve, reject) => {
@@ -226,6 +186,10 @@ class Main extends Component {
     const tabbedKeys = this.state.tabbedKeys.concat(file.key);
     this.setState({ tabbedKeys }, () => resolve(file));
   });
+
+  getConfig = (key) => {
+    return ConfigFile.get(this.state.files, key);
+  };
 
   closeTab = (file) => new Promise((resolve, reject) => {
     const tabbedKeys = this.state.tabbedKeys.filter(key => key !== file.key);
@@ -286,7 +250,7 @@ class Main extends Component {
 
   handleConfigChange = (name) => (config) => {
     const configFile = this.findFile(name);
-    const indent = ' '.repeat(this.options.indentUnit4 ? 4 : 2);
+    const indent = ' '.repeat(this.getConfig('options').indentUnit4 ? 4 : 2);
 
     const text = JSON.stringify(config, null, indent);
     if (configFile) {
@@ -329,12 +293,13 @@ class Main extends Component {
       root,
       left,
       dropCover,
-    } = getStyle(this.props, this.state, this.palette);
+    } = getStyle(this.props, this.state, this.getConfig('palette'));
 
     const commonProps = {
       files,
       isResizing,
       localization,
+      getConfig: this.getConfig,
     };
 
     const isShrinked = (width, height) => width < 200 || height < 40;
@@ -347,13 +312,11 @@ class Main extends Component {
       selectFile: this.selectFile,
       closeTab: this.closeTab,
       handleRun: this.handleRun,
-      options: this.options,
       handleOptionChange: this.handleConfigChange('.options'),
       openFileDialog: this.openFileDialog,
       localization: localization,
       portPostMessage: portPostMessage,
       readme: this.readme,
-      babelrc: this.babelrc,
       findFile: this.findFile,
       isShrinked: isShrinked(
         this.rootWidth - monitorWidth,
@@ -367,10 +330,7 @@ class Main extends Component {
       rootHeight: this.rootHeight,
       isPopout: isPopout,
       reboot: reboot,
-      env: this.env,
-      palette: this.palette,
       portRef: this.handlePort,
-      babelrc: this.babelrc,
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
@@ -399,7 +359,7 @@ class Main extends Component {
     };
 
     return (
-      <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.palette })}>
+      <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
         <div style={root}>
           <div style={dropCover}></div>
@@ -411,6 +371,7 @@ class Main extends Component {
           <FileDialog
             ref={this.handleFileDialog}
             localization={localization}
+            getConfig={this.getConfig}
           />
         </div>
       )}

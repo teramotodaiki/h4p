@@ -110,7 +110,6 @@ export default class Editor extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
-    options: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
     gutterMarginWidth: PropTypes.number,
@@ -118,6 +117,7 @@ export default class Editor extends Component {
     closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
     isCared: PropTypes.bool.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -169,6 +169,7 @@ export default class Editor extends Component {
       onChange,
       handleRun,
       closeSelectedTab,
+      getConfig,
     } = this.props;
     const { CssScopeId } = this.state;
 
@@ -179,7 +180,7 @@ export default class Editor extends Component {
     const options = Object.assign({
       lineNumbers: true,
       mode: CodeMirror.findModeByMIME(file.type).mode,
-      indentUnit: this.props.options.indentUnit4 ? 4 : 2,
+      indentUnit: getConfig('options').indentUnit4 ? 4 : 2,
       indentWithTabs: true,
       matchBrackets: true,
       autoCloseBrackets: true,
@@ -191,7 +192,7 @@ export default class Editor extends Component {
         'Ctrl-W': closeSelectedTab,
         'Cmd-W': closeSelectedTab,
       },
-    }, this.props.options);
+    }, getConfig('options'));
 
     return (
       <div id={CssScopeId}>

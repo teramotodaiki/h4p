@@ -67,8 +67,6 @@ class Menu extends Component {
     isPopout: PropTypes.bool.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     togglePopout: PropTypes.func.isRequired,
-    palette: PropTypes.object.isRequired,
-    env: PropTypes.object.isRequired,
     updatePalette: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
     monitorWidth: PropTypes.number.isRequired,
@@ -103,9 +101,9 @@ class Menu extends Component {
   }
 
   handleDownload = () => {
-    const { env, openFileDialog } = this.props;
+    const { openFileDialog } = this.props;
 
-    openFileDialog(DownloadDialog, { env, bundle: this.bundle })
+    openFileDialog(DownloadDialog, { bundle: this.bundle })
       .then(content => {
         openFileDialog(SaveDialog, {
           content,
@@ -116,15 +114,15 @@ class Menu extends Component {
   };
 
   handlePalette = () => {
-    const { openFileDialog, palette, updatePalette } = this.props;
+    const { openFileDialog, updatePalette } = this.props;
 
-    openFileDialog(PaletteDialog, { palette, updatePalette });
+    openFileDialog(PaletteDialog, { updatePalette });
   };
 
   handleEnv = () => {
-    const { openFileDialog, env, updateEnv } = this.props;
+    const { openFileDialog, updateEnv } = this.props;
 
-    openFileDialog(EnvDialog, { env, updateEnv });
+    openFileDialog(EnvDialog, { updateEnv });
   };
 
   handleAbout = () => {
@@ -160,8 +158,8 @@ class Menu extends Component {
   };
 
   bundle = (config) => {
-    const { env, provider } = this.props;
-    const [TITLE] = env.TITLE || [''];
+    const { provider, getConfig } = this.props;
+    const [TITLE] = getConfig('env').TITLE || [''];
 
     return Promise.all(
       this.props.files.map((file) => file.compose())

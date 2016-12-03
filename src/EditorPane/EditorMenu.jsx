@@ -34,9 +34,9 @@ const getStyles = (props, context) => {
 export default class EditorMenu extends Component {
 
   static propTypes = {
-    options: PropTypes.object.isRequired,
     handleOptionChange: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -44,18 +44,22 @@ export default class EditorMenu extends Component {
   };
 
   toggleOption = (propName) => {
-    const current = this.props.options[propName];
+    const { getConfig, handleOptionChange } = this.props;
+
+    const current = getConfig('options')[propName];
     const change = { [propName]: !current };
 
-    const options = Object.assign({}, this.props.options, change);
-    this.props.handleOptionChange(options);
+    const options = Object.assign({}, getConfig('options'), change);
+    handleOptionChange(options);
   };
 
   render() {
     const {
-      options,
       localization: { editorMenu },
+      getConfig,
     } = this.props;
+
+    const options = getConfig('options');
 
     const { root, button, menu } = getStyles(this.props, this.context);
     const { secondaryTextColor } = this.context.muiTheme.palette;

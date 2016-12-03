@@ -5,6 +5,7 @@ export default class FileDialog extends Component {
 
   static propTypes = {
     localization: PropTypes.object.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   state = {

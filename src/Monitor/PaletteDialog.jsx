@@ -85,7 +85,6 @@ const getStyles = (props, context, state) => {
 export default class CustomDialog extends Component {
 
   static propTypes = {
-    palette: PropTypes.object.isRequired,
     updatePalette: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
@@ -96,7 +95,7 @@ export default class CustomDialog extends Component {
   };
 
   state = {
-    palette: this.props.palette,
+    palette: this.props.getConfig('palette'),
     open: false,
     key: null,
     anchorEl: null,
