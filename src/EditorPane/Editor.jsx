@@ -37,12 +37,12 @@ export const MimeTypes = {
 
 const getStyles = (props, context, state) => {
   const {
-    options: {
-      tabVisibility,
-      darkness,
-    },
     gutterMarginWidth,
   } = props;
+  const {
+    tabVisibility,
+    darkness,
+  } = props.getConfig('options');
   const {
     palette,
   } = context.muiTheme;
