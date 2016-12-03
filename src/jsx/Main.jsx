@@ -202,7 +202,7 @@ class Main extends Component {
     this._configs.delete(key);
 
     const configFile = ConfigFile.getFile(this.state.files, key);
-    const indent = ' '.repeat(this.getConfig('options').indentUnit4 ? 4 : 2);
+    const indent = '    ';
 
     const text = JSON.stringify(config, null, indent);
     if (configFile) {
