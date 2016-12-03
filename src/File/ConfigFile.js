@@ -1,7 +1,7 @@
-import _File from './_File';
+import SourceFile from './SourceFile';
 
 
-export default class ConfigFile extends _File {
+export default class ConfigFile extends SourceFile {
 
   static defaultProps = {
     type: 'application/json',
@@ -21,39 +21,11 @@ export default class ConfigFile extends _File {
     url: '',
   };
 
-  static visible = _File.visible.concat(
-    'isText',
-    'text'
-  );
-
-  get text() {
-    return this.props.text;
-  }
+  static visible = SourceFile.visible;
 
   _json = JSON.parse(this.text);
   get json() {
     return this._json;
-  }
-
-  get isRunnable() {
-    return false;
-  }
-
-  get isText() {
-    return true;
-  }
-
-  set(change) {
-    const seed = Object.assign(this.serialize(), change);
-
-    return new ConfigFile(seed);
-  }
-
-  compose() {
-    const serialized = this.serialize();
-    serialized.composed = JSON.stringify(this.json);
-
-    return Promise.resolve(serialized);
   }
 
   /**
