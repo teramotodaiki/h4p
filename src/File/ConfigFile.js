@@ -1,4 +1,5 @@
 import SourceFile from './SourceFile';
+import configs from './configs';
 
 
 export default class ConfigFile extends SourceFile {
@@ -46,6 +47,27 @@ export default class ConfigFile extends SourceFile {
       };
       reader.readAsText(file);
     });
+  }
+
+  static get(files, key) {
+    if (!configs.has(key)) {
+      throw new Error(`${key} is not exist in ConfigFiles`);
+    }
+
+    const { test, multiple, defaultValue } = configs.get(key);
+
+    if (!multiple) {
+      const file = files.find((file) => (
+        !file.options.isTrashed && test.test(file.name)
+      ));
+      return Object.assign({}, defaultValue, file ? file.json : {});
+    } else {
+      return files.filter((file) => (
+        !file.options.isTrashed && test.test(file.name)
+      )).reduce((p, c) => {
+        return Object.assign(p, c);
+      }, Object.assign({}, defaultValue));
+    }
   }
 
 }
