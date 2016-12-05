@@ -1,12 +1,27 @@
 export default class Snippet {
-  constructor(settings) {
-    Object.assign(this, settings);
+  constructor(props) {
+    this.props = Object.freeze(props);
+  }
+
+  get text() {
+    return this.props.body;
+  }
+
+  get displayText() {
+    return this.props.name;
+  }
+
+  get className() {
+    return '';
+  }
+
+  test(tokenString) {
+    return this.props.prefix.indexOf(tokenString) === 0;
   }
 
   render(element, self, data) {
     element.textContent = data.displayText;
     return element;
-
   }
 
   hint(instance, self, data) {

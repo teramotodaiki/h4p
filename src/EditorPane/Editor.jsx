@@ -150,12 +150,16 @@ export default class Editor extends Component {
   }
 
   showHint(cm) {
-    const { getFiles, isCared } = this.props;
+    const { getFiles, isCared, getConfig } = this.props;
 
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
-      cm.showHint({ completeSingle: false, files: getFiles() });
+      cm.showHint({
+        completeSingle: false,
+        files: getFiles(),
+        snippets: getConfig('snippets'),
+      });
     });
 
     if (isCared) {

@@ -92,7 +92,7 @@ export default class ConfigFile extends SourceFile {
     }
 
     return target instanceof Array ?
-      target.reduce((p, c) => Object.assign(p, c.json), {}) :
+      ConfigFile.get(key).bundle(target) :
       target.json;
   }
 
