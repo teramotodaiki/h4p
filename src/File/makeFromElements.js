@@ -2,7 +2,6 @@ import {
   BinaryFile,
   ConfigFile,
   SourceFile,
-  separate,
   validateType
 } from './';
 
@@ -40,9 +39,7 @@ function makeFromElement(script) {
     return code;
   })(script.textContent);
 
-  const { moduleName } = separate(name);
-
-  if (!moduleName) {
+  if (ConfigFile.isConfigFile({ name })) {
     return new ConfigFile({ type, name, text, options, author });
   }
   if (validateType('text', type)) {
