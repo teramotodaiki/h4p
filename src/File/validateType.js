@@ -18,6 +18,9 @@ const metas = [
   ['blob', [
     mimes.get('image')
   ]],
+  ['config', [
+    mimes.get('json')
+  ]]
 ].map(([key, regExps]) => [
   key,
   new RegExp(
