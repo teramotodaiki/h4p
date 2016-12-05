@@ -41,6 +41,11 @@ export default class SourceFile extends _File {
     return !this.options.isTrashed && !!this.moduleName;
   }
 
+  get blob() {
+    const { type, text } = this;
+    return new Blob([text], { type });
+  }
+
   get isText() {
     return true;
   }
