@@ -1,13 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 
 
-import { MimeTypes } from '../EditorPane/';
 import { Confirm, Abort } from './Buttons';
 
 const getStyles = (props, context) => {
@@ -55,7 +52,7 @@ export default class RenameDialog extends Component {
     this.setState({ changed: true, name });
   };
 
-  handleTypeChange = (event, index, type) => {
+  handleTypeChange = (event, type) => {
     this.setState({ changed: true, type });
   };
 
@@ -113,16 +110,10 @@ export default class RenameDialog extends Component {
                 style={left}
               >Type</TableRowColumn>
               <TableRowColumn>
-              {content.isText ? (
-                <DropDownMenu
-                  value={type}
-                  onChange={this.handleTypeChange}
-                >
-                {Object.keys(MimeTypes).map((t) => (
-                  <MenuItem key={t} value={t} primaryText={t} />
-                ))}
-                </DropDownMenu>
-              ) : type}
+              <TextField id="type"
+                defaultValue={type}
+                onChange={this.handleTypeChange}
+              />
               </TableRowColumn>
             </TableRow>
             <TableRow>
