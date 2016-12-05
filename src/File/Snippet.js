@@ -7,10 +7,6 @@ export default class Snippet {
     return this.props.body;
   }
 
-  get displayText() {
-    return this.props.name;
-  }
-
   get className() {
     return '';
   }
@@ -20,7 +16,7 @@ export default class Snippet {
   }
 
   render(element, self, data) {
-    element.textContent = data.displayText;
+    element.textContent = this.props.prefix + ' ' + this.props.description;
     return element;
   }
 
@@ -28,14 +24,8 @@ export default class Snippet {
     const { from, to } = typeof data.pick === 'function' ? data.pick(self.from) : self;
     instance.replaceRange(data.text, from, to, 'complete');
 
-    if (typeof data.selections === 'function') {
-      instance.setSelections(data.selections(self.from));
-    }
-
-    if (data.autoIndent !== false) {
-      const length = data.text.split('\n').length;
-      Array.from({ length }).forEach((v, i) => instance.indentLine(i + self.from.line));
-    }
+    const length = data.text.split('\n').length;
+    Array.from({ length }).forEach((v, i) => instance.indentLine(i + self.from.line));
   }
 
 }
