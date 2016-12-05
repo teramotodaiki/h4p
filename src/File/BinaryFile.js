@@ -24,7 +24,6 @@ export default class BinaryFile extends _File {
   };
 
   static visible = _File.visible.concat(
-    'isText',
     'blob',
     'blobURL'
   );
@@ -48,10 +47,6 @@ export default class BinaryFile extends _File {
 
   get isModule() {
     return !this.options.isTrashed && !!this.moduleName;
-  }
-
-  get isText() {
-    return false;
   }
 
   set(change) {

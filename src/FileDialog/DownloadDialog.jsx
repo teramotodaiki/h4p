@@ -48,7 +48,6 @@ export default class DownloadDialog extends Component {
     return this.props.bundle(config).then((text) => ({
       name: TITLE,
       type: 'text/html',
-      isText: true,
       text,
     }));
   }

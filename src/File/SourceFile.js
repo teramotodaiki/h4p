@@ -24,7 +24,6 @@ export default class SourceFile extends _File {
   };
 
   static visible = _File.visible.concat(
-    'isText',
     'text',
     'isScript',
     'blob'
@@ -45,10 +44,6 @@ export default class SourceFile extends _File {
   get blob() {
     const { type, text } = this;
     return new Blob([text], { type });
-  }
-
-  get isText() {
-    return true;
   }
 
   set(change) {
