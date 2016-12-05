@@ -1,6 +1,10 @@
+import React from 'react';
+
+
 import SourceFile from './SourceFile';
 import configs from './configs';
 import validateType from './validateType';
+import { Editor } from '../EditorPane/';
 
 
 export default class ConfigFile extends SourceFile {
@@ -34,6 +38,10 @@ export default class ConfigFile extends SourceFile {
       this._json = Object.assign({}, defaultValue, JSON.parse(this.text));
     }
     return this._json;
+  }
+
+  render(props) {
+    return <Editor file={this} {...props} />
   }
 
   /**
