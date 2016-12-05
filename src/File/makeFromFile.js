@@ -2,7 +2,6 @@ import {
   BinaryFile,
   ConfigFile,
   SourceFile,
-  separate,
   validateType
 } from './';
 
@@ -12,16 +11,14 @@ import {
  * @return Promsie provides _File
  */
 export default function makeFromFile(file) {
-  const { name, type } = file;
-  const { moduleName } = separate(name);
 
-  if (!moduleName) {
+  if (ConfigFile.isConfigFile(file)) {
     return ConfigFile.load(file);
   }
-  if (validateType('text', type)) {
+  if (validateType('text', file.type)) {
     return SourceFile.load(file);
   }
-  if (validateType('blob', type)) {
+  if (validateType('blob', file.type)) {
     return BinaryFile.load(file);
   }
 

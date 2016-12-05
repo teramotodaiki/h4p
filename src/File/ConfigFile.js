@@ -55,6 +55,11 @@ export default class ConfigFile extends SourceFile {
     });
   }
 
+  static isConfigFile(file) {
+    return Array.from(configs.values())
+      .some(({ test }) => test.test(file.name));
+  }
+
   static get (key) {
     if (!configs.has(key)) {
       throw new Error(`${key} is not exist in ConfigFiles`);

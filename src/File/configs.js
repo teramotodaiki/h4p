@@ -13,13 +13,13 @@ export default new Map([
     defaultName: '.options',
   }],
   ['palette', {
-    test: /^\.palette/i,
+    test: /^\.palette$/i,
     multiple: false,
     defaultValue: defaultPalette,
     defaultName: '.palette',
   }],
   ['env', {
-    test: /^\.env/i,
+    test: /^\.env$/i,
     multiple: false,
     defaultValue: {
       DEBUG: [true, 'boolean', 'A flag means test mode'],
@@ -28,7 +28,7 @@ export default new Map([
     defaultName: '.env',
   }],
   ['babelrc', {
-    test: /^\.babelrc/i,
+    test: /^\.babelrc$/i,
     multiple: false,
     defaultValue: {
       presets: ['es2015'],
