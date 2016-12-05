@@ -1,4 +1,8 @@
+import React from 'react';
+
+
 import _File from './_File';
+import { Editor } from '../EditorPane/';
 
 
 export default class SourceFile extends _File {
@@ -20,9 +24,9 @@ export default class SourceFile extends _File {
   };
 
   static visible = _File.visible.concat(
-    'isText',
     'text',
-    'isScript'
+    'isScript',
+    'blob'
   );
 
   get text() {
@@ -37,8 +41,9 @@ export default class SourceFile extends _File {
     return !this.options.isTrashed && !!this.moduleName;
   }
 
-  get isText() {
-    return true;
+  get blob() {
+    const { type, text } = this;
+    return new Blob([text], { type });
   }
 
   set(change) {
@@ -52,6 +57,10 @@ export default class SourceFile extends _File {
     serialized.composed = this.text;
 
     return Promise.resolve(serialized);
+  }
+
+  render(props) {
+    return <Editor file={this} {...props} />
   }
 
   /**

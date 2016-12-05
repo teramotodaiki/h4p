@@ -21,7 +21,7 @@ CodeMirror.hint.javascript = (instance, options) => {
 
   const result = jsHint(instance, options) || { list: [], from, to };
 
-  const snippets = options.snippets['.source.js']
+  const snippets = (options.snippets['.source.js'] || [])
     .filter((snippet) => snippet.test(token.string));
 
   result.list = snippets.concat(result.list);

@@ -1,4 +1,8 @@
+import React from 'react';
+
+
 import _File from './_File';
+import { Preview } from '../EditorPane/';
 
 
 export default class BinaryFile extends _File {
@@ -20,7 +24,6 @@ export default class BinaryFile extends _File {
   };
 
   static visible = _File.visible.concat(
-    'isText',
     'blob',
     'blobURL'
   );
@@ -46,10 +49,6 @@ export default class BinaryFile extends _File {
     return !this.options.isTrashed && !!this.moduleName;
   }
 
-  get isText() {
-    return false;
-  }
-
   set(change) {
     if (change.blob && this.blobURL) {
       URL.revokeObjectURL(this.blobURL);
@@ -70,6 +69,10 @@ export default class BinaryFile extends _File {
       };
       reader.readAsDataURL(this.blob);
     });
+  }
+
+  render(props) {
+    return <Preview file={this} {...props} />
   }
 
   /**

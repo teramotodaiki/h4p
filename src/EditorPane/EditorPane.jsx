@@ -174,20 +174,15 @@ export default class EditorPane extends Component {
       <div style={tabContentContainer}>
       {tabbedFiles.map(file => (
         <ChromeTabContent key={file.key} show={file === selectedFile}>
-        {file.isText ? (
-          <Editor
-            file={file}
-            getFiles={() => files}
-            onChange={(text) => putFile(file, file.set({ text }))}
-            gutterMarginWidth={SizerWidth}
-            handleRun={handleRun}
-            closeSelectedTab={() => closeTab(selectedFile)}
-            isSelected={file === selectedFile}
-            getConfig={getConfig}
-          />
-        ) : (
-          <Preview file={file} />
-        )}
+        {file.render({
+          getFiles: () => files,
+          onChange: (text) => putFile(file, file.set({ text })),
+          gutterMarginWidth: SizerWidth,
+          handleRun,
+          closeSelectedTab: () => closeTab(selectedFile),
+          isSelected: file === selectedFile,
+          getConfig,
+        })}
         </ChromeTabContent>
       ))}
       <Readme

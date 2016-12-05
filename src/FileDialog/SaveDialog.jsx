@@ -26,11 +26,6 @@ export default class SaveDialog extends Component {
     }
   }
 
-  get blob() {
-    const { content: { type, isText, blob, text } } = this.props;
-    return isText ? new Blob([text], { type }) : blob;
-  }
-
   handleSave = () => {
     const { content, onRequestClose } = this.props;
     // download
@@ -38,7 +33,7 @@ export default class SaveDialog extends Component {
     event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     const elem = document.createElement('a');
     elem.download = this.input.value;
-    elem.href = URL.createObjectURL(this.blob);
+    elem.href = URL.createObjectURL(content.blob);
     elem.dispatchEvent(event);
 
     onRequestClose();
@@ -48,7 +43,7 @@ export default class SaveDialog extends Component {
     const { content } = this.props;
     const reader = new FileReader();
     reader.onload = (e) => this.setState({ fallbackHref: reader.result });
-    reader.readAsDataURL(this.blob);
+    reader.readAsDataURL(content.blob);
   };
 
   render() {
