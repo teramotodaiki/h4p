@@ -39,7 +39,7 @@ function makeFromElement(script) {
     return code;
   })(script.textContent);
 
-  if (ConfigFile.isConfigFile({ name })) {
+  if (ConfigFile.isConfigFile({ name, type })) {
     return new ConfigFile({ type, name, text, options, author });
   }
   if (validateType('text', type)) {

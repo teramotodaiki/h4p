@@ -1,5 +1,6 @@
 import SourceFile from './SourceFile';
 import configs from './configs';
+import validateType from './validateType';
 
 
 export default class ConfigFile extends SourceFile {
@@ -56,8 +57,11 @@ export default class ConfigFile extends SourceFile {
   }
 
   static isConfigFile(file) {
-    return Array.from(configs.values())
-      .some(({ test }) => test.test(file.name));
+    const { name, type } = file;
+
+    return validateType('config', type) &&
+      Array.from(configs.values())
+        .some(({ test }) => test.test(file.name));
   }
 
   static get (key) {
@@ -88,7 +92,7 @@ export default class ConfigFile extends SourceFile {
     }
 
     return target instanceof Array ?
-      target.reduce((p, c) => Object.assign(p, c.json), {}) :
+      ConfigFile.get(key).bundle(target) :
       target.json;
   }
 

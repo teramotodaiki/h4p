@@ -1,4 +1,6 @@
 import { defaultPalette } from '../js/getCustomTheme';
+import Snippet from './Snippet';
+
 
 export default new Map([
   ['options', {
@@ -35,4 +37,23 @@ export default new Map([
     },
     defaultName: '.babelrc',
   }],
+  ['snippets', {
+    test: /^snippets\//i,
+    multiple: true,
+    defaultValue: {},
+    defaultName: 'snippets/snippet.json',
+    bundle: (files) => {
+      return files.map((file) => file.json)
+        .reduce((p, c) => {
+          Object.keys(c).forEach((selector) => {
+            p[selector] = (p[selector] || []).concat(
+              Object.keys(c[selector])
+                .map((name) => Object.assign({ name }, c[selector][name]))
+                .map((props) => new Snippet(props))
+            );
+          });
+          return p;
+        }, Object.create(null));
+    },
+  }]
 ]);
