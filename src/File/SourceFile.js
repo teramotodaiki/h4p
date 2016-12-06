@@ -2,7 +2,7 @@ import React from 'react';
 
 
 import _File from './_File';
-import { Editor } from '../EditorPane/';
+import { SourceEditor } from '../EditorPane/';
 
 
 export default class SourceFile extends _File {
@@ -60,7 +60,7 @@ export default class SourceFile extends _File {
   }
 
   render(props) {
-    return <Editor file={this} {...props} />
+    return <SourceEditor file={this} {...props} />
   }
 
   /**

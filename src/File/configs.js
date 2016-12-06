@@ -43,17 +43,25 @@ export default new Map([
     defaultValue: {},
     defaultName: 'snippets/snippet.json',
     bundle: (files) => {
-      return files.map((file) => file.json)
-        .reduce((p, c) => {
-          Object.keys(c).forEach((selector) => {
-            p[selector] = (p[selector] || []).concat(
-              Object.keys(c[selector])
-                .map((name) => Object.assign({ name }, c[selector][name]))
+      const snippets = files
+        .reduce((p, file) => {
+          const { name, json } = file;
+          Object.keys(json).forEach((scope) => {
+            p[scope] = (p[scope] || []).concat(
+              Object.keys(json[scope])
+                .map((key) => Object.assign({ name }, json[scope][key]))
                 .map((props) => new Snippet(props))
             );
           });
           return p;
         }, Object.create(null));
+      Object.keys(snippets).forEach((scope) => {
+        snippets[scope] = snippets[scope].sort(
+          (a, b) =>
+            a.prefix.toLowerCase() > b.prefix.toLowerCase() ? 1 : -1
+        );
+      });
+      return snippets;
     },
   }]
 ]);
