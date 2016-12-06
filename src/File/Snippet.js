@@ -1,5 +1,6 @@
 export default class Snippet {
   constructor(props) {
+    this.key = getUniqueId();
     this.props = Object.freeze(props);
   }
 
@@ -29,3 +30,5 @@ export default class Snippet {
   }
 
 }
+
+const getUniqueId = ((id) => () => 'Snippet__' + ++id)(0);
