@@ -8,12 +8,17 @@ export default class Snippet {
     return this.props.body;
   }
 
-  get className() {
-    return '';
+  get prefix() {
+    return this.props.prefix;
+  }
+
+  get leftLabel() {
+    return this.props.leftLabel;
   }
 
   test(tokenString) {
-    return this.props.prefix.indexOf(tokenString) === 0;
+    const prefix = this.props.prefix.toLowerCase();
+    return prefix.indexOf(tokenString.toLowerCase()) === 0;
   }
 
   render(element, self, data) {
