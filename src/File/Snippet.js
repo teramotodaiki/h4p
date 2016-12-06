@@ -1,7 +1,11 @@
+import separate from './separate';
+
+
 export default class Snippet {
   constructor(props) {
     this.key = getUniqueId();
     this.props = Object.freeze(props);
+    this._separate = separate(props.name);
   }
 
   get text() {
@@ -18,6 +22,10 @@ export default class Snippet {
 
   get leftLabel() {
     return this.props.leftLabel;
+  }
+
+  get plane() {
+    return this._separate.plane;
   }
 
   test(tokenString) {
