@@ -28,11 +28,9 @@ const getStyle = (props, context) => {
       paddingBottom: 60,
       display: 'flex',
       flexWrap: 'wrap',
-      justifyContent: 'between',
       overflow: 'scroll',
       boxSizing: 'border-box',
       paddingLeft: SizerWidth,
-
     },
   }
 };
