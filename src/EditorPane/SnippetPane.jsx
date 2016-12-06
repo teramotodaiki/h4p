@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 
 
+import SnippetButton from './SnippetButton';
+import { SizerWidth } from '../Monitor/';
+
+
 const getStyle = (props, context) => {
   const {
     palette,
@@ -18,15 +22,30 @@ const getStyle = (props, context) => {
       height: 12,
       borderTop: `1px solid ${palette.borderColor}`,
     },
-    snippets: {
+    container: {
       borderTop: `1px solid ${palette.borderColor}`,
-      height: 140,
-      paddingBottom: 40,
+      height: 240,
+      paddingBottom: 60,
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'between',
+      overflow: 'scroll',
+      boxSizing: 'border-box',
+      paddingLeft: SizerWidth,
+
     },
   }
 };
 
 export default class SnippetPane extends Component {
+
+  static propTypes = {
+    snippets: PropTypes.array.isRequired,
+  };
+
+  static defaultProps = {
+    snippets: [],
+  };
 
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
@@ -34,15 +53,26 @@ export default class SnippetPane extends Component {
 
   render() {
     const {
+      snippets,
+    } = this.props;
+
+    const {
       root,
       menu,
-      snippets,
+      container,
     } = getStyle(this.props, this.context);
 
     return (
       <div style={root}>
         <div style={menu}></div>
-        <div style={snippets}></div>
+        <div style={container}>
+        {snippets.map((snippet) => (
+          <SnippetButton
+            key={snippet.key}
+            snippet={snippet}
+          />
+        ))}
+        </div>
       </div>
     );
   }

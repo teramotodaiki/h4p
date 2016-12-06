@@ -49,16 +49,24 @@ export default class SourceEditor extends Component {
 
   render() {
     const {
+      getConfig,
+    } = this.props;
+
+    const {
       root,
       editorContainer,
     } = getStyle(this.props, this.context);
+
+    const snippets = getConfig('snippets')['.source.js'];
 
     return (
       <div style={root}>
         <div style={editorContainer}>
           <Editor {...this.props} />
         </div>
-        <SnippetPane />
+        <SnippetPane
+          snippets={snippets}
+        />
       </div>
     );
   }
