@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react';
+import { DropTarget } from 'react-dnd';
 
 
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
 import { SizerWidth } from '../Monitor/';
+import DragTypes from '../utils/dragTypes';
 
 const getStyle = (props, context) => {
   const {
@@ -26,7 +28,7 @@ const getStyle = (props, context) => {
   };
 };
 
-export default class SourceEditor extends Component {
+class SourceEditor extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
@@ -37,6 +39,9 @@ export default class SourceEditor extends Component {
     closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
+
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -50,6 +55,8 @@ export default class SourceEditor extends Component {
   render() {
     const {
       getConfig,
+
+      connectDropTarget,
     } = this.props;
 
     const {
@@ -65,9 +72,11 @@ export default class SourceEditor extends Component {
 
     return (
       <div style={root}>
+      {connectDropTarget(
         <div style={editorContainer}>
           <Editor {...props} />
         </div>
+      )}
         <SnippetPane
           snippets={snippets}
         />
@@ -75,3 +84,27 @@ export default class SourceEditor extends Component {
     );
   }
 }
+
+const spec = {
+  drop(props, monitor, component) {
+    if (monitor.getDropResult() || !component.codemirror) {
+      return;
+    }
+    const { snippet } = monitor.getItem();
+    const { codemirror } = component;
+
+    const { x, y } = monitor.getClientOffset();
+    const pos = codemirror.coordsChar({ left: x, top: y });
+
+    snippet.hint(codemirror, { from: pos, to: pos }, snippet);
+
+    return {};
+  }
+};
+
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver({ shallow: true }),
+});
+
+export default DropTarget(DragTypes.Snippet, spec, collect)(SourceEditor);
