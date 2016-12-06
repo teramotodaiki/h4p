@@ -31,6 +31,7 @@ const getStyle = (props, context) => {
       overflow: 'scroll',
       boxSizing: 'border-box',
       paddingLeft: SizerWidth,
+      justifyContent: 'flex-start',
     },
   }
 };

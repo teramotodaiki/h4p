@@ -12,6 +12,10 @@ export default class Snippet {
     return this.props.prefix;
   }
 
+  get description() {
+    return this.props.description;
+  }
+
   get leftLabel() {
     return this.props.leftLabel;
   }
