@@ -27,7 +27,7 @@ export default class Snippet {
   }
 
   hint(instance, self, data) {
-    const { from, to } = typeof data.pick === 'function' ? data.pick(self.from) : self;
+    const { from, to } = self;
     instance.replaceRange(data.text, from, to, 'complete');
 
     const length = data.text.split('\n').length;
