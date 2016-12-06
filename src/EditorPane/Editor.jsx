@@ -118,11 +118,13 @@ export default class Editor extends Component {
     isSelected: PropTypes.bool.isRequired,
     isCared: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
+    codemirrorRef: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     gutterMarginWidth: 0,
     isCared: false,
+    codemirrorRef: () => {},
   };
 
   static contextTypes = {
@@ -144,6 +146,7 @@ export default class Editor extends Component {
     if (!ref) return;
     if (!ref[AlreadySetSymbol]) {
       const cm = ref.getCodeMirror();
+      this.props.codemirrorRef(cm);
       this.showHint(cm);
       ref[AlreadySetSymbol] = true;
     }

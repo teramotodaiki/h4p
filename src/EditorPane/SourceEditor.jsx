@@ -59,10 +59,14 @@ export default class SourceEditor extends Component {
 
     const snippets = getConfig('snippets')['.source.js'];
 
+    const props = Object.assign({}, this.props, {
+      codemirrorRef: (ref) => (this.codemirror = ref),
+    });
+
     return (
       <div style={root}>
         <div style={editorContainer}>
-          <Editor {...this.props} />
+          <Editor {...props} />
         </div>
         <SnippetPane
           snippets={snippets}
