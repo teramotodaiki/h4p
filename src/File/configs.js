@@ -44,12 +44,12 @@ export default new Map([
     defaultName: 'snippets/snippet.json',
     bundle: (files) => {
       const snippets = files
-        .map((file) => file.json)
-        .reduce((p, c) => {
-          Object.keys(c).forEach((scope) => {
+        .reduce((p, file) => {
+          const { name, json } = file;
+          Object.keys(json).forEach((scope) => {
             p[scope] = (p[scope] || []).concat(
-              Object.keys(c[scope])
-                .map((name) => Object.assign({ name }, c[scope][name]))
+              Object.keys(json[scope])
+                .map((key) => Object.assign({ name }, json[scope][key]))
                 .map((props) => new Snippet(props))
             );
           });
