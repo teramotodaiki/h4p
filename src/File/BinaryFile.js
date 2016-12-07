@@ -8,6 +8,7 @@ import { Preview } from '../EditorPane/';
 export default class BinaryFile extends _File {
 
   static defaultProps = {
+    name: '.BinaryFile',
     blob: null,
   };
 

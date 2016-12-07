@@ -10,6 +10,7 @@ import { Editor } from '../EditorPane/';
 export default class ConfigFile extends SourceFile {
 
   static defaultProps = {
+    name: '.ConfigFile',
     type: 'application/json',
     text: '{}',
     json: {},
