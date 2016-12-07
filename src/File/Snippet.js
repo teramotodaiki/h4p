@@ -24,6 +24,10 @@ export default class Snippet {
     return this.props.leftLabel;
   }
 
+  get rightLabel() {
+    return this.props.rightLabel;
+  }
+
   get plane() {
     return this._separate.plane;
   }
