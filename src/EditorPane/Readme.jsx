@@ -6,6 +6,7 @@ import CommunicationImportContacts from 'material-ui/svg-icons/communication/imp
 
 
 import MDReactComponent from '../../lib/MDReactComponent';
+import { SourceFile } from '../File/';
 import Editor from './Editor';
 import ShotFrame from './ShotFrame';
 
@@ -180,6 +181,10 @@ export default class Readme extends Component {
       const onRestore = () => this.setState({
         updates: Object.assign({}, updates, { [props.key]: null }),
       });
+      const dummyFile = new SourceFile({
+        type: 'text/javascript',
+        text,
+      });
 
       return (
         <ShotFrame
@@ -189,7 +194,7 @@ export default class Readme extends Component {
           canRestore={hasUpdate}
         >
           <Editor isSelected
-            file={{ text, type: 'text/javascript', options: {} }}
+            file={dummyFile}
             options={getConfig('options')}
             getFiles={() => []}
             onChange={onChange}
