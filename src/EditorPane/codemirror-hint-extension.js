@@ -11,7 +11,7 @@ CodeMirror.hint.javascript = (instance, options) => {
   const to = { line: cursor.line, ch: cursor.ch };
   const empty = { list: [], from, to };
 
-  if (!/[A-Za-z\.]$/.test(token.string)) {
+  if (!/[A-Za-z\.\'\"\`]$/.test(token.string)) {
     return empty;
   }
 
@@ -22,18 +22,19 @@ CodeMirror.hint.javascript = (instance, options) => {
     .concat(result.list);
 
   if (token.type === 'string') {
-    const left = instance.getLine(cursor.line)
-      .substr(0, cursor.ch)
-      .substr(token.start + 1);
-    const moduleNames = options.files
-      .filter(file => file.moduleName.indexOf(left) === 0)
-      .map(file => ({
-        text: file.moduleName,
-        from: { line: from.line, ch: from.ch + 1 },
-      }));
-    result.list = moduleNames.concat(result.list);
+    const start = { line: cursor.line, ch: token.start + 1 };
+    const prefix = instance.getLine(cursor.line)
+      .substr(start.ch, cursor.ch - start.ch);
+
+    result.list = getModuleNames(options.files, start, prefix)
+      .concat(result.list);
   }
 
   return result;
 
 };
+function getModuleNames(files, from, prefix = '') {
+  return files
+    .filter(file => file.moduleName.indexOf(prefix) === 0)
+    .map(file => ({ text: file.moduleName, from }));
+}
