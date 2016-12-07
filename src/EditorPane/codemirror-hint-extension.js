@@ -17,6 +17,10 @@ CodeMirror.hint.javascript = (instance, options) => {
 
   const result = anywordHint(instance, options) || empty;
 
+  result.list = options.snippets
+    .filter((snippet) => snippet.test(token.string))
+    .concat(result.list);
+
   if (token.type === 'string') {
     const left = instance.getLine(cursor.line)
       .substr(0, cursor.ch)
