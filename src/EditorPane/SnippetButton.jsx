@@ -1,10 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
+import IconButton from 'material-ui/IconButton';
+import NavigationMoreHoriz from 'material-ui/svg-icons/navigation/more-horiz';
 
 
 import DragTypes from '../utils/dragTypes';
 
+const TOUCH_START = 'touchstart' in document ? 'onTouchStart' : 'onMouseDown';
+const TOUCH_END = 'touchend' in document ? 'onTouchEnd' : 'onMouseUp';
 
 const getStyle = (props, context, state) => {
   const {
@@ -18,69 +22,60 @@ const getStyle = (props, context, state) => {
 
   const {
     mini,
+    code,
   } = state;
+
+  const commonAlignment = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
 
   return {
     root: {
       position: 'relative',
-      flex: mini ? '1 1 auto' : '1 0 100%',
-    },
-    background: {
-      position: 'relative',
+      flex: '0 0 auto',
       boxSizing: 'border-box',
+      width: mini ? '6rem' : '100%',
+      height: '6rem',
+      padding: 8,
+      zIndex: code ? 2 : 1,
+    },
+    container: Object.assign({
       width: '100%',
       height: '100%',
-      backgroundColor: palette.canvasColor,
-      display: 'flex',
-      justifyContent: 'center',
-      paddingTop: spacing.desktopGutterMini / 2,
-      paddingBottom: spacing.desktopGutterMini / 2,
-      paddingLeft: mini ? 0 : spacing.desktopGutterMini,
-      paddingRight: mini ? 0 : spacing.desktopGutterMini,
-      zIndex: 2,
-    },
+      cursor: 'move',
+    }, commonAlignment),
     button: {
-      flex: mini ? '0 0 auto' : '1 1 auto',
-      position: 'relative',
+      width: '100%',
+      height: '100%',
       display: 'flex',
-      boxSizing: 'border-box',
-      padding: spacing.desktopGutterMini,
-      opacity: isDragging ? .5 : 1,
-    },
-    left: {
-      flex: '0 0 auto',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
       justifyContent: 'center',
-      width: '4.8rem',
-      height: '4.8rem',
     },
+    pre: {
+      backgroundColor: palette.canvasColor,
+    },
+    left: commonAlignment,
     prefix: {
       fontSize: '1rem',
     },
     leftLabel: {
-      fontSize: '0.5rem',
+      fontSize: '.5rem',
     },
-    right: {
+    right: Object.assign({
       flex: '1 1 auto',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
+    }, commonAlignment),
+    description: {
+      fontSize: '1rem',
     },
-    hidden: {
+    rightLabel: {
+      fontSize: '.5rem',
+    },
+    more: {
       position: 'absolute',
-      top: 0,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1,
-    },
-    pre: {
-      backgroundColor: palette.canvasColor,
+      left: 0,
+      bottom: -4,
     },
   };
 };
@@ -101,6 +96,7 @@ class SnippetButton extends Component {
 
   state = {
     mini: true,
+    code: false,
   };
 
   handleToggle = () => {
@@ -118,41 +114,58 @@ class SnippetButton extends Component {
     } = this.props;
     const {
       mini,
+      code,
     } = this.state;
 
     const {
       root,
-      background,
+      container,
+      pre,
       button,
       left,
       prefix,
       leftLabel,
       right,
-      hidden,
-      pre,
+      description,
+      rightLabel,
+      more,
+      moreIcon,
     } = getStyle(this.props, this.context, this.state);
 
+    const events = {
+      [TOUCH_START]: () => this.setState({ code: true }),
+      [TOUCH_END]: () => this.setState({ code: false }),
+    };
 
-    return connectDragSource(
+    return (
       <div style={root}>
-        <div style={background}>
+      {connectDragSource(
+        <div style={container} {...events}>
+        {code ? connectDragPreview(
+          <pre style={pre}>{snippet.text}</pre>
+        ) : (
           <Paper style={button} onTouchTap={this.handleToggle}>
             <div style={left}>
               <span style={prefix}>{snippet.prefix}</span>
               <span style={leftLabel}>{snippet.leftLabel}</span>
             </div>
-          {mini ? null : (
+            {mini ? null : (
             <div style={right}>
               <span style={prefix}>{snippet.description}</span>
+              <code style={rightLabel}>{snippet.rightLabel}</code>
             </div>
-          )}
+            )}
           </Paper>
-        </div>
-        <div style={hidden}>
-        {connectDragPreview(
-          <pre style={pre}>{snippet.text}</pre>
         )}
         </div>
+      )}
+        <IconButton
+          style={more}
+          iconStyle={moreIcon}
+          onTouchTap={this.handleToggle}
+        >
+          <NavigationMoreHoriz />
+        </IconButton>
       </div>
     );
   }
