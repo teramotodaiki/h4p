@@ -11,7 +11,7 @@ CodeMirror.hint.javascript = (instance, options) => {
   const to = { line: cursor.line, ch: cursor.ch };
   const empty = { list: [], from, to };
 
-  if (/[\;\=\)\,]$|^\s*$|^\($/.test(token.string)) {
+  if (!/[A-Za-z\.]$/.test(token.string)) {
     return empty;
   }
 
