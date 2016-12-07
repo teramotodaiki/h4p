@@ -33,6 +33,43 @@ CodeMirror.hint.javascript = (instance, options) => {
   return result;
 
 };
+
+CodeMirror.hint.markdown = (instance, options) => {
+
+  const cursor = instance.getCursor();
+  const token = instance.getTokenAt(cursor);
+  const from = { line: cursor.line, ch: token.start };
+  const to = { line: cursor.line, ch: cursor.ch };
+  const empty = { list: [], from, to };
+
+  if (token.type === 'string url') {
+    const start = {
+      line: cursor.line,
+      ch: token.string[0] === '(' ? token.start + 1 : token.start
+    };
+    const prefix = instance.getLine(cursor.line)
+      .substr(start.ch, cursor.ch - start.ch);
+    return {
+      list: getModuleNames(options.files, start, prefix),
+      from, to
+    };
+  }
+
+  if (!/[A-Za-z\.\'\"\`\(\[]$/.test(token.string)) {
+    return empty;
+  }
+
+  const result = anywordHint(instance, options) || empty;
+
+  result.list = options.snippets
+    .filter((snippet) => snippet.test(token.string))
+    .concat(result.list);
+
+  return result;
+
+};
+
+
 function getModuleNames(files, from, prefix = '') {
   return files
     .filter(file => file.moduleName.indexOf(prefix) === 0)
