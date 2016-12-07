@@ -20,6 +20,15 @@ const metas = [
   ]],
   ['config', [
     mimes.get('json')
+  ]],
+  ['*', [
+    /.*/,
+  ]],
+  ['.source.js', [
+    mimes.get('javascript'),
+  ]],
+  ['.source.gfm', [
+    mimes.get('markdown'),
   ]]
 ].map(([key, regExps]) => [
   key,

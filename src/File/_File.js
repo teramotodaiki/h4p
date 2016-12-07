@@ -28,7 +28,7 @@ export default class _File {
     this.options = lock(this.constructor.defaultOptions, this.props.options);
     this.author = lock(this.constructor.defaultAuthor, this.props.author);
 
-    this._separate = separate(props.name);
+    this._separate = separate(this.props.name);
   }
 
   get name() {

@@ -158,10 +158,14 @@ export default class Editor extends Component {
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const token = cm.getTokenAt(cm.getCursor());
+      const snippets = getConfig('snippets');
       cm.showHint({
         completeSingle: false,
         files: getFiles(),
-        snippets: getConfig('snippets'),
+        snippets: Object.keys(snippets)
+          .filter((scope) => this.props.file.is(scope))
+          .map((scope) => snippets[scope])
+          .reduce((p, c) => p.concat(c), []),
       });
     });
 

@@ -1,70 +1,77 @@
 import CodeMirror from 'codemirror';
-import 'codemirror/addon/hint/javascript-hint';
+import 'codemirror/addon/hint/anyword-hint';
 
+const anywordHint = CodeMirror.hint.anyword;
 
-const jsHint = CodeMirror.hint.javascript;
 CodeMirror.hint.javascript = (instance, options) => {
+
   const cursor = instance.getCursor();
   const token = instance.getTokenAt(cursor);
   const from = { line: cursor.line, ch: token.start };
   const to = { line: cursor.line, ch: cursor.ch };
+  const empty = { list: [], from, to };
 
-  if (endOfCompletion.test(token.string)) {
-    return { list: [], from, to };
+  if (!/[A-Za-z\.\'\"\`]$/.test(token.string)) {
+    return empty;
   }
 
-  if (token.type === null && token.string !== '(') {
-    return { list: [], from, to };
-  }
+  const result = anywordHint(instance, options) || empty;
 
-  options = Object.assign({}, options, jsOptions);
-
-  const result = jsHint(instance, options) || { list: [], from, to };
-
-  const snippets = (options.snippets['.source.js'] || [])
-    .filter((snippet) => snippet.test(token.string));
-
-  result.list = snippets.concat(result.list);
+  result.list = options.snippets
+    .filter((snippet) => snippet.test(token.string))
+    .concat(result.list);
 
   if (token.type === 'string') {
-    const left = instance.getLine(cursor.line)
-      .substr(0, cursor.ch)
-      .substr(token.start + 1);
-    const moduleNames = options.files
-      .filter(file => file.moduleName.indexOf(left) === 0)
-      .map(file => ({
-        text: file.moduleName,
-        from: { line: from.line, ch: from.ch + 1 },
-      }));
-    result.list = moduleNames.concat(result.list);
+    const start = { line: cursor.line, ch: token.start + 1 };
+    const prefix = instance.getLine(cursor.line)
+      .substr(start.ch, cursor.ch - start.ch);
+
+    result.list = getModuleNames(options.files, start, prefix)
+      .concat(result.list);
   }
 
   return result;
+
 };
 
-const globalScope = (keys => {
-  const merge = (p, c) => {
-    if (typeof c === 'string') {
-      p[c] = null;
-      return p;
-    } else if (c instanceof Array) {
-      const key = c[0];
-      const props = c.slice(1);
-      p[key] = props.reduce(merge, Object.create(null));
-    }
-    return p;
-  };
-  return keys.reduce(merge, Object.create(null));
-})([
-  'require',
-  'exports',
-  ['module', 'exports'],
-  ['console', 'log', 'info', 'warn', 'error', 'time', 'timeEnd'],
-  ['env', 'DEBUG', 'VIEW']
-]);
+CodeMirror.hint.markdown = (instance, options) => {
 
-const jsOptions = {
-  globalScope
+  const cursor = instance.getCursor();
+  const token = instance.getTokenAt(cursor);
+  const from = { line: cursor.line, ch: token.start };
+  const to = { line: cursor.line, ch: cursor.ch };
+  const empty = { list: [], from, to };
+
+  if (token.type === 'string url') {
+    const start = {
+      line: cursor.line,
+      ch: token.string[0] === '(' ? token.start + 1 : token.start
+    };
+    const prefix = instance.getLine(cursor.line)
+      .substr(start.ch, cursor.ch - start.ch);
+    return {
+      list: getModuleNames(options.files, start, prefix),
+      from, to
+    };
+  }
+
+  if (!/[A-Za-z\.\'\"\`\(\[]$/.test(token.string)) {
+    return empty;
+  }
+
+  const result = anywordHint(instance, options) || empty;
+
+  result.list = options.snippets
+    .filter((snippet) => snippet.test(token.string))
+    .concat(result.list);
+
+  return result;
+
 };
 
-const endOfCompletion = /^(.*[\;\=\)\,]|\s*)$/;
+
+function getModuleNames(files, from, prefix = '') {
+  return files
+    .filter(file => file.moduleName.indexOf(prefix) === 0)
+    .map(file => ({ text: file.moduleName, from }));
+}

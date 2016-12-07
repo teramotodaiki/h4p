@@ -8,6 +8,7 @@ import { SourceEditor } from '../EditorPane/';
 export default class SourceFile extends _File {
 
   static defaultProps = {
+    name: '.SourceFile',
     text: '',
   };
 
