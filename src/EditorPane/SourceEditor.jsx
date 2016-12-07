@@ -54,6 +54,7 @@ class SourceEditor extends Component {
 
   render() {
     const {
+      file,
       getConfig,
 
       connectDropTarget,
@@ -64,7 +65,7 @@ class SourceEditor extends Component {
       editorContainer,
     } = getStyle(this.props, this.context);
 
-    const snippets = getConfig('snippets')['.source.js'];
+    const snippets = getConfig('snippets')(file);
 
     const props = Object.assign({}, this.props, {
       codemirrorRef: (ref) => (this.codemirror = ref),
