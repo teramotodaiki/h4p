@@ -72,11 +72,12 @@ export default class SourceFile extends _File {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
+        console.log(e);
         resolve(
           new SourceFile({
             type: file.type,
             name: file.name,
-            text: e.data.result,
+            text: e.target.result,
           })
         );
       };
