@@ -4,6 +4,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
 
+import { SourceFile } from '../File/';
+
 export default class DownloadDialog extends Component {
 
   static propTypes = {
@@ -45,11 +47,14 @@ export default class DownloadDialog extends Component {
     const { getConfig } = this.props;
     const [TITLE] = getConfig('env').TITLE || [''];
 
-    return this.props.bundle(config).then((text) => ({
-      name: TITLE,
-      type: 'text/html',
-      text,
-    }));
+    return this.props.bundle(config)
+      .then((text) => (
+        new SourceFile({
+          name: TITLE,
+          type: 'text/html',
+          text,
+        })
+      ));
   }
 
   handleDownload = (content) => {
