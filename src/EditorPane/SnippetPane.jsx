@@ -7,6 +7,9 @@ import { SizerWidth } from '../Monitor/';
 
 const getStyle = (props, context) => {
   const {
+    snippets,
+  } = props;
+  const {
     palette,
   } = context.muiTheme;
 
@@ -29,10 +32,11 @@ const getStyle = (props, context) => {
     menu: {
       display: 'flex',
       borderTop: `1px solid ${palette.borderColor}`,
+      paddingLeft: SizerWidth,
     },
     container: {
       borderTop: `1px solid ${palette.borderColor}`,
-      height: 240,
+      height: snippets.length ? 240 : 0,
       paddingBottom: 60,
       display: 'flex',
       flexWrap: 'wrap',
@@ -83,13 +87,10 @@ export default class SnippetPane extends Component {
     }
   }
 
-  handleToggle = (key) => {
-    const show = Object.keys(this.state.show)
-      .map((item) => ({
-        [key]: !!(item === key ^ this.state.show[item])
-      }))
-      .reduce((p, c) => Object.assign(p, c), {});
-
+  handleToggle = (target) => {
+    const show = this.getShowState((key) => (
+      !!(target === key ^ this.state.show[key])
+    ));
     this.setState({ show });
   };
 

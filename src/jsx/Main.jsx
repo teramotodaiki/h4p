@@ -12,7 +12,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 
-import { BinaryFile, ConfigFile, SourceFile } from '../File/';
+import { BinaryFile, SourceFile, configs } from '../File/';
 import getLocalization from '../localization/';
 import getCustomTheme from '../js/getCustomTheme';
 import EditorPane from '../EditorPane/';
@@ -103,11 +103,15 @@ class Main extends Component {
     return file ? file.text : this.state.localization.readme.text;
   }
 
-  findFile = (name) => {
-    return this.state.files.find((file) =>
-      !file.options.isTrashed &&
-      (file.name === name || file.moduleName === name)
-    );
+  findFile = (name, multiple = false) => {
+    const { files } = this.state;
+    const pred = typeof name === 'function' ? name :
+      (file) => (
+        !file.options.isTrashed &&
+        (file.name === name || file.moduleName === name)
+      );
+
+    return multiple ? files.filter(pred) : files.find(pred);
   };
 
   componentDidMount() {
@@ -194,7 +198,14 @@ class Main extends Component {
     if (this._configs.has(key)) {
       return this._configs.get(key);
     } else {
-      const value = ConfigFile.getValue(this.state.files, key);
+      const { test, defaultValue, multiple, bundle } = configs.get(key);
+      const files = this.findFile((file) => (
+        !file.options.isTrashed && test.test(file.name)
+      ), multiple);
+
+      const value = files ? (
+        multiple ? bundle(files) : file.json
+      ) : defaultValue;
       this._configs.set(key, value);
       return value;
     }
@@ -203,15 +214,21 @@ class Main extends Component {
   setConfig = (key, config) => {
     this._configs.delete(key);
 
-    const configFile = ConfigFile.getFile(this.state.files, key);
-    const indent = '    ';
+    const { test, defaultName } = configs.get(key);
+    const configFile = this.findFile((file) => (
+      !file.options.isTrashed && test.test(file.name)
+    ), false);
 
+    const indent = '    ';
     const text = JSON.stringify(config, null, indent);
     if (configFile) {
       return this.putFile(configFile, configFile.set({ text }));
     } else {
-      const { defaultName } = ConfigFile.get(key);
-      const newFile = new ConfigFile({ name: defaultName, text });
+      const newFile = new SourceFile({
+        type: 'application/json',
+        name: defaultName,
+        text
+      });
       return this.addFile(newFile);
     }
   };

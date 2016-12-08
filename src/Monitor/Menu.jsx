@@ -14,7 +14,7 @@ import ActionLanguage from 'material-ui/svg-icons/action/language';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 
-import { BinaryFile, ConfigFile, SourceFile } from '../File/';
+import { BinaryFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
 import { DownloadDialog, SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';

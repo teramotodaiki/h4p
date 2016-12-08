@@ -7,7 +7,7 @@ import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
 import transitions from 'material-ui/styles/transitions';
 
 
-import { BinaryFile, ConfigFile, SourceFile } from '../File/';
+import { BinaryFile, SourceFile } from '../File/';
 import composeEnv from '../File/composeEnv';
 import template from '../html/screen';
 import fallbackTemplate from '../html/dangerScreen';
