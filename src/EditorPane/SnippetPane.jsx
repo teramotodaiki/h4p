@@ -51,12 +51,26 @@ export default class SnippetPane extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  state = {
+    show: this.getShowState((key, i) => i === 0),
+  };
+
+  getShowState(predicate) {
+    return this.props.snippets
+      .map((snippet) => snippet.plane)
+      .filter((key, i, array) => array.indexOf(key) === i)
+      .map((key, i) => ({ [key]: !!predicate(key, i) }))
+      .reduce((p, c) => Object.assign(p, c), Object.create(null));
+  }
+
   render() {
     const {
       snippets,
       findFile,
     } = this.props;
-
+    const {
+      show,
+    } = this.state;
     const {
       root,
       menu,
@@ -67,13 +81,16 @@ export default class SnippetPane extends Component {
       <div style={root}>
         <div style={menu}></div>
         <div style={container}>
-        {snippets.map((snippet) => (
-          <SnippetButton
-            key={snippet.key}
-            snippet={snippet}
-            findFile={findFile}
-          />
-        ))}
+        {snippets
+          .filter((snippet) => show[snippet.plane])
+          .map((snippet) => (
+            <SnippetButton
+              key={snippet.key}
+              snippet={snippet}
+              findFile={findFile}
+            />
+          )
+        )}
         </div>
       </div>
     );
