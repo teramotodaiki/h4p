@@ -52,6 +52,7 @@ const getStyle = (props, context, state) => {
       height: '100%',
       display: 'flex',
       justifyContent: 'center',
+      overflow: 'hidden',
     },
     pre: {
       backgroundColor: palette.canvasColor,
