@@ -7,6 +7,9 @@ import { SizerWidth } from '../Monitor/';
 
 const getStyle = (props, context) => {
   const {
+    snippets,
+  } = props;
+  const {
     palette,
   } = context.muiTheme;
 
@@ -33,7 +36,7 @@ const getStyle = (props, context) => {
     },
     container: {
       borderTop: `1px solid ${palette.borderColor}`,
-      height: 240,
+      height: snippets.length ? 240 : 0,
       paddingBottom: 60,
       display: 'flex',
       flexWrap: 'wrap',
