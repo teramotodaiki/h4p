@@ -1,6 +1,5 @@
 import {
   BinaryFile,
-  ConfigFile,
   SourceFile,
   validateType
 } from './';
@@ -12,9 +11,6 @@ import {
  */
 export default function makeFromFile(file) {
 
-  if (ConfigFile.isConfigFile(file)) {
-    return ConfigFile.load(file);
-  }
   if (validateType('text', file.type)) {
     return SourceFile.load(file);
   }

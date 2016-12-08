@@ -2,6 +2,7 @@ import React from 'react';
 
 
 import _File from './_File';
+import configs from './configs';
 import { SourceEditor } from '../EditorPane/';
 
 
@@ -10,6 +11,7 @@ export default class SourceFile extends _File {
   static defaultProps = {
     name: '.SourceFile',
     text: '',
+    json: null,
   };
 
   static defaultOptions = {
@@ -47,6 +49,19 @@ export default class SourceFile extends _File {
     return new Blob([text], { type });
   }
 
+  get json() {
+    if (!this.is('json')) {
+      return null;
+    }
+    if (!this._json) {
+      const model = Array.from(configs.values())
+        .find((config) => config.test.test(this.name));
+      const defaultValue = model ? model.defaultValue : {};
+      this._json = Object.assign({}, defaultValue, JSON.parse(this.text));
+    }
+    return this._json;
+  }
+
   set(change) {
     const seed = Object.assign(this.serialize(), change);
 
@@ -72,7 +87,6 @@ export default class SourceFile extends _File {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        console.log(e);
         resolve(
           new SourceFile({
             type: file.type,
