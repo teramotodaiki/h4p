@@ -57,7 +57,11 @@ export default class SourceFile extends _File {
       const model = Array.from(configs.values())
         .find((config) => config.test.test(this.name));
       const defaultValue = model ? model.defaultValue : {};
-      this._json = Object.assign({}, defaultValue, JSON.parse(this.text));
+      try {
+        this._json = Object.assign({}, defaultValue, JSON.parse(this.text));
+      } catch (e) {
+        return {};
+      }
     }
     return this._json;
   }
