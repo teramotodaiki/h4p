@@ -29,6 +29,7 @@ const getStyle = (props, context) => {
     menu: {
       display: 'flex',
       borderTop: `1px solid ${palette.borderColor}`,
+      paddingLeft: SizerWidth,
     },
     container: {
       borderTop: `1px solid ${palette.borderColor}`,
