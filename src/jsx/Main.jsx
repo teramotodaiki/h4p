@@ -143,6 +143,7 @@ class Main extends Component {
       return;
     }
     this.setState({ files }, () => resolve(file));
+    this._configs.clear();
   });
 
   putFile = (prevFile, nextFile) => new Promise((resolve, reject) => {
@@ -152,6 +153,7 @@ class Main extends Component {
     }
     const files = this.state.files.map((item) => item === prevFile ? nextFile : item);
     this.setState({ files }, () => resolve(nextFile));
+    this._configs.clear();
   });
 
   deleteFile = (file) => new Promise((resolve, reject) => {

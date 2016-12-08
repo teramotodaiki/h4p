@@ -26,6 +26,7 @@ const getStyle = (props, context, state) => {
   } = state;
 
   const commonAlignment = {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -72,6 +73,12 @@ const getStyle = (props, context, state) => {
     },
     rightLabel: {
       fontSize: '.5rem',
+    },
+    plane: {
+      position: 'absolute',
+      fontSize: '.5rem',
+      right: 0,
+      bottom: 0,
     },
     more: {
       position: 'absolute',
@@ -131,6 +138,7 @@ class SnippetButton extends Component {
       right,
       description,
       rightLabel,
+      plane,
       more,
       moreIcon,
     } = getStyle(this.props, this.context, this.state);
@@ -156,6 +164,7 @@ class SnippetButton extends Component {
             <div style={right}>
               <span style={prefix}>{snippet.description}</span>
               <code style={rightLabel}>{snippet.renderRightLabel(findFile)}</code>
+              <span style={plane}>{snippet.plane}</span>
             </div>
             )}
           </Paper>

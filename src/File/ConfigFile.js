@@ -57,7 +57,7 @@ export default class ConfigFile extends SourceFile {
           new ConfigFile({
             type: file.type,
             name: file.name,
-            text: e.data.result,
+            text: e.target.result,
           })
         );
       };
