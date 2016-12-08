@@ -204,7 +204,7 @@ class Main extends Component {
       ), multiple);
 
       const value = files ? (
-        multiple ? bundle(files) : file.json
+        multiple ? bundle(files) : files.json
       ) : defaultValue;
       this._configs.set(key, value);
       return value;
