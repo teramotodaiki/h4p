@@ -159,6 +159,7 @@ class SnippetButton extends Component {
         )}
         </div>
       )}
+      {code ? null : (
         <IconButton
           style={more}
           iconStyle={moreIcon}
@@ -166,6 +167,7 @@ class SnippetButton extends Component {
         >
           <NavigationMoreHoriz />
         </IconButton>
+      )}
       </div>
     );
   }
