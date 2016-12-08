@@ -10,6 +10,14 @@ const getStyle = (props, context) => {
     palette,
   } = context.muiTheme;
 
+  const commonMenu = {
+    fontSize: '.8rem',
+    borderRadius: 2,
+    padding: '0 4px',
+    margin: '2px 4px',
+    cursor: 'pointer',
+  };
+
   return {
     root: {
       flex: '0 0 auto',
@@ -19,7 +27,7 @@ const getStyle = (props, context) => {
       alignItems: 'stretch',
     },
     menu: {
-      height: 12,
+      display: 'flex',
       borderTop: `1px solid ${palette.borderColor}`,
     },
     container: {
@@ -33,6 +41,11 @@ const getStyle = (props, context) => {
       paddingLeft: SizerWidth,
       justifyContent: 'flex-start',
     },
+    enabled: Object.assign({
+      color: palette.alternateTextColor,
+      backgroundColor: palette.secondaryTextColor,
+    }, commonMenu),
+    disabled: commonMenu,
   }
 };
 
@@ -92,11 +105,24 @@ export default class SnippetPane extends Component {
       root,
       menu,
       container,
+      enabled,
+      disabled,
     } = getStyle(this.props, this.context);
+
+    const menus = Object.keys(show).map((key) => {
+      const style = show[key] ? enabled : disabled;
+      return (
+        <span
+          key={key}
+          style={style}
+          onTouchTap={() => this.handleToggle(key)}
+        >{key}</span>
+      );
+    });
 
     return (
       <div style={root}>
-        <div style={menu}></div>
+        <div style={menu}>{menus}</div>
         <div style={container}>
         {snippets
           .filter((snippet) => show[snippet.plane])
