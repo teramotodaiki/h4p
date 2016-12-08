@@ -173,8 +173,11 @@ class SnippetButton extends Component {
 
 
 const spec = {
-  beginDrag(props) {
+  beginDrag(props, monitor, component) {
     const { snippet } = props;
+    setTimeout(() => {
+      component.setState({ code: false });
+    }, 1);
     return { snippet };
   }
 };
