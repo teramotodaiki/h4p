@@ -52,6 +52,7 @@ const getStyle = (props, context, state) => {
       height: '100%',
       display: 'flex',
       justifyContent: 'center',
+      overflow: 'hidden',
     },
     pre: {
       backgroundColor: palette.canvasColor,
@@ -84,6 +85,7 @@ class SnippetButton extends Component {
 
   static propTypes = {
     snippet: PropTypes.object.isRequired,
+    findFile: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -108,6 +110,7 @@ class SnippetButton extends Component {
     const {
       snippet,
       isDragging,
+      findFile,
 
       connectDragSource,
       connectDragPreview,
@@ -147,18 +150,19 @@ class SnippetButton extends Component {
           <Paper style={button} onTouchTap={this.handleToggle}>
             <div style={left}>
               <span style={prefix}>{snippet.prefix}</span>
-              <span style={leftLabel}>{snippet.leftLabel}</span>
+              <span style={leftLabel}>{snippet.renderLeftLabel(findFile)}</span>
             </div>
             {mini ? null : (
             <div style={right}>
               <span style={prefix}>{snippet.description}</span>
-              <code style={rightLabel}>{snippet.rightLabel}</code>
+              <code style={rightLabel}>{snippet.renderRightLabel(findFile)}</code>
             </div>
             )}
           </Paper>
         )}
         </div>
       )}
+      {code ? null : (
         <IconButton
           style={more}
           iconStyle={moreIcon}
@@ -166,6 +170,7 @@ class SnippetButton extends Component {
         >
           <NavigationMoreHoriz />
         </IconButton>
+      )}
       </div>
     );
   }
@@ -173,8 +178,11 @@ class SnippetButton extends Component {
 
 
 const spec = {
-  beginDrag(props) {
+  beginDrag(props, monitor, component) {
     const { snippet } = props;
+    setTimeout(() => {
+      component.setState({ code: false });
+    }, 1);
     return { snippet };
   }
 };

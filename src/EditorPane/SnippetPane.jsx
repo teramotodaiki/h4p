@@ -40,6 +40,7 @@ export default class SnippetPane extends Component {
 
   static propTypes = {
     snippets: PropTypes.array.isRequired,
+    findFile: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -53,6 +54,7 @@ export default class SnippetPane extends Component {
   render() {
     const {
       snippets,
+      findFile,
     } = this.props;
 
     const {
@@ -69,6 +71,7 @@ export default class SnippetPane extends Component {
           <SnippetButton
             key={snippet.key}
             snippet={snippet}
+            findFile={findFile}
           />
         ))}
         </div>

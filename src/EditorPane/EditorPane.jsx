@@ -182,6 +182,7 @@ export default class EditorPane extends Component {
           closeSelectedTab: () => closeTab(selectedFile),
           isSelected: file === selectedFile,
           getConfig,
+          findFile,
         })}
         </ChromeTabContent>
       ))}

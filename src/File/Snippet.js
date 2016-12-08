@@ -1,3 +1,4 @@
+import React from 'react';
 import separate from './separate';
 
 
@@ -21,15 +22,55 @@ export default class Snippet {
   }
 
   get leftLabel() {
-    return this.props.leftLabel;
+    const { leftLabel, leftLabelHTML } = this.props;
+    if (!this._leftLabel) {
+      if (leftLabelHTML) {
+        this._leftLabel = parseElement(leftLabelHTML);
+      } else {
+        this._leftLabel = leftLabel || null;
+      }
+    }
+    return this._leftLabel;
   }
 
   get rightLabel() {
-    return this.props.rightLabel;
+    const { rightLabel, rightLabelHTML } = this.props;
+    if (!this._rightLabel) {
+      if (rightLabelHTML) {
+        this._rightLabel = parseElement(rightLabelHTML);
+      } else {
+        this._rightLabel = rightLabel || null;
+      }
+    }
+    return this._rightLabel;
   }
 
   get plane() {
     return this._separate.plane;
+  }
+
+  renderLeftLabel(findFile) {
+    if (React.isValidElement(this.leftLabel) && this.leftLabel.props.src) {
+      const file = findFile(this.leftLabel.props.src);
+      if (file) {
+        return React.cloneElement(this.leftLabel, {
+          src: file.blobURL,
+        });
+      }
+    }
+    return this.leftLabel;
+  }
+
+  renderRightLabel(findFile) {
+    if (React.isValidElement(this.rightLabel) && this.rightLabel.props.src) {
+      const file = findFile(this.rightLabel.props.src);
+      if (file) {
+        return React.cloneElement(this.rightLabel, {
+          src: file.blobURL,
+        });
+      }
+    }
+    return this.rightLabel;
   }
 
   test(tokenString) {
@@ -53,3 +94,13 @@ export default class Snippet {
 }
 
 const getUniqueId = ((id) => () => 'Snippet__' + ++id)(0);
+
+const parseElement = (html) => {
+  const span = document.createElement('span');
+  span.innerHTML = html;
+  const { tagName, attributes } = span.firstChild;
+  const props = Array.from(attributes)
+    .map((attr) => ({ [attr.name]: attr.value }))
+    .reduce((p, c) => Object.assign(p, c), {});
+  return React.createElement(tagName, props);
+};

@@ -39,6 +39,7 @@ class SourceEditor extends Component {
     closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
+    findFile: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -56,6 +57,7 @@ class SourceEditor extends Component {
     const {
       file,
       getConfig,
+      findFile,
 
       connectDropTarget,
     } = this.props;
@@ -80,6 +82,7 @@ class SourceEditor extends Component {
       )}
         <SnippetPane
           snippets={snippets}
+          findFile={findFile}
         />
       </div>
     );
