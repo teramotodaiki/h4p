@@ -149,12 +149,12 @@ class SnippetButton extends Component {
           <Paper style={button} onTouchTap={this.handleToggle}>
             <div style={left}>
               <span style={prefix}>{snippet.prefix}</span>
-              <span style={leftLabel}>{snippet.leftLabel}</span>
+              <span style={leftLabel}>{snippet.renderLeftLabel(findFile)}</span>
             </div>
             {mini ? null : (
             <div style={right}>
               <span style={prefix}>{snippet.description}</span>
-              <code style={rightLabel}>{snippet.rightLabel}</code>
+              <code style={rightLabel}>{snippet.renderRightLabel(findFile)}</code>
             </div>
             )}
           </Paper>
