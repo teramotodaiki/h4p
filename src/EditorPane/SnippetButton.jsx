@@ -84,6 +84,7 @@ class SnippetButton extends Component {
 
   static propTypes = {
     snippet: PropTypes.object.isRequired,
+    findFile: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -108,6 +109,7 @@ class SnippetButton extends Component {
     const {
       snippet,
       isDragging,
+      findFile,
 
       connectDragSource,
       connectDragPreview,
