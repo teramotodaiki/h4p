@@ -63,6 +63,23 @@ export default class SnippetPane extends Component {
       .reduce((p, c) => Object.assign(p, c), Object.create(null));
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.snippets !== nextProps.snippets) {
+      const show = this.getShowState((key) => this.state.show[key]);
+      this.setState({ show });
+    }
+  }
+
+  handleToggle = (key) => {
+    const show = Object.keys(this.state.show)
+      .map((item) => ({
+        [key]: !!(item === key ^ this.state.show[item])
+      }))
+      .reduce((p, c) => Object.assign(p, c), {});
+
+    this.setState({ show });
+  };
+
   render() {
     const {
       snippets,
