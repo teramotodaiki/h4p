@@ -10,7 +10,7 @@ export default new Map([
       tabVisibility: false,
       darkness: false,
       lineWrapping: false,
-      indentUnit4: false,
+      indentUnit4: true,
     },
     defaultName: '.options',
   }],

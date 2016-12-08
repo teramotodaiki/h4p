@@ -14,7 +14,7 @@ export default class Snippet {
   }
 
   get prefix() {
-    return this.props.prefix;
+    return this.props.prefix || '';
   }
 
   get description() {
@@ -98,9 +98,12 @@ const getUniqueId = ((id) => () => 'Snippet__' + ++id)(0);
 const parseElement = (html) => {
   const span = document.createElement('span');
   span.innerHTML = html;
-  const { tagName, attributes } = span.firstChild;
-  const props = Array.from(attributes)
-    .map((attr) => ({ [attr.name]: attr.value }))
-    .reduce((p, c) => Object.assign(p, c), {});
-  return React.createElement(tagName, props);
+  if (span.firstChild) {
+    const { tagName, attributes } = span.firstChild;
+    const props = Array.from(attributes)
+      .map((attr) => ({ [attr.name]: attr.value }))
+      .reduce((p, c) => Object.assign(p, c), {});
+    return React.createElement(tagName, props);
+  }
+  return null;
 };
