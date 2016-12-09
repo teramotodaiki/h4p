@@ -10,7 +10,9 @@ export default class Snippet {
   }
 
   get text() {
-    return this.props.body;
+    return this.props.body
+      .replace(/\\n/g, '\n')
+      .replace(/\\t/g, '\t');
   }
 
   get prefix() {
