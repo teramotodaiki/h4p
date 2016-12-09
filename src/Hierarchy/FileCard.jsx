@@ -97,7 +97,7 @@ class FileCard extends Component {
   handleNameChange = (event, name) => {
     const { file, putFile } = this.props;
 
-    return putFile(file, file.rename({ name }));
+    return putFile(file, file.rename(name));
   };
 
   render() {
