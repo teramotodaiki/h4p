@@ -1,4 +1,5 @@
 import { separate, validateType } from './';
+import babelWorker from '../workers/babel-worker';
 
 
 export default class _File {
@@ -57,6 +58,11 @@ export default class _File {
 
   is(name) {
     return validateType(name, this.type);
+  }
+
+  babel(config) {
+    const promise = babelWorker(this, config);
+    return promise;
   }
 
   rename(newName) {
