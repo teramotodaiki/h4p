@@ -16,7 +16,6 @@ import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
 import Menu, { MenuHeight } from './Menu';
 import Sizer from './Sizer';
-import babelWorker from '../workers/babel-worker';
 
 
 const ConnectionTimeout = 1000;
@@ -163,7 +162,7 @@ export default class Monitor extends Component {
     let sent = 0;
     const workerProcess = this.props.files
       .filter((file) => file.isModule)
-      .map((file, i, send) => babelWorker(file, getConfig('babelrc'))
+      .map((file, i, send) => file.babel(getConfig('babelrc'))
       .then((file) => {
         // To indicate
         const progress = Math.min(1, ++sent / send.length);
