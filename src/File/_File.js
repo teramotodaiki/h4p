@@ -1,4 +1,5 @@
 import { separate, validateType } from './';
+import babelWorker from '../workers/babel-worker';
 
 
 export default class _File {
@@ -57,6 +58,16 @@ export default class _File {
 
   is(name) {
     return validateType(name, this.type);
+  }
+
+  _babelCache = new WeakMap();
+  babel(config) {
+    if (this._babelCache.has(config)) {
+      return this._babelCache.get(config);
+    }
+    const promise = babelWorker(this, config);
+    this._babelCache.set(config, promise);
+    return promise;
   }
 
   rename(newName) {

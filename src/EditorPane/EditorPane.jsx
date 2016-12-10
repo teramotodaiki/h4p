@@ -11,7 +11,6 @@ import Preview from './Preview';
 import { AddDialog } from '../FileDialog/';
 import Editor from './Editor';
 import Readme from './Readme';
-import babelWorker from '../workers/babel-worker';
 
 const SizerWidth = 24;
 
@@ -107,8 +106,7 @@ export default class EditorPane extends Component {
   handleShot = (text) => {
     const { portPostMessage, getConfig } = this.props;
     if (text && portPostMessage) {
-      Promise.resolve(SourceFile.shot(text))
-      .then((file) => babelWorker(file, getConfig('babelrc')))
+      SourceFile.shot(text).babel(getConfig('babelrc'))
       .then((file) => portPostMessage({ query: 'shot', value: file.serialize() }));
     }
   };
