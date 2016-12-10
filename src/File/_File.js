@@ -60,8 +60,13 @@ export default class _File {
     return validateType(name, this.type);
   }
 
+  _babelCache = new WeakMap();
   babel(config) {
+    if (this._babelCache.has(config)) {
+      return this._babelCache.get(config);
+    }
     const promise = babelWorker(this, config);
+    this._babelCache.set(config, promise);
     return promise;
   }
 
