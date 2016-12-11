@@ -147,7 +147,8 @@ class Main extends Component {
       resolve(prevFile);
       return;
     }
-    const files = this.state.files.map((item) => item === prevFile ? nextFile : item);
+    const files = this.state.files
+      .map((item) => item.key === prevFile.key ? nextFile : item);
     this.setState({ files }, () => resolve(nextFile));
     this._configs.clear();
   });
