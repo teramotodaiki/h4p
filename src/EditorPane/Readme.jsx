@@ -126,7 +126,7 @@ export default class Readme extends Component {
         onTouchTap: () => {
           const found = findFile(href);
           if (found) {
-            const getFile = findFile((file) => file.key === found.key);
+            const getFile = () => findFile(({key}) => key === found.key);
             selectTab(new Tab({ getFile }));
           }
         },
