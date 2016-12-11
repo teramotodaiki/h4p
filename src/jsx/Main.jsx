@@ -311,6 +311,7 @@ class Main extends Component {
       isResizing,
       localization,
       getConfig: this.getConfig,
+      findFile: this.findFile,
     };
 
     const isShrinked = (width, height) => width < 200 || height < 40;
