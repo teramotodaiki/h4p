@@ -185,14 +185,6 @@ class Main extends Component {
     }
   });
 
-  switchEntryPoint = (file) => new Promise((resolve, reject) => {
-    const files = this.state.files.map(item => {
-      const options = Object.assign({}, item.options, { isEntryPoint: item.key === file.key });
-      return Object.assign({}, item, options);
-    });
-    this.setState({ files }, () => resolve(this.selectedFile));
-  });
-
   _configs = new Map();
   getConfig = (key) => {
     if (this._configs.has(key)) {
