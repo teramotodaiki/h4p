@@ -57,16 +57,15 @@ export default class EditorPane extends Component {
   static propTypes = {
     selectedFile: PropTypes.object,
     files: PropTypes.array.isRequired,
-    tabbedFiles: PropTypes.array.isRequired,
+    tabs: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
-    selectFile: PropTypes.func.isRequired,
+    selectTab: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     portPostMessage: PropTypes.func.isRequired,
-    readme: PropTypes.string.isRequired,
     findFile: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
     isShrinked: PropTypes.bool.isRequired,
@@ -78,10 +77,6 @@ export default class EditorPane extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
-  state = {
-    showReadme: true,
-  };
-
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.isResizing) {
       return false;
@@ -90,9 +85,8 @@ export default class EditorPane extends Component {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    if (this.props.tabbedFiles.length !== nextProps.tabbedFiles.length) {
-      const showReadme = nextProps.tabbedFiles.length === 0;
-      this.setState({ showReadme });
+    if (this.props.tabs !== nextProps.tabs) {
+
     }
   }
 
@@ -111,12 +105,8 @@ export default class EditorPane extends Component {
     }
   };
 
-  handleReadmeShow = (showReadme) => {
-    this.setState({ showReadme });
-  };
-
-  handleSelectTab = (file) => {
-    this.props.selectFile(file);
+  handleSelectTab = (tab) => {
+    this.props.selectTab(tab);
     this.handleReadmeShow(false);
   };
 
@@ -126,19 +116,14 @@ export default class EditorPane extends Component {
     }
 
     const {
-      files, selectedFile, tabbedFiles,
-      putFile, selectFile, closeTab,
+      files, selectedFile, tabs,
+      putFile, selectTab, closeTab,
       handleRun,
       openFileDialog,
       localization,
-      readme,
       findFile,
       getConfig, setConfig,
     } = this.props;
-
-    const {
-      showReadme,
-    } = this.state;
 
     const {
       root,
@@ -148,6 +133,7 @@ export default class EditorPane extends Component {
     } = getStyles(this.props, this.context);
     const { prepareStyles } = this.context.muiTheme;
 
+    const tabbedFiles = tabs.map((tab) => tab.file);
 
     return (
     <div style={prepareStyles(root)}>
@@ -157,11 +143,11 @@ export default class EditorPane extends Component {
         setConfig={setConfig}
       />
       <div style={prepareStyles(tabContainer)}>
-      {tabbedFiles.map(file => (
+      {tabs.map((tab) => (
         <ChromeTab
-          key={file.key}
-          file={file}
-          isSelected={file === selectedFile}
+          key={tab.key}
+          tab={tab}
+          isSelected={tab.isSelected}
           tabbedFiles={tabbedFiles}
           handleSelect={this.handleSelectTab}
           handleClose={closeTab}
@@ -170,32 +156,25 @@ export default class EditorPane extends Component {
       ))}
       </div>
       <div style={tabContentContainer}>
-      {tabbedFiles.map(file => (
-        <ChromeTabContent key={file.key} show={file === selectedFile}>
-        {file.render({
+      {tabs.map((tab) => (
+        <ChromeTabContent key={tab.key} show={tab.isSelected}>
+        {tab.renderContent({
           getFiles: () => files,
           onChange: (text) => putFile(file, file.set({ text })),
           gutterMarginWidth: SizerWidth,
           handleRun,
           closeSelectedTab: () => closeTab(selectedFile),
-          isSelected: file === selectedFile,
+          isSelected: tab.file === selectedFile,
           getConfig,
           findFile,
+          localization,
+          onShot: this.handleShot,
+          selectTab,
         })}
         </ChromeTabContent>
       ))}
-      <Readme
-        show={showReadme}
-        handleShow={this.handleReadmeShow}
-        readme={readme}
-        localization={localization}
-        onShot={this.handleShot}
-        findFile={findFile}
-        selectFile={selectFile}
-        getConfig={getConfig}
-      />
       </div>
-      {tabbedFiles.length > 0 ? (
+      {tabs.length > 0 ? (
         <FloatingActionButton secondary
           style={button}
           onClick={this.handleAdd}

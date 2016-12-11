@@ -10,6 +10,7 @@ export default class BinaryFile extends _File {
   static defaultProps = {
     name: '.BinaryFile',
     blob: null,
+    component: Preview,
   };
 
   static defaultOptions = {
@@ -70,10 +71,6 @@ export default class BinaryFile extends _File {
       };
       reader.readAsDataURL(this.blob);
     });
-  }
-
-  render(props) {
-    return <Preview file={this} {...props} />
   }
 
   /**

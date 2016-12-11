@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 
 import { makeFromFile } from '../File/';
 import { SignDialog } from '../FileDialog/';
+import { Tab } from '../ChromeTab/';
 import Root from './Root';
 import SearchBar from './SearchBar';
 
@@ -34,12 +35,11 @@ export default class Hierarchy extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
-    selectedFile: PropTypes.object,
-    tabbedFiles: PropTypes.array.isRequired,
+    tabs: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     deleteFile: PropTypes.func.isRequired,
-    selectFile: PropTypes.func.isRequired,
+    selectTab: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
@@ -64,7 +64,7 @@ export default class Hierarchy extends Component {
   }
 
   handleNativeDrop = (files, dir = null) => {
-    const { addFile, selectFile, openFileDialog } = this.props;
+    const { addFile, selectTab, openFileDialog } = this.props;
 
     files.map(file => () => {
       const content = { name: file.name };
@@ -75,7 +75,7 @@ export default class Hierarchy extends Component {
       .then(([file, author]) => file.set({ author }))
       .then(file => dir ? file.move(dir.path) : file)
       .then(addFile)
-      .then(selectFile);
+      .then(selectTab);
     })
     .reduce((p, c) => {
       return p.then(c);
@@ -97,12 +97,21 @@ export default class Hierarchy extends Component {
   };
 
   handleFileSelect = (file) => {
-    const { selectFile, closeTab, selectedFile } = this.props;
+    const { selectTab, closeTab, tabs, files } = this.props;
 
-    if (file === selectedFile) {
-      closeTab(file);
+    const opened = tabs.find((tab) => (
+      tab.file === file && !tab.props.component
+    ));
+
+    if (opened) {
+      if (opened.isSelected) {
+        closeTab(opened);
+      } else {
+        selectTab(opened);
+      }
     } else {
-      selectFile(file);
+      const getFile = () => files.find(({key}) => key === file.key);
+      selectTab(new Tab({ getFile }));
     }
   };
 
@@ -122,17 +131,20 @@ export default class Hierarchy extends Component {
 
     const {
       files,
-      selectFile,
-      selectedFile,
-      tabbedFiles,
+      selectTab,
       putFile,
       openFileDialog,
       localization,
     } = this.props;
     const { filter } = this.state;
 
+    const tabs = this.props.tabs
+      .filter((tab) => !tab.props.component);
+    const selected = tabs.find((tab) => tab.isSelected);
+    const tabbedFiles = tabs.map((tab) => tab.file);
+
     const transfer = {
-      selectedFile,
+      selectedFile: selected && selected.file,
       tabbedFiles,
       openFileDialog,
       putFile,

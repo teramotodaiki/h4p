@@ -12,6 +12,7 @@ export default class SourceFile extends _File {
     name: '.SourceFile',
     text: '',
     json: null,
+    component: SourceEditor,
   };
 
   static defaultOptions = {
@@ -77,10 +78,6 @@ export default class SourceFile extends _File {
     serialized.composed = this.text;
 
     return Promise.resolve(serialized);
-  }
-
-  render(props) {
-    return <SourceEditor file={this} {...props} />
   }
 
   /**

@@ -15,11 +15,12 @@ injectTapEventPlugin();
 import { BinaryFile, SourceFile, configs } from '../File/';
 import getLocalization from '../localization/';
 import getCustomTheme from '../js/getCustomTheme';
-import EditorPane from '../EditorPane/';
+import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
+import { Tab } from '../ChromeTab/';
 
 const getStyle = (props, state, palette) => {
   const { isResizing } = state;
@@ -71,8 +72,7 @@ class Main extends Component {
     isPopout: false,
     reboot: false,
 
-    selectedKey: null,
-    tabbedKeys: [],
+    tabs: [],
 
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
@@ -88,21 +88,6 @@ class Main extends Component {
     return parseInt(this.props.rootStyle.height, 10);
   }
 
-  get selectedFile() {
-    const { files, selectedKey } = this.state;
-    return files.find(file => file.key === selectedKey);
-  }
-
-  get tabbedFiles() {
-    const { files, tabbedKeys } = this.state;
-    return tabbedKeys.map(key => files.find(file => key === file.key));
-  }
-
-  get readme() {
-    const file = this.findFile('README.md');
-    return file ? file.text : this.state.localization.readme.text;
-  }
-
   findFile = (name, multiple = false) => {
     const { files } = this.state;
     const pred = typeof name === 'function' ? name :
@@ -115,17 +100,24 @@ class Main extends Component {
   };
 
   componentDidMount() {
-    const { files } = this.props;
+    const { localization } = this.state;
 
-    if (!this.findFile('README.md')) {
+    const readmeFile = this.findFile('README.md');
+    const promise = readmeFile ?
+      Promise.resolve(readmeFile) :
       this.addFile(
         new SourceFile({
           type: 'text/x-markdown',
           name: 'README.md',
-          text: this.readme,
+          text: localization.readme.text,
         })
       );
-    }
+    promise.then((file) => this.selectTab(
+      new Tab({
+        getFile: () => this.findFile('README.md'),
+        component: Readme,
+      })
+    ));
 
     document.title = this.getConfig('env').TITLE[0];
 
@@ -163,34 +155,6 @@ class Main extends Component {
   deleteFile = (file) => new Promise((resolve, reject) => {
     const files = this.state.files.filter((item) => item.key !== file.key);
     this.setState({ files }, () => resolve());
-  });
-
-  selectFile = (file) => new Promise((resolve, reject) => {
-    const { files } = this.state;
-    const selectedKey = file.key;
-    if (this.state.tabbedKeys.includes(selectedKey)) {
-      this.setState({ selectedKey }, () => resolve(file));
-    } else if (files.some(item => item === file)) {
-      const tabbedKeys = this.state.tabbedKeys.concat(file.key);
-      this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
-    }
-  });
-
-  switchEntryPoint = (file) => new Promise((resolve, reject) => {
-    const files = this.state.files.map(item => {
-      const options = Object.assign({}, item.options, { isEntryPoint: item.key === file.key });
-      return Object.assign({}, item, options);
-    });
-    this.setState({ files }, () => resolve(this.selectedFile));
-  });
-
-  addTab = (file) => new Promise((resolve, reject) => {
-    if (this.state.tabbedKeys.includes(file.key)) {
-      resolve(file);
-      return;
-    }
-    const tabbedKeys = this.state.tabbedKeys.concat(file.key);
-    this.setState({ tabbedKeys }, () => resolve(file));
   });
 
   _configs = new Map();
@@ -233,14 +197,32 @@ class Main extends Component {
     }
   };
 
-  closeTab = (file) => new Promise((resolve, reject) => {
-    const tabbedKeys = this.state.tabbedKeys.filter(key => key !== file.key);
-    if (this.state.selectedKey !== file.key) {
-      this.setState({ tabbedKeys }, () => resolve(file));
+  selectTab = (tab) => new Promise((resolve, reject) => {
+    const tabs = this.state.tabs.map((item) => {
+      if (item.isSelected) return item.select(false);
+      return item;
+    });
+
+    const found = tabs.find((item) => item.is(tab));
+    const replace = found && found.select(true);
+    if (found) {
+      this.setState({
+        tabs: tabs.map((item) => item === found ? replace : item),
+      }, () => resolve(replace));
     } else {
-      const selectedKey = tabbedKeys[0] || null;
-      this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
+      if (!tab.isSelected) tab = tab.select(true);
+      this.setState({
+        tabs: tabs.concat(tab),
+      }, () => resolve(tab));
     }
+  });
+
+  closeTab = (tab) => new Promise((resolve, reject) => {
+    const tabs = this.state.tabs.filter((item) => item.key !== tab.key);
+    if (tab.isSelected && tabs.length > 0) {
+      tabs[0] = tabs[0].select(true);
+    }
+    this.setState({ tabs }, () => resolve());
   });
 
   inspection = (newFile, reject) => {
@@ -309,7 +291,7 @@ class Main extends Component {
     } = this.props;
 
     const {
-      files, tabbedKeys, selectedKey,
+      files, tabs,
       dialogContent,
       monitorWidth, monitorHeight, isResizing,
       isPopout,
@@ -334,17 +316,15 @@ class Main extends Component {
     const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
-      selectedFile: this.selectedFile,
-      tabbedFiles: this.tabbedFiles,
+      tabs,
       addFile: this.addFile,
       putFile: this.putFile,
-      selectFile: this.selectFile,
+      selectTab: this.selectTab,
       closeTab: this.closeTab,
       handleRun: this.handleRun,
       openFileDialog: this.openFileDialog,
       localization: localization,
       portPostMessage: portPostMessage,
-      readme: this.readme,
       findFile: this.findFile,
       isShrinked: isShrinked(
         this.rootWidth - monitorWidth,
@@ -371,12 +351,11 @@ class Main extends Component {
     };
 
     const hierarchyProps = {
-      selectedFile: this.selectedFile,
-      tabbedFiles: this.tabbedFiles,
+      tabs,
       addFile: this.addFile,
       putFile: this.putFile,
       deleteFile: this.deleteFile,
-      selectFile: this.selectFile,
+      selectTab: this.selectTab,
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
       isShrinked: isShrinked(
