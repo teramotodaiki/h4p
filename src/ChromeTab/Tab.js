@@ -34,7 +34,7 @@ export default class Tab {
       return false;
     }
     return (tab.key === this.key) ||
-      tab.file === this.file && tab.component === this.component;
+      tab.file.key === this.file.key && tab.component === this.component;
   };
 
   select(isSelected) {
