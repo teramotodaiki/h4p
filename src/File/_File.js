@@ -56,6 +56,10 @@ export default class _File {
     return this.props.type;
   }
 
+  get component() {
+    return this.props.component;
+  }
+
   is(name) {
     return validateType(name, this.type);
   }

@@ -12,6 +12,7 @@ export default class SourceFile extends _File {
     name: '.SourceFile',
     text: '',
     json: null,
+    component: SourceEditor,
   };
 
   static defaultOptions = {
