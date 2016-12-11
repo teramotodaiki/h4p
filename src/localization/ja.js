@@ -45,7 +45,7 @@ export default {
     indentUnit4: '４文字ずつそろえる',
   },
   readme: {
-    text: `# アプリのタイトル
+    text: `# はじめに
 これは、こういうかんじのアプリです。←っていうのを、ここに書けます
 ## 「はじめに」の 書きかえ
 1. まずは [はじめに](README.md) をひらきます
@@ -64,7 +64,6 @@ alert('こんにちは！');
 - おせわになった人がいたら、
 - ここに名前を書いてあげるといいよ。
 `,
-    gettingStarted: 'はじめに',
   },
   hierarchy: {
     emptyTrashBox: '空にする',

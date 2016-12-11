@@ -39,6 +39,7 @@ export default class Hierarchy extends Component {
     addFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     deleteFile: PropTypes.func.isRequired,
+    findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
@@ -97,21 +98,17 @@ export default class Hierarchy extends Component {
   };
 
   handleFileSelect = (file) => {
-    const { selectTab, closeTab, tabs, files } = this.props;
+    const { selectTab, closeTab, tabs, findFile } = this.props;
 
-    const opened = tabs.find((tab) => (
-      tab.file === file && !tab.props.component
-    ));
+    const getFile = () => findFile(({key}) => key === file.key);
+    const tab = new Tab({ getFile });
 
-    if (opened) {
-      if (opened.isSelected) {
-        closeTab(opened);
-      } else {
-        selectTab(opened);
-      }
+    const selected = tabs.find((tab) => tab.isSelected);
+
+    if (selected.is(tab)) {
+      closeTab(selected);
     } else {
-      const getFile = () => files.find(({key}) => key === file.key);
-      selectTab(new Tab({ getFile }));
+      selectTab(tab);
     }
   };
 

@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Paper from 'material-ui/Paper';
-import FlatButton from 'material-ui/FlatButton';
 import transitions from 'material-ui/styles/transitions';
-import CommunicationImportContacts from 'material-ui/svg-icons/communication/import-contacts';
 
 
 import MDReactComponent from '../../lib/MDReactComponent';
@@ -28,35 +25,16 @@ const getStyle = (props, state, context) => {
       height: '100%',
       boxSizing: 'border-box',
       paddingLeft: SizerWidth,
-      transition: transitions.easeOut(),
-    }),
-    container: {
-      boxSizing: 'border-box',
-      width: '100%',
-      height: '100%',
+      paddingRight: spacing.desktopGutterMini,
       display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
-      borderWidth: 1,
-      borderBottomWidth: 0,
-      borderStyle: 'solid',
-      borderColor: palette.accent1Color,
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
-    },
-    header: {
-      flex: '0 0 auto',
-      height: BarHeight,
-      color: palette.alternateTextColor,
-      backgroundColor: palette.accent1Color,
-      borderRadius: 0,
-    },
+      transition: transitions.easeOut(),
+      backgroundColor: palette.canvasColor,
+    }),
     markdown: prepareStyles({
       flex: '1 1 auto',
       display: 'block',
       overflow: 'scroll',
       paddingLeft: spacing.desktopGutterMini,
-      paddingRight: spacing.desktopGutterMore,
       paddingBottom: spacing.desktopGutterMore,
     }),
   };
@@ -104,7 +82,6 @@ export default class Readme extends Component {
   static propTypes = {
     file: PropTypes.object.isRequired,
     isSelected: PropTypes.bool.isRequired,
-    localization: PropTypes.object.isRequired,
     onShot: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
@@ -146,9 +123,13 @@ export default class Readme extends Component {
       const href = props.href;
       props = Object.assign({}, props, {
         href: 'javascript:void(0)',
-        onTouchTap: () => selectTab(
-          new Tab({ getFile: () => findFile(href) })
-        ),
+        onTouchTap: () => {
+          const found = findFile(href);
+          if (found) {
+            const getFile = () => findFile(({key}) => key === found.key);
+            selectTab(new Tab({ getFile }));
+          }
+        },
       });
       return <a {...props} target="_blank">{children}</a>;
     }
@@ -204,7 +185,6 @@ export default class Readme extends Component {
   render() {
     const {
       file,
-      localization,
     } = this.props;
 
     const {
@@ -213,14 +193,8 @@ export default class Readme extends Component {
 
     const {
       root,
-      container,
-      header,
       markdown,
     } = getStyle(this.props, this.state, this.context);
-
-    const {
-      gettingStarted,
-    } = localization.readme;
 
     const mdStyles = mdStyle(this.props, this.state, this.context);
 
@@ -236,18 +210,11 @@ export default class Readme extends Component {
 
     return (
       <div style={root}>
-        <Paper style={container}>
-          <FlatButton
-            label={gettingStarted}
-            icon={<CommunicationImportContacts />}
-            style={header}
-          />
-          <MDReactComponent
-            text={file.text}
-            style={markdown}
-            onIterate={onIterate}
-          />
-        </Paper>
+        <MDReactComponent
+          text={file.text}
+          style={markdown}
+          onIterate={onIterate}
+        />
       </div>
     );
   }

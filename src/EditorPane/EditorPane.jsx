@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
@@ -9,10 +8,9 @@ import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import Preview from './Preview';
 import { AddDialog } from '../FileDialog/';
-import Editor from './Editor';
-import Readme from './Readme';
+import { SizerWidth } from '../Monitor/';
+import MarkdownMenu from './MarkdownMenu';
 
-const SizerWidth = 24;
 
 const getStyles = (props, context) => {
   const { palette, spacing } = context.muiTheme;
@@ -32,7 +30,7 @@ const getStyles = (props, context) => {
       paddingTop: spacing.desktopGutterMini,
       paddingRight: spacing.desktopGutterLess,
       paddingBottom: 10,
-      paddingLeft: spacing.desktopGutterLess,
+      paddingLeft: 10 + spacing.desktopGutterMore,
       marginRight: spacing.desktopGutterMore,
       marginBottom: -10,
       marginLeft: SizerWidth,
@@ -55,7 +53,6 @@ const getStyles = (props, context) => {
 export default class EditorPane extends Component {
 
   static propTypes = {
-    selectedFile: PropTypes.object,
     files: PropTypes.array.isRequired,
     tabs: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
@@ -84,12 +81,6 @@ export default class EditorPane extends Component {
     return true;
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    if (this.props.tabs !== nextProps.tabs) {
-
-    }
-  }
-
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(AddDialog)
@@ -105,18 +96,13 @@ export default class EditorPane extends Component {
     }
   };
 
-  handleSelectTab = (tab) => {
-    this.props.selectTab(tab);
-    this.handleReadmeShow(false);
-  };
-
   render() {
     if (this.props.isShrinked) {
       return null;
     }
 
     const {
-      files, selectedFile, tabs,
+      files, tabs,
       putFile, selectTab, closeTab,
       handleRun,
       openFileDialog,
@@ -137,6 +123,11 @@ export default class EditorPane extends Component {
 
     return (
     <div style={prepareStyles(root)}>
+      <MarkdownMenu
+        files={files}
+        tabs={tabs}
+        selectTab={selectTab}
+      />
       <EditorMenu
         localization={localization}
         getConfig={getConfig}
@@ -149,7 +140,7 @@ export default class EditorPane extends Component {
           tab={tab}
           isSelected={tab.isSelected}
           tabbedFiles={tabbedFiles}
-          handleSelect={this.handleSelectTab}
+          handleSelect={selectTab}
           handleClose={closeTab}
           handleRun={handleRun}
         />
@@ -160,14 +151,13 @@ export default class EditorPane extends Component {
         <ChromeTabContent key={tab.key} show={tab.isSelected}>
         {tab.renderContent({
           getFiles: () => files,
-          onChange: (text) => putFile(file, file.set({ text })),
+          onChange: (text) => putFile(tab.file, tab.file.set({ text })),
           gutterMarginWidth: SizerWidth,
           handleRun,
-          closeSelectedTab: () => closeTab(selectedFile),
-          isSelected: tab.file === selectedFile,
+          closeSelectedTab: () => tab.isSelected && closeTab(tab),
+          isSelected: tab.isSelected,
           getConfig,
           findFile,
-          localization,
           onShot: this.handleShot,
           selectTab,
         })}

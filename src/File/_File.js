@@ -60,6 +60,14 @@ export default class _File {
     return this.props.component;
   }
 
+  get header() {
+    if (this.is('markdown')) {
+      return this.text.replace(/^[\#\s]*/, '')
+        .split('\n')[0] || '';
+    }
+    return this.plane + this.ext;
+  }
+
   is(name) {
     return validateType(name, this.type);
   }

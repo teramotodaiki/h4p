@@ -102,9 +102,7 @@ class Main extends Component {
   componentDidMount() {
     const { localization } = this.state;
 
-    const readmeFile = this.findFile('README.md');
-    const promise = readmeFile ?
-      Promise.resolve(readmeFile) :
+    if (!this.findFile('README.md')) {
       this.addFile(
         new SourceFile({
           type: 'text/x-markdown',
@@ -112,12 +110,7 @@ class Main extends Component {
           text: localization.readme.text,
         })
       );
-    promise.then((file) => this.selectTab(
-      new Tab({
-        getFile: () => this.findFile('README.md'),
-        component: Readme,
-      })
-    ));
+    }
 
     document.title = this.getConfig('env').TITLE[0];
 
@@ -127,6 +120,13 @@ class Main extends Component {
   componentDidUpdate() {
     if (this.state.reboot) {
       this.setState({ reboot: false });
+    }
+
+    if (!this.state.tabs.length) {
+      this.selectTab(new Tab({
+        getFile: () => this.findFile('README.md'),
+        component: Readme,
+      }));
     }
 
     document.title = this.getConfig('env').TITLE[0];
@@ -147,7 +147,8 @@ class Main extends Component {
       resolve(prevFile);
       return;
     }
-    const files = this.state.files.map((item) => item === prevFile ? nextFile : item);
+    const files = this.state.files
+      .map((item) => item.key === prevFile.key ? nextFile : item);
     this.setState({ files }, () => resolve(nextFile));
     this._configs.clear();
   });
@@ -311,6 +312,7 @@ class Main extends Component {
       isResizing,
       localization,
       getConfig: this.getConfig,
+      findFile: this.findFile,
     };
 
     const isShrinked = (width, height) => width < 200 || height < 40;
@@ -323,9 +325,7 @@ class Main extends Component {
       closeTab: this.closeTab,
       handleRun: this.handleRun,
       openFileDialog: this.openFileDialog,
-      localization: localization,
       portPostMessage: portPostMessage,
-      findFile: this.findFile,
       isShrinked: isShrinked(
         this.rootWidth - monitorWidth,
         this.rootHeight
@@ -343,7 +343,6 @@ class Main extends Component {
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
-      localization: localization,
       setLocalization: this.setLocalization,
       canDeploy: !!(provider && provider.publishUrl),
       provider,

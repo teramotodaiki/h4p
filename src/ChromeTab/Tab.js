@@ -21,12 +21,20 @@ export default class Tab {
     return !!this.props.isSelected;
   }
 
+  get label() {
+    const { file } = this;
+    if (file.is('markdown') && this.props.component) {
+      return file.header;
+    }
+    return file.plane + file.ext;
+  }
+
   is(tab) {
     if (!tab.file || !this.file) {
       return false;
     }
     return (tab.key === this.key) ||
-      tab.file === this.file && tab.component === this.component;
+      tab.file.key === this.file.key && tab.component === this.component;
   };
 
   select(isSelected) {
@@ -38,6 +46,9 @@ export default class Tab {
   }
 
   renderContent(props) {
+    if (!this.file) {
+      return null;
+    }
     return (
       <this.component
         file={this.file}
