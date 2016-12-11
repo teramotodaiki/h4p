@@ -124,9 +124,13 @@ export default class Readme extends Component {
       const href = props.href;
       props = Object.assign({}, props, {
         href: 'javascript:void(0)',
-        onTouchTap: () => selectTab(
-          new Tab({ getFile: () => findFile(href) })
-        ),
+        onTouchTap: () => {
+          const found = findFile(href);
+          if (found) {
+            const getFile = findFile((file) => file.key === found.key);
+            selectTab(new Tab({ getFile }));
+          }
+        },
       });
       return <a {...props} target="_blank">{children}</a>;
     }
