@@ -193,15 +193,6 @@ class Main extends Component {
     this.setState({ files }, () => resolve(this.selectedFile));
   });
 
-  addTab = (file) => new Promise((resolve, reject) => {
-    if (this.state.tabbedKeys.includes(file.key)) {
-      resolve(file);
-      return;
-    }
-    const tabbedKeys = this.state.tabbedKeys.concat(file.key);
-    this.setState({ tabbedKeys }, () => resolve(file));
-  });
-
   _configs = new Map();
   getConfig = (key) => {
     if (this._configs.has(key)) {
@@ -318,7 +309,7 @@ class Main extends Component {
     } = this.props;
 
     const {
-      files, tabbedKeys, selectedKey,
+      files, selectedKey,
       dialogContent,
       monitorWidth, monitorHeight, isResizing,
       isPopout,
