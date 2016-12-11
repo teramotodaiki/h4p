@@ -81,12 +81,6 @@ export default class EditorPane extends Component {
     return true;
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    if (this.props.tabs !== nextProps.tabs) {
-
-    }
-  }
-
   handleAdd = () => {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(AddDialog)

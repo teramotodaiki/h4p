@@ -102,9 +102,7 @@ class Main extends Component {
   componentDidMount() {
     const { localization } = this.state;
 
-    const readmeFile = this.findFile('README.md');
-    const promise = readmeFile ?
-      Promise.resolve(readmeFile) :
+    if (!this.findFile('README.md')) {
       this.addFile(
         new SourceFile({
           type: 'text/x-markdown',
@@ -112,12 +110,7 @@ class Main extends Component {
           text: localization.readme.text,
         })
       );
-    promise.then((file) => this.selectTab(
-      new Tab({
-        getFile: () => this.findFile('README.md'),
-        component: Readme,
-      })
-    ));
+    }
 
     document.title = this.getConfig('env').TITLE[0];
 
@@ -127,6 +120,13 @@ class Main extends Component {
   componentDidUpdate() {
     if (this.state.reboot) {
       this.setState({ reboot: false });
+    }
+
+    if (!this.state.tabs.length) {
+      this.selectTab(new Tab({
+        getFile: () => this.findFile('README.md'),
+        component: Readme,
+      }));
     }
 
     document.title = this.getConfig('env').TITLE[0];
