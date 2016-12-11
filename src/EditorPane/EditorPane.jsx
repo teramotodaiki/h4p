@@ -105,11 +105,6 @@ export default class EditorPane extends Component {
     }
   };
 
-  handleSelectTab = (tab) => {
-    this.props.selectTab(tab);
-    this.handleReadmeShow(false);
-  };
-
   render() {
     if (this.props.isShrinked) {
       return null;
@@ -149,7 +144,7 @@ export default class EditorPane extends Component {
           tab={tab}
           isSelected={tab.isSelected}
           tabbedFiles={tabbedFiles}
-          handleSelect={this.handleSelectTab}
+          handleSelect={selectTab}
           handleClose={closeTab}
           handleRun={handleRun}
         />
