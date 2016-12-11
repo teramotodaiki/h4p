@@ -55,7 +55,6 @@ const getStyles = (props, context) => {
 export default class EditorPane extends Component {
 
   static propTypes = {
-    selectedFile: PropTypes.object,
     files: PropTypes.array.isRequired,
     tabs: PropTypes.array.isRequired,
     addFile: PropTypes.func.isRequired,
@@ -111,7 +110,7 @@ export default class EditorPane extends Component {
     }
 
     const {
-      files, selectedFile, tabs,
+      files, tabs,
       putFile, selectTab, closeTab,
       handleRun,
       openFileDialog,
@@ -158,8 +157,8 @@ export default class EditorPane extends Component {
           onChange: (text) => putFile(file, file.set({ text })),
           gutterMarginWidth: SizerWidth,
           handleRun,
-          closeSelectedTab: () => closeTab(selectedFile),
-          isSelected: tab.file === selectedFile,
+          closeSelectedTab: () => tab.isSelected && closeTab(tab),
+          isSelected: tab.isSelected,
           getConfig,
           findFile,
           localization,
