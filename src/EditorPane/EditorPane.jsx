@@ -77,10 +77,6 @@ export default class EditorPane extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
-  state = {
-    showReadme: true,
-  };
-
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.isResizing) {
       return false;
@@ -90,8 +86,7 @@ export default class EditorPane extends Component {
 
   componentWillReceiveProps(nextProps, nextState) {
     if (this.props.tabs !== nextProps.tabs) {
-      const showReadme = nextProps.tabs.length === 0;
-      this.setState({ showReadme });
+
     }
   }
 
@@ -108,10 +103,6 @@ export default class EditorPane extends Component {
       SourceFile.shot(text).babel(getConfig('babelrc'))
       .then((file) => portPostMessage({ query: 'shot', value: file.serialize() }));
     }
-  };
-
-  handleReadmeShow = (showReadme) => {
-    this.setState({ showReadme });
   };
 
   handleSelectTab = (tab) => {
@@ -133,10 +124,6 @@ export default class EditorPane extends Component {
       findFile,
       getConfig, setConfig,
     } = this.props;
-
-    const {
-      showReadme,
-    } = this.state;
 
     const {
       root,
