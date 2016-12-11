@@ -46,6 +46,9 @@ export default class Tab {
   }
 
   renderContent(props) {
+    if (!this.file) {
+      return null;
+    }
     return (
       <this.component
         file={this.file}
