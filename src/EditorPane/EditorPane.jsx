@@ -151,7 +151,7 @@ export default class EditorPane extends Component {
         <ChromeTabContent key={tab.key} show={tab.isSelected}>
         {tab.renderContent({
           getFiles: () => files,
-          onChange: (text) => putFile(file, file.set({ text })),
+          onChange: (text) => putFile(tab.file, tab.file.set({ text })),
           gutterMarginWidth: SizerWidth,
           handleRun,
           closeSelectedTab: () => tab.isSelected && closeTab(tab),
