@@ -73,10 +73,6 @@ export default class BinaryFile extends _File {
     });
   }
 
-  render(props) {
-    return <Preview file={this} {...props} />
-  }
-
   /**
    * @param file File|Blob
    * @return Promise gives BinaryFile

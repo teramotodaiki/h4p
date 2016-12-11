@@ -80,10 +80,6 @@ export default class SourceFile extends _File {
     return Promise.resolve(serialized);
   }
 
-  render(props) {
-    return <SourceEditor file={this} {...props} />
-  }
-
   /**
    * @param file File|Blob
    * @return Promise gives SourceFile

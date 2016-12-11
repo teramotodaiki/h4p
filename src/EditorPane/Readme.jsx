@@ -8,6 +8,7 @@ import CommunicationImportContacts from 'material-ui/svg-icons/communication/imp
 import MDReactComponent from '../../lib/MDReactComponent';
 import { SourceFile } from '../File/';
 import { SizerWidth } from '../Monitor/';
+import { Tab } from '../ChromeTab/';
 import Editor from './Editor';
 import ShotFrame from './ShotFrame';
 
@@ -106,7 +107,7 @@ export default class Readme extends Component {
     localization: PropTypes.object.isRequired,
     onShot: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
-    selectFile: PropTypes.func.isRequired,
+    selectTab: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
   };
 
@@ -134,7 +135,7 @@ export default class Readme extends Component {
   renderIterate(tag, props, children) {
     const {
       findFile,
-      selectFile,
+      selectTab,
       getConfig,
     } = this.props;
 
@@ -142,15 +143,13 @@ export default class Readme extends Component {
       return React.createElement(tag, props, children);
     }
     if (tag === 'a') {
-      const file = findFile(props.href);
-      if (file) {
-        props = props = Object.assign({}, props, {
-          href: 'javascript:void(0)',
-          onTouchTap: () => {
-            selectFile(file);
-          }
-        });
-      }
+      const href = props.href;
+      props = Object.assign({}, props, {
+        href: 'javascript:void(0)',
+        onTouchTap: () => selectTab(
+          new Tab({ getFile: () => findFile(href) })
+        ),
+      });
       return <a {...props} target="_blank">{children}</a>;
     }
     if (tag === 'img') {

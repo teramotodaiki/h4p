@@ -103,7 +103,7 @@ const getStyles = (props, context, state) => {
 export default class ChromeTabs extends Component {
 
   static propTypes = {
-    file: PropTypes.object.isRequired,
+    tab: PropTypes.object.isRequired,
     isSelected: PropTypes.bool.isRequired,
     handleSelect: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
@@ -132,7 +132,7 @@ export default class ChromeTabs extends Component {
 
   render() {
     const {
-      file,
+      tab,
       isSelected,
       handleSelect,
       handleClose,
@@ -156,7 +156,7 @@ export default class ChromeTabs extends Component {
 
     const handleRightTouchTap = (e) => {
       e.stopPropagation();
-      handleClose(file);
+      handleClose(tab);
     };
 
     const handleRightMouseEnter = (e) => {
@@ -167,13 +167,15 @@ export default class ChromeTabs extends Component {
       this.setState({ closerMouseOver: false });
     };
 
+    const { file } = tab;
+
     return (
       <div style={prepareStyles(styles.root)} ref={this.handleRef}>
         <div style={prepareStyles(styles.left)}></div>
         <div style={prepareStyles(styles.center)}>
           <div
             style={prepareStyles(styles.innerItem)}
-            onTouchTap={() => handleSelect(file)}
+            onTouchTap={() => handleSelect(tab)}
           >
           {file.options.isEntryPoint ? (
             <IconButton
