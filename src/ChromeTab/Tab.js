@@ -21,6 +21,15 @@ export default class Tab {
     return !!this.props.isSelected;
   }
 
+  get label() {
+    const { file } = this;
+    if (file.is('markdown') && this.props.component) {
+      return file.text.replace(/^[\#\s]*/, '')
+        .split('\n')[0] || '';
+    }
+    return file.plane + file.ext;
+  }
+
   is(tab) {
     if (!tab.file || !this.file) {
       return false;

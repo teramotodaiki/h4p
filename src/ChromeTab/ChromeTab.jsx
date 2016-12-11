@@ -190,7 +190,7 @@ export default class ChromeTabs extends Component {
               style={prepareStyles(styles.label)}
               title={file.moduleName || file.name}
             >
-            {file.moduleName || file.name}
+            {tab.label}
             </a>
             <IconButton
               style={styles.rightButton}
