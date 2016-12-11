@@ -1,8 +1,6 @@
 import React from 'react';
 
 
-import ChromeTabContent from './ChromeTabContent';
-
 const getUniqueId = ((id) => () => 'Tab__' + ++id)(0);
 
 export default class Tab {
@@ -24,8 +22,12 @@ export default class Tab {
   }
 
   is(tab) {
-    return tab.file === this.file && tab.component === this.component;
-  }
+    if (!tab.file || !this.file) {
+      return false;
+    }
+    return (tab.key === this.key) ||
+      tab.file === this.file && tab.component === this.component;
+  };
 
   select(isSelected) {
     const props = Object.assign({}, this.props, {
@@ -37,9 +39,10 @@ export default class Tab {
 
   renderContent(props) {
     return (
-      <ChromeTabContent key={this.key} show={this.isSelected}>
-        <this.component file={this.file} {...props} />
-      </ChromeTabContent>
+      <this.component
+        file={this.file}
+        {...props}
+      />
     );
   }
 }
