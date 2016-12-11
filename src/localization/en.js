@@ -45,7 +45,7 @@ export default {
     indentUnit4: '4 spaces indent',
   },
   readme: {
-    text: `#The App Title
+    text: `# Introduction
 This is an application can do... ← You can write here
 ## How to edit this
 1. First open [Getting Started](README.md)
@@ -64,7 +64,6 @@ Thanks
 - If someone help you,
 - Write down his/her name here.
 `,
-    gettingStarted: 'Getting Started',
   },
   hierarchy: {
     emptyTrashBox: 'Empty trash',

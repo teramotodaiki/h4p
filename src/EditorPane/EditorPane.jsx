@@ -158,7 +158,6 @@ export default class EditorPane extends Component {
           isSelected: tab.isSelected,
           getConfig,
           findFile,
-          localization,
           onShot: this.handleShot,
           selectTab,
         })}

@@ -82,7 +82,6 @@ export default class Readme extends Component {
   static propTypes = {
     file: PropTypes.object.isRequired,
     isSelected: PropTypes.bool.isRequired,
-    localization: PropTypes.object.isRequired,
     onShot: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
@@ -186,7 +185,6 @@ export default class Readme extends Component {
   render() {
     const {
       file,
-      localization,
     } = this.props;
 
     const {
@@ -197,10 +195,6 @@ export default class Readme extends Component {
       root,
       markdown,
     } = getStyle(this.props, this.state, this.context);
-
-    const {
-      gettingStarted,
-    } = localization.readme;
 
     const mdStyles = mdStyle(this.props, this.state, this.context);
 
