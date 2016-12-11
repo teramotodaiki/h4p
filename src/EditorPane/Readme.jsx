@@ -7,15 +7,13 @@ import CommunicationImportContacts from 'material-ui/svg-icons/communication/imp
 
 import MDReactComponent from '../../lib/MDReactComponent';
 import { SourceFile } from '../File/';
+import { SizerWidth } from '../Monitor/';
 import Editor from './Editor';
 import ShotFrame from './ShotFrame';
 
 const BarHeight = 36;
 
 const getStyle = (props, state, context) => {
-  const {
-    show,
-  } = props;
   const {
     palette,
     spacing,
@@ -26,13 +24,9 @@ const getStyle = (props, state, context) => {
     root: prepareStyles({
       position: 'absolute',
       width: '100%',
-      height: show ? '100%' : BarHeight,
-      bottom: 0,
+      height: '100%',
       boxSizing: 'border-box',
-      padding: 0,
-      paddingRight: spacing.desktopGutterMini,
-      paddingLeft: spacing.desktopGutterMore,
-      zIndex: 20,
+      paddingLeft: SizerWidth,
       transition: transitions.easeOut(),
     }),
     container: {
@@ -107,9 +101,8 @@ const mdStyle = (props, state, context) => {
 export default class Readme extends Component {
 
   static propTypes = {
-    show: PropTypes.bool.isRequired,
-    handleShow: PropTypes.func.isRequired,
-    readme: PropTypes.string.isRequired,
+    file: PropTypes.object.isRequired,
+    isSelected: PropTypes.bool.isRequired,
     localization: PropTypes.object.isRequired,
     onShot: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
@@ -126,7 +119,7 @@ export default class Readme extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!this.props.show && !nextProps.show) {
+    if (!this.props.isSelected && !nextProps.isSelected) {
       return false;
     }
     return true;
@@ -142,7 +135,6 @@ export default class Readme extends Component {
     const {
       findFile,
       selectFile,
-      handleShow,
       getConfig,
     } = this.props;
 
@@ -156,7 +148,6 @@ export default class Readme extends Component {
           href: 'javascript:void(0)',
           onTouchTap: () => {
             selectFile(file);
-            handleShow(false);
           }
         });
       }
@@ -213,10 +204,8 @@ export default class Readme extends Component {
 
   render() {
     const {
-      show,
-      readme,
+      file,
       localization,
-      handleShow,
     } = this.props;
 
     const {
@@ -253,10 +242,9 @@ export default class Readme extends Component {
             label={gettingStarted}
             icon={<CommunicationImportContacts />}
             style={header}
-            onTouchTap={() => handleShow(!show)}
           />
           <MDReactComponent
-            text={readme}
+            text={file.text}
             style={markdown}
             onIterate={onIterate}
           />
