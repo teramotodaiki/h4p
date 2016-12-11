@@ -11,8 +11,9 @@ import Preview from './Preview';
 import { AddDialog } from '../FileDialog/';
 import Editor from './Editor';
 import Readme from './Readme';
+import { SizerWidth } from '../Monitor/';
+import MarkdownMenu from './MarkdownMenu';
 
-const SizerWidth = 24;
 
 const getStyles = (props, context) => {
   const { palette, spacing } = context.muiTheme;
@@ -32,7 +33,7 @@ const getStyles = (props, context) => {
       paddingTop: spacing.desktopGutterMini,
       paddingRight: spacing.desktopGutterLess,
       paddingBottom: 10,
-      paddingLeft: spacing.desktopGutterLess,
+      paddingLeft: 10 + spacing.desktopGutterMore,
       marginRight: spacing.desktopGutterMore,
       marginBottom: -10,
       marginLeft: SizerWidth,
@@ -131,6 +132,11 @@ export default class EditorPane extends Component {
 
     return (
     <div style={prepareStyles(root)}>
+      <MarkdownMenu
+        files={files}
+        tabs={tabs}
+        selectTab={selectTab}
+      />
       <EditorMenu
         localization={localization}
         getConfig={getConfig}
