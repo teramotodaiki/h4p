@@ -324,9 +324,7 @@ class Main extends Component {
       closeTab: this.closeTab,
       handleRun: this.handleRun,
       openFileDialog: this.openFileDialog,
-      localization: localization,
       portPostMessage: portPostMessage,
-      findFile: this.findFile,
       isShrinked: isShrinked(
         this.rootWidth - monitorWidth,
         this.rootHeight
@@ -344,7 +342,6 @@ class Main extends Component {
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
-      localization: localization,
       setLocalization: this.setLocalization,
       canDeploy: !!(provider && provider.publishUrl),
       provider,
