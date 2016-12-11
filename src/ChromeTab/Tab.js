@@ -24,8 +24,7 @@ export default class Tab {
   get label() {
     const { file } = this;
     if (file.is('markdown') && this.props.component) {
-      return file.text.replace(/^[\#\s]*/, '')
-        .split('\n')[0] || '';
+      return file.header;
     }
     return file.plane + file.ext;
   }
