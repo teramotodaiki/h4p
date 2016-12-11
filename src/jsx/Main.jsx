@@ -72,7 +72,7 @@ class Main extends Component {
     reboot: false,
 
     selectedKey: null,
-    tabbedKeys: [],
+    tabbedInfo: [],
 
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
@@ -94,8 +94,16 @@ class Main extends Component {
   }
 
   get tabbedFiles() {
-    const { files, tabbedKeys } = this.state;
-    return tabbedKeys.map(key => files.find(file => key === file.key));
+    const { files, tabbedInfo } = this.state;
+    return tabbedInfo
+      .map((info) => {
+        const file = files.find(file => info.key === file.key);
+        if (info.render) {
+          // for Markdown visual renderer
+          file.render = info.render;
+        }
+        return file;
+      });
   }
 
   get readme() {
@@ -165,14 +173,15 @@ class Main extends Component {
     this.setState({ files }, () => resolve());
   });
 
-  selectFile = (file) => new Promise((resolve, reject) => {
+  selectFile = (file, render = null) => new Promise((resolve, reject) => {
     const { files } = this.state;
     const selectedKey = file.key;
-    if (this.state.tabbedKeys.includes(selectedKey)) {
+    if (this.state.tabbedInfo.some((tab) => tab.key === file.key)) {
       this.setState({ selectedKey }, () => resolve(file));
     } else if (files.some(item => item === file)) {
-      const tabbedKeys = this.state.tabbedKeys.concat(file.key);
-      this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
+      const tab = { key: file.key, render };
+      const tabbedInfo = this.state.tabbedInfo.concat(tab);
+      this.setState({ selectedKey, tabbedInfo }, () => resolve(file));
     }
   });
 
@@ -234,12 +243,12 @@ class Main extends Component {
   };
 
   closeTab = (file) => new Promise((resolve, reject) => {
-    const tabbedKeys = this.state.tabbedKeys.filter(key => key !== file.key);
+    const tabbedInfo = this.state.tabbedInfo.filter((tab) => tab.key !== file.key);
     if (this.state.selectedKey !== file.key) {
-      this.setState({ tabbedKeys }, () => resolve(file));
+      this.setState({ tabbedInfo }, () => resolve(file));
     } else {
-      const selectedKey = tabbedKeys[0] || null;
-      this.setState({ selectedKey, tabbedKeys }, () => resolve(file));
+      const selectedKey = tabbedInfo.length ? tabbedInfo[0].key : null;
+      this.setState({ selectedKey, tabbedInfo }, () => resolve(file));
     }
   });
 
