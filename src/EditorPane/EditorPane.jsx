@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
@@ -9,8 +8,6 @@ import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import Preview from './Preview';
 import { AddDialog } from '../FileDialog/';
-import Editor from './Editor';
-import Readme from './Readme';
 import { SizerWidth } from '../Monitor/';
 import MarkdownMenu from './MarkdownMenu';
 
