@@ -71,13 +71,13 @@ export default class SnippetPane extends Component {
 
   state = {
     snippetFiles: this.findSnippetFiles(),
-    show: '',
+    fileKey: '',
   };
 
   componentDidMount() {
     const first = this.state.snippetFiles[0];
     if (first) {
-      this.setState({ show: first.key });
+      this.setState({ fileKey: first.key });
     }
   }
 
@@ -101,7 +101,7 @@ export default class SnippetPane extends Component {
       findFile,
     } = this.props;
     const {
-      show,
+      fileKey,
       snippetFiles,
     } = this.state;
     const {
@@ -113,12 +113,12 @@ export default class SnippetPane extends Component {
     } = getStyle(this.props, this.context);
 
     const menus = snippetFiles.map((file) => {
-      const style = file.key === show ? enabled : disabled;
+      const style = file.key === fileKey ? enabled : disabled;
       return (
         <span
           key={file.key}
           style={style}
-          onTouchTap={() => this.setState({ show: file.key })}
+          onTouchTap={() => this.setState({ fileKey: file.key })}
         >{file.plane}</span>
       );
     });
@@ -128,7 +128,7 @@ export default class SnippetPane extends Component {
         <div style={menu}>{menus}</div>
         <div style={container}>
         {snippets
-          .filter((snippet) => snippet.fileKey === show)
+          .filter((snippet) => snippet.fileKey === fileKey)
           .map((snippet) => (
             <SnippetButton
               key={snippet.key}
