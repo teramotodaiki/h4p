@@ -144,33 +144,31 @@ export default class Readme extends Component {
     }
     if (tag === 'pre') {
       const { updates } = this.state;
-      const hasUpdate = typeof updates[props.key] === 'string';
-      const text = hasUpdate ? updates[props.key] : children[0].props.children[0];
+      const hasFile = updates[props.key] instanceof SourceFile;
+      const file = hasFile ? updates[props.key] : new SourceFile({
+        type: 'text/javascript',
+        text: children[0].props.children[0],
+      });
       const onChange = (text) => this.setState({
-        updates: Object.assign({}, updates, { [props.key]: text })
+        updates: Object.assign({}, updates, { [props.key]: file.set({ text }) })
       });
       const onRestore = () => this.setState({
         updates: Object.assign({}, updates, { [props.key]: null }),
       });
-      const dummyFile = new SourceFile({
-        type: 'text/javascript',
-        text,
-      });
+      const onShot = () => this.props.onShot(file.text);
 
       return (
         <ShotFrame
           key={props.key}
-          onShot={() => this.props.onShot(text)}
+          onShot={onShot}
           onRestore={onRestore}
-          canRestore={hasUpdate}
+          canRestore={hasFile}
         >
           <Editor isSelected
-            file={dummyFile}
+            file={file}
             options={getConfig('options')}
-            getFiles={() => []}
             onChange={onChange}
-            handleRun={() => this.props.onShot(text)}
-            closeSelectedTab={() => {}}
+            handleRun={onShot}
             isCared
             getConfig={getConfig}
           />

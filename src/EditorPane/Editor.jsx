@@ -122,7 +122,9 @@ export default class Editor extends Component {
   };
 
   static defaultProps = {
+    getFiles: () => [],
     gutterMarginWidth: 0,
+    closeSelectedTab: () => {},
     isCared: false,
     codemirrorRef: () => {},
   };
