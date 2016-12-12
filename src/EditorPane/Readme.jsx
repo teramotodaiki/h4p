@@ -164,6 +164,7 @@ export default class Readme extends Component {
           onRestore={onRestore}
           canRestore={hasFile}
         >
+        {codemirrorRef => (
           <Editor isSelected
             file={file}
             options={getConfig('options')}
@@ -171,7 +172,9 @@ export default class Readme extends Component {
             handleRun={onShot}
             isCared
             getConfig={getConfig}
+            codemirrorRef={codemirrorRef}
           />
+        )}
         </ShotFrame>
       );
     }

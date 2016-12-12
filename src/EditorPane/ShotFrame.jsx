@@ -15,38 +15,36 @@ const getStyles = (props, context, state) => {
     spacing,
     prepareStyles,
   } = context.muiTheme;
-  const { anim } = state;
+  const { anim, height } = state;
 
   return {
-    root: prepareStyles({
-      position: 'relative',
-      width: '100%',
-      height: 300,
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
       margin: '1rem 0',
-    }),
+    },
     editor: {
-      position: 'absolute',
       boxSizing: 'border-box',
       width: '100%',
-      height: '100%',
-      right: anim === 1 ? '100%' : 0,
+      height: Math.min(300, height + spacing.desktopGutterMore),
+      marginLeft: anim === 1 ? -400 : 0,
       transform: `
         rotateZ(${anim === 1 ? -180 : 0}deg)
         scaleY(${anim === 2 ? 0 : 1})`,
       opacity: anim === 0 ? 1 : 0.1,
       transition: transitions.easeOut(durations[anim] + 'ms'),
     },
+    menu: {
+      position: 'relative',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+      height: 40,
+      padding: spacing.desktopGutterMini,
+    },
     shoot: {
-      position: 'absolute',
-      bottom: 4,
-      left: 2,
       transform: `
         rotateY(${anim === 0 ? 180 : 0}deg)`,
-    },
-    restore: {
-      position: 'absolute',
-      bottom: 4,
-      right: 2,
     },
   };
 };
@@ -57,7 +55,7 @@ export default class ShotFrame extends Component {
     canRestore: PropTypes.bool.isRequired,
     onShot: PropTypes.func.isRequired,
     onRestore: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -66,6 +64,7 @@ export default class ShotFrame extends Component {
 
   state = {
     anim: 0,
+    height: 0,
   };
 
   shoot = () => {
@@ -91,6 +90,22 @@ export default class ShotFrame extends Component {
 
   };
 
+  _oldRef = null;
+  handleCodemirror = (ref) => {
+    if (this._oldRef) {
+      this._oldRef.off('change', this.handleChange);
+    }
+    ref.on('change', this.handleChange);
+    this.handleChange(ref);
+    this._oldRef = ref;
+  };
+
+  handleChange = (cm) => {
+    const lastLine = cm.lastLine() + 1;
+    const height = cm.heightAtLine(lastLine, 'local');
+    this.setState({ height });
+  };
+
   render() {
     const {
       canRestore,
@@ -102,37 +117,37 @@ export default class ShotFrame extends Component {
 
     const {
       root,
-      label,
       editor,
+      menu,
       shoot,
-      restore,
     } = getStyles(this.props, this.context, this.state);
 
     return (
-      <div style={root}>
-        <Paper style={editor}>
-        {children}
-        </Paper>
-        <FloatingActionButton secondary
-          disabled={anim !== 0}
-          onTouchTap={this.shoot}
-          style={shoot}
-        >
-        {anim === 0 ? (
-          <AvPlayArrow />
-        ) : (
-          <AvStop />
-        )}
-        </FloatingActionButton>
-        <FloatingActionButton mini
-          disabled={!canRestore}
-          onTouchTap={onRestore}
-          style={restore}
-          zDepth={1}
-        >
-          <ActionRestore />
-        </FloatingActionButton>
-      </div>
+      <Paper style={root}>
+        <div style={editor}>
+        {children(this.handleCodemirror)}
+        </div>
+        <div style={menu}>
+          <FloatingActionButton secondary
+            disabled={anim !== 0}
+            onTouchTap={this.shoot}
+            style={shoot}
+          >
+          {anim === 0 ? (
+            <AvPlayArrow />
+          ) : (
+            <AvStop />
+          )}
+          </FloatingActionButton>
+          <FloatingActionButton mini
+            disabled={!canRestore}
+            onTouchTap={onRestore}
+            zDepth={1}
+          >
+            <ActionRestore />
+          </FloatingActionButton>
+        </div>
+      </Paper>
     );
   }
 }
