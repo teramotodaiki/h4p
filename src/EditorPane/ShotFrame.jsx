@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import Paper from 'material-ui/Paper';
+import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import AvPlayArrow from 'material-ui/svg-icons/av/play-arrow';
 import AvStop from 'material-ui/svg-icons/av/stop';
-import ActionRestore from 'material-ui/svg-icons/action/restore';
 import transitions from 'material-ui/styles/transitions';
 
 
@@ -39,12 +39,17 @@ const getStyles = (props, context, state) => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'flex-end',
-      height: 40,
-      padding: spacing.desktopGutterMini,
+      height: 36,
     },
     shoot: {
+      marginLeft: 9,
+      marginBottom: 4,
       transform: `
         rotateY(${anim === 0 ? 180 : 0}deg)`,
+    },
+    label: {
+      color: palette.secondaryTextColor,
+      fontSize: '.8rem',
     },
   };
 };
@@ -56,6 +61,7 @@ export default class ShotFrame extends Component {
     onShot: PropTypes.func.isRequired,
     onRestore: PropTypes.func.isRequired,
     children: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -112,6 +118,7 @@ export default class ShotFrame extends Component {
       updateShot,
       children,
       onRestore,
+      localization,
     } = this.props;
     const { anim } = this.state;
 
@@ -120,6 +127,7 @@ export default class ShotFrame extends Component {
       editor,
       menu,
       shoot,
+      label,
     } = getStyles(this.props, this.context, this.state);
 
     return (
@@ -128,24 +136,25 @@ export default class ShotFrame extends Component {
         {children(this.handleCodemirror)}
         </div>
         <div style={menu}>
-          <FloatingActionButton secondary
-            disabled={anim !== 0}
-            onTouchTap={this.shoot}
-            style={shoot}
-          >
-          {anim === 0 ? (
-            <AvPlayArrow />
-          ) : (
-            <AvStop />
-          )}
-          </FloatingActionButton>
-          <FloatingActionButton mini
-            disabled={!canRestore}
+          <div>
+            <FloatingActionButton mini
+              disabled={anim !== 0}
+              onTouchTap={this.shoot}
+              style={shoot}
+            >
+            {anim === 0 ? (
+              <AvPlayArrow />
+            ) : (
+              <AvStop />
+            )}
+            </FloatingActionButton>
+            <span style={label}>{localization.shot.shoot}</span>
+          </div>
+          <FlatButton secondary
+            label={localization.shot.restore}
             onTouchTap={onRestore}
-            zDepth={1}
-          >
-            <ActionRestore />
-          </FloatingActionButton>
+            disabled={!canRestore}
+          />
         </div>
       </Paper>
     );

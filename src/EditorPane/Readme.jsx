@@ -86,6 +86,7 @@ export default class Readme extends Component {
     findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -114,6 +115,7 @@ export default class Readme extends Component {
       findFile,
       selectTab,
       getConfig,
+      localization,
     } = this.props;
 
     if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
@@ -163,6 +165,7 @@ export default class Readme extends Component {
           onShot={onShot}
           onRestore={onRestore}
           canRestore={hasFile}
+          localization={localization}
         >
         {codemirrorRef => (
           <Editor isSelected
