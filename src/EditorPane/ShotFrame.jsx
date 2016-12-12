@@ -21,7 +21,7 @@ const getStyles = (props, context, state) => {
     root: {
       display: 'flex',
       flexDirection: 'column',
-      margin: '1rem 0',
+      margin: '1rem 1rem 1rem 0',
     },
     editor: {
       boxSizing: 'border-box',
