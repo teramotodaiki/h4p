@@ -6,6 +6,7 @@ import { SizerWidth } from '../Monitor/';
 import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
+import SaveProgress from './SaveProgress';
 
 
 const DELAY_TIME = 3000;
@@ -58,6 +59,9 @@ class SourceEditor extends Component {
 
   _timer = null;
   handleChange = (text) => {
+    if (this.start) {
+      this.start();
+    }
     clearTimeout(this._timer);
     this._timer = setTimeout(() => {
       this.props.onChange(text);
@@ -87,6 +91,10 @@ class SourceEditor extends Component {
 
     return (
       <div style={root}>
+      <SaveProgress
+        time={DELAY_TIME}
+        startRef={(ref) => (this.start = ref)}
+      />
       {connectDropTarget(
         <div style={editorContainer}>
           <Editor {...props} />
