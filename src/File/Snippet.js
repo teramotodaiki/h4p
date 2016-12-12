@@ -51,6 +51,10 @@ export default class Snippet {
     return this._separate.plane;
   }
 
+  get fileKey() {
+    return this.props.fileKey;
+  }
+
   renderLeftLabel(findFile) {
     if (React.isValidElement(this.leftLabel) && this.leftLabel.props.src) {
       const file = findFile(this.leftLabel.props.src);

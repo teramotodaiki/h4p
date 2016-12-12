@@ -49,8 +49,12 @@ export default new Map([
           Object.keys(json).forEach((scope) => {
             p[scope] = (p[scope] || []).concat(
               Object.keys(json[scope])
-                .map((key) => Object.assign({ name }, json[scope][key]))
-                .map((props) => new Snippet(props))
+                .map((key) => new Snippet(
+                  Object.assign({
+                    name,
+                    fileKey: file.key,
+                  }, json[scope][key])
+                ))
             );
           });
           return p;

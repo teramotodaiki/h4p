@@ -1,17 +1,25 @@
 import React, { Component, PropTypes } from 'react';
+import IconButton from 'material-ui/IconButton';
+import Popover from 'material-ui/Popover';
+import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
+import transitions from 'material-ui/styles/transitions';
 
 
 import SnippetButton from './SnippetButton';
 import { SizerWidth } from '../Monitor/';
+import { configs } from '../File/';
 
 
-const getStyle = (props, context) => {
+const getStyle = (props, context, state) => {
   const {
     snippets,
   } = props;
   const {
     palette,
   } = context.muiTheme;
+  const {
+    collapse,
+  } = state;
 
   const commonMenu = {
     fontSize: '.8rem',
@@ -33,23 +41,39 @@ const getStyle = (props, context) => {
       display: 'flex',
       borderTop: `1px solid ${palette.borderColor}`,
       paddingLeft: SizerWidth,
+      paddingBottom: collapse ? 8 : 0,
     },
     container: {
       borderTop: `1px solid ${palette.borderColor}`,
-      height: snippets.length ? 240 : 0,
-      paddingBottom: 60,
+      height: collapse ? 0 : 300,
       display: 'flex',
       flexWrap: 'wrap',
       overflow: 'scroll',
       boxSizing: 'border-box',
       paddingLeft: SizerWidth,
       justifyContent: 'flex-start',
+      transition: transitions.easeOut(),
     },
     enabled: Object.assign({
       color: palette.alternateTextColor,
       backgroundColor: palette.secondaryTextColor,
     }, commonMenu),
     disabled: commonMenu,
+    swap: {
+      position: 'absolute',
+      right: 4,
+      padding: 4,
+      width: 24,
+      height: 24,
+    },
+    swapIcon: {
+      width: 16,
+      height: 16,
+    },
+    popover: {
+      width: 400,
+      height: 200,
+    },
   }
 };
 
@@ -69,29 +93,46 @@ export default class SnippetPane extends Component {
   };
 
   state = {
-    show: this.getShowState((key, i) => i === 0),
+    snippetFiles: this.findSnippetFiles(),
+    fileKey: '',
+    collapse: false,
+    open: false,
+    anchorEl: null,
+    shownNode: null,
   };
 
-  getShowState(predicate) {
-    return this.props.snippets
-      .map((snippet) => snippet.plane)
-      .filter((key, i, array) => array.indexOf(key) === i)
-      .map((key, i) => ({ [key]: !!predicate(key, i) }))
-      .reduce((p, c) => Object.assign(p, c), Object.create(null));
+  componentDidMount() {
+    const first = this.state.snippetFiles[0];
+    if (first) {
+      this.setState({ fileKey: first.key });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.snippets !== nextProps.snippets) {
-      const show = this.getShowState((key) => this.state.show[key]);
-      this.setState({ show });
+      const snippetFiles = this.findSnippetFiles();
+      this.setState({ snippetFiles });
     }
   }
 
-  handleToggle = (target) => {
-    const show = this.getShowState((key) => (
-      !!(target === key ^ this.state.show[key])
-    ));
-    this.setState({ show });
+  findSnippetFiles() {
+    const {test} = configs.get('snippets');
+    return this.props.findFile((file) => (
+      !file.options.isTrashed && test.test(file.name)
+    ), true);
+  }
+
+  handleSwap = () => {
+    const collapse = !this.state.collapse;
+    this.setState({ collapse });
+  };
+
+  handleSelect = (event, node) => {
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget,
+      shownNode: node,
+    });
   };
 
   render() {
@@ -100,7 +141,8 @@ export default class SnippetPane extends Component {
       findFile,
     } = this.props;
     const {
-      show,
+      fileKey,
+      snippetFiles,
     } = this.state;
     const {
       root,
@@ -108,33 +150,51 @@ export default class SnippetPane extends Component {
       container,
       enabled,
       disabled,
-    } = getStyle(this.props, this.context);
+      swap, swapIcon,
+      popover,
+    } = getStyle(this.props, this.context, this.state);
 
-    const menus = Object.keys(show).map((key) => {
-      const style = show[key] ? enabled : disabled;
+    const menus = snippetFiles.map((file) => {
+      const style = file.key === fileKey ? enabled : disabled;
       return (
         <span
-          key={key}
+          key={file.key}
           style={style}
-          onTouchTap={() => this.handleToggle(key)}
-        >{key}</span>
+          onTouchTap={() => this.setState({ fileKey: file.key })}
+        >{file.plane}</span>
       );
     });
 
     return (
       <div style={root}>
-        <div style={menu}>{menus}</div>
+        <div style={menu}>{[...menus, (
+          <IconButton
+            key="ActionSwapVert"
+            style={swap}
+            iconStyle={swapIcon}
+            onTouchTap={this.handleSwap}
+          >
+            <ActionSwapVert />
+          </IconButton>
+        )]}</div>
         <div style={container}>
         {snippets
-          .filter((snippet) => show[snippet.plane])
+          .filter((snippet) => snippet.fileKey === fileKey)
           .map((snippet) => (
             <SnippetButton
               key={snippet.key}
               snippet={snippet}
               findFile={findFile}
+              onSelect={this.handleSelect}
             />
           )
         )}
+        <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          onRequestClose={() => this.setState({ open: false })}
+          style={popover}
+        >{this.state.shownNode}</Popover>
         </div>
       </div>
     );
