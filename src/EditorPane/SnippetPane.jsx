@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 
 import SnippetButton from './SnippetButton';
 import { SizerWidth } from '../Monitor/';
+import { configs } from '../File/';
 
 
 const getStyle = (props, context) => {
@@ -69,30 +70,30 @@ export default class SnippetPane extends Component {
   };
 
   state = {
-    show: this.getShowState((key, i) => i === 0),
+    snippetFiles: this.findSnippetFiles(),
+    show: '',
   };
 
-  getShowState(predicate) {
-    return this.props.snippets
-      .map((snippet) => snippet.plane)
-      .filter((key, i, array) => array.indexOf(key) === i)
-      .map((key, i) => ({ [key]: !!predicate(key, i) }))
-      .reduce((p, c) => Object.assign(p, c), Object.create(null));
+  componentDidMount() {
+    const first = this.state.snippetFiles[0];
+    if (first) {
+      this.setState({ show: first.key });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.snippets !== nextProps.snippets) {
-      const show = this.getShowState((key) => this.state.show[key]);
-      this.setState({ show });
+      const snippetFiles = this.findSnippetFiles();
+      this.setState({ snippetFiles });
     }
   }
 
-  handleToggle = (target) => {
-    const show = this.getShowState((key) => (
-      !!(target === key ^ this.state.show[key])
-    ));
-    this.setState({ show });
-  };
+  findSnippetFiles() {
+    const {test} = configs.get('snippets');
+    return this.props.findFile((file) => (
+      !file.options.isTrashed && test.test(file.name)
+    ), true);
+  }
 
   render() {
     const {
@@ -101,6 +102,7 @@ export default class SnippetPane extends Component {
     } = this.props;
     const {
       show,
+      snippetFiles,
     } = this.state;
     const {
       root,
@@ -110,14 +112,14 @@ export default class SnippetPane extends Component {
       disabled,
     } = getStyle(this.props, this.context);
 
-    const menus = Object.keys(show).map((key) => {
-      const style = show[key] ? enabled : disabled;
+    const menus = snippetFiles.map((file) => {
+      const style = file.key === show ? enabled : disabled;
       return (
         <span
-          key={key}
+          key={file.key}
           style={style}
-          onTouchTap={() => this.handleToggle(key)}
-        >{key}</span>
+          onTouchTap={() => this.setState({ show: file.key })}
+        >{file.plane}</span>
       );
     });
 
@@ -126,7 +128,7 @@ export default class SnippetPane extends Component {
         <div style={menu}>{menus}</div>
         <div style={container}>
         {snippets
-          .filter((snippet) => show[snippet.plane])
+          .filter((snippet) => snippet.fileKey === show)
           .map((snippet) => (
             <SnippetButton
               key={snippet.key}
