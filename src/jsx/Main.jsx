@@ -148,8 +148,8 @@ class Main extends Component {
     }
     const files = this.state.files
       .map((item) => item.key === prevFile.key ? nextFile : item);
-    this.setState({ files }, () => resolve(nextFile));
     this._configs.clear();
+    this.setState({ files }, () => resolve(nextFile));
   });
 
   deleteFile = (file) => new Promise((resolve, reject) => {
