@@ -75,9 +75,9 @@ class Menu extends Component {
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
     tooltipPosition: PropTypes.string.isRequired,
-    canDeploy: PropTypes.bool.isRequired,
-    provider: PropTypes.object,
     onSizer: PropTypes.func.isRequired,
+    getConfig: PropTypes.func.isRequired,
+    setConfig: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -138,7 +138,8 @@ class Menu extends Component {
         const [port] = event.ports;
         const provider = event.data;
 
-        this.bundle({ provider })
+        this.props.setConfig('provider', JSON.parse(provider))
+          .then(() => this.bundle())
           .then((html) => port.postMessage(html));
       }
     };
@@ -146,7 +147,7 @@ class Menu extends Component {
     window.addEventListener('message', task);
 
     const popout = window.open(
-      this.props.provider.publishUrl,
+      this.props.getConfig('provider').publishUrl,
       '_blank',
       'width=400,height=400');
 
@@ -155,23 +156,20 @@ class Menu extends Component {
     }
   };
 
-  bundle = (config) => {
-    const { provider, getConfig } = this.props;
-    const [TITLE] = getConfig('env').TITLE || [''];
+  bundle = () => {
+    const [TITLE] = this.props.getConfig('env').TITLE || [''];
 
     return Promise.all(
       this.props.files.map((file) => file.compose())
     )
-    .then(([...files]) => Object.assign({
+    .then(([...files]) => download({
       useCDN: true,
       files,
       EXPORT_VAR_NAME,
       CSS_PREFIX,
       CORE_CDN_URL,
       TITLE,
-      provider: JSON.stringify(provider),
-    }, config))
-    .then(download);
+    }));
   };
 
   render() {
@@ -184,7 +182,7 @@ class Menu extends Component {
       onMouseEnter,
       onMouseLeave,
       tooltipPosition,
-      canDeploy,
+      getConfig,
 
       connectDragSource,
       connectDragPreview,
@@ -202,6 +200,8 @@ class Menu extends Component {
       prepareStyles,
       palette: { alternateTextColor }
     } = this.context.muiTheme;
+
+    const canDeploy = !!getConfig('provider').publishUrl;
 
     return connectDragSource(
     <div

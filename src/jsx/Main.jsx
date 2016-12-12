@@ -58,7 +58,6 @@ class Main extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     rootStyle: PropTypes.object.isRequired,
-    provider: PropTypes.object,
 
     connectDropTarget: PropTypes.func.isRequired,
   };
@@ -288,7 +287,6 @@ class Main extends Component {
   render() {
     const {
       connectDropTarget,
-      provider,
     } = this.props;
 
     const {
@@ -312,6 +310,7 @@ class Main extends Component {
       isResizing,
       localization,
       getConfig: this.getConfig,
+      setConfig: this.setConfig,
       findFile: this.findFile,
     };
 
@@ -330,7 +329,6 @@ class Main extends Component {
         this.rootWidth - monitorWidth,
         this.rootHeight
       ),
-      setConfig: this.setConfig,
     };
 
     const monitorProps = {
@@ -344,8 +342,6 @@ class Main extends Component {
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
       setLocalization: this.setLocalization,
-      canDeploy: !!(provider && provider.publishUrl),
-      provider,
       onSizer: (isResizing) => this.setState({ isResizing }),
     };
 
