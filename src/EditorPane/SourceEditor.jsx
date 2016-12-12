@@ -2,10 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 
 
-import Editor from './Editor';
-import SnippetPane from './SnippetPane';
 import { SizerWidth } from '../Monitor/';
 import DragTypes from '../utils/dragTypes';
+import Editor from './Editor';
+import SnippetPane from './SnippetPane';
+
+
+const DELAY_TIME = 3000;
 
 const getStyle = (props, context) => {
   const {
@@ -53,6 +56,14 @@ class SourceEditor extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  _timer = null;
+  handleChange = (text) => {
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => {
+      this.props.onChange(text);
+    }, DELAY_TIME);
+  };
+
   render() {
     const {
       file,
@@ -71,6 +82,7 @@ class SourceEditor extends Component {
 
     const props = Object.assign({}, this.props, {
       codemirrorRef: (ref) => (this.codemirror = ref),
+      onChange: this.handleChange,
     });
 
     return (
