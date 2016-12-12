@@ -44,6 +44,10 @@ export default class EnvDialog extends Component {
     } = this.props;
     const { env } = this.state;
 
+    const containerStyle = {
+      overflow: 'scroll',
+    };
+
     const actionStyle = {
       marginLeft: 12,
     };
@@ -76,6 +80,7 @@ export default class EnvDialog extends Component {
         modal={false}
         actions={addActions}
         onRequestClose={onRequestClose}
+        bodyStyle={containerStyle}
       >
       {Object.keys(env).map((key) => (
         <EnvItem
