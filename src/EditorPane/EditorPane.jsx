@@ -13,7 +13,11 @@ import MarkdownMenu from './MarkdownMenu';
 
 
 const getStyles = (props, context) => {
-  const { palette, spacing } = context.muiTheme;
+  const {
+    palette,
+    spacing,
+    fontFamily,
+  } = context.muiTheme;
 
   return {
     root: {
@@ -22,6 +26,7 @@ const getStyles = (props, context) => {
       flexDirection: 'column',
       alignItems: 'stretch',
       overflow: 'hidden',
+      fontFamily,
     },
     tabContainer: {
       display: 'flex',
