@@ -37,6 +37,14 @@ export default new Map([
     },
     defaultName: '.babelrc',
   }],
+  ['provider', {
+    test: /^\.provider$/i,
+    multiple: false,
+    defaultValue: {
+      publishUrl: '',
+    },
+    defaultName: '.provider',
+  }],
   ['snippets', {
     test: /^snippets\//i,
     multiple: true,
