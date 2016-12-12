@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
 import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
+import transitions from 'material-ui/styles/transitions';
 
 
 import SnippetButton from './SnippetButton';
@@ -8,13 +9,16 @@ import { SizerWidth } from '../Monitor/';
 import { configs } from '../File/';
 
 
-const getStyle = (props, context) => {
+const getStyle = (props, context, state) => {
   const {
     snippets,
   } = props;
   const {
     palette,
   } = context.muiTheme;
+  const {
+    collapse,
+  } = state;
 
   const commonMenu = {
     fontSize: '.8rem',
@@ -36,17 +40,18 @@ const getStyle = (props, context) => {
       display: 'flex',
       borderTop: `1px solid ${palette.borderColor}`,
       paddingLeft: SizerWidth,
+      paddingBottom: collapse ? 8 : 0,
     },
     container: {
       borderTop: `1px solid ${palette.borderColor}`,
-      height: snippets.length ? 240 : 0,
-      paddingBottom: 60,
+      height: collapse ? 0 : 300,
       display: 'flex',
       flexWrap: 'wrap',
       overflow: 'scroll',
       boxSizing: 'border-box',
       paddingLeft: SizerWidth,
       justifyContent: 'flex-start',
+      transition: transitions.easeOut(),
     },
     enabled: Object.assign({
       color: palette.alternateTextColor,
@@ -85,6 +90,7 @@ export default class SnippetPane extends Component {
   state = {
     snippetFiles: this.findSnippetFiles(),
     fileKey: '',
+    collapse: false,
   };
 
   componentDidMount() {
@@ -108,6 +114,11 @@ export default class SnippetPane extends Component {
     ), true);
   }
 
+  handleSwap = () => {
+    const collapse = !this.state.collapse;
+    this.setState({ collapse });
+  };
+
   render() {
     const {
       snippets,
@@ -124,7 +135,7 @@ export default class SnippetPane extends Component {
       enabled,
       disabled,
       swap, swapIcon,
-    } = getStyle(this.props, this.context);
+    } = getStyle(this.props, this.context, this.state);
 
     const menus = snippetFiles.map((file) => {
       const style = file.key === fileKey ? enabled : disabled;
@@ -144,6 +155,7 @@ export default class SnippetPane extends Component {
             key="ActionSwapVert"
             style={swap}
             iconStyle={swapIcon}
+            onTouchTap={this.handleSwap}
           >
             <ActionSwapVert />
           </IconButton>
