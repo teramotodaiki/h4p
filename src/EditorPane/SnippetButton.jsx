@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
-import IconButton from 'material-ui/IconButton';
-import NavigationMoreHoriz from 'material-ui/svg-icons/navigation/more-horiz';
 
 
 import DragTypes from '../utils/dragTypes';
@@ -21,7 +19,6 @@ const getStyle = (props, context, state) => {
   } = context.muiTheme;
 
   const {
-    mini,
     code,
   } = state;
 
@@ -31,6 +28,7 @@ const getStyle = (props, context, state) => {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    wordWrap: 'break-word',
   };
 
   return {
@@ -38,7 +36,7 @@ const getStyle = (props, context, state) => {
       position: 'relative',
       flex: '0 0 auto',
       boxSizing: 'border-box',
-      width: mini ? '6rem' : '100%',
+      width: '6rem',
       height: '6rem',
       padding: 8,
       zIndex: code ? 2 : 1,
@@ -70,6 +68,7 @@ const getStyle = (props, context, state) => {
     }, commonAlignment),
     description: {
       fontSize: '1rem',
+      maxWidth: 300,
     },
     rightLabel: {
       fontSize: '.5rem',
@@ -80,11 +79,6 @@ const getStyle = (props, context, state) => {
       right: 0,
       bottom: 0,
     },
-    more: {
-      position: 'absolute',
-      left: 0,
-      bottom: -4,
-    },
   };
 };
 
@@ -93,6 +87,7 @@ class SnippetButton extends Component {
   static propTypes = {
     snippet: PropTypes.object.isRequired,
     findFile: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -104,13 +99,35 @@ class SnippetButton extends Component {
   };
 
   state = {
-    mini: true,
     code: false,
   };
 
-  handleToggle = () => {
-    const mini = !this.state.mini;
-    this.setState({ mini });
+  handleTouch = (event) => {
+    const { snippet, findFile } = this.props;
+    const {
+      button,
+      left,
+      prefix,
+      description,
+      leftLabel,
+      right,
+      rightLabel,
+      plane,
+    } = getStyle(this.props, this.context, this.state);
+
+    this.props.onSelect(event, (
+      <Paper style={button}>
+        <div style={left}>
+          <span style={prefix}>{snippet.prefix}</span>
+          <span style={leftLabel}>{snippet.renderLeftLabel(findFile)}</span>
+        </div>
+        <div style={right}>
+          <span style={description}>{snippet.description}</span>
+          <code style={rightLabel}>{snippet.renderRightLabel(findFile)}</code>
+          <span style={plane}>{snippet.plane}</span>
+        </div>
+      </Paper>
+    ));
   };
 
   render() {
@@ -123,7 +140,6 @@ class SnippetButton extends Component {
       connectDragPreview,
     } = this.props;
     const {
-      mini,
       code,
     } = this.state;
 
@@ -133,19 +149,14 @@ class SnippetButton extends Component {
       pre,
       button,
       left,
-      prefix,
       leftLabel,
-      right,
-      description,
-      rightLabel,
-      plane,
-      more,
-      moreIcon,
+      prefix,
     } = getStyle(this.props, this.context, this.state);
 
     const events = {
       [TOUCH_START]: () => this.setState({ code: true }),
       [TOUCH_END]: () => this.setState({ code: false }),
+      onTouchTap: this.handleTouch,
     };
 
     return (
@@ -155,30 +166,14 @@ class SnippetButton extends Component {
         {code ? connectDragPreview(
           <pre style={pre}>{snippet.text}</pre>
         ) : (
-          <Paper style={button} onTouchTap={this.handleToggle}>
+          <Paper style={button}>
             <div style={left}>
               <span style={prefix}>{snippet.prefix}</span>
               <span style={leftLabel}>{snippet.renderLeftLabel(findFile)}</span>
             </div>
-            {mini ? null : (
-            <div style={right}>
-              <span style={prefix}>{snippet.description}</span>
-              <code style={rightLabel}>{snippet.renderRightLabel(findFile)}</code>
-              <span style={plane}>{snippet.plane}</span>
-            </div>
-            )}
           </Paper>
         )}
         </div>
-      )}
-      {code ? null : (
-        <IconButton
-          style={more}
-          iconStyle={moreIcon}
-          onTouchTap={this.handleToggle}
-        >
-          <NavigationMoreHoriz />
-        </IconButton>
       )}
       </div>
     );

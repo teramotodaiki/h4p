@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
+import Popover from 'material-ui/Popover';
 import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
 import transitions from 'material-ui/styles/transitions';
 
@@ -69,6 +70,10 @@ const getStyle = (props, context, state) => {
       width: 16,
       height: 16,
     },
+    popover: {
+      width: 400,
+      height: 200,
+    },
   }
 };
 
@@ -91,6 +96,9 @@ export default class SnippetPane extends Component {
     snippetFiles: this.findSnippetFiles(),
     fileKey: '',
     collapse: false,
+    open: false,
+    anchorEl: null,
+    shownNode: null,
   };
 
   componentDidMount() {
@@ -119,6 +127,14 @@ export default class SnippetPane extends Component {
     this.setState({ collapse });
   };
 
+  handleSelect = (event, node) => {
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget,
+      shownNode: node,
+    });
+  };
+
   render() {
     const {
       snippets,
@@ -135,6 +151,7 @@ export default class SnippetPane extends Component {
       enabled,
       disabled,
       swap, swapIcon,
+      popover,
     } = getStyle(this.props, this.context, this.state);
 
     const menus = snippetFiles.map((file) => {
@@ -168,9 +185,16 @@ export default class SnippetPane extends Component {
               key={snippet.key}
               snippet={snippet}
               findFile={findFile}
+              onSelect={this.handleSelect}
             />
           )
         )}
+        <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          onRequestClose={() => this.setState({ open: false })}
+          style={popover}
+        >{this.state.shownNode}</Popover>
         </div>
       </div>
     );
