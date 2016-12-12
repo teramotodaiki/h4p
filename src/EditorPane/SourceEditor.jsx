@@ -57,6 +57,13 @@ class SourceEditor extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.isOver || nextProps.isOver) {
+      return false;
+    }
+    return true;
+  }
+
   _timer = null;
   handleChange = (text) => {
     if (this.start) {
