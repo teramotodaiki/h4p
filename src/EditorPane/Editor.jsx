@@ -159,7 +159,9 @@ export default class Editor extends Component {
 
     cm.on('change', (_cm, change) => {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
-      const token = cm.getTokenAt(cm.getCursor());
+      const cursor = cm.getCursor();
+      cm.scrollIntoView(cursor);
+      const token = cm.getTokenAt(cursor);
       const snippets = getConfig('snippets')(this.props.file);
       cm.showHint({
         completeSingle: false,
