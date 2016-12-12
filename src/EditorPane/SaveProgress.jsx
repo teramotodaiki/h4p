@@ -29,7 +29,7 @@ const getStyle = (props, context, state) => {
       transition: transitions.easeOut(),
     },
     label: {
-      color: palette.primary1Color,
+      color: palette.accent1Color,
       fontSize: '.5rem',
       opacity: state.complete ? 1 : 0,
       verticalAlign: 'top',
@@ -46,7 +46,7 @@ const getStyle = (props, context, state) => {
     barColor: {
       width: state.animate ? 0 : '100%',
       height: '100%',
-      backgroundColor: palette.primary1Color,
+      backgroundColor: palette.accent1Color,
       opacity: 0.1,
       transition: transitions.easeOut(
         `${getAnimateTime(props.time)}ms`, null, null, 'linear'
