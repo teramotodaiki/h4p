@@ -160,6 +160,7 @@ export default class EditorPane extends Component {
           findFile,
           onShot: this.handleShot,
           selectTab,
+          localization,
         })}
         </ChromeTabContent>
       ))}

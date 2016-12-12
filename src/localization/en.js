@@ -65,6 +65,10 @@ Thanks
 - Write down his/her name here.
 `,
   },
+  shot: {
+    shoot: 'After rewriting, send the code',
+    restore: 'Restore',
+  },
   hierarchy: {
     emptyTrashBox: 'Empty trash',
   },

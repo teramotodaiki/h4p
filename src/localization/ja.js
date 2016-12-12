@@ -65,6 +65,10 @@ alert('こんにちは！');
 - ここに名前を書いてあげるといいよ。
 `,
   },
+  shot: {
+    shoot: '書き換えたら、コードを送る',
+    restore: '元に戻す',
+  },
   hierarchy: {
     emptyTrashBox: '空にする',
   },
