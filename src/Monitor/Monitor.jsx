@@ -103,10 +103,10 @@ export default class Monitor extends Component {
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
-    canDeploy: PropTypes.bool.isRequired,
     provider: PropTypes.object,
     onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
+    setConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -314,9 +314,8 @@ export default class Monitor extends Component {
       onMouseLeave: this.handleMouseLeave,
       tooltipPosition: rootHeight - monitorHeight > 40 ?
         'bottom-center' : 'top-center',
-      canDeploy: this.props.canDeploy,
-      provider: this.props.provider,
       getConfig: this.props.getConfig,
+      setConfig: this.props.setConfig,
     };
 
     const {
