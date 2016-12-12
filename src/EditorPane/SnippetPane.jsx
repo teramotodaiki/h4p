@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react';
+import IconButton from 'material-ui/IconButton';
+import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
 
 
 import SnippetButton from './SnippetButton';
@@ -51,6 +53,17 @@ const getStyle = (props, context) => {
       backgroundColor: palette.secondaryTextColor,
     }, commonMenu),
     disabled: commonMenu,
+    swap: {
+      position: 'absolute',
+      right: 4,
+      padding: 4,
+      width: 24,
+      height: 24,
+    },
+    swapIcon: {
+      width: 16,
+      height: 16,
+    },
   }
 };
 
@@ -110,6 +123,7 @@ export default class SnippetPane extends Component {
       container,
       enabled,
       disabled,
+      swap, swapIcon,
     } = getStyle(this.props, this.context);
 
     const menus = snippetFiles.map((file) => {
@@ -125,7 +139,15 @@ export default class SnippetPane extends Component {
 
     return (
       <div style={root}>
-        <div style={menu}>{menus}</div>
+        <div style={menu}>{[...menus, (
+          <IconButton
+            key="ActionSwapVert"
+            style={swap}
+            iconStyle={swapIcon}
+          >
+            <ActionSwapVert />
+          </IconButton>
+        )]}</div>
         <div style={container}>
         {snippets
           .filter((snippet) => snippet.fileKey === fileKey)
