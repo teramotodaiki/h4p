@@ -135,6 +135,13 @@ export default class SnippetPane extends Component {
     });
   };
 
+  handleSelectMenu = (fileKey) => {
+    this.setState({
+      fileKey,
+      collapse: false,
+    });
+  };
+
   render() {
     const {
       snippets,
@@ -160,7 +167,7 @@ export default class SnippetPane extends Component {
         <span
           key={file.key}
           style={style}
-          onTouchTap={() => this.setState({ fileKey: file.key })}
+          onTouchTap={() => this.handleSelectMenu(file.key)}
         >{file.plane}</span>
       );
     });
