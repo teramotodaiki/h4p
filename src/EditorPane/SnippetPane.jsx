@@ -127,7 +127,7 @@ export default class SnippetPane extends Component {
     this.setState({ collapse });
   };
 
-  handleSelect = (event, node) => {
+  handleSelectSnippet = (event, node) => {
     this.setState({
       open: true,
       anchorEl: event.currentTarget,
@@ -185,7 +185,7 @@ export default class SnippetPane extends Component {
               key={snippet.key}
               snippet={snippet}
               findFile={findFile}
-              onSelect={this.handleSelect}
+              onSelect={this.handleSelectSnippet}
             />
           )
         )}
