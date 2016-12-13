@@ -1,13 +1,11 @@
 import React, { PropTypes, Component } from 'react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
 import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import Preview from './Preview';
-import { AddDialog } from '../FileDialog/';
 import { SizerWidth } from '../Monitor/';
 import MarkdownMenu from './MarkdownMenu';
 
@@ -46,12 +44,6 @@ const getStyles = (props, context) => {
       flex: '1 1 auto',
       position: 'relative',
     },
-    button: {
-      position: 'absolute',
-      right: 23,
-      bottom: 23,
-      zIndex: 1000,
-    },
   };
 };
 
@@ -60,7 +52,6 @@ export default class EditorPane extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     tabs: PropTypes.array.isRequired,
-    addFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
@@ -85,13 +76,6 @@ export default class EditorPane extends Component {
     }
     return true;
   }
-
-  handleAdd = () => {
-    const { openFileDialog, addFile } = this.props;
-    openFileDialog(AddDialog)
-      .then(seed => new SourceFile(seed))
-      .then(file => addFile(file));
-  };
 
   handleShot = (text) => {
     const { portPostMessage, getConfig } = this.props;
@@ -170,14 +154,6 @@ export default class EditorPane extends Component {
         </ChromeTabContent>
       ))}
       </div>
-      {tabs.length > 0 ? (
-        <FloatingActionButton secondary
-          style={button}
-          onClick={this.handleAdd}
-        >
-          <ContentAdd />
-        </FloatingActionButton>
-      ) : null}
     </div>
     );
   }

@@ -318,7 +318,6 @@ class Main extends Component {
 
     const editorPaneProps = {
       tabs,
-      addFile: this.addFile,
       putFile: this.putFile,
       selectTab: this.selectTab,
       closeTab: this.closeTab,

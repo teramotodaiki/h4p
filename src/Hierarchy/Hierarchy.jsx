@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
-import { makeFromFile } from '../File/';
-import { SignDialog } from '../FileDialog/';
+import { makeFromFile, SourceFile } from '../File/';
+import { SignDialog, AddDialog } from '../FileDialog/';
 import { Tab } from '../ChromeTab/';
 import Root from './Root';
 import SearchBar from './SearchBar';
@@ -24,10 +26,16 @@ const getStyles = (props, context) => {
       width: '100%',
       height: '100%',
       paddingTop: spacing.desktopGutterMore,
-      paddingBottom: spacing.desktopGutterMore,
+      paddingBottom: 80,
       overflowY: 'scroll',
       direction: 'rtl',
-    })
+    }),
+    button: {
+      position: 'absolute',
+      right: 23,
+      bottom: 23,
+      zIndex: 1000,
+    },
   };
 };
 
@@ -121,6 +129,13 @@ export default class Hierarchy extends Component {
       .map((file) => this.props.deleteFile(file));
   };
 
+  handleAdd = () => {
+    const { openFileDialog, addFile } = this.props;
+    openFileDialog(AddDialog)
+      .then(seed => new SourceFile(seed))
+      .then(file => addFile(file));
+  };
+
   render() {
     if (this.props.isShrinked) {
       return null;
@@ -155,6 +170,7 @@ export default class Hierarchy extends Component {
     const {
       root,
       scroll,
+      button,
     } = getStyles(this.props, this.context);
 
     return (
@@ -171,6 +187,12 @@ export default class Hierarchy extends Component {
         <div style={scroll}>
           <Root files={files.filter(filter)} {...transfer} />
         </div>
+        <FloatingActionButton secondary
+          style={button}
+          onClick={this.handleAdd}
+        >
+          <ContentAdd />
+        </FloatingActionButton>
       </div>
     );
   }
