@@ -189,9 +189,11 @@ export default class Editor extends Component {
       codemirror,
     } = getStyles(this.props, this.context, this.state);
 
+    const meta = CodeMirror.findModeByMIME(file.type);
+
     const options = Object.assign({
       lineNumbers: true,
-      mode: CodeMirror.findModeByMIME(file.type).mode,
+      mode: meta && meta.mode,
       indentUnit: getConfig('options').indentUnit4 ? 4 : 2,
       indentWithTabs: true,
       matchBrackets: true,
