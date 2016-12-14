@@ -181,14 +181,7 @@ export default class Monitor extends Component {
       ]))
       .then(([frame, ...files]) => {
         const channel = new MessageChannel();
-        channel.port1.onmessage = (e) => {
-          switch (e.data.query) {
-            case 'resize':
-              const { width, height } = e.data.value;
-              this.setState({ width, height }, this.handleResize);
-              break;
-          }
-        };
+        channel.port1.onmessage = this.handleMessage;
         portRef(channel.port1);
 
         frame.contentWindow.postMessage({
@@ -197,6 +190,15 @@ export default class Monitor extends Component {
       })
       .catch((err) => console.error(err) || err);
   }
+
+  handleMessage = ({ data }) => {
+    switch (data.query) {
+      case 'resize':
+        const { width, height } = data.value;
+        this.setState({ width, height }, this.handleResize);
+        break;
+    }
+  };
 
   handlePopoutOpen = (...args) => {
     this.parent = window.open.apply(window, args);
