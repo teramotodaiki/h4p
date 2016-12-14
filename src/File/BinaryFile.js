@@ -81,7 +81,7 @@ export default class BinaryFile extends _File {
     return Promise.resolve(
       new BinaryFile({
         type: file.type,
-        name: file.name,
+        name: file.name || BinaryFile.defaultProps.name,
         blob: file,
       })
     );

@@ -6,7 +6,7 @@ import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
 import transitions from 'material-ui/styles/transitions';
 
 
-import { BinaryFile, SourceFile } from '../File/';
+import { BinaryFile, SourceFile, makeFromFile} from '../File/';
 import composeEnv from '../File/composeEnv';
 import template from '../html/screen';
 import fallbackTemplate from '../html/dangerScreen';
@@ -106,6 +106,8 @@ export default class Monitor extends Component {
     onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
+    addFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -211,6 +213,19 @@ export default class Monitor extends Component {
         } else {
           reply({ error: true });
         }
+        break;
+      case 'saveAs':
+        const [blob, name] = data.value;
+
+        makeFromFile(blob).then((add) => {
+          const exist = this.props.findFile(name);
+          if (exist) {
+            const {key} = exist;
+            this.props.putFile(exist, add.set({ key, name }));
+          } else {
+            this.props.addFile(add.set({ name }));
+          }
+        });
         break;
     }
   };

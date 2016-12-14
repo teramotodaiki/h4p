@@ -91,7 +91,7 @@ export default class SourceFile extends _File {
         resolve(
           new SourceFile({
             type: file.type,
-            name: file.name,
+            name: file.name || SourceFile.defaultProps.name,
             text: e.target.result,
           })
         );

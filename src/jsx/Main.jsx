@@ -312,13 +312,14 @@ class Main extends Component {
       getConfig: this.getConfig,
       setConfig: this.setConfig,
       findFile: this.findFile,
+      addFile: this.addFile,
+      putFile: this.putFile,
     };
 
     const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
       tabs,
-      putFile: this.putFile,
       selectTab: this.selectTab,
       closeTab: this.closeTab,
       handleRun: this.handleRun,
@@ -346,8 +347,6 @@ class Main extends Component {
 
     const hierarchyProps = {
       tabs,
-      addFile: this.addFile,
-      putFile: this.putFile,
       deleteFile: this.deleteFile,
       selectTab: this.selectTab,
       closeTab: this.closeTab,
