@@ -106,6 +106,8 @@ export default class Monitor extends Component {
     onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
+    addFile: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
