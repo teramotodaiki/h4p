@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from '../jsx/ReactPopout';
-import { transform } from 'babel-standalone';
 import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
