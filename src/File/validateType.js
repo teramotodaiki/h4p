@@ -26,6 +26,9 @@ const metas = [
   ['*', [
     /.*/,
   ]],
+  ['.text.plane', [
+    mimes.get('text'),
+  ]],
   ['.source.js', [
     mimes.get('javascript'),
   ]],
