@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import Popout from '../jsx/ReactPopout';
-import { transform } from 'babel-standalone';
 import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
@@ -181,13 +180,14 @@ export default class Monitor extends Component {
       ]))
       .then(([frame, ...files]) => {
         const channel = new MessageChannel();
-        channel.port1.onmessage = (e) => {
-          switch (e.data.query) {
-            case 'resize':
-              const { width, height } = e.data.value;
-              this.setState({ width, height }, this.handleResize);
-              break;
-          }
+        channel.port1.onmessage = (event) => {
+          const reply = (params) => {
+            params = Object.assign({
+              id: event.data.id,
+            }, params);
+            channel.port1.postMessage(params);
+          };
+          this.handleMessage(event, reply);
         };
         portRef(channel.port1);
 
@@ -197,6 +197,23 @@ export default class Monitor extends Component {
       })
       .catch((err) => console.error(err) || err);
   }
+
+  handleMessage = ({ data }, reply) => {
+    switch (data.query) {
+      case 'resize':
+        const { width, height } = data.value;
+        this.setState({ width, height }, this.handleResize);
+        break;
+      case 'fetch':
+        const file = this.props.findFile(data.value);
+        if (file) {
+          reply({ value: file.blob });
+        } else {
+          reply({ error: true });
+        }
+        break;
+    }
+  };
 
   handlePopoutOpen = (...args) => {
     this.parent = window.open.apply(window, args);
