@@ -181,7 +181,15 @@ export default class Monitor extends Component {
       ]))
       .then(([frame, ...files]) => {
         const channel = new MessageChannel();
-        channel.port1.onmessage = this.handleMessage;
+        channel.port1.onmessage = (event) => {
+          const reply = (params) => {
+            params = Object.assign({
+              id: event.data.id,
+            }, params);
+            channel.port1.postMessage(params);
+          };
+          this.handleMessage(event, reply);
+        };
         portRef(channel.port1);
 
         frame.contentWindow.postMessage({
@@ -191,11 +199,19 @@ export default class Monitor extends Component {
       .catch((err) => console.error(err) || err);
   }
 
-  handleMessage = ({ data }) => {
+  handleMessage = ({ data }, reply) => {
     switch (data.query) {
       case 'resize':
         const { width, height } = data.value;
         this.setState({ width, height }, this.handleResize);
+        break;
+      case 'fetch':
+        const file = this.props.findFile(data.value);
+        if (file) {
+          reply({ value: file.blob });
+        } else {
+          reply({ error: true });
+        }
         break;
     }
   };
