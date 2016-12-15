@@ -58,12 +58,12 @@ export default class EditorPane extends Component {
     handleRun: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
-    portPostMessage: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
     isShrinked: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
+    port: PropTypes.object,
   };
 
   static contextTypes = {
@@ -78,10 +78,10 @@ export default class EditorPane extends Component {
   }
 
   handleShot = (text) => {
-    const { portPostMessage, getConfig } = this.props;
-    if (text && portPostMessage) {
+    const { port, getConfig } = this.props;
+    if (text && port) {
       SourceFile.shot(text).babel(getConfig('babelrc'))
-      .then((file) => portPostMessage({ query: 'shot', value: file.serialize() }));
+      .then((file) => port.postMessage({ query: 'shot', value: file.serialize() }));
     }
   };
 

@@ -76,7 +76,7 @@ class Main extends Component {
     localization: getLocalization(...(
       navigator.languages || [navigator.language]
     )),
-    portPostMessage: () => {},
+    port: null,
   };
 
   get rootWidth() {
@@ -279,11 +279,6 @@ class Main extends Component {
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
-  handlePort = (ref) => {
-    const portPostMessage = (data) => ref.postMessage(data);
-    this.setState({ portPostMessage });
-  };
-
   render() {
     const {
       connectDropTarget,
@@ -296,7 +291,7 @@ class Main extends Component {
       isPopout,
       reboot,
       localization,
-      portPostMessage,
+      port,
     } = this.state;
 
     const {
@@ -324,7 +319,7 @@ class Main extends Component {
       closeTab: this.closeTab,
       handleRun: this.handleRun,
       openFileDialog: this.openFileDialog,
-      portPostMessage: portPostMessage,
+      port,
       isShrinked: isShrinked(
         this.rootWidth - monitorWidth,
         this.rootHeight
@@ -337,7 +332,7 @@ class Main extends Component {
       rootHeight: this.rootHeight,
       isPopout: isPopout,
       reboot: reboot,
-      portRef: this.handlePort,
+      portRef: (port) => this.setState({ port }),
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
