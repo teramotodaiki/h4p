@@ -119,6 +119,7 @@ export default class Editor extends Component {
     isCared: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     codemirrorRef: PropTypes.func.isRequired,
+    completes: PropTypes.array.isRequired,
   };
 
   static defaultProps = {
@@ -127,6 +128,7 @@ export default class Editor extends Component {
     closeSelectedTab: () => {},
     isCared: false,
     codemirrorRef: () => {},
+    completes: [],
   };
 
   static contextTypes = {
@@ -167,6 +169,7 @@ export default class Editor extends Component {
         completeSingle: false,
         files: getFiles(),
         snippets,
+        completes: this.props.completes,
       });
     });
 

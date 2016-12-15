@@ -30,6 +30,10 @@ CodeMirror.hint.javascript = (instance, options) => {
       .concat(result.list);
   }
 
+  result.list = options.completes
+    .filter((complete) => complete.indexOf(token.string) === 0)
+    .concat(result.list);
+
   return result;
 
 };

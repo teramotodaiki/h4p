@@ -87,6 +87,7 @@ export default class Readme extends Component {
     selectTab: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
+    port: PropTypes.object,
   };
 
   static contextTypes = {
@@ -95,6 +96,7 @@ export default class Readme extends Component {
 
   state = {
     updates: {},
+    completes: [],
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -108,6 +110,15 @@ export default class Readme extends Component {
     if (this.props.readme !== nextProps.readme) {
       this.setState({ updates: {} });
     }
+    if (this.props.port !== nextProps.port) {
+      nextProps.port.addEventListener('message', (event) => {
+        if (event.data.query === 'complete') {
+          this.setState({
+            completes: event.data.value,
+          });
+        }
+      });
+    }
   }
 
   renderIterate(tag, props, children) {
@@ -117,6 +128,9 @@ export default class Readme extends Component {
       getConfig,
       localization,
     } = this.props;
+    const {
+      completes,
+    } = this.state;
 
     if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
       return React.createElement(tag, props, children);
@@ -176,6 +190,7 @@ export default class Readme extends Component {
             isCared
             getConfig={getConfig}
             codemirrorRef={codemirrorRef}
+            completes={completes}
           />
         )}
         </ShotFrame>

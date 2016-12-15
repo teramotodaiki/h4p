@@ -98,6 +98,7 @@ export default class EditorPane extends Component {
       localization,
       findFile,
       getConfig, setConfig,
+      port,
     } = this.props;
 
     const {
@@ -150,6 +151,7 @@ export default class EditorPane extends Component {
           onShot: this.handleShot,
           selectTab,
           localization,
+          port,
         })}
         </ChromeTabContent>
       ))}
