@@ -182,7 +182,7 @@ export default class Monitor extends Component {
       ]))
       .then(([frame, ...files]) => {
         const channel = new MessageChannel();
-        channel.port1.onmessage = (event) => {
+        channel.port1.addEventListener('message', (event) => {
           const reply = (params) => {
             params = Object.assign({
               id: event.data.id,
@@ -190,8 +190,9 @@ export default class Monitor extends Component {
             channel.port1.postMessage(params);
           };
           this.handleMessage(event, reply);
-        };
+        });
         portRef(channel.port1);
+        channel.port1.start();
 
         frame.contentWindow.postMessage({
           files, env,
