@@ -42,6 +42,7 @@
     "babel-standalone": "^6.18.1",
     "es6-promise": "^4.0.5",
     "handlebars-loader": "^1.4.0",
+    "js-beautify": "^1.6.4",
     "markdown-it": "^8.1.0",
     "material-ui": "^0.16.1",
     "react": "^15.3.2",
