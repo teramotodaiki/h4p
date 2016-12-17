@@ -3,7 +3,7 @@ import { fullWhite, fullBlack } from 'material-ui/styles/colors';
 
 
 const getStyles = (props, context, state) => {
-  const { prepareStyles } = context;
+  const { prepareStyles } = context.muiTheme;
   const { scale } = state;
 
   return {
@@ -18,7 +18,7 @@ const getStyles = (props, context, state) => {
       background: `linear-gradient(${fullWhite}, ${fullBlack})`,
       width: '100%',
       height: '100%',
-    },)
+    }),
     img: prepareStyles({
       transform: `scale(${scale})`,
     }),
