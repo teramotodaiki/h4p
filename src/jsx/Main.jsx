@@ -204,8 +204,8 @@ class Main extends Component {
     });
 
     const found = tabs.find((item) => item.is(tab));
-    const replace = found && found.select(true);
     if (found) {
+      const replace = found.select(true);
       this.setState({
         tabs: tabs.map((item) => item === found ? replace : item),
       }, () => resolve(replace));
