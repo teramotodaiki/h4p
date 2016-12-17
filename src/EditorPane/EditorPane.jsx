@@ -5,7 +5,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
-import Preview from './Preview';
 import { SizerWidth } from '../Monitor/';
 import MarkdownMenu from './MarkdownMenu';
 
