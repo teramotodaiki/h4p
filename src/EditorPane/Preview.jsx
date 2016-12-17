@@ -62,9 +62,11 @@ export default class Preview extends Component {
       img,
     } = getStyles(this.props, this.context, this.state);
 
-    const content = (
-      <img src={blobURL} alt={name} style={prepareStyles(img)} />
-    );
+    const content = file.is('image') ? (
+      <img src={file.blobURL} alt={file.name} style={img} />
+    ) : file.is('audio') ? (
+      <audio src={file.blobURL} controls />
+    ) : null;
 
     return (
       <div style={root} ref={ref => ref && (this.container = ref)}>
