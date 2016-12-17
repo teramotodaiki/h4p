@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import { transparent, grey100 } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
+import beautify from 'js-beautify';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
@@ -208,6 +209,11 @@ export default class Editor extends Component {
         'Cmd-Enter': handleRun,
         'Ctrl-W': closeSelectedTab,
         'Cmd-W': closeSelectedTab,
+        'Ctrl-Alt-B': (cm) => cm.setValue(
+          beautify(cm.getValue(), {
+            "indent_with_tabs": true,
+          })
+        ),
       },
     }, getConfig('options'));
 
