@@ -39,8 +39,8 @@ export default class Preview extends Component {
   };
 
   componentDidMount() {
-    const { type, blobURL } = this.props.file;
-    if (type.indexOf('image/') === 0) {
+    const { file } = this.props;
+    if (file.is('image')) {
       const image = new Image();
       image.onload = () => {
         const ratio = (size) => Math.max(size.height, 1) / Math.max(size.width, 1);
@@ -49,7 +49,7 @@ export default class Preview extends Component {
           screenRect.width / image.width : screenRect.height / image.height;
         this.setState({ scale: scale * 0.9 });
       };
-      image.src = blobURL;
+      image.src = file.blobURL;
     }
   }
 
