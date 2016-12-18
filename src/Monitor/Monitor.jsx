@@ -119,6 +119,7 @@ export default class Monitor extends Component {
     height: 150,
     progress: 0,
     hover: false,
+    error: null,
   };
 
   popoutOptions = {
@@ -158,6 +159,7 @@ export default class Monitor extends Component {
   start () {
     const { portRef, getConfig } = this.props;
 
+    this.setState({ error: null });
     const env = composeEnv(getConfig('env'));
 
     let sent = 0;
@@ -169,6 +171,9 @@ export default class Monitor extends Component {
         const progress = Math.min(1, ++sent / send.length);
         this.setState({ progress });
         return file.serialize();
+      }, (error) => {
+        // Babel is failed
+        return Promise.reject(error);
       }));
 
     this.prevent =
@@ -198,7 +203,7 @@ export default class Monitor extends Component {
           files, env,
         }, '*', [channel.port2]);
       })
-      .catch((err) => console.error(err) || err);
+      .catch((error) => this.setState({ error }));
   }
 
   handleMessage = ({ data }, reply) => {
@@ -319,6 +324,7 @@ export default class Monitor extends Component {
       progress,
       hover,
       provider,
+      error,
     } = this.state;
     const {
       isPopout,
@@ -375,6 +381,7 @@ export default class Monitor extends Component {
           frameRef={(ref) => ref && (this.popoutFrame = ref)}
           handleRun={handleRun}
           reboot={reboot}
+          error={error}
         />
       </Popout>
     ) : null;
@@ -388,6 +395,7 @@ export default class Monitor extends Component {
             frameRef={(ref) => ref && (this.inlineFrame = ref)}
             handleRun={handleRun}
             reboot={reboot}
+            error={error}
           />
           <LinearProgress
             mode="determinate"
