@@ -91,9 +91,11 @@ export default class Screen extends Component {
       position: 'absolute',
       width: '100%',
       top: 0,
-      paddingTop: '1.5rem',
+      marginTop: 0,
+      paddingTop: '2rem',
       backgroundColor: 'red',
       color: 'white',
+      fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
     };
 
     const sandbox = SrcDocEnabled ?
@@ -120,7 +122,7 @@ export default class Screen extends Component {
           ref={frameRef}
         ></iframe>
         {error ? (
-          <div style={errorStyle}>{error.message}</div>
+          <pre style={errorStyle}>{error.message}</pre>
         ) : null}
       </div>
     );
