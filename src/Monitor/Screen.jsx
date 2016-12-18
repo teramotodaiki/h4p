@@ -12,11 +12,13 @@ export default class Screen extends Component {
     display: PropTypes.bool.isRequired,
     frameRef: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
+    error: PropTypes.object,
   };
 
   static defaultProps = {
     animation: false,
     display: false,
+    error: null,
   };
 
   state = {
@@ -43,6 +45,7 @@ export default class Screen extends Component {
     const {
       display,
       frameRef,
+      error,
     } = this.props;
 
     const {
@@ -84,6 +87,15 @@ export default class Screen extends Component {
       height: 24,
     };
 
+    const errorStyle = {
+      position: 'absolute',
+      width: '100%',
+      top: 0,
+      paddingTop: '1.5rem',
+      backgroundColor: 'red',
+      color: 'white',
+    };
+
     const sandbox = SrcDocEnabled ?
       "allow-scripts allow-modals allow-popups" :
       "allow-scripts allow-modals allow-popups allow-same-origin";
@@ -107,6 +119,9 @@ export default class Screen extends Component {
           style={frameStyle}
           ref={frameRef}
         ></iframe>
+        {error ? (
+          <div style={errorStyle}>{error.message}</div>
+        ) : null}
       </div>
     );
   }

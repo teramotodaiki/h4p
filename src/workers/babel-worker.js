@@ -30,6 +30,9 @@ export default function (file, babelrc) {
           resolve(file.set({ text }));
         }
       });
+      worker.addEventListener('error', function (event) {
+        reject(new Error(event.message));
+      });
 
       worker.postMessage({
         id: id,
