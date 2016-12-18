@@ -84,7 +84,7 @@ export default class Hierarchy extends Component {
       .then(([file, author]) => file.set({ author }))
       .then(file => dir ? file.move(dir.path) : file)
       .then(addFile)
-      .then(selectTab);
+      .then(this.handleFileSelect);
     })
     .reduce((p, c) => {
       return p.then(c);

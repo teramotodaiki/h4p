@@ -3,10 +3,11 @@ import { fullWhite, fullBlack } from 'material-ui/styles/colors';
 
 
 const getStyles = (props, context, state) => {
+  const { prepareStyles } = context.muiTheme;
   const { scale } = state;
 
   return {
-    root: {
+    root: prepareStyles({
       position: 'absolute',
       display: 'flex',
       flexDirection: 'row',
@@ -17,10 +18,10 @@ const getStyles = (props, context, state) => {
       background: `linear-gradient(${fullWhite}, ${fullBlack})`,
       width: '100%',
       height: '100%',
-    },
-    img: {
+    }),
+    img: prepareStyles({
       transform: `scale(${scale})`,
-    },
+    }),
   };
 };
 
@@ -39,8 +40,8 @@ export default class Preview extends Component {
   };
 
   componentDidMount() {
-    const { type, blobURL } = this.props.file;
-    if (type.indexOf('image/') === 0) {
+    const { file } = this.props;
+    if (file.is('image')) {
       const image = new Image();
       image.onload = () => {
         const ratio = (size) => Math.max(size.height, 1) / Math.max(size.width, 1);
@@ -49,22 +50,26 @@ export default class Preview extends Component {
           screenRect.width / image.width : screenRect.height / image.height;
         this.setState({ scale: scale * 0.9 });
       };
-      image.src = blobURL;
+      image.src = file.blobURL;
     }
   }
 
   render() {
-    const { name, type, blob, blobURL } = this.props.file;
+    const { file } = this.props;
 
-    const { root, img } = getStyles(this.props, this.context, this.state);
-    const { prepareStyles } = this.context.muiTheme;
+    const {
+      root,
+      img,
+    } = getStyles(this.props, this.context, this.state);
 
-    const content = (
-      <img src={blobURL} alt={name} style={prepareStyles(img)} />
-    );
+    const content = file.is('image') ? (
+      <img src={file.blobURL} alt={file.name} style={img} />
+    ) : file.is('audio') ? (
+      <audio src={file.blobURL} controls />
+    ) : null;
 
     return (
-      <div style={prepareStyles(root)} ref={ref => ref && (this.container = ref)}>
+      <div style={root} ref={ref => ref && (this.container = ref)}>
       {content}
       </div>
     );

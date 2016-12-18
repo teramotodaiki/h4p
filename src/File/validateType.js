@@ -8,6 +8,7 @@ const mimes = new Map([
   ['json', /^(text|application)\/json$/i],
   ['markdown', /^text\/(x-)?markdown$/i],
   ['image', /^image\/.*$/i],
+  ['audio', /^audio\/.*$/i],
 ]);
 
 const metas = [
@@ -18,7 +19,8 @@ const metas = [
     mimes.get('markdown')
   ]],
   ['blob', [
-    mimes.get('image')
+    mimes.get('image'),
+    mimes.get('audio')
   ]],
   ['config', [
     mimes.get('json')
