@@ -75,7 +75,8 @@ CodeMirror.hint.markdown = (instance, options) => {
 
 
 function getCompleteNames(files, from, prefix = '') {
+  prefix = prefix.toLowerCase();
   return files
-    .filter(file => file.name.indexOf(prefix) === 0)
+    .filter(file => file.name.toLowerCase().indexOf(prefix) === 0)
     .map(file => ({ text: file.name, from }));
 }
