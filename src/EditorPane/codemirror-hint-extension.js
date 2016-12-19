@@ -26,7 +26,7 @@ CodeMirror.hint.javascript = (instance, options) => {
     const prefix = instance.getLine(cursor.line)
       .substr(start.ch, cursor.ch - start.ch);
 
-    result.list = getModuleNames(options.files, start, prefix)
+    result.list = getCompleteNames(options.files, start, prefix)
       .concat(result.list);
   }
 
@@ -54,7 +54,7 @@ CodeMirror.hint.markdown = (instance, options) => {
     const prefix = instance.getLine(cursor.line)
       .substr(start.ch, cursor.ch - start.ch);
     return {
-      list: getModuleNames(options.files, start, prefix),
+      list: getCompleteNames(options.files, start, prefix),
       from, to
     };
   }
@@ -74,8 +74,8 @@ CodeMirror.hint.markdown = (instance, options) => {
 };
 
 
-function getModuleNames(files, from, prefix = '') {
+function getCompleteNames(files, from, prefix = '') {
   return files
-    .filter(file => file.moduleName.indexOf(prefix) === 0)
-    .map(file => ({ text: file.moduleName, from }));
+    .filter(file => file.name.indexOf(prefix) === 0)
+    .map(file => ({ text: file.name, from }));
 }
