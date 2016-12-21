@@ -72,13 +72,17 @@ export default class _File {
     return validateType(name, this.type);
   }
 
-  _babelCache = new WeakMap();
+  static _babelCache = new WeakMap();
+  static _babelConfig = null;
   babel(config) {
-    if (this._babelCache.has(config)) {
-      return this._babelCache.get(config);
+    const { _babelCache, _babelConfig } = this.constructor;
+    if (_babelConfig === config && _babelCache.has(this)) {
+      return _babelCache.get(this);
     }
+    this.constructor._babelConfig = config;
+
     const promise = babelWorker(this, config);
-    this._babelCache.set(config, promise);
+    _babelCache.set(this, promise);
     return promise;
   }
 
