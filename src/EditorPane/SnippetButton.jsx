@@ -15,21 +15,11 @@ const getStyle = (props, context, state) => {
 
   const {
     palette,
-    spacing,
   } = context.muiTheme;
 
   const {
     code,
   } = state;
-
-  const commonAlignment = {
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    wordWrap: 'break-word',
-  };
 
   return {
     root: {
@@ -41,11 +31,11 @@ const getStyle = (props, context, state) => {
       padding: 8,
       zIndex: code ? 2 : 1,
     },
-    container: Object.assign({
+    container: {
       width: '100%',
       height: '100%',
       cursor: 'move',
-    }, commonAlignment),
+    },
     button: {
       width: '100%',
       height: '100%',
@@ -53,7 +43,6 @@ const getStyle = (props, context, state) => {
     pre: {
       backgroundColor: palette.canvasColor,
     },
-    left: commonAlignment,
     prefix: {
       textAlign: 'center',
       textOverflow: 'ellipsis',
@@ -65,22 +54,6 @@ const getStyle = (props, context, state) => {
     leftLabel: {
       textAlign: 'center',
       fontSize: '.5rem',
-    },
-    right: Object.assign({
-      flex: '1 1 auto',
-    }, commonAlignment),
-    description: {
-      fontSize: '1rem',
-      maxWidth: 300,
-    },
-    rightLabel: {
-      fontSize: '.5rem',
-    },
-    plane: {
-      position: 'absolute',
-      fontSize: '.5rem',
-      right: 0,
-      bottom: 0,
     },
   };
 };
@@ -107,29 +80,30 @@ class SnippetButton extends Component {
 
   handleTouch = (event) => {
     const { snippet, findFile } = this.props;
-    const {
-      button,
-      left,
-      prefix,
-      description,
-      leftLabel,
-      right,
-      rightLabel,
-      plane,
-    } = getStyle(this.props, this.context, this.state);
+    const styles = {
+      container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        padding: '.5rem 0',
+      },
+      label: {
+        padding: '0 .5rem',
+      },
+      plane: {
+        position: 'absolute',
+        fontSize: '.5rem',
+        right: 0,
+      },
+    };
 
     this.props.onSelect(event, (
-      <Paper style={button}>
-        <div style={left}>
-          <span style={prefix}>{snippet.prefix}</span>
-          <span style={leftLabel}>{snippet.renderLeftLabel(findFile)}</span>
-        </div>
-        <div style={right}>
-          <span style={description}>{snippet.description}</span>
-          <code style={rightLabel}>{snippet.renderRightLabel(findFile)}</code>
-          <span style={plane}>{snippet.plane}</span>
-        </div>
-      </Paper>
+      <div style={styles.container}>
+        <span style={styles.plane}>{snippet.plane}</span>
+        <span style={styles.label}>{snippet.prefix}</span>
+        <span style={styles.label}>{snippet.renderLeftLabel(findFile)}</span>
+        <span style={styles.label}>{snippet.description}</span>
+        <code style={styles.label}>{snippet.renderRightLabel(findFile)}</code>
+      </div>
     ));
   };
 
