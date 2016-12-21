@@ -57,6 +57,10 @@ class SourceEditor extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  state = {
+    showHint: !this.props.file.is('json'),
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.isOver || nextProps.isOver) {
       return false;
@@ -83,6 +87,9 @@ class SourceEditor extends Component {
 
       connectDropTarget,
     } = this.props;
+    const {
+      showHint,
+    } = this.state;
 
     const {
       root,
@@ -94,6 +101,7 @@ class SourceEditor extends Component {
     const props = Object.assign({}, this.props, {
       codemirrorRef: (ref) => (this.codemirror = ref),
       onChange: this.handleChange,
+      showHint,
     });
 
     return (
@@ -107,10 +115,12 @@ class SourceEditor extends Component {
           <Editor {...props} />
         </div>
       )}
+      {showHint ? (
         <SnippetPane
           snippets={snippets}
           findFile={findFile}
         />
+      ) : null}
       </div>
     );
   }

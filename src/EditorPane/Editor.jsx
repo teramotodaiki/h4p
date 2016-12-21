@@ -121,6 +121,7 @@ export default class Editor extends Component {
     getConfig: PropTypes.func.isRequired,
     codemirrorRef: PropTypes.func.isRequired,
     completes: PropTypes.array.isRequired,
+    showHint: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -130,6 +131,7 @@ export default class Editor extends Component {
     isCared: false,
     codemirrorRef: () => {},
     completes: [],
+    showHint: true,
   };
 
   static contextTypes = {
@@ -158,6 +160,9 @@ export default class Editor extends Component {
   }
 
   showHint(cm) {
+    if (!this.props.showHint) {
+      return;
+    }
     const { getFiles, isCared, getConfig } = this.props;
 
     cm.on('change', (_cm, change) => {
