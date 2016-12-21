@@ -35,6 +35,9 @@ const getStyle = (props, context, state) => {
       width: '100%',
       height: '100%',
       cursor: 'move',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     button: {
       width: '100%',
