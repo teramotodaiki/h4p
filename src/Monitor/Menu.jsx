@@ -156,20 +156,22 @@ class Menu extends Component {
     }
   };
 
-  bundle = () => {
+  bundle = (props) => {
     const [TITLE] = this.props.getConfig('env').TITLE || [''];
 
     return Promise.all(
       this.props.files.map((file) => file.compose())
     )
-    .then(([...files]) => download({
-      useCDN: true,
-      files,
-      EXPORT_VAR_NAME,
-      CSS_PREFIX,
-      CORE_CDN_URL,
-      TITLE,
-    }));
+    .then(([...files]) => download(
+      Object.assign({
+        useCDN: true,
+        files,
+        EXPORT_VAR_NAME,
+        CSS_PREFIX,
+        CORE_CDN_URL,
+        TITLE,
+      }, props)
+    ));
   };
 
   render() {
