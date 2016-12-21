@@ -49,18 +49,21 @@ const getStyle = (props, context, state) => {
     button: {
       width: '100%',
       height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      overflow: 'hidden',
     },
     pre: {
       backgroundColor: palette.canvasColor,
     },
     left: commonAlignment,
     prefix: {
+      textAlign: 'center',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
       fontSize: '1rem',
+      padding: '.5rem 0',
     },
     leftLabel: {
+      textAlign: 'center',
       fontSize: '.5rem',
     },
     right: Object.assign({
@@ -167,10 +170,8 @@ class SnippetButton extends Component {
           <pre style={pre}>{snippet.text}</pre>
         ) : (
           <Paper style={button}>
-            <div style={left}>
-              <span style={prefix}>{snippet.prefix}</span>
-              <span style={leftLabel}>{snippet.renderLeftLabel(findFile)}</span>
-            </div>
+            <div style={prefix}>{snippet.prefix}</div>
+            <div style={leftLabel}>{snippet.renderLeftLabel(findFile)}</div>
           </Paper>
         )}
         </div>
