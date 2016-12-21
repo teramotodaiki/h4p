@@ -26,7 +26,7 @@ const getStyles = (props, context, state) => {
     editor: {
       boxSizing: 'border-box',
       width: '100%',
-      height: Math.min(300, height + spacing.desktopGutterMore),
+      height: Math.min(500, height + spacing.desktopGutterMore),
       marginLeft: anim === 1 ? -400 : 0,
       transform: `
         rotateZ(${anim === 1 ? -180 : 0}deg)
