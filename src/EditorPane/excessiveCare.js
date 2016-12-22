@@ -8,12 +8,10 @@ export default function excessiveCare (cm, change) {
 		var matchFlag = false;
 		var replaced = [];
 		change.text.forEach(function(input){
-			if(input.match(/[！-～|。|、|”|’]/g)){
+			if(input.match(/[！-～|”|’]/g)){
 				var han = input.replace(/[！-～]/g, function(s){
 					return String.fromCharCode(s.charCodeAt(0)-0xFEE0);
 				});
-				han = han.replace(/。/g, function(s){ return "."; });
-				han = han.replace(/、/g, function(s){ return ","; });
 				han = han.replace(/”/g, function(s){ return "\""; });
 				han = han.replace(/’/g, function(s){ return "\'"; });
 				replaced.push(han);
