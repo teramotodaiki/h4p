@@ -81,10 +81,14 @@ export default class _File {
   static _babelError = new WeakMap();
   babel(config) {
     const { _babelCache, _babelConfig, _babelError } = this.constructor;
-    if (_babelConfig === config && _babelCache.has(this)) {
-      return _babelCache.get(this);
+    if (_babelConfig === config) {
+      if (_babelCache.has(this))
+        return _babelCache.get(this);
+      if (_babelError.has(this))
+        throw _babelError.get(this);
+    } else {
+      this.constructor._babelConfig = config;
     }
-    this.constructor._babelConfig = config;
 
     const promise = babelWorker(this, config)
       .catch((err) => {
