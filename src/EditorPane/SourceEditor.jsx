@@ -132,6 +132,7 @@ class SourceEditor extends Component {
       <SaveProgress
         time={DELAY_TIME}
         startRef={(ref) => (this.start = ref)}
+        forceRef={(ref) => (this.force = ref)}
       />
       {connectDropTarget(
         <div style={editorContainer}>

@@ -60,6 +60,7 @@ export default class SaveProgress extends Component {
   static propTypes = {
     time: PropTypes.number.isRequired,
     startRef: PropTypes.func.isRequired,
+    forceRef: PropTypes.func.isRequired,
     label: PropTypes.node.isRequired,
   };
 
@@ -87,6 +88,12 @@ export default class SaveProgress extends Component {
 
   componentDidMount() {
     this.props.startRef(this.handleStart);
+    this.props.forceRef(this.handleForce);
+  }
+
+  componentWillUnmount() {
+    this.props.startRef(() => {});
+    this.props.forceRef(() => {});
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -119,6 +126,12 @@ export default class SaveProgress extends Component {
     this._prewarm = setTimeout(() => {
       this.actions.animate();
     }, PREWARM_TIME);
+  };
+
+  handleForce = () => {
+    clearTimeout(this._prewarm);
+    clearTimeout(this._animate);
+    this.actions.complete();
   };
 
   render() {
