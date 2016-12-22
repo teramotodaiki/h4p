@@ -188,6 +188,15 @@ export default class Editor extends Component {
     }
   }
 
+  beautify = (cm) => {
+    const text = beautify(cm.getValue(), {
+      "indent_with_tabs": true,
+      "end_with_newline": true,
+    });
+    cm.setValue(text);
+    this.props.onChange(text);
+  };
+
   render() {
     const {
       file,
@@ -218,11 +227,7 @@ export default class Editor extends Component {
         'Cmd-Enter': handleRun,
         'Ctrl-W': closeSelectedTab,
         'Cmd-W': closeSelectedTab,
-        'Ctrl-Alt-B': (cm) => cm.setValue(
-          beautify(cm.getValue(), {
-            "indent_with_tabs": true,
-          })
-        ),
+        'Ctrl-Alt-B': this.beautify,
       },
     }, getConfig('options'));
 
