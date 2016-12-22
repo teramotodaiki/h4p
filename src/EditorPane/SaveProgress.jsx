@@ -13,6 +13,9 @@ const getAnimateTime = (time) => (
 
 const getStyle = (props, context, state) => {
   const {
+    barStyle,
+  } = props;
+  const {
     palette,
   } = context.muiTheme;
 
@@ -22,7 +25,7 @@ const getStyle = (props, context, state) => {
       position: 'relative',
       boxSizing: 'border-box',
       width: '100%',
-      paddingLeft: SizerWidth,
+      textAlign: 'center',
       backgroundColor: palette.canvasColor,
       height: state.complete ? 14 : 6,
       borderBottom: `1px solid ${palette.borderColor}`,
@@ -35,14 +38,13 @@ const getStyle = (props, context, state) => {
       verticalAlign: 'top',
       transition: transitions.easeOut(),
     },
-    bar: {
+    bar: Object.assign({
       position: 'absolute',
       left: 0,
       top: 0,
-      paddingLeft: SizerWidth,
       width: '100%',
       height: '100%',
-    },
+    }, barStyle),
     barColor: {
       width: state.animate ? 0 : '100%',
       height: '100%',
@@ -62,10 +64,12 @@ export default class SaveProgress extends Component {
     startRef: PropTypes.func.isRequired,
     forceRef: PropTypes.func.isRequired,
     label: PropTypes.node.isRequired,
+    barStyle: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
     label: 'SAVED',
+    barStyle: {},
   };
 
   static contextTypes = {

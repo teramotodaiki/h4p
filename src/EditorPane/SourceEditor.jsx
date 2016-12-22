@@ -38,6 +38,9 @@ const getStyle = (props, context) => {
       flex: '1 1 auto',
       position: 'relative',
     },
+    barStyle: {
+      paddingLeft: SizerWidth,
+    },
   };
 };
 
@@ -119,6 +122,7 @@ class SourceEditor extends Component {
       root,
       error,
       editorContainer,
+      barStyle,
     } = getStyle(this.props, this.context);
 
     const snippets = getConfig('snippets')(file);
@@ -138,6 +142,7 @@ class SourceEditor extends Component {
         time={3000}
         startRef={(ref) => (this.start = ref)}
         forceRef={(ref) => (this.force = ref)}
+        barStyle={barStyle}
       />
       {connectDropTarget(
         <div style={editorContainer}>
