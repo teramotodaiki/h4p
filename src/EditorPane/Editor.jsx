@@ -191,6 +191,7 @@ export default class Editor extends Component {
   beautify = (cm) => {
     const text = beautify(cm.getValue(), {
       "indent_with_tabs": true,
+      "end_with_newline": true,
     });
     cm.setValue(text);
     this.props.onChange(text);
