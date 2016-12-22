@@ -47,7 +47,7 @@ const getStyle = (props, context, state) => {
       width: state.animate ? 0 : '100%',
       height: '100%',
       backgroundColor: palette.accent1Color,
-      opacity: 0.1,
+      opacity: 0.5,
       transition: transitions.easeOut(
         `${getAnimateTime(props.time)}ms`, null, null, 'linear'
       ),

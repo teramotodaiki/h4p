@@ -30,10 +30,10 @@ const getStyle = (props, context) => {
       flex: '0 1 auto',
       margin: 0,
       padding: 8,
-      borderStyle: 'dotted',
+      borderStyle: 'double none double solid',
       borderLeftWidth: SizerWidth,
-      backgroundColor: 'red',
-      color: 'white',
+      backgroundColor: red50,
+      color: red500,
       fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
     },
     editorContainer: {
