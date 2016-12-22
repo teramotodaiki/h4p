@@ -52,6 +52,7 @@ export default class Tab {
     return (
       <this.component
         file={this.file}
+        tab={this}
         {...props}
       />
     );

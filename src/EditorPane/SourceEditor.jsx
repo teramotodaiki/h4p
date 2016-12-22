@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
+import { red50, red500 } from 'material-ui/styles/colors';
 
 
 import { SizerWidth } from '../Monitor/';
@@ -46,6 +47,7 @@ class SourceEditor extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
+    tab: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
     gutterMarginWidth: PropTypes.number,
@@ -54,6 +56,7 @@ class SourceEditor extends Component {
     isSelected: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
+    selectTab: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -84,10 +87,17 @@ class SourceEditor extends Component {
       this.start();
     }
     clearTimeout(this._timer);
+    const babelrc = this.props.getConfig('babelrc');
     this._timer = setTimeout(() => {
-      this.props.onChange(text);
+      this.props.onChange(text)
+        .then((file) => file.babel(babelrc))
+        .catch((err) => this.selectThis());
     }, DELAY_TIME);
   };
+
+  selectThis() {
+    this.props.selectTab(this.props.tab);
+  }
 
   render() {
     const {
