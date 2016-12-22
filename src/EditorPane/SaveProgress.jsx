@@ -13,6 +13,9 @@ const getAnimateTime = (time) => (
 
 const getStyle = (props, context, state) => {
   const {
+    barStyle,
+  } = props;
+  const {
     palette,
   } = context.muiTheme;
 
@@ -22,7 +25,7 @@ const getStyle = (props, context, state) => {
       position: 'relative',
       boxSizing: 'border-box',
       width: '100%',
-      paddingLeft: SizerWidth,
+      textAlign: 'center',
       backgroundColor: palette.canvasColor,
       height: state.complete ? 14 : 6,
       borderBottom: `1px solid ${palette.borderColor}`,
@@ -35,19 +38,18 @@ const getStyle = (props, context, state) => {
       verticalAlign: 'top',
       transition: transitions.easeOut(),
     },
-    bar: {
+    bar: Object.assign({
       position: 'absolute',
       left: 0,
       top: 0,
-      paddingLeft: SizerWidth,
       width: '100%',
       height: '100%',
-    },
+    }, barStyle),
     barColor: {
       width: state.animate ? 0 : '100%',
       height: '100%',
       backgroundColor: palette.accent1Color,
-      opacity: 0.1,
+      opacity: 0.5,
       transition: transitions.easeOut(
         `${getAnimateTime(props.time)}ms`, null, null, 'linear'
       ),
@@ -60,6 +62,14 @@ export default class SaveProgress extends Component {
   static propTypes = {
     time: PropTypes.number.isRequired,
     startRef: PropTypes.func.isRequired,
+    forceRef: PropTypes.func.isRequired,
+    label: PropTypes.node.isRequired,
+    barStyle: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    label: 'SAVED',
+    barStyle: {},
   };
 
   static contextTypes = {
@@ -78,16 +88,27 @@ export default class SaveProgress extends Component {
   };
   _prewarm = null; // timer ID
   _animate = null; // timer ID
+  _callback = null; // Callback Function
 
   componentDidMount() {
     this.props.startRef(this.handleStart);
+    this.props.forceRef(this.handleForce);
   }
 
-  componentDidUpdate() {
-    if (this.state.animate) {
+  componentWillUnmount() {
+    this.props.startRef(() => {});
+    this.props.forceRef(() => {});
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.animate && this.state.animate) {
+      clearTimeout(this._animate);
       this._animate = setTimeout(() => {
         this.actions.complete();
       }, getAnimateTime(this.props.time));
+    }
+    if (!prevState.complete && this.state.complete) {
+      if (this._callback) this._callback();
     }
   }
 
@@ -98,7 +119,8 @@ export default class SaveProgress extends Component {
     );
   }
 
-  handleStart = () => {
+  handleStart = (callback) => {
+    this._callback = callback;
     clearTimeout(this._prewarm);
     clearTimeout(this._animate);
 
@@ -108,6 +130,12 @@ export default class SaveProgress extends Component {
     this._prewarm = setTimeout(() => {
       this.actions.animate();
     }, PREWARM_TIME);
+  };
+
+  handleForce = () => {
+    clearTimeout(this._prewarm);
+    clearTimeout(this._animate);
+    this.actions.complete();
   };
 
   render() {
@@ -120,7 +148,7 @@ export default class SaveProgress extends Component {
 
     return (
       <div style={root}>
-        <span style={label}>SAVED</span>
+        <span style={label}>{this.props.label}</span>
         {this.state.complete ? null : (
           <div style={bar}><div style={barColor} /></div>
         )}

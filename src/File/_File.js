@@ -68,17 +68,34 @@ export default class _File {
     return this.plane + this.ext;
   }
 
+  get error() {
+    return this.constructor._babelError.get(this);
+  }
+
   is(name) {
     return validateType(name, this.type);
   }
 
-  _babelCache = new WeakMap();
+  static _babelCache = new WeakMap();
+  static _babelConfig = null;
+  static _babelError = new WeakMap();
   babel(config) {
-    if (this._babelCache.has(config)) {
-      return this._babelCache.get(config);
+    const { _babelCache, _babelConfig, _babelError } = this.constructor;
+    if (_babelConfig === config) {
+      if (_babelCache.has(this))
+        return _babelCache.get(this);
+      if (_babelError.has(this))
+        throw _babelError.get(this);
+    } else {
+      this.constructor._babelConfig = config;
     }
-    const promise = babelWorker(this, config);
-    this._babelCache.set(config, promise);
+
+    const promise = babelWorker(this, config)
+      .catch((err) => {
+        _babelError.set(this, err);
+        throw err;
+      });
+    _babelCache.set(this, promise);
     return promise;
   }
 

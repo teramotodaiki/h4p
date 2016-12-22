@@ -63,6 +63,7 @@ export default class EditorPane extends Component {
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
     port: PropTypes.object,
+    reboot: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -98,6 +99,7 @@ export default class EditorPane extends Component {
       findFile,
       getConfig, setConfig,
       port,
+      reboot,
     } = this.props;
 
     const {
@@ -151,6 +153,7 @@ export default class EditorPane extends Component {
           selectTab,
           localization,
           port,
+          reboot,
         })}
         </ChromeTabContent>
       ))}

@@ -5,7 +5,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import AvPlayArrow from 'material-ui/svg-icons/av/play-arrow';
 import AvStop from 'material-ui/svg-icons/av/stop';
 import transitions from 'material-ui/styles/transitions';
+import { red50, red500 } from 'material-ui/styles/colors';
 
+
+import SaveProgress from './SaveProgress';
+import Editor from './Editor';
 
 const durations = [600, 1400, 0];
 
@@ -51,17 +55,28 @@ const getStyles = (props, context, state) => {
       color: palette.secondaryTextColor,
       fontSize: '.8rem',
     },
+    error: {
+      flex: '0 1 auto',
+      margin: 0,
+      padding: 8,
+      backgroundColor: red50,
+      color: red500,
+      fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
+    },
   };
 };
 
 export default class ShotFrame extends Component {
 
   static propTypes = {
+    file: PropTypes.object.isRequired,
     canRestore: PropTypes.bool.isRequired,
     onShot: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     onRestore: PropTypes.func.isRequired,
-    children: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
+    completes: PropTypes.array.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -73,11 +88,15 @@ export default class ShotFrame extends Component {
     height: 0,
   };
 
+  componentDidMount() {
+    this.handleResize();
+  }
+
   shoot = () => {
     if (this.state.anim !== 0) {
       return;
     }
-    const { onShot } = this.props;
+    if (this.force) this.force();
 
     const transition = (anim, delay) => {
       return new Promise((resolve, reject) => {
@@ -89,36 +108,64 @@ export default class ShotFrame extends Component {
 
     Promise.resolve()
     .then(() => transition(1))
-    .then(() => onShot())
+    .then(() => this.handleShot())
     .then(() => transition(2))
     .then(() => transition(0))
     .then(() => this.forceUpdate());
 
   };
 
-  _oldRef = null;
-  handleCodemirror = (ref) => {
-    if (this._oldRef) {
-      this._oldRef.off('change', this.handleChange);
+  handleResize = () => {
+    if (!this.codemirror) {
+      return;
     }
-    ref.on('change', this.handleChange);
-    this.handleChange(ref);
-    this._oldRef = ref;
+    const lastLine = this.codemirror.lastLine() + 1;
+    const height = this.codemirror.heightAtLine(lastLine, 'local');
+    if (this.state.height !== height) {
+      this.setState({ height });
+    }
   };
 
-  handleChange = (cm) => {
-    const lastLine = cm.lastLine() + 1;
-    const height = cm.heightAtLine(lastLine, 'local');
-    this.setState({ height });
+  handleChange = (text) => {
+    this.handleResize();
+    if (!this.start) {
+      return;
+    }
+    const babelrc = this.props.getConfig('babelrc');
+    const completed = () => {
+      this.props.onChange(text)
+        .then((file) => file.babel(babelrc))
+        .catch((error) => this.setState({ error }));
+    };
+    this.start(completed);
+  };
+
+  handleRestore = () => {
+    this.props.onRestore()
+      .then((file) => {
+        if (this.codemirror) {
+          this.codemirror.setValue(file.text);
+          this.handleResize();
+        }
+      });
+  };
+
+  handleShot = () => {
+    const text = this.codemirror ?
+      this.codemirror.getValue('\n') :
+      this.props.file.text;
+    this.props.onShot(text);
   };
 
   render() {
     const {
+      file,
       canRestore,
       updateShot,
-      children,
       onRestore,
       localization,
+      completes,
+      getConfig,
     } = this.props;
     const { anim } = this.state;
 
@@ -128,12 +175,27 @@ export default class ShotFrame extends Component {
       menu,
       shoot,
       label,
+      error,
     } = getStyles(this.props, this.context, this.state);
 
     return (
       <Paper style={root}>
+        {file.error ? (
+          <pre style={error}>{file.error.message}</pre>
+        ) : null}
+        <SaveProgress
+          time={3000}
+          startRef={(ref) => (this.start = ref)}
+          forceRef={(ref) => (this.force = ref)}
+        />
         <div style={editor}>
-        {children(this.handleCodemirror)}
+          <Editor isSelected isCared
+            file={file}
+            onChange={this.handleChange}
+            getConfig={getConfig}
+            codemirrorRef={(ref) => (this.codemirror = ref)}
+            completes={completes}
+          />
         </div>
         <div style={menu}>
           <div>
@@ -152,7 +214,7 @@ export default class ShotFrame extends Component {
           </div>
           <FlatButton secondary
             label={localization.shot.restore}
-            onTouchTap={onRestore}
+            onTouchTap={this.handleRestore}
             disabled={!canRestore}
           />
         </div>

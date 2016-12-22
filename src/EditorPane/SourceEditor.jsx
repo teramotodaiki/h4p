@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
+import { red50, red500 } from 'material-ui/styles/colors';
 
 
 import { SizerWidth } from '../Monitor/';
@@ -8,8 +9,6 @@ import Editor from './Editor';
 import SnippetPane from './SnippetPane';
 import SaveProgress from './SaveProgress';
 
-
-const DELAY_TIME = 3000;
 
 const getStyle = (props, context) => {
   const {
@@ -25,9 +24,22 @@ const getStyle = (props, context) => {
       flexDirection: 'column',
       alignItems: 'stretch',
     },
+    error: {
+      flex: '0 1 auto',
+      margin: 0,
+      padding: 8,
+      borderStyle: 'double none double solid',
+      borderLeftWidth: SizerWidth,
+      backgroundColor: red50,
+      color: red500,
+      fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
+    },
     editorContainer: {
       flex: '1 1 auto',
       position: 'relative',
+    },
+    barStyle: {
+      paddingLeft: SizerWidth,
     },
   };
 };
@@ -36,6 +48,7 @@ class SourceEditor extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
+    tab: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
     gutterMarginWidth: PropTypes.number,
@@ -44,6 +57,8 @@ class SourceEditor extends Component {
     isSelected: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
+    selectTab: PropTypes.func.isRequired,
+    reboot: PropTypes.bool.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -68,16 +83,28 @@ class SourceEditor extends Component {
     return true;
   }
 
-  _timer = null;
-  handleChange = (text) => {
-    if (this.start) {
-      this.start();
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.reboot && nextProps.reboot) {
+      if (this.force) this.force();
     }
-    clearTimeout(this._timer);
-    this._timer = setTimeout(() => {
-      this.props.onChange(text);
-    }, DELAY_TIME);
+  }
+
+  handleChange = (text) => {
+    if (!this.start) {
+      return;
+    }
+    const babelrc = this.props.getConfig('babelrc');
+    const completed = () => {
+      this.props.onChange(text)
+        .then((file) => file.babel(babelrc))
+        .catch((err) => this.selectThis());
+    };
+    this.start(completed);
   };
+
+  selectThis() {
+    this.props.selectTab(this.props.tab);
+  }
 
   render() {
     const {
@@ -93,7 +120,9 @@ class SourceEditor extends Component {
 
     const {
       root,
+      error,
       editorContainer,
+      barStyle,
     } = getStyle(this.props, this.context);
 
     const snippets = getConfig('snippets')(file);
@@ -106,9 +135,14 @@ class SourceEditor extends Component {
 
     return (
       <div style={root}>
+      {file.error ? (
+        <pre style={error}>{file.error.message}</pre>
+      ) : null}
       <SaveProgress
-        time={DELAY_TIME}
+        time={3000}
         startRef={(ref) => (this.start = ref)}
+        forceRef={(ref) => (this.force = ref)}
+        barStyle={barStyle}
       />
       {connectDropTarget(
         <div style={editorContainer}>
