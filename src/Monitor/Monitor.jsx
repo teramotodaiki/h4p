@@ -233,6 +233,9 @@ export default class Monitor extends Component {
           }
         });
         break;
+      case 'reload':
+        this.props.handleRun();
+        break;
     }
   };
 
