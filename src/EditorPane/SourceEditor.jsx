@@ -25,6 +25,16 @@ const getStyle = (props, context) => {
       flexDirection: 'column',
       alignItems: 'stretch',
     },
+    error: {
+      flex: '0 1 auto',
+      margin: 0,
+      padding: 8,
+      borderStyle: 'dotted',
+      borderLeftWidth: SizerWidth,
+      backgroundColor: 'red',
+      color: 'white',
+      fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
+    },
     editorContainer: {
       flex: '1 1 auto',
       position: 'relative',
@@ -93,6 +103,7 @@ class SourceEditor extends Component {
 
     const {
       root,
+      error,
       editorContainer,
     } = getStyle(this.props, this.context);
 
@@ -106,6 +117,9 @@ class SourceEditor extends Component {
 
     return (
       <div style={root}>
+      {file.error ? (
+        <pre style={error}>{file.error.message}</pre>
+      ) : null}
       <SaveProgress
         time={DELAY_TIME}
         startRef={(ref) => (this.start = ref)}
