@@ -83,16 +83,21 @@ export default class SaveProgress extends Component {
   };
   _prewarm = null; // timer ID
   _animate = null; // timer ID
+  _callback = null; // Callback Function
 
   componentDidMount() {
     this.props.startRef(this.handleStart);
   }
 
-  componentDidUpdate() {
-    if (this.state.animate) {
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.animate && this.state.animate) {
+      clearTimeout(this._animate);
       this._animate = setTimeout(() => {
         this.actions.complete();
       }, getAnimateTime(this.props.time));
+    }
+    if (!prevState.complete && this.state.complete) {
+      if (this._callback) this._callback();
     }
   }
 
@@ -103,7 +108,8 @@ export default class SaveProgress extends Component {
     );
   }
 
-  handleStart = () => {
+  handleStart = (callback) => {
+    this._callback = callback;
     clearTimeout(this._prewarm);
     clearTimeout(this._animate);
 

@@ -81,18 +81,17 @@ class SourceEditor extends Component {
     return true;
   }
 
-  _timer = null;
   handleChange = (text) => {
-    if (this.start) {
-      this.start();
+    if (!this.start) {
+      return;
     }
-    clearTimeout(this._timer);
     const babelrc = this.props.getConfig('babelrc');
-    this._timer = setTimeout(() => {
+    const completed = () => {
       this.props.onChange(text)
         .then((file) => file.babel(babelrc))
         .catch((err) => this.selectThis());
-    }, DELAY_TIME);
+    };
+    this.start(completed);
   };
 
   selectThis() {
