@@ -160,40 +160,34 @@ export default class Readme extends Component {
     }
     if (tag === 'pre') {
       const { updates } = this.state;
-      const hasFile = updates[props.key] instanceof SourceFile;
-      const file = hasFile ? updates[props.key] : new SourceFile({
+      const getInit = () => new SourceFile({
         type: 'text/javascript',
         text: children[0].props.children[0],
       });
-      const onChange = (text) => this.setState({
-        updates: Object.assign({}, updates, { [props.key]: file.set({ text }) })
+      const hasFile = updates[props.key] instanceof SourceFile;
+      const file = hasFile ? updates[props.key] : getInit();
+      const update = (nextFile) => new Promise((resolve, reject) => {
+        const updates = Object.assign({},
+          this.state.updates,
+          { [props.key]: nextFile });
+        this.setState({ updates }, () => resolve(nextFile));
       });
-      const onRestore = () => this.setState({
-        updates: Object.assign({}, updates, { [props.key]: null }),
-      });
+      const onChange = (text) => update(file.set({ text }));
+      const onRestore = () => update(getInit());
       const onShot = () => this.props.onShot(file.text);
 
       return (
         <ShotFrame
           key={props.key}
+          file={file}
           onShot={onShot}
           onRestore={onRestore}
           canRestore={hasFile}
+          onChange={onChange}
           localization={localization}
-        >
-        {codemirrorRef => (
-          <Editor isSelected
-            file={file}
-            options={getConfig('options')}
-            onChange={onChange}
-            handleRun={onShot}
-            isCared
-            getConfig={getConfig}
-            codemirrorRef={codemirrorRef}
-            completes={completes}
-          />
-        )}
-        </ShotFrame>
+          getConfig={getConfig}
+          completes={completes}
+        />
       );
     }
 

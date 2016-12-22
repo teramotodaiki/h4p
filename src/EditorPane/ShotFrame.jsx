@@ -7,6 +7,8 @@ import AvStop from 'material-ui/svg-icons/av/stop';
 import transitions from 'material-ui/styles/transitions';
 
 
+import Editor from './Editor';
+
 const durations = [600, 1400, 0];
 
 const getStyles = (props, context, state) => {
@@ -57,11 +59,14 @@ const getStyles = (props, context, state) => {
 export default class ShotFrame extends Component {
 
   static propTypes = {
+    file: PropTypes.object.isRequired,
     canRestore: PropTypes.bool.isRequired,
     onShot: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     onRestore: PropTypes.func.isRequired,
-    children: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
+    completes: PropTypes.array.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -114,11 +119,13 @@ export default class ShotFrame extends Component {
 
   render() {
     const {
+      file,
       canRestore,
       updateShot,
-      children,
       onRestore,
       localization,
+      completes,
+      getConfig,
     } = this.props;
     const { anim } = this.state;
 
@@ -133,7 +140,13 @@ export default class ShotFrame extends Component {
     return (
       <Paper style={root}>
         <div style={editor}>
-        {children(this.handleCodemirror)}
+          <Editor isSelected isCared
+            file={file}
+            onChange={this.handleChange}
+            getConfig={getConfig}
+            codemirrorRef={(ref) => (this.codemirror = ref)}
+            completes={completes}
+          />
         </div>
         <div style={menu}>
           <div>
