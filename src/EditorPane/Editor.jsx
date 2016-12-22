@@ -125,6 +125,7 @@ export default class Editor extends Component {
   };
 
   static defaultProps = {
+    handleRun: () => {},
     getFiles: () => [],
     gutterMarginWidth: 0,
     closeSelectedTab: () => {},
@@ -146,7 +147,10 @@ export default class Editor extends Component {
     if (!nextProps.isSelected) {
       return false;
     }
-    return true;
+    return (
+      this.props.file !== nextProps.file ||
+      this.props.completes !== nextProps.completes
+    );
   }
 
   handleCodemirror = (ref) => {
