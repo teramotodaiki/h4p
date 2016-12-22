@@ -10,8 +10,6 @@ import SnippetPane from './SnippetPane';
 import SaveProgress from './SaveProgress';
 
 
-const DELAY_TIME = 3000;
-
 const getStyle = (props, context) => {
   const {
     palette,
@@ -137,7 +135,7 @@ class SourceEditor extends Component {
         <pre style={error}>{file.error.message}</pre>
       ) : null}
       <SaveProgress
-        time={DELAY_TIME}
+        time={3000}
         startRef={(ref) => (this.start = ref)}
         forceRef={(ref) => (this.force = ref)}
       />
