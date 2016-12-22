@@ -174,13 +174,12 @@ export default class Readme extends Component {
       });
       const onChange = (text) => update(file.set({ text }));
       const onRestore = () => update(getInit());
-      const onShot = () => this.props.onShot(file.text);
 
       return (
         <ShotFrame
           key={props.key}
           file={file}
-          onShot={onShot}
+          onShot={this.props.onShot}
           onRestore={onRestore}
           canRestore={hasFile}
           onChange={onChange}

@@ -96,7 +96,7 @@ export default class ShotFrame extends Component {
     if (this.state.anim !== 0) {
       return;
     }
-    const { onShot } = this.props;
+    if (this.force) this.force();
 
     const transition = (anim, delay) => {
       return new Promise((resolve, reject) => {
@@ -108,7 +108,7 @@ export default class ShotFrame extends Component {
 
     Promise.resolve()
     .then(() => transition(1))
-    .then(() => onShot())
+    .then(() => this.handleShot())
     .then(() => transition(2))
     .then(() => transition(0))
     .then(() => this.forceUpdate());
@@ -148,6 +148,13 @@ export default class ShotFrame extends Component {
           this.handleResize();
         }
       });
+  };
+
+  handleShot = () => {
+    const text = this.codemirror ?
+      this.codemirror.getValue('\n') :
+      this.props.file.text;
+    this.props.onShot(text);
   };
 
   render() {
