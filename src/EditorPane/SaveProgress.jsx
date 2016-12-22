@@ -60,6 +60,11 @@ export default class SaveProgress extends Component {
   static propTypes = {
     time: PropTypes.number.isRequired,
     startRef: PropTypes.func.isRequired,
+    label: PropTypes.node.isRequired,
+  };
+
+  static defaultProps = {
+    label: 'SAVED',
   };
 
   static contextTypes = {
@@ -120,7 +125,7 @@ export default class SaveProgress extends Component {
 
     return (
       <div style={root}>
-        <span style={label}>SAVED</span>
+        <span style={label}>{this.props.label}</span>
         {this.state.complete ? null : (
           <div style={bar}><div style={barColor} /></div>
         )}
