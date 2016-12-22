@@ -320,6 +320,7 @@ class Main extends Component {
       handleRun: this.handleRun,
       openFileDialog: this.openFileDialog,
       port,
+      reboot,
       isShrinked: isShrinked(
         this.rootWidth - monitorWidth,
         this.rootHeight
@@ -329,9 +330,9 @@ class Main extends Component {
     const monitorProps = {
       monitorWidth,
       monitorHeight,
+      reboot,
       rootHeight: this.rootHeight,
       isPopout: isPopout,
-      reboot: reboot,
       portRef: (port) => this.setState({ port }),
       openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,

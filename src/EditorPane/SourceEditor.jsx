@@ -57,6 +57,7 @@ class SourceEditor extends Component {
     getConfig: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
+    reboot: PropTypes.bool.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -79,6 +80,12 @@ class SourceEditor extends Component {
       return false;
     }
     return true;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.reboot && nextProps.reboot) {
+      if (this.force) this.force();
+    }
   }
 
   handleChange = (text) => {
