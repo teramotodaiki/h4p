@@ -105,6 +105,11 @@ class SnippetButton extends Component {
         <span style={styles.label}>{snippet.prefix}</span>
         <span style={styles.label}>{snippet.renderLeftLabel(findFile)}</span>
         <span style={styles.label}>{snippet.description}</span>
+        {snippet.descriptionMoreURL ? (
+          <a href={snippet.descriptionMoreURL} style={styles.label} target="_blank">
+            more...
+          </a>
+        ) : null}
         <code style={styles.label}>{snippet.renderRightLabel(findFile)}</code>
       </div>
     ));
