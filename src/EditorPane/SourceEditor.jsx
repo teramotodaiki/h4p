@@ -59,6 +59,7 @@ class SourceEditor extends Component {
     findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
     reboot: PropTypes.bool.isRequired,
+    localization: PropTypes.object.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -111,6 +112,7 @@ class SourceEditor extends Component {
       file,
       getConfig,
       findFile,
+      localization,
 
       connectDropTarget,
     } = this.props;
@@ -153,6 +155,7 @@ class SourceEditor extends Component {
         <SnippetPane
           snippets={snippets}
           findFile={findFile}
+          localization={localization}
         />
       ) : null}
       </div>

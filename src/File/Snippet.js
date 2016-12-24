@@ -23,6 +23,10 @@ export default class Snippet {
     return this.props.description;
   }
 
+  get descriptionMoreURL() {
+    return this.props.descriptionMoreURL;
+  }
+
   get leftLabel() {
     const { leftLabel, leftLabelHTML } = this.props;
     if (!this._leftLabel) {

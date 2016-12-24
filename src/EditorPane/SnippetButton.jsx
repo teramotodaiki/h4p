@@ -67,6 +67,7 @@ class SnippetButton extends Component {
     snippet: PropTypes.object.isRequired,
     findFile: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -82,7 +83,7 @@ class SnippetButton extends Component {
   };
 
   handleTouch = (event) => {
-    const { snippet, findFile } = this.props;
+    const { snippet, findFile, localization } = this.props;
     const styles = {
       container: {
         display: 'flex',
@@ -105,6 +106,11 @@ class SnippetButton extends Component {
         <span style={styles.label}>{snippet.prefix}</span>
         <span style={styles.label}>{snippet.renderLeftLabel(findFile)}</span>
         <span style={styles.label}>{snippet.description}</span>
+        {snippet.descriptionMoreURL ? (
+          <a href={snippet.descriptionMoreURL} style={styles.label} target="_blank">
+            {localization.snippet.readMore}
+          </a>
+        ) : null}
         <code style={styles.label}>{snippet.renderRightLabel(findFile)}</code>
       </div>
     ));
