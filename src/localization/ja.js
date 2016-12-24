@@ -72,5 +72,8 @@ alert('こんにちは！');
   hierarchy: {
     emptyTrashBox: '空にする',
   },
+  snippet: {
+    readMore: 'もっと読む',
+  },
 
 };

@@ -82,6 +82,7 @@ export default class SnippetPane extends Component {
   static propTypes = {
     snippets: PropTypes.array.isRequired,
     findFile: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
@@ -146,6 +147,7 @@ export default class SnippetPane extends Component {
     const {
       snippets,
       findFile,
+      localization,
     } = this.props;
     const {
       fileKey,
@@ -193,6 +195,7 @@ export default class SnippetPane extends Component {
               snippet={snippet}
               findFile={findFile}
               onSelect={this.handleSelectSnippet}
+              localization={localization}
             />
           )
         )}

@@ -72,5 +72,8 @@ Thanks
   hierarchy: {
     emptyTrashBox: 'Empty trash',
   },
+  snippet: {
+    readMore: 'Read more',
+  },
 
 };
