@@ -16,6 +16,7 @@ export default class _File {
     'moduleName',
     'type',
     'options',
+    'authors',
     'author'
   ];
 
@@ -66,6 +67,10 @@ export default class _File {
         .split('\n')[0] || '';
     }
     return this.plane + this.ext;
+  }
+
+  get authors() {
+    return this.props.authors;
   }
 
   get error() {

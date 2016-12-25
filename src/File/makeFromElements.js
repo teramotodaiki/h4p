@@ -21,6 +21,9 @@ function makeFromElement(script) {
     isTrashed: script.hasAttribute('is-trashed'),
     noBabel: script.hasAttribute('no-babel'),
   };
+  const authors = script.hasAttribute('data-authors') ?
+    JSON.parse(script.getAttribute('data-authors')) : [];
+
   const author = {
     name: script.getAttribute('author-name'),
     url: script.getAttribute('author-url'),
@@ -39,7 +42,7 @@ function makeFromElement(script) {
   })(script.textContent);
 
   if (validateType('text', type)) {
-    return new SourceFile({ type, name, text, options, author });
+    return new SourceFile({ type, name, text, options, author, authors });
   }
   if (validateType('blob', type)) {
 
