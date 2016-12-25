@@ -49,7 +49,7 @@ function makeFromElement(script) {
     }
     const blob = new Blob([byteArray.buffer], { type });
 
-    return new BinaryFile({ type, name, blob, options, author });
+    return new BinaryFile({ type, name, blob, options, authors });
   }
 
   return Promise.reject('Unknown File Type' . file.type);
