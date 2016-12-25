@@ -24,10 +24,6 @@ function makeFromElement(script) {
   const authors = script.hasAttribute('data-authors') ?
     JSON.parse(script.getAttribute('data-authors')) : [];
 
-  const author = {
-    name: script.getAttribute('author-name'),
-    url: script.getAttribute('author-url'),
-  };
   const text = (code => {
     // Indent
     code = code.replace(/^\n*/g, '');
@@ -42,7 +38,7 @@ function makeFromElement(script) {
   })(script.textContent);
 
   if (validateType('text', type)) {
-    return new SourceFile({ type, name, text, options, author, authors });
+    return new SourceFile({ type, name, text, options, authors });
   }
   if (validateType('blob', type)) {
 

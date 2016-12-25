@@ -8,16 +8,13 @@ export default class _File {
 
   static defaultOptions = {};
 
-  static defaultAuthor = {};
-
   static visible = [
     'key',
     'name',
     'moduleName',
     'type',
     'options',
-    'authors',
-    'author'
+    'authors'
   ];
 
   constructor(props) {
@@ -28,7 +25,6 @@ export default class _File {
     );
     this.props = lock(this.constructor.defaultProps, props);
     this.options = lock(this.constructor.defaultOptions, this.props.options);
-    this.author = lock(this.constructor.defaultAuthor, this.props.author);
 
     this._separate = separate(this.props.name);
   }

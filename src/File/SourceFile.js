@@ -22,11 +22,6 @@ export default class SourceFile extends _File {
     noBabel: false,
   }
 
-  static defaultAuthor = {
-    name: '',
-    url: '',
-  };
-
   static visible = _File.visible.concat(
     'text',
     'isScript',
