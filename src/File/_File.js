@@ -14,7 +14,7 @@ export default class _File {
     'moduleName',
     'type',
     'options',
-    'authors'
+    'credits'
   ];
 
   constructor(props) {
@@ -65,8 +65,8 @@ export default class _File {
     return this.plane + this.ext;
   }
 
-  get authors() {
-    return this.props.authors;
+  get credits() {
+    return this.props.credits;
   }
 
   get error() {

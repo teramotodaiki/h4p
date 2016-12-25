@@ -21,8 +21,8 @@ function makeFromElement(script) {
     isTrashed: script.hasAttribute('is-trashed'),
     noBabel: script.hasAttribute('no-babel'),
   };
-  const authors = script.hasAttribute('data-authors') ?
-    JSON.parse(script.getAttribute('data-authors')) : [];
+  const credits = script.hasAttribute('data-credits') ?
+    JSON.parse(script.getAttribute('data-credits')) : [];
 
   const text = (code => {
     // Indent
@@ -38,7 +38,7 @@ function makeFromElement(script) {
   })(script.textContent);
 
   if (validateType('text', type)) {
-    return new SourceFile({ type, name, text, options, authors });
+    return new SourceFile({ type, name, text, options, credits });
   }
   if (validateType('blob', type)) {
 
@@ -49,7 +49,7 @@ function makeFromElement(script) {
     }
     const blob = new Blob([byteArray.buffer], { type });
 
-    return new BinaryFile({ type, name, blob, options, authors });
+    return new BinaryFile({ type, name, blob, options, credits });
   }
 
   return Promise.reject('Unknown File Type' . file.type);

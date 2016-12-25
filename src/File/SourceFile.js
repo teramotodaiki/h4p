@@ -67,8 +67,8 @@ export default class SourceFile extends _File {
   compose() {
     const serialized = this.serialize();
     serialized.composed = this.text;
-    serialized.authors = this.props.authors instanceof Array ?
-      JSON.stringify(this.props.authors) : '[]';
+    serialized.credits = this.props.credits instanceof Array ?
+      JSON.stringify(this.props.credits) : '[]';
 
     return Promise.resolve(serialized);
   }
