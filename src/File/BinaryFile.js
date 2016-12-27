@@ -11,6 +11,7 @@ export default class BinaryFile extends _File {
     name: '.BinaryFile',
     blob: null,
     component: Preview,
+    sign: null,
   };
 
   static defaultOptions = {

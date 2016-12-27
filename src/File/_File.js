@@ -14,7 +14,8 @@ export default class _File {
     'moduleName',
     'type',
     'options',
-    'credits'
+    'credits',
+    'sign'
   ];
 
   constructor(props) {
@@ -70,9 +71,13 @@ export default class _File {
   }
 
   get credit() {
-    if (this.props.credits && this.props.credits.length > 0) {
-      return this.props.credits[0];
+    if (this.credits && this.hash) {
+      const credit = this.credits.find((item) => item.hash === this.hash);
+      if (credit) {
+        return credit;
+      }
     }
+    return this.props.sign || null;
   }
 
   get error() {
