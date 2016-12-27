@@ -75,5 +75,8 @@ alert('こんにちは！');
   snippet: {
     readMore: 'もっと読む',
   },
+  editor: {
+    writeAuthorName: '作者の名前を入れる',
+  },
 
 };

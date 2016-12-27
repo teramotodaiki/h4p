@@ -75,5 +75,8 @@ Thanks
   snippet: {
     readMore: 'Read more',
   },
+  editor: {
+    writeAuthorName: 'Write author name',
+  },
 
 };
