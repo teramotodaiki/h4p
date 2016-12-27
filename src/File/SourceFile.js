@@ -1,4 +1,5 @@
 import React from 'react';
+import md5 from 'md5';
 
 
 import _File from './_File';
@@ -56,6 +57,11 @@ export default class SourceFile extends _File {
       }
     }
     return this._json;
+  }
+
+  _hash = null;
+  get hash() {
+    return this._hash = this._hash || md5(this.text);
   }
 
   set(change) {

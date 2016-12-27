@@ -42,6 +42,10 @@ export default class BinaryFile extends _File {
     return this.props.blobURL;
   }
 
+  get hash() {
+    return null;
+  }
+
   set(change) {
     if (change.blob && this.blobURL) {
       URL.revokeObjectURL(this.blobURL);
