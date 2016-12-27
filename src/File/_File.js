@@ -66,18 +66,18 @@ export default class _File {
     return this.plane + this.ext;
   }
 
-  get credits() {
-    return this.props.credits;
+  get sign() {
+    return this.props.sign;
   }
 
   get credit() {
-    if (this.credits && this.hash) {
-      const credit = this.credits.find((item) => item.hash === this.hash);
+    if (this.props.credits && this.hash) {
+      const credit = this.props.credits.find((item) => item.hash === this.hash);
       if (credit) {
         return credit;
       }
     }
-    return this.props.sign || null;
+    return this.sign || null;
   }
 
   get error() {
