@@ -42,12 +42,14 @@ export default class SignDialog extends Component {
           floatingLabelText={`Who made the file "${content.name}"?`}
           hintText="e.g. (c) 2017 Teramoto Daiki"
           fullWidth={true}
+          defaultValue={content.sign && content.sign.label}
         />
         <TextField id=""
           ref={(input) => this.url = input}
           floatingLabelText={`Website URL`}
           hintText="e.g. https://github.com/teramotodaiki/h4p (optional)"
           fullWidth={true}
+          defaultValue={content.sign && content.sign.url}
         />
       </Dialog>
     );
