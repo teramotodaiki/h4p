@@ -69,6 +69,12 @@ export default class _File {
     return this.props.credits;
   }
 
+  get credit() {
+    if (this.props.credits && this.props.credits.length > 0) {
+      return this.props.credits[0];
+    }
+  }
+
   get error() {
     return this.constructor._babelError.get(this);
   }

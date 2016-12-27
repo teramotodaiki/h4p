@@ -41,6 +41,14 @@ const getStyle = (props, context) => {
     barStyle: {
       paddingLeft: SizerWidth,
     },
+    credit: {
+      fontSize: '.5rem',
+      padding: 4,
+      backgroundColor: palette.canvasColor,
+    },
+    creditLabel: {
+      paddingLeft: '1rem',
+    },
   };
 };
 
@@ -125,6 +133,8 @@ class SourceEditor extends Component {
       error,
       editorContainer,
       barStyle,
+      credit,
+      creditLabel,
     } = getStyle(this.props, this.context);
 
     const snippets = getConfig('snippets')(file);
@@ -158,6 +168,15 @@ class SourceEditor extends Component {
           localization={localization}
         />
       ) : null}
+        <div style={credit}>
+        {file.credit ? (
+          file.credit.url ? (
+            <a href={file.credit.url} target="_blank" style={creditLabel}>{file.credit.label}</a>
+          ) : (
+            <span style={creditLabel}>{file.credit.label}</span>
+          )
+        ) : null}
+        </div>
       </div>
     );
   }
