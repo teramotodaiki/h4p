@@ -66,6 +66,10 @@ export default class _File {
     return this.plane + this.ext;
   }
 
+  get credits() {
+    return this.props.credits;
+  }
+
   get sign() {
     return this.props.sign;
   }
