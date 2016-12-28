@@ -11,11 +11,11 @@ const getStyle = (props, context) => {
   } = context.muiTheme;
 
   return {
-    credit: {
+    root: Object.assign({
       fontSize: '.5rem',
       padding: 4,
       backgroundColor: palette.canvasColor,
-    },
+    }, props.style),
     creditLabel: {
       paddingLeft: '1rem',
     },
@@ -38,6 +38,11 @@ export default class CreditBar extends Component {
     localization: PropTypes.object.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
+    style: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    style: {},
   };
 
   static contextTypes = {
@@ -57,14 +62,14 @@ export default class CreditBar extends Component {
       localization,
     } = this.props;
     const {
-      credit,
+      root,
       creditLabel,
       sign,
       signLabel,
     } = getStyle(this.props, this.context);
 
     return (
-      <div style={credit}>
+      <div style={root}>
       {file.credit && file.credit !== file.sign ? (
         file.credit.url ? (
           <a href={file.credit.url} target="_blank" style={creditLabel}>{file.credit.label}</a>
