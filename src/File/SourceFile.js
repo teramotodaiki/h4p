@@ -74,8 +74,7 @@ export default class SourceFile extends _File {
   compose() {
     const serialized = this.serialize();
     serialized.composed = this.text;
-    serialized.credits = this.props.credits instanceof Array ?
-      JSON.stringify(this.props.credits) : '[]';
+    serialized.credits = JSON.stringify(this.credits);
 
     return Promise.resolve(serialized);
   }

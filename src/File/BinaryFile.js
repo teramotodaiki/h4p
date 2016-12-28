@@ -59,8 +59,7 @@ export default class BinaryFile extends _File {
   compose() {
     return new Promise((resolve, reject) => {
       const serialized = this.serialize();
-      serialized.credits = this.props.credits instanceof Array ?
-        JSON.stringify(this.props.credits) : '[]';
+      serialized.credits = JSON.stringify(this.credits);
       const reader = new FileReader();
       reader.onload = (e) => {
         const { result } = e.target;

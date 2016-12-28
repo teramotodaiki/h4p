@@ -67,7 +67,8 @@ export default class _File {
   }
 
   get credits() {
-    return this.props.credits;
+    return this.props.credits instanceof Array ?
+      this.props.credits : [];
   }
 
   get sign() {
