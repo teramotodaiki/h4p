@@ -77,6 +77,7 @@ Thanks
   },
   credit: {
     writeAuthorName: 'Write author name',
+    credits: 'Credits',
   },
 
 };

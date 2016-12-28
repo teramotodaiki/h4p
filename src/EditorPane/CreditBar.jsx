@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import FlatButton from 'material-ui/FlatButton';
+import Popover from 'material-ui/Popover';
 
 
 import { SignDialog } from '../FileDialog/';
@@ -12,18 +13,16 @@ const getStyle = (props, context) => {
 
   return {
     root: Object.assign({
-      fontSize: '.5rem',
+      display: 'flex',
+      justifyContent: 'space-between',
       padding: 4,
       backgroundColor: palette.canvasColor,
     }, props.style),
-    creditLabel: {
-      paddingLeft: '1rem',
-    },
-    sign: {
+    smallButton: {
       height: '1rem',
       lineHeight: '1rem',
     },
-    signLabel: {
+    smallLabel: {
       fontSize: '.5rem',
       padding: '0 8px',
       textTransform: 'none',
@@ -49,19 +48,39 @@ export default class CreditBar extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  state = {
+    open: false,
+    anchorEl: null,
+  };
+
   handleSignDialog = () => {
     const { file } = this.props;
     this.props.openFileDialog(SignDialog, { content: file })
       .then((sign) => this.props.putFile(file, file.set({ sign })));
   };
 
+  handleShowCredits = (event) => {
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
   renderCredit(credit, styles) {
     return credit.url ? (
-      <a href={credit.url} target="_blank" style={styles.creditLabel}>
-        {credit.label}
-      </a>
+      <a
+        href={credit.url}
+        target="_blank"
+        style={styles.smallLabel}
+      >{credit.label}</a>
     ) : (
-      <span style={styles.creditLabel}>{credit.label}</span>
+      <span style={styles.smallLabel}>{credit.label}</span>
     );
   }
 
@@ -80,11 +99,30 @@ export default class CreditBar extends Component {
         <FlatButton
           secondary={!file.sign}
           label={file.sign ? file.sign.label : localization.credit.writeAuthorName}
-          style={styles.sign}
-          labelStyle={styles.signLabel}
+          style={styles.smallButton}
+          labelStyle={styles.smallLabel}
           onTouchTap={this.handleSignDialog}
         />
       )}
+      {file.credits.length > 0 ? (
+        <FlatButton
+          label={localization.credit.credits}
+          style={styles.smallButton}
+          labelStyle={styles.smallLabel}
+          onTouchTap={this.handleShowCredits}
+        />
+      ) : null}
+        <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.handleRequestClose}
+        >
+        {file.credits.map((credit) => (
+          <div key={credit.hash}>{this.renderCredit(credit, styles)}</div>
+        ))}
+        </Popover>
       </div>
     );
   }

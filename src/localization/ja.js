@@ -77,6 +77,7 @@ alert('こんにちは！');
   },
   credit: {
     writeAuthorName: '作者の名前を入れる',
+    credits: 'Credits',
   },
 
 };
