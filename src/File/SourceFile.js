@@ -66,6 +66,10 @@ export default class SourceFile extends _File {
   }
 
   set(change) {
+    if (!change.text && this.hash) {
+      change.hash = this.hash;
+    }
+
     const seed = Object.assign(this.serialize(), change);
 
     return new this.constructor(seed);
