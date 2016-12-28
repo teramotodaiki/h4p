@@ -55,33 +55,33 @@ export default class CreditBar extends Component {
       .then((sign) => this.props.putFile(file, file.set({ sign })));
   };
 
+  renderCredit(credit, styles) {
+    return credit.url ? (
+      <a href={credit.url} target="_blank" style={styles.creditLabel}>
+        {credit.label}
+      </a>
+    ) : (
+      <span style={styles.creditLabel}>{credit.label}</span>
+    );
+  }
 
   render() {
     const {
       file,
       localization,
     } = this.props;
-    const {
-      root,
-      creditLabel,
-      sign,
-      signLabel,
-    } = getStyle(this.props, this.context);
+    const styles = getStyle(this.props, this.context);
 
     return (
-      <div style={root}>
+      <div style={styles.root}>
       {file.credit && file.credit !== file.sign ? (
-        file.credit.url ? (
-          <a href={file.credit.url} target="_blank" style={creditLabel}>{file.credit.label}</a>
-        ) : (
-          <span style={creditLabel}>{file.credit.label}</span>
-        )
+        this.renderCredit(file.credit, styles)
       ) : (
         <FlatButton
           secondary={!file.sign}
           label={file.sign ? file.sign.label : localization.credit.writeAuthorName}
-          style={sign}
-          labelStyle={signLabel}
+          style={styles.sign}
+          labelStyle={styles.signLabel}
           onTouchTap={this.handleSignDialog}
         />
       )}
