@@ -1,4 +1,5 @@
 import React from 'react';
+import md5 from 'md5';
 
 
 import _File from './_File';
@@ -13,6 +14,7 @@ export default class SourceFile extends _File {
     text: '',
     json: null,
     component: SourceEditor,
+    sign: null,
   };
 
   static defaultOptions = {
@@ -21,11 +23,6 @@ export default class SourceFile extends _File {
     isTrashed: false,
     noBabel: false,
   }
-
-  static defaultAuthor = {
-    name: '',
-    url: '',
-  };
 
   static visible = _File.visible.concat(
     'text',
@@ -63,7 +60,16 @@ export default class SourceFile extends _File {
     return this._json;
   }
 
+  _hash = null;
+  get hash() {
+    return this._hash = this._hash || md5(this.text);
+  }
+
   set(change) {
+    if (!change.text && this.hash) {
+      change.hash = this.hash;
+    }
+
     const seed = Object.assign(this.serialize(), change);
 
     return new this.constructor(seed);
@@ -72,6 +78,17 @@ export default class SourceFile extends _File {
   compose() {
     const serialized = this.serialize();
     serialized.composed = this.text;
+    if (this.sign && this.sign === this.credit) {
+      const sign = Object.assign({}, this.sign, {
+        timestamp: new Date().getTime(),
+        hash: this.hash,
+      });
+      serialized.credits = JSON.stringify(
+        this.credits.concat(sign)
+      );
+    } else {
+      serialized.credits = JSON.stringify(this.credits);
+    }
 
     return Promise.resolve(serialized);
   }

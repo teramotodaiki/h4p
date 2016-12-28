@@ -8,15 +8,14 @@ export default class _File {
 
   static defaultOptions = {};
 
-  static defaultAuthor = {};
-
   static visible = [
     'key',
     'name',
     'moduleName',
     'type',
     'options',
-    'author'
+    'credits',
+    'sign'
   ];
 
   constructor(props) {
@@ -27,7 +26,6 @@ export default class _File {
     );
     this.props = lock(this.constructor.defaultProps, props);
     this.options = lock(this.constructor.defaultOptions, this.props.options);
-    this.author = lock(this.constructor.defaultAuthor, this.props.author);
 
     this._separate = separate(this.props.name);
   }
@@ -66,6 +64,24 @@ export default class _File {
         .split('\n')[0] || '';
     }
     return this.plane + this.ext;
+  }
+
+  get credits() {
+    return this.props.credits instanceof Array ?
+      this.props.credits : [];
+  }
+
+  get sign() {
+    return this.props.sign;
+  }
+
+  get credit() {
+    const credit = this.credits.find((item) => item.hash === this.hash);
+    if (credit) {
+      return credit;
+    }
+    
+    return this.sign || null;
   }
 
   get error() {

@@ -1,3 +1,6 @@
+import md5 from 'md5';
+
+
 import {
   BinaryFile,
   SourceFile,
@@ -21,10 +24,9 @@ function makeFromElement(script) {
     isTrashed: script.hasAttribute('is-trashed'),
     noBabel: script.hasAttribute('no-babel'),
   };
-  const author = {
-    name: script.getAttribute('author-name'),
-    url: script.getAttribute('author-url'),
-  };
+  const credits = script.hasAttribute('data-credits') ?
+    JSON.parse(script.getAttribute('data-credits')) : [];
+
   const text = (code => {
     // Indent
     code = code.replace(/^\n*/g, '');
@@ -39,7 +41,7 @@ function makeFromElement(script) {
   })(script.textContent);
 
   if (validateType('text', type)) {
-    return new SourceFile({ type, name, text, options, author });
+    return new SourceFile({ type, name, text, options, credits });
   }
   if (validateType('blob', type)) {
 
@@ -49,8 +51,9 @@ function makeFromElement(script) {
       byteArray[i] = bin.charCodeAt(i);
     }
     const blob = new Blob([byteArray.buffer], { type });
+    const hash = md5(byteArray);
 
-    return new BinaryFile({ type, name, blob, options, author });
+    return new BinaryFile({ type, name, blob, options, credits, hash });
   }
 
   return Promise.reject('Unknown File Type' . file.type);

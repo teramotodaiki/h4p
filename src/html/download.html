@@ -33,16 +33,13 @@
   class="download_content"
   name="{{name}}"
   data-type="{{type}}"
+  data-credits="{{credits}}"
 {{#options}}
   {{#isEntryPoint}}is-entry-point{{/isEntryPoint}}
   {{#isReadOnly}}is-read-only{{/isReadOnly}}
   {{#isTrashed}}is-trashed{{/isTrashed}}
   {{#noBabel}}no-babel{{/noBabel}}
 {{/options}}
-{{#author}}
-  author-name="{{name}}"
-  author-url="{{url}}"
-{{/author}}
   type="hack"
 >
 {{& composed}}</script>

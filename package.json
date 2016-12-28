@@ -45,6 +45,7 @@
     "js-beautify": "^1.6.4",
     "markdown-it": "^8.1.0",
     "material-ui": "^0.16.1",
+    "md5": "^2.2.1",
     "react": "^15.3.2",
     "react-codemirror": "^0.2.6",
     "react-color": "^2.4.0",

@@ -1,4 +1,5 @@
 import React from 'react';
+import md5 from 'md5';
 
 
 import _File from './_File';
@@ -11,6 +12,7 @@ export default class BinaryFile extends _File {
     name: '.BinaryFile',
     blob: null,
     component: Preview,
+    sign: null,
   };
 
   static defaultOptions = {
@@ -19,11 +21,6 @@ export default class BinaryFile extends _File {
     isTrashed: false,
     noBabel: false,
   }
-
-  static defaultAuthor = {
-    name: '',
-    url: '',
-  };
 
   static visible = _File.visible.concat(
     'blob',
@@ -47,9 +44,16 @@ export default class BinaryFile extends _File {
     return this.props.blobURL;
   }
 
+  get hash() {
+    return this.props.hash;
+  }
+
   set(change) {
     if (change.blob && this.blobURL) {
       URL.revokeObjectURL(this.blobURL);
+    }
+    if (!change.blob && this.hash) {
+      change.hash = this.hash;
     }
     const seed = Object.assign(this.serialize(), change);
 
@@ -59,6 +63,17 @@ export default class BinaryFile extends _File {
   compose() {
     return new Promise((resolve, reject) => {
       const serialized = this.serialize();
+      if (this.sign && this.sign === this.credit) {
+        const sign = Object.assign({}, this.sign, {
+          timestamp: new Date().getTime(),
+          hash: this.hash,
+        });
+        serialized.credits = JSON.stringify(
+          this.credits.concat(sign)
+        );
+      } else {
+        serialized.credits = JSON.stringify(this.credits);
+      }
       const reader = new FileReader();
       reader.onload = (e) => {
         const { result } = e.target;
@@ -74,13 +89,22 @@ export default class BinaryFile extends _File {
    * @return Promise gives BinaryFile
    */
   static load(file) {
-    return Promise.resolve(
-      new BinaryFile({
+    return new Promise((resolve, reject) => {
+        // get hash of TypedArray from binary
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const typedArray = new Uint8Array(e.target.result);
+          const hash = md5(typedArray);
+          resolve(hash);
+        };
+        reader.readAsArrayBuffer(file);
+      })
+      .then((hash) => new BinaryFile({
         type: file.type,
         name: file.name || BinaryFile.defaultProps.name,
         blob: file,
-      })
-    );
+        hash,
+      }));
   }
 
 }

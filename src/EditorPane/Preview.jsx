@@ -2,6 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { fullWhite, fullBlack } from 'material-ui/styles/colors';
 
 
+import CreditBar from './CreditBar';
+
+
 const getStyles = (props, context, state) => {
   const { prepareStyles } = context.muiTheme;
   const { scale } = state;
@@ -29,6 +32,9 @@ export default class Preview extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
+    localization: PropTypes.object.isRequired,
+    openFileDialog: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -68,9 +74,22 @@ export default class Preview extends Component {
       <audio src={file.blobURL} controls />
     ) : null;
 
+    const creditStyle = {
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+    };
+
     return (
       <div style={root} ref={ref => ref && (this.container = ref)}>
       {content}
+      <CreditBar
+        file={file}
+        openFileDialog={this.props.openFileDialog}
+        putFile={this.props.putFile}
+        localization={this.props.localization}
+        style={creditStyle}
+      />
       </div>
     );
   }

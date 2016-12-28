@@ -81,7 +81,7 @@ export default class Hierarchy extends Component {
         makeFromFile(file),
         openFileDialog(SignDialog, { content })
       ])
-      .then(([file, author]) => file.set({ author }))
+      .then(([file, sign]) => file.set({ sign }))
       .then(file => dir ? file.move(dir.path) : file)
       .then(addFile)
       .then(this.handleFileSelect);

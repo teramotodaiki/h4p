@@ -8,6 +8,7 @@ import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
 import SaveProgress from './SaveProgress';
+import CreditBar from './CreditBar';
 
 
 const getStyle = (props, context) => {
@@ -60,6 +61,8 @@ class SourceEditor extends Component {
     selectTab: PropTypes.func.isRequired,
     reboot: PropTypes.bool.isRequired,
     localization: PropTypes.object.isRequired,
+    openFileDialog: PropTypes.func.isRequired,
+    putFile: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -158,6 +161,12 @@ class SourceEditor extends Component {
           localization={localization}
         />
       ) : null}
+        <CreditBar
+          file={file}
+          openFileDialog={this.props.openFileDialog}
+          putFile={this.props.putFile}
+          localization={localization}
+        />
       </div>
     );
   }

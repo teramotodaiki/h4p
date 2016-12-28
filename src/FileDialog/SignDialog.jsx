@@ -14,10 +14,10 @@ export default class SignDialog extends Component {
 
   handleSign = () => {
     const { resolve, onRequestClose } = this.props;
-    const name = this.name.input.value;
+    const label = this.label.input.value;
     const url = this.url.input.value;
 
-    resolve({ name, url });
+    resolve({ label, url });
     onRequestClose();
   };
 
@@ -38,16 +38,18 @@ export default class SignDialog extends Component {
         onRequestClose={onRequestClose}
       >
         <TextField id=""
-          ref={(input) => this.name = input}
-          floatingLabelText={`Who made the ${content.name}?`}
-          hintText="e.g. Javascript Lover"
+          ref={(input) => this.label = input}
+          floatingLabelText={`Who made the file "${content.name}"?`}
+          hintText="e.g. (c) 2017 Teramoto Daiki"
           fullWidth={true}
+          defaultValue={content.sign && content.sign.label}
         />
         <TextField id=""
           ref={(input) => this.url = input}
           floatingLabelText={`Website URL`}
           hintText="e.g. https://github.com/teramotodaiki/h4p (optional)"
           fullWidth={true}
+          defaultValue={content.sign && content.sign.url}
         />
       </Dialog>
     );

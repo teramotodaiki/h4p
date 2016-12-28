@@ -154,6 +154,8 @@ export default class EditorPane extends Component {
           localization,
           port,
           reboot,
+          openFileDialog,
+          putFile,
         })}
         </ChromeTabContent>
       ))}

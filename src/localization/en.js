@@ -75,5 +75,9 @@ Thanks
   snippet: {
     readMore: 'Read more',
   },
+  credit: {
+    writeAuthorName: 'Write author name',
+    credits: 'Credits',
+  },
 
 };
