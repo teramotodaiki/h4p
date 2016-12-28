@@ -166,6 +166,7 @@ class SourceEditor extends Component {
           openFileDialog={this.props.openFileDialog}
           putFile={this.props.putFile}
           localization={localization}
+          getFiles={this.props.getFiles}
         />
       </div>
     );

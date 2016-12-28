@@ -35,6 +35,7 @@ export default class Preview extends Component {
     localization: PropTypes.object.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
+    getFiles: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -88,6 +89,7 @@ export default class Preview extends Component {
         openFileDialog={this.props.openFileDialog}
         putFile={this.props.putFile}
         localization={this.props.localization}
+        getFiles={this.props.getFiles}
         style={creditStyle}
       />
       </div>
