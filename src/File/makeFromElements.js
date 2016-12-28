@@ -1,3 +1,6 @@
+import md5 from 'md5';
+
+
 import {
   BinaryFile,
   SourceFile,
@@ -48,8 +51,9 @@ function makeFromElement(script) {
       byteArray[i] = bin.charCodeAt(i);
     }
     const blob = new Blob([byteArray.buffer], { type });
+    const hash = md5(byteArray);
 
-    return new BinaryFile({ type, name, blob, options, credits });
+    return new BinaryFile({ type, name, blob, options, credits, hash });
   }
 
   return Promise.reject('Unknown File Type' . file.type);
