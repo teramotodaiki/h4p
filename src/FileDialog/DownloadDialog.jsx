@@ -33,7 +33,7 @@ export default class DownloadDialog extends Component {
         return response.text();
       })
       .then(lib => {
-        const raw = encodeURIComponent(lib);
+        const raw = lib.replace(/\<\//g, '<\\/'); // For Trust HTML
         this.bundle({ useCDN: false, raw })
           .then((bundleWithRaw) => this.setState({ bundleWithRaw }));
       })

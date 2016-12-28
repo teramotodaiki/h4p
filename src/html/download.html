@@ -48,10 +48,8 @@
   {{^useCDN}}
   <!-- h4p.js -->
   <script type="text/javascript">
-  var script = document.createElement('script');
-  script.textContent = decodeURIComponent("{{& raw}}")
-    + '; {{EXPORT_VAR_NAME}}();';
-  document.body.appendChild(script);
+  {{& raw}}
+  {{EXPORT_VAR_NAME}}();
   </script>
   {{/useCDN}}
   </body>
