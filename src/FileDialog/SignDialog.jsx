@@ -11,6 +11,7 @@ export default class SignDialog extends Component {
     onRequestClose: PropTypes.func.isRequired,
     content: PropTypes.any,
     getFiles: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   state = {
@@ -53,7 +54,12 @@ export default class SignDialog extends Component {
   };
 
   render() {
-    const { open, onRequestClose, content } = this.props;
+    const {
+      open,
+      onRequestClose,
+      content,
+      localization,
+    } = this.props;
 
     const actions = [
       <Abort onTouchTap={onRequestClose} />,
@@ -68,20 +74,18 @@ export default class SignDialog extends Component {
         open={true}
         onRequestClose={onRequestClose}
       >
-        <AutoComplete
+        <AutoComplete fullWidth
           searchText={this.state.label}
-          floatingLabelText={`Who made the file "${content.name}"?`}
-          hintText="e.g. (c) 2017 Teramoto Daiki"
-          fullWidth={true}
+          floatingLabelText={localization.credit.whoMade(content.name)}
+          hintText="(c) 2017 Teramoto Daiki"
           dataSource={this.state.completeLabels}
           onUpdateInput={this.handleUpdateLabel}
           onNewRequest={this.handleUpdateLabel}
         />
-        <AutoComplete
+        <AutoComplete fullWidth
           searchText={this.state.url}
-          floatingLabelText={`Website URL`}
-          hintText="e.g. https://github.com/teramotodaiki/h4p (optional)"
-          fullWidth={true}
+          floatingLabelText={localization.credit.website}
+          hintText="https://github.com/teramotodaiki/h4p"
           dataSource={this.state.completeUrls}
           onUpdateInput={this.handleUpdateUrl}
           onNewRequest={this.handleUpdateUrl}

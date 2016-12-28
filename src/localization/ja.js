@@ -78,6 +78,8 @@ alert('こんにちは！');
   credit: {
     writeAuthorName: '作者の名前を入れる',
     credits: 'Credits',
+    whoMade: (name) => `ファイル "${name}" を作った人は?`,
+    website: 'ウェブサイトのURL (なくてもよい)',
   },
 
 };
