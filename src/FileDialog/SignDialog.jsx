@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
+import AutoComplete from 'material-ui/AutoComplete';
 
 import { Confirm, Abort } from './Buttons';
 
@@ -9,20 +9,57 @@ export default class SignDialog extends Component {
   static propTypes = {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    content: PropTypes.any
+    content: PropTypes.any,
+    getFiles: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
+  };
+
+  state = {
+    label: this.props.content.sign ? this.props.content.sign.label : '',
+    url: this.props.content.sign ? this.props.content.sign.url : '',
+    completeLabels: [],
+    completeUrls: [],
+  };
+
+  componentDidMount() {
+    const credits = this.props.getFiles()
+      .reduce((p, c) => p.concat(c.credits).concat(c.sign), [])
+      .filter((item) => item);
+    const completeLabels = credits
+      .map((item) => item.label)
+      .filter((item, i, array) => item && array.indexOf(item) === i);
+    const completeUrls = credits
+      .map((item) => item.url)
+      .filter((item, i, array) => item && array.indexOf(item) === i);
+
+    if (completeLabels.length > 0 || completeUrls.length > 0) {
+      this.setState({ completeLabels, completeUrls, });
+    }
+  }
+
+  handleUpdateLabel = (label) => {
+    this.setState({ label });
+  };
+
+  handleUpdateUrl = (url) => {
+    this.setState({ url });
   };
 
   handleSign = () => {
-    const { resolve, onRequestClose } = this.props;
-    const label = this.label.input.value;
-    const url = this.url.input.value;
-
-    resolve({ label, url });
-    onRequestClose();
+    this.props.resolve({
+      label: this.state.label,
+      url: this.state.url,
+    });
+    this.props.onRequestClose();
   };
 
   render() {
-    const { open, onRequestClose, content } = this.props;
+    const {
+      open,
+      onRequestClose,
+      content,
+      localization,
+    } = this.props;
 
     const actions = [
       <Abort onTouchTap={onRequestClose} />,
@@ -37,19 +74,21 @@ export default class SignDialog extends Component {
         open={true}
         onRequestClose={onRequestClose}
       >
-        <TextField id=""
-          ref={(input) => this.label = input}
-          floatingLabelText={`Who made the file "${content.name}"?`}
-          hintText="e.g. (c) 2017 Teramoto Daiki"
-          fullWidth={true}
-          defaultValue={content.sign && content.sign.label}
+        <AutoComplete fullWidth
+          searchText={this.state.label}
+          floatingLabelText={localization.credit.whoMade(content.name)}
+          hintText="(c) 2017 Teramoto Daiki"
+          dataSource={this.state.completeLabels}
+          onUpdateInput={this.handleUpdateLabel}
+          onNewRequest={this.handleUpdateLabel}
         />
-        <TextField id=""
-          ref={(input) => this.url = input}
-          floatingLabelText={`Website URL`}
-          hintText="e.g. https://github.com/teramotodaiki/h4p (optional)"
-          fullWidth={true}
-          defaultValue={content.sign && content.sign.url}
+        <AutoComplete fullWidth
+          searchText={this.state.url}
+          floatingLabelText={localization.credit.website}
+          hintText="https://github.com/teramotodaiki/h4p"
+          dataSource={this.state.completeUrls}
+          onUpdateInput={this.handleUpdateUrl}
+          onNewRequest={this.handleUpdateUrl}
         />
       </Dialog>
     );

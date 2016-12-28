@@ -78,6 +78,8 @@ Thanks
   credit: {
     writeAuthorName: 'Write author name',
     credits: 'Credits',
+    whoMade: (name) => `Who made the file "${name}"?`,
+    website: 'Website URL (optional)',
   },
 
 };

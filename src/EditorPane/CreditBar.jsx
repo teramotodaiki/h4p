@@ -37,6 +37,7 @@ export default class CreditBar extends Component {
     localization: PropTypes.object.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
+    getFiles: PropTypes.func.isRequired,
     style: PropTypes.object.isRequired,
   };
 
@@ -55,7 +56,11 @@ export default class CreditBar extends Component {
 
   handleSignDialog = () => {
     const { file } = this.props;
-    this.props.openFileDialog(SignDialog, { content: file })
+    const dialogProps = {
+      content: file,
+      getFiles: this.props.getFiles,
+    };
+    this.props.openFileDialog(SignDialog, dialogProps)
       .then((sign) => this.props.putFile(file, file.set({ sign })));
   };
 
