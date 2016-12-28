@@ -76,12 +76,11 @@ export default class _File {
   }
 
   get credit() {
-    if (this.hash) {
-      const credit = this.credits.find((item) => item.hash === this.hash);
-      if (credit) {
-        return credit;
-      }
+    const credit = this.credits.find((item) => item.hash === this.hash);
+    if (credit) {
+      return credit;
     }
+    
     return this.sign || null;
   }
 
