@@ -71,7 +71,6 @@ export default class BinaryFile extends _File {
         serialized.credits = JSON.stringify(
           this.credits.concat(sign)
         );
-        console.log('this.hash', this.hash);
       } else {
         serialized.credits = JSON.stringify(this.credits);
       }

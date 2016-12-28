@@ -79,7 +79,7 @@ export default class CreditBar extends Component {
       ) : (
         <FlatButton
           secondary={!file.sign}
-          label={file.sign ? file.sign.label : localization.editor.writeAuthorName}
+          label={file.sign ? file.sign.label : localization.credit.writeAuthorName}
           style={sign}
           labelStyle={signLabel}
           onTouchTap={this.handleSignDialog}
