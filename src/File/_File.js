@@ -76,8 +76,8 @@ export default class _File {
   }
 
   get credit() {
-    if (this.props.credits && this.hash) {
-      const credit = this.props.credits.find((item) => item.hash === this.hash);
+    if (this.hash) {
+      const credit = this.credits.find((item) => item.hash === this.hash);
       if (credit) {
         return credit;
       }
