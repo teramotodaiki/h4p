@@ -74,7 +74,17 @@ export default class SourceFile extends _File {
   compose() {
     const serialized = this.serialize();
     serialized.composed = this.text;
-    serialized.credits = JSON.stringify(this.credits);
+    if (this.sign && this.sign === this.credit) {
+      const sign = Object.assign({}, this.sign, {
+        timestamp: new Date().getTime(),
+        hash: this.hash,
+      });
+      serialized.credits = JSON.stringify(
+        this.credits.concat(sign)
+      );
+    } else {
+      serialized.credits = JSON.stringify(this.credits);
+    }
 
     return Promise.resolve(serialized);
   }
