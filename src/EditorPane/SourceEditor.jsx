@@ -1,15 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
-import FlatButton from 'material-ui/FlatButton';
 import { red50, red500 } from 'material-ui/styles/colors';
 
 
 import { SizerWidth } from '../Monitor/';
 import DragTypes from '../utils/dragTypes';
-import { SignDialog } from '../FileDialog/';
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
 import SaveProgress from './SaveProgress';
+import CreditBar from './CreditBar';
 
 
 const getStyle = (props, context) => {
@@ -42,23 +41,6 @@ const getStyle = (props, context) => {
     },
     barStyle: {
       paddingLeft: SizerWidth,
-    },
-    credit: {
-      fontSize: '.5rem',
-      padding: 4,
-      backgroundColor: palette.canvasColor,
-    },
-    creditLabel: {
-      paddingLeft: '1rem',
-    },
-    sign: {
-      height: '1rem',
-      lineHeight: '1rem',
-    },
-    signLabel: {
-      fontSize: '.5rem',
-      padding: '0 8px',
-      textTransform: 'none',
     },
   };
 };
@@ -128,12 +110,6 @@ class SourceEditor extends Component {
     this.props.selectTab(this.props.tab);
   }
 
-  handleSignDialog = () => {
-    const { file } = this.props;
-    this.props.openFileDialog(SignDialog, { content: file })
-      .then((sign) => this.props.putFile(file, file.set({ sign })));
-  };
-
   render() {
     const {
       file,
@@ -152,10 +128,6 @@ class SourceEditor extends Component {
       error,
       editorContainer,
       barStyle,
-      credit,
-      creditLabel,
-      sign,
-      signLabel,
     } = getStyle(this.props, this.context);
 
     const snippets = getConfig('snippets')(file);
@@ -189,23 +161,12 @@ class SourceEditor extends Component {
           localization={localization}
         />
       ) : null}
-        <div style={credit}>
-        {file.credit && file.credit !== file.sign ? (
-          file.credit.url ? (
-            <a href={file.credit.url} target="_blank" style={creditLabel}>{file.credit.label}</a>
-          ) : (
-            <span style={creditLabel}>{file.credit.label}</span>
-          )
-        ) : (
-          <FlatButton
-            secondary={!file.sign}
-            label={file.sign ? file.sign.label : localization.editor.writeAuthorName}
-            style={sign}
-            labelStyle={signLabel}
-            onTouchTap={this.handleSignDialog}
-          />
-        )}
-        </div>
+        <CreditBar
+          file={file}
+          openFileDialog={this.props.openFileDialog}
+          putFile={this.props.putFile}
+          localization={localization}
+        />
       </div>
     );
   }
