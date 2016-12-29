@@ -23,6 +23,11 @@ export default class DownloadDialog extends Component {
     error: null,
   };
 
+  get fileName() {
+    const [TITLE] = this.props.getConfig('env').TITLE || [''];
+    return TITLE + '.html';
+  }
+
   componentDidMount() {
     const { inlineScriptId } = this.props;
 
@@ -54,10 +59,8 @@ export default class DownloadDialog extends Component {
   }
 
   handleDownloadCDN = () => {
-    const [TITLE] = this.props.getConfig('env').TITLE || [''];
-
     const file = new SourceFile({
-      name: TITLE,
+      name: this.fileName,
       type: 'text/html',
       text: this.props.bundle({
         files: this.state.composedFiles,
@@ -69,11 +72,10 @@ export default class DownloadDialog extends Component {
   };
 
   handleDownloadRaw = () => {
-    const [TITLE] = this.props.getConfig('env').TITLE || [''];
     const raw = this.state.coreString.replace(/\<\//g, '<\\/'); // For Trust HTML
 
     const file = new SourceFile({
-      name: TITLE,
+      name: this.fileName,
       type: 'text/html',
       text: this.props.bundle({
         files: this.state.composedFiles,

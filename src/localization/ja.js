@@ -26,6 +26,11 @@ export default {
     fileSize: 'ファイルサイズ',
     clone: 'クローンする'
   },
+  saveDialog: {
+    title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',
+    description: (filename) => `上のリンクを右クリックして、「別名でダウンロード」をクリックし、「${filename}」という名前をつけて保存して下さい`,
+    cancel: 'キャンセル',
+  },
   envDialog: {
     title: '環境変数 env のせってい',
   },

@@ -26,6 +26,11 @@ export default {
     fileSize: 'File Size',
     clone: 'Clone This App',
   },
+  saveDialog: {
+    title: 'You need to download it manually, because Your browser does not support HTML5!',
+    description: (filename) => `Right click on the above link, click "download with alias", and save it with the name "${filename}"`,
+    cancel: 'Cancel',
+  },
   envDialog: {
     title: 'Configure Environment Variables',
   },
