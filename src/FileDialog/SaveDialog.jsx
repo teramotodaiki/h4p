@@ -13,30 +13,42 @@ import FilenameInput from './FilenameInput';
 export default class SaveDialog extends Component {
 
   static propTypes = {
+    resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     content: PropTypes.any,
     localization: PropTypes.object.isRequired,
   };
 
   state = {
-    fallbackHref: null
+    contents: this.props.content instanceof Array ? this.props.content : [this.props.content],
+    results: [],
   };
 
   componentDidMount() {
-    const { content } = this.props;
-    const reader = new FileReader();
-    reader.onload = (e) => this.setState({ fallbackHref: reader.result });
-    reader.readAsDataURL(content.blob);
+    Promise.all(this.state.contents.map((item) => (
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve({
+          name: item.name,
+          href: reader.result,
+        });
+        reader.readAsDataURL(item.blob);
+      }))
+    ))
+    .then((results) => this.setState({ results }));
   }
 
   render() {
     const {
       onRequestClose,
-      content,
       localization,
     } = this.props;
 
     const actions = [
+      <Confirm primary
+        onTouchTap={this.props.resolve}
+        label="Confirm"
+      />,
       <Abort primary
         onTouchTap={onRequestClose}
         label={localization.saveDialog.cancel}
@@ -59,16 +71,18 @@ export default class SaveDialog extends Component {
         open={true}
         onRequestClose={onRequestClose}
       >
-        <div style={divStyle}>
+      {this.state.results.map((item, i) => (
+        <div key={i} style={divStyle}>
           <a
             target="_blank"
-            href={this.state.fallbackHref}
+            href={item.href}
             style={linkStyle}
           >
-            {content.name}
+            {item.name}
           </a>
-          <p>{localization.saveDialog.description(content.name)}</p>
+          <p>{localization.saveDialog.description(item.name)}</p>
         </div>
+      ))}
       </Dialog>
     );
   }
