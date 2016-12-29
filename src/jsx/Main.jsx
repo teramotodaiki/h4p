@@ -58,6 +58,7 @@ class Main extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     rootStyle: PropTypes.object.isRequired,
+    inlineScriptId: PropTypes.string,
 
     connectDropTarget: PropTypes.func.isRequired,
   };
@@ -339,6 +340,7 @@ class Main extends Component {
       handleRun: this.handleRun,
       setLocalization: this.setLocalization,
       onSizer: (isResizing) => this.setState({ isResizing }),
+      inlineScriptId: this.props.inlineScriptId,
     };
 
     const hierarchyProps = {

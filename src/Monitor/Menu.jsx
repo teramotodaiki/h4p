@@ -78,6 +78,7 @@ class Menu extends Component {
     onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
+    inlineScriptId: PropTypes.string,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -100,8 +101,12 @@ class Menu extends Component {
 
   handleDownload = () => {
     const { openFileDialog } = this.props;
+    const dialogProps = {
+      bundle: this.bundle,
+      inlineScriptId: this.props.inlineScriptId,
+    };
 
-    openFileDialog(DownloadDialog, { bundle: this.bundle })
+    openFileDialog(DownloadDialog, dialogProps)
       .then(content => {
         openFileDialog(SaveDialog, {
           content,

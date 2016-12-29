@@ -11,6 +11,7 @@ class RootComponent extends Component {
   static propTypes = {
     files: PropTypes.array.isRequired,
     rootElement: PropTypes.object.isRequired,
+    inlineScriptId: PropTypes.string,
   };
 
   render() {
