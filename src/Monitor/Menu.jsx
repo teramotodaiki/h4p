@@ -16,10 +16,10 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 import { BinaryFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
-import { DownloadDialog, SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
+import CloneDialog from './CloneDialog';
 import download from '../html/download';
 import SizerDragSource from './SizerDragSource';
 
@@ -79,6 +79,7 @@ class Menu extends Component {
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
     inlineScriptId: PropTypes.string,
+    saveAs: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -99,21 +100,15 @@ class Menu extends Component {
     }
   }
 
-  handleDownload = () => {
-    const { openFileDialog } = this.props;
+  handleClone = () => {
     const dialogProps = {
       bundle: this.bundle,
       inlineScriptId: this.props.inlineScriptId,
+      files: this.props.files,
     };
 
-    openFileDialog(DownloadDialog, dialogProps)
-      .then(content => {
-        openFileDialog(SaveDialog, {
-          content,
-          defaultType: 'text/html'
-        });
-      })
-      .catch((err) => alert(err.message));
+    this.props.openFileDialog(CloneDialog, dialogProps)
+      .then((file) => this.props.saveAs(file));
   };
 
   handlePalette = () => {
@@ -129,10 +124,9 @@ class Menu extends Component {
   };
 
   handleAbout = () => {
-    const { openFileDialog } = this.props;
-
-    openFileDialog(AboutDialog, {
+    this.props.openFileDialog(AboutDialog, {
       bundle: this.bundle,
+      files: this.props.files,
     });
   };
 
@@ -164,19 +158,15 @@ class Menu extends Component {
   bundle = (props) => {
     const [TITLE] = this.props.getConfig('env').TITLE || [''];
 
-    return Promise.all(
-      this.props.files.map((file) => file.compose())
-    )
-    .then(([...files]) => download(
-      Object.assign({
-        useCDN: true,
-        files,
-        EXPORT_VAR_NAME,
-        CSS_PREFIX,
-        CORE_CDN_URL,
-        TITLE,
-      }, props)
-    ));
+    props = Object.assign({
+      useCDN: true,
+      EXPORT_VAR_NAME,
+      CSS_PREFIX,
+      CORE_CDN_URL,
+      TITLE,
+    }, props);
+
+    return download(props);
   };
 
   render() {
@@ -270,8 +260,8 @@ class Menu extends Component {
           <OpenInBrowser color={alternateTextColor} />
         </IconButton>
         <IconButton
-          tooltip={menu.download}
-          onTouchTap={this.handleDownload}
+          tooltip={menu.clone}
+          onTouchTap={this.handleClone}
           tooltipPosition={tooltipPosition}
           style={button}
         >

@@ -63,7 +63,7 @@ export default class SearchBar extends Component {
     putFile: PropTypes.func.isRequired,
     deleteAll: PropTypes.func.isRequired,
     onOpen: PropTypes.func.isRequired,
-    openFileDialog: PropTypes.func.isRequired,
+    saveAs: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
@@ -108,7 +108,6 @@ export default class SearchBar extends Component {
     const {
       putFile,
       onOpen,
-      openFileDialog,
       deleteAll,
     } = this.props;
     const { showTrashes, query } = this.state;
@@ -138,7 +137,7 @@ export default class SearchBar extends Component {
         />
         <DesktopFile
           onOpen={onOpen}
-          openFileDialog={openFileDialog}
+          saveAs={this.props.saveAs}
         />
         <Paper zDepth={3} style={bar}>
           <ActionSearch style={icon} color={secondaryTextColor} />

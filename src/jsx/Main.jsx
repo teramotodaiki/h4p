@@ -226,6 +226,27 @@ class Main extends Component {
     this.setState({ tabs }, () => resolve());
   });
 
+  saveAs = (file) => new Promise((resolve, reject) => {
+    const a = document.createElement('a');
+
+    if (typeof a.download === 'string') {
+      a.download = file.name;
+      a.href = file.blobURL || URL.createObjectURL(
+        new Blob([file.text], { type: file.type })
+      );
+      const event = document.createEvent("MouseEvents");
+      event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      a.dispatchEvent(event);
+      if (a.href !== file.blobURL) {
+        URL.revokeObjectURL(a.href);
+      }
+      return Promise.resolve();
+    } else {
+      // for Safari/IE11/Edge
+      return this.openFileDialog(SaveDialog, { content: file });
+    }
+  });
+
   inspection = (newFile, reject) => {
     const { files } = this.state;
     if (files.some(file =>
@@ -341,6 +362,7 @@ class Main extends Component {
       setLocalization: this.setLocalization,
       onSizer: (isResizing) => this.setState({ isResizing }),
       inlineScriptId: this.props.inlineScriptId,
+      saveAs: this.saveAs,
     };
 
     const hierarchyProps = {
@@ -349,6 +371,7 @@ class Main extends Component {
       selectTab: this.selectTab,
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
+      saveAs: this.saveAs,
       isShrinked: isShrinked(
         monitorWidth,
         this.rootHeight - monitorHeight

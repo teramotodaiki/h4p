@@ -9,12 +9,12 @@ export default {
     palette: 'パレット',
     env: 'envのせってい',
     language: '言語',
-    download: 'ダウンロード',
+    clone: 'クローン',
     aboutFeeles: 'この Feeles について',
     deploy: 'この作品をデプロイ',
   },
-  downloadDialog: {
-    title: 'ダウンロード方法をえらぶ',
+  cloneDialog: {
+    title: '方法をえらぶ',
     sourceOnly: 'ソースコードのみ',
     bundleAll: 'すべてまとめる',
     libraryType: 'ライブラリ',
@@ -24,7 +24,12 @@ export default {
     needInternet: 'インターネット',
     maybeNothing: 'とくになし',
     fileSize: 'ファイルサイズ',
-    download: 'ダウンロード'
+    clone: 'クローンする'
+  },
+  saveDialog: {
+    title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',
+    description: (filename) => `上のリンクを右クリックして、「別名でダウンロード」をクリックし、「${filename}」という名前をつけて保存して下さい`,
+    cancel: 'キャンセル',
   },
   envDialog: {
     title: '環境変数 env のせってい',

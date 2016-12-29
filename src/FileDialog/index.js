@@ -4,4 +4,3 @@ export { default as SaveDialog } from './SaveDialog';
 export { default as PreferenceDialog } from './PreferenceDialog';
 export { default as DeleteDialog } from './DeleteDialog';
 export { default as SignDialog } from './SignDialog';
-export { default as DownloadDialog } from './DownloadDialog';

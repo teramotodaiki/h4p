@@ -9,12 +9,12 @@ export default {
     palette: 'Palette',
     env: 'Configure env',
     language: 'Language',
-    download: 'Download',
+    clone: 'Clone',
     aboutFeeles: 'About Feeles',
     deploy: 'Deploy This App',
   },
-  downloadDialog: {
-    title: 'Chose download type',
+  cloneDialog: {
+    title: 'Chose type',
     sourceOnly: 'Source Only',
     bundleAll: 'Bundle All',
     libraryType: 'Library Type',
@@ -24,7 +24,12 @@ export default {
     needInternet: 'Need internet',
     maybeNothing: 'Maybe nothing',
     fileSize: 'File Size',
-    download: 'Download'
+    clone: 'Clone This App',
+  },
+  saveDialog: {
+    title: 'You need to download it manually, because Your browser does not support HTML5!',
+    description: (filename) => `Right click on the above link, click "download with alias", and save it with the name "${filename}"`,
+    cancel: 'Cancel',
   },
   envDialog: {
     title: 'Configure Environment Variables',
