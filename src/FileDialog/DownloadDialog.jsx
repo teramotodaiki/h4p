@@ -13,6 +13,7 @@ export default class DownloadDialog extends Component {
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     bundle: PropTypes.func.isRequired,
+    inlineScriptId: PropTypes.string,
   };
 
   state = {
@@ -22,19 +23,32 @@ export default class DownloadDialog extends Component {
   };
 
   componentDidMount() {
+    const { inlineScriptId } = this.props;
+
     this.bundle()
       .then((bundleWithURL) => this.setState({ bundleWithURL }));
 
-    fetch(CORE_CDN_URL, { mode: 'cors' })
-      .then(response => {
-        if (!response.ok) {
-          throw response.error ? response.error() : new Error(response.statusText);
+    const lib = Promise.resolve()
+      .then(() => {
+        if (inlineScriptId) {
+          const inlineLib = document.getElementById(inlineScriptId);
+          if (inlineLib) {
+            return inlineLib.textContent;
+          }
+          throw `Missing script element has id="${inlineScriptId}"`;
         }
-        return response.text();
+        return fetch(CORE_CDN_URL, { mode: 'cors' })
+          .then(response => {
+            if (!response.ok) {
+              throw response.error ? response.error() : new Error(response.statusText);
+            }
+            return response.text();
+          });
       })
       .then(lib => {
         const raw = lib.replace(/\<\//g, '<\\/'); // For Trust HTML
-        this.bundle({ useCDN: false, raw })
+        const inlineScriptId = `FEELES_CORE_${CORE_VERSION}`;
+        this.bundle({ useCDN: false, raw, inlineScriptId })
           .then((bundleWithRaw) => this.setState({ bundleWithRaw }));
       })
       .catch(err => {

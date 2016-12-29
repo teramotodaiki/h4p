@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import RootComponent from './RootComponent';
 import { makeFromElements } from '../File/';
 
-export default () => {
+export default (props) => {
 
   window.addEventListener('beforeunload', (event) => {
     if (process.env.NODE_ENV === 'production') {
@@ -23,7 +23,7 @@ export default () => {
       .then(files => {
 
         return ReactDOM.render(
-          <RootComponent files={files} rootElement={appRoot} />,
+          <RootComponent files={files} rootElement={appRoot} {...props} />,
           appRoot
         );
 

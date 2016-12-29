@@ -47,11 +47,11 @@
 
   {{^useCDN}}
   <!-- h4p.js -->
-  <script type="text/javascript">
+  <script type="text/javascript" id="{{inlineScriptId}}">
   {{& raw}}
   </script>
   <script type="text/javascript">
-  {{EXPORT_VAR_NAME}}();
+  {{EXPORT_VAR_NAME}}({ inlineScriptId: "{{inlineScriptId}}" });
   </script>
   {{/useCDN}}
   </body>
