@@ -9,12 +9,12 @@ export default {
     palette: 'パレット',
     env: 'envのせってい',
     language: '言語',
-    download: 'ダウンロード',
+    clone: 'クローン',
     aboutFeeles: 'この Feeles について',
     deploy: 'この作品をデプロイ',
   },
-  downloadDialog: {
-    title: 'ダウンロード方法をえらぶ',
+  cloneDialog: {
+    title: '方法をえらぶ',
     sourceOnly: 'ソースコードのみ',
     bundleAll: 'すべてまとめる',
     libraryType: 'ライブラリ',
@@ -24,7 +24,7 @@ export default {
     needInternet: 'インターネット',
     maybeNothing: 'とくになし',
     fileSize: 'ファイルサイズ',
-    download: 'ダウンロード'
+    clone: 'クローンする'
   },
   envDialog: {
     title: '環境変数 env のせってい',

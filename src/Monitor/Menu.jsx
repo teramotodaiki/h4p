@@ -16,10 +16,11 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 import { BinaryFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
-import { DownloadDialog, SaveDialog } from '../FileDialog/';
+import { SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
+import CloneDialog from './CloneDialog';
 import download from '../html/download';
 import SizerDragSource from './SizerDragSource';
 
@@ -99,7 +100,7 @@ class Menu extends Component {
     }
   }
 
-  handleDownload = () => {
+  handleClone = () => {
     const { openFileDialog } = this.props;
     const dialogProps = {
       bundle: this.bundle,
@@ -107,7 +108,7 @@ class Menu extends Component {
       files: this.props.files,
     };
 
-    openFileDialog(DownloadDialog, dialogProps)
+    openFileDialog(CloneDialog, dialogProps)
       .then(content => {
         openFileDialog(SaveDialog, {
           content,
@@ -266,8 +267,8 @@ class Menu extends Component {
           <OpenInBrowser color={alternateTextColor} />
         </IconButton>
         <IconButton
-          tooltip={menu.download}
-          onTouchTap={this.handleDownload}
+          tooltip={menu.clone}
+          onTouchTap={this.handleClone}
           tooltipPosition={tooltipPosition}
           style={button}
         >

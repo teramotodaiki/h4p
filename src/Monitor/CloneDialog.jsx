@@ -91,13 +91,13 @@ export default class DownloadDialog extends Component {
     const {
       onRequestClose,
       content,
-      localization: { downloadDialog },
+      localization,
     } = this.props;
     const { composedFiles, coreString, error } = this.state;
 
     const buttonURL = (
       <RaisedButton
-        label={downloadDialog.download}
+        label={localization.cloneDialog.clone}
         primary={true}
         disabled={!composedFiles}
         onTouchTap={this.handleDownloadCDN}
@@ -106,7 +106,7 @@ export default class DownloadDialog extends Component {
 
     const buttonRaw = (
       <RaisedButton
-        label={error ? error.message : downloadDialog.download}
+        label={error ? error.message : localization.cloneDialog.clone}
         primary={true}
         disabled={!composedFiles || !coreString}
         onTouchTap={this.handleDownloadRaw}
@@ -115,7 +115,7 @@ export default class DownloadDialog extends Component {
 
     return (
       <Dialog
-        title={downloadDialog.title}
+        title={localization.cloneDialog.title}
         modal={false}
         open={true}
         onRequestClose={onRequestClose}
@@ -126,21 +126,21 @@ export default class DownloadDialog extends Component {
           >
             <TableRow>
               <TableRowColumn></TableRowColumn>
-              <TableRowColumn>{downloadDialog.sourceOnly}</TableRowColumn>
-              <TableRowColumn>{downloadDialog.bundleAll}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.sourceOnly}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.bundleAll}</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn>{downloadDialog.libraryType}</TableRowColumn>
-              <TableRowColumn>{downloadDialog.hostingOnCdn}</TableRowColumn>
-              <TableRowColumn>{downloadDialog.embedInHtml}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.libraryType}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.hostingOnCdn}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.embedInHtml}</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn>{downloadDialog.requirement}</TableRowColumn>
-              <TableRowColumn>{downloadDialog.needInternet}</TableRowColumn>
-              <TableRowColumn>{downloadDialog.maybeNothing}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.requirement}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.needInternet}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.maybeNothing}</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn>{downloadDialog.fileSize}</TableRowColumn>
+              <TableRowColumn>{localization.cloneDialog.fileSize}</TableRowColumn>
               <TableRowColumn>1-10KB</TableRowColumn>
               <TableRowColumn>1MB+</TableRowColumn>
             </TableRow>
