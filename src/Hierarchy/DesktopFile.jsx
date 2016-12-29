@@ -35,7 +35,7 @@ class _DesktopFile extends Component {
 
   static propTypes = {
     onOpen: PropTypes.func.isRequired,
-    openFileDialog: PropTypes.func.isRequired,
+    saveAs: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -86,22 +86,11 @@ class _DesktopFile extends Component {
 const spec = {
   drop(props, monitor, component) {
     const { files } = monitor.getItem();
-    files.forEach((file) => {
-      const a = document.createElement('a');
 
-      if (typeof a.download === 'string') {
-        a.download = file.name;
-        a.href = file.blobURL || URL.createObjectURL(
-          new Blob([file.text], { type: file.type })
-        );
-        var event = document.createEvent("MouseEvents");
-        event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        a.dispatchEvent(event);
-      } else {
-        // for Safari
-        props.openFileDialog(SaveDialog, { content: file });
-      }
-    });
+    files.reduce((p, c) => {
+      return p.then(() => component.props.saveAs(c));
+    }, Promise.resolve());
+
     return {};
   }
 };

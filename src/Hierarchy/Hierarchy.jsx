@@ -50,6 +50,7 @@ export default class Hierarchy extends Component {
     findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
+    saveAs: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
     isShrinked: PropTypes.bool.isRequired,
@@ -183,6 +184,7 @@ export default class Hierarchy extends Component {
           deleteAll={this.handleDelete}
           onOpen={this.handleNativeDrop}
           openFileDialog={openFileDialog}
+          saveAs={this.props.saveAs}
           localization={localization}
         />
         <div style={scroll}>
