@@ -14,17 +14,12 @@ export default {
     deploy: 'この作品をデプロイ',
   },
   cloneDialog: {
-    title: '方法をえらぶ',
-    sourceOnly: 'ソースコードのみ',
-    bundleAll: 'すべてまとめる',
-    libraryType: 'ライブラリ',
-    hostingOnCdn: 'CDNを使う',
-    embedInHtml: 'HTMLにうめこむ',
-    requirement: '必要なもの',
-    needInternet: 'インターネット',
-    maybeNothing: 'とくになし',
-    fileSize: 'ファイルサイズ',
-    clone: 'クローンする'
+    title: 'クローンしてデスクトップに保存する',
+    embed: 'すべて１つのHTMLファイルにまとめる',
+    divide: 'HTMLファイルとライブラリで分ける',
+    cdn: 'ライブラリをインターネットから取得する',
+    save: '保存する',
+    cancel: 'キャンセル',
   },
   saveDialog: {
     title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',
@@ -40,8 +35,8 @@ export default {
   aboutDialog: {
     title: 'この Feeles について',
     coreVersion: 'Feelse のバージョン',
-    changeVersion: 'バージョンを変更する',
-    change: '変更する',
+    changeVersion: 'バージョンを変更',
+    change: '変更',
   },
   editorMenu: {
     lineWrapping: '行のおり返し',

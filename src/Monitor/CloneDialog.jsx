@@ -1,10 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
+import FlatButton from 'material-ui/FlatButton';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
 
 import { SourceFile } from '../File/';
+
+const BundleTypes = [
+  'embed',
+  'divide',
+  'cdn'
+];
 
 export default class DownloadDialog extends Component {
 
@@ -18,6 +25,7 @@ export default class DownloadDialog extends Component {
   };
 
   state = {
+    type: BundleTypes[0],
     composedFiles: null,
     coreString: null,
     error: null,
@@ -58,35 +66,30 @@ export default class DownloadDialog extends Component {
     }
   }
 
-  handleDownloadCDN = () => {
+  handleClone = () => {
+    const raw = this.state.coreString.replace(/\<\//g, '<\\/'); // For Trust HTML
+
+    const text = this.props.bundle({
+      files: this.state.composedFiles,
+      useCDN: this.state.type === 'cdn',
+
+      // CDNの場合は無意味
+      inlineScriptId: this.props.inlineScriptId,
+      raw,
+    });
+
     const file = new SourceFile({
       name: this.fileName,
       type: 'text/html',
-      text: this.props.bundle({
-        files: this.state.composedFiles,
-      }),
+      text,
     });
 
     this.props.resolve(file);
     this.props.onRequestClose();
   };
 
-  handleDownloadRaw = () => {
-    const raw = this.state.coreString.replace(/\<\//g, '<\\/'); // For Trust HTML
-
-    const file = new SourceFile({
-      name: this.fileName,
-      type: 'text/html',
-      text: this.props.bundle({
-        files: this.state.composedFiles,
-        useCDN: false,
-        inlineScriptId: this.props.inlineScriptId,
-        raw,
-      }),
-    });
-
-    this.props.resolve(file);
-    this.props.onRequestClose();
+  handleChange = (event, type) => {
+    this.setState({ type });
   };
 
   render() {
@@ -97,64 +100,62 @@ export default class DownloadDialog extends Component {
     } = this.props;
     const { composedFiles, coreString, error } = this.state;
 
-    const buttonURL = (
-      <RaisedButton
-        label={localization.cloneDialog.clone}
-        primary={true}
-        disabled={!composedFiles}
-        onTouchTap={this.handleDownloadCDN}
-      />
-    );
+    const styles = {
+      button: {
+        marginLeft: 8,
+      },
+      radio: {
+        marginBottom: 12,
+      },
+      group: {
+        padding: 24,
+      },
+      error: {
+        color: 'red',
+      },
+    };
 
-    const buttonRaw = (
-      <RaisedButton
-        label={error ? error.message : localization.cloneDialog.clone}
-        primary={true}
+    const actions = [
+      <RaisedButton primary
+        label={localization.cloneDialog.save}
         disabled={!composedFiles || !coreString}
-        onTouchTap={this.handleDownloadRaw}
-      />
-    );
+        style={styles.button}
+        onTouchTap={this.handleClone}
+      />,
+      <FlatButton
+        label={localization.cloneDialog.cancel}
+        style={styles.button}
+        onTouchTap={onRequestClose}
+      />,
+    ];
 
     return (
       <Dialog
         title={localization.cloneDialog.title}
         modal={false}
         open={true}
+        actions={actions}
         onRequestClose={onRequestClose}
       >
-        <Table>
-          <TableBody
-            displayRowCheckbox={false}
-          >
-            <TableRow>
-              <TableRowColumn></TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.sourceOnly}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.bundleAll}</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>{localization.cloneDialog.libraryType}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.hostingOnCdn}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.embedInHtml}</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>{localization.cloneDialog.requirement}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.needInternet}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.maybeNothing}</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>{localization.cloneDialog.fileSize}</TableRowColumn>
-              <TableRowColumn>1-10KB</TableRowColumn>
-              <TableRowColumn>1MB+</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn></TableRowColumn>
-              <TableRowColumn>{buttonURL}</TableRowColumn>
-              <TableRowColumn>
-                {buttonRaw}
-              </TableRowColumn>
-            </TableRow>
-          </TableBody>
-        </Table>
+        {error ? (
+          <p style={styles.error}>{error}</p>
+        ) : null}
+        <RadioButtonGroup
+          name="libType"
+          valueSelected={this.state.type}
+          style={styles.group}
+          onChange={this.handleChange}
+        >
+        {BundleTypes.map((type) => (
+          <RadioButton
+            key={type}
+            value={type}
+            label={localization.cloneDialog[type]}
+            style={styles.radio}
+          />
+        ))}
+        </RadioButtonGroup>
+
       </Dialog>
     );
   }
