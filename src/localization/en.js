@@ -20,6 +20,9 @@ export default {
     cdn: 'Get the library from the internet',
     save: 'Save',
     cancel: 'Cancel',
+    saveHTML: 'Save Only HTML',
+    saveLibrary: 'Save Only Library',
+    saveAll: 'Save All',
   },
   saveDialog: {
     title: 'You need to download it manually, because Your browser does not support HTML5!',

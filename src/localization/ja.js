@@ -20,6 +20,9 @@ export default {
     cdn: 'ライブラリをインターネットから取得する',
     save: '保存する',
     cancel: 'キャンセル',
+    saveHTML: 'HTMLだけ保存する',
+    saveLibrary: 'ライブラリだけ保存する',
+    saveAll: 'どちらも保存する',
   },
   saveDialog: {
     title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',

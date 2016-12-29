@@ -88,6 +88,12 @@ export default class DownloadDialog extends Component {
     this.props.onRequestClose();
   };
 
+  handleCloneLibrary = () => {
+  };
+
+  handleCloneAll = () => {
+  };
+
   handleChange = (event, type) => {
     this.setState({ type });
   };
@@ -98,14 +104,14 @@ export default class DownloadDialog extends Component {
       content,
       localization,
     } = this.props;
-    const { composedFiles, coreString, error } = this.state;
+    const { type, composedFiles, coreString, error } = this.state;
 
     const styles = {
       button: {
-        marginLeft: 8,
+        marginLeft: 16,
       },
       radio: {
-        marginBottom: 12,
+        marginBottom: 16,
       },
       group: {
         padding: 24,
@@ -113,21 +119,49 @@ export default class DownloadDialog extends Component {
       error: {
         color: 'red',
       },
+      center: {
+        textAlign: 'center',
+      },
     };
 
     const actions = [
-      <RaisedButton primary
-        label={localization.cloneDialog.save}
-        disabled={!composedFiles || !coreString}
-        style={styles.button}
-        onTouchTap={this.handleClone}
-      />,
+      type !== 'divide' ? (
+        <RaisedButton primary
+          label={localization.cloneDialog.save}
+          disabled={!composedFiles || !coreString}
+          style={styles.button}
+          onTouchTap={this.handleClone}
+        />
+      ) : null,
       <FlatButton
         label={localization.cloneDialog.cancel}
         style={styles.button}
         onTouchTap={onRequestClose}
       />,
     ];
+
+    const saveDivides = type === 'divide' ? (
+      <div style={styles.center}>
+        <RaisedButton primary
+          label={localization.cloneDialog.saveHTML}
+          disabled={!composedFiles}
+          style={styles.button}
+          onTouchTap={this.handleClone}
+        />
+        <RaisedButton primary
+          label={localization.cloneDialog.saveLibrary}
+          disabled={!coreString}
+          style={styles.button}
+          onTouchTap={this.handleCloneLibrary}
+        />
+        <RaisedButton primary
+          label={localization.cloneDialog.saveAll}
+          disabled={!coreString}
+          style={styles.button}
+          onTouchTap={this.handleCloneAll}
+        />
+      </div>
+    ) : null;
 
     return (
       <Dialog
@@ -142,7 +176,7 @@ export default class DownloadDialog extends Component {
         ) : null}
         <RadioButtonGroup
           name="libType"
-          valueSelected={this.state.type}
+          valueSelected={type}
           style={styles.group}
           onChange={this.handleChange}
         >
@@ -155,7 +189,7 @@ export default class DownloadDialog extends Component {
           />
         ))}
         </RadioButtonGroup>
-
+        {saveDivides}
       </Dialog>
     );
   }
