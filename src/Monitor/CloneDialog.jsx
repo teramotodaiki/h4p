@@ -67,21 +67,31 @@ export default class DownloadDialog extends Component {
   }
 
   handleClone = () => {
-    const raw = this.state.coreString.replace(/\<\//g, '<\\/'); // For Trust HTML
-
-    const text = this.props.bundle({
+    const params = {
       files: this.state.composedFiles,
-      useCDN: this.state.type === 'cdn',
-
-      // CDNの場合は無意味
-      inlineScriptId: this.props.inlineScriptId,
-      raw,
-    });
+    };
+    switch (this.state.type) {
+      case 'embed':
+        params.body = `
+  <script type="text/javascript" id="${this.props.inlineScriptId}">
+  ${this.state.coreString.replace(/\<\//g, '<\\/')}
+  </script>
+  <script type="text/javascript">
+  ${EXPORT_VAR_NAME}({ inlineScriptId: "${this.props.inlineScriptId}" });
+  </script>
+`;
+        break;
+      case 'cdn':
+        params.head = `
+  <script async src="${CORE_CDN_URL}" onload="${EXPORT_VAR_NAME}()"></script>
+`;
+        break;
+    }
 
     const file = new SourceFile({
       name: this.fileName,
       type: 'text/html',
-      text,
+      text: this.props.bundle(params),
     });
 
     this.props.resolve(file);

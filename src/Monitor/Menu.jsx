@@ -159,7 +159,6 @@ class Menu extends Component {
     const [TITLE] = this.props.getConfig('env').TITLE || [''];
 
     props = Object.assign({
-      useCDN: true,
       EXPORT_VAR_NAME,
       CSS_PREFIX,
       CORE_CDN_URL,

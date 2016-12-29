@@ -41,9 +41,12 @@ export default class AboutDialog extends Component {
   handleChangeVersion = () => {
     const { inputCoreVersion, composedFiles } = this.state;
 
+    const src = CORE_CDN_PREFIX + inputCoreVersion + '.js';
     const html = this.props.bundle({
       files: composedFiles,
-      CORE_CDN_URL: `${CORE_CDN_PREFIX}${inputCoreVersion}.js`,
+      head: `
+  <script async src="${src}" onload="${EXPORT_VAR_NAME}()"></script>
+`,
     });
     const url = URL.createObjectURL(
       new Blob([html], { type: 'text/html' })
