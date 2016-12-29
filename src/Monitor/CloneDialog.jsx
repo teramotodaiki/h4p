@@ -1,10 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
+import FlatButton from 'material-ui/FlatButton';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
 
 import { SourceFile } from '../File/';
+
+const BundleTypes = [
+  'embed',
+  'divide',
+  'cdn'
+];
 
 export default class DownloadDialog extends Component {
 
@@ -15,9 +22,11 @@ export default class DownloadDialog extends Component {
     localization: PropTypes.object.isRequired,
     bundle: PropTypes.func.isRequired,
     inlineScriptId: PropTypes.string,
+    saveAs: PropTypes.func.isRequired,
   };
 
   state = {
+    type: BundleTypes[0],
     composedFiles: null,
     coreString: null,
     error: null,
@@ -26,6 +35,10 @@ export default class DownloadDialog extends Component {
   get fileName() {
     const [TITLE] = this.props.getConfig('env').TITLE || [''];
     return TITLE + '.html';
+  }
+
+  get libraryName() {
+    return `feeles-${CORE_VERSION}.js`;
   }
 
   componentDidMount() {
@@ -58,35 +71,92 @@ export default class DownloadDialog extends Component {
     }
   }
 
-  handleDownloadCDN = () => {
-    const file = new SourceFile({
+  embed() {
+    return new SourceFile({
       name: this.fileName,
       type: 'text/html',
       text: this.props.bundle({
         files: this.state.composedFiles,
+        body: `
+    <script type="text/javascript" id="${this.props.inlineScriptId}">
+    ${this.state.coreString.replace(/\<\//g, '<\\/')}
+    </script>
+    <script type="text/javascript">
+    ${EXPORT_VAR_NAME}({ inlineScriptId: "${this.props.inlineScriptId}" });
+    </script>
+`,
       }),
     });
+  }
 
-    this.props.resolve(file);
-    this.props.onRequestClose();
+  divide() {
+    return new SourceFile({
+      name: this.fileName,
+      type: 'text/html',
+      text: this.props.bundle({
+        files: this.state.composedFiles,
+        head: `
+    <script async src="${this.libraryName}"></script>
+`,
+      }),
+    });
+  }
+
+  cdn() {
+    return new SourceFile({
+      name: this.fileName,
+      type: 'text/html',
+      text: this.props.bundle({
+        files: this.state.composedFiles,
+        head: `
+    <script async src="${CORE_CDN_URL}" onload="${EXPORT_VAR_NAME}()"></script>
+`,
+      }),
+    });
+  }
+
+  library() {
+    return new SourceFile({
+      name: this.libraryName,
+      type: 'text/javascript',
+      text: `(function() {
+  var e = document.createElement('script');
+  e.id = "${this.props.inlineScriptId}";
+  e.textContent = decodeURIComponent("${encodeURIComponent(this.state.coreString)}");
+  document.body.appendChild(e);
+  ${EXPORT_VAR_NAME}();
+})();`,
+    });
+  }
+
+  handleClone = () => {
+    switch (this.state.type) {
+      case 'embed':
+        this.props.saveAs(this.embed())
+          .then(() => this.props.onRequestClose());
+        break;
+      case 'divide':
+        this.props.saveAs(this.divide());
+        break;
+      case 'cdn':
+        this.props.saveAs(this.cdn())
+          .then(() => this.props.onRequestClose());
+        break;
+    }
   };
 
-  handleDownloadRaw = () => {
-    const raw = this.state.coreString.replace(/\<\//g, '<\\/'); // For Trust HTML
+  handleCloneLibrary = () => {
+    this.props.saveAs(this.library());
+  };
 
-    const file = new SourceFile({
-      name: this.fileName,
-      type: 'text/html',
-      text: this.props.bundle({
-        files: this.state.composedFiles,
-        useCDN: false,
-        inlineScriptId: this.props.inlineScriptId,
-        raw,
-      }),
-    });
+  handleCloneAll = () => {
+    Promise.resolve()
+      .then(() => this.props.saveAs(this.library(), this.divide()))
+      .then(() => this.props.onRequestClose());
+  };
 
-    this.props.resolve(file);
-    this.props.onRequestClose();
+  handleChange = (event, type) => {
+    this.setState({ type });
   };
 
   render() {
@@ -95,66 +165,92 @@ export default class DownloadDialog extends Component {
       content,
       localization,
     } = this.props;
-    const { composedFiles, coreString, error } = this.state;
+    const { type, composedFiles, coreString, error } = this.state;
 
-    const buttonURL = (
-      <RaisedButton
-        label={localization.cloneDialog.clone}
-        primary={true}
-        disabled={!composedFiles}
-        onTouchTap={this.handleDownloadCDN}
-      />
-    );
+    const styles = {
+      button: {
+        marginLeft: 16,
+      },
+      radio: {
+        marginBottom: 16,
+      },
+      group: {
+        padding: 24,
+      },
+      error: {
+        color: 'red',
+      },
+      center: {
+        textAlign: 'center',
+      },
+    };
 
-    const buttonRaw = (
-      <RaisedButton
-        label={error ? error.message : localization.cloneDialog.clone}
-        primary={true}
-        disabled={!composedFiles || !coreString}
-        onTouchTap={this.handleDownloadRaw}
-      />
-    );
+    const actions = [
+      type !== 'divide' ? (
+        <RaisedButton primary
+          label={localization.cloneDialog.save}
+          disabled={!composedFiles || !coreString}
+          style={styles.button}
+          onTouchTap={this.handleClone}
+        />
+      ) : null,
+      <FlatButton
+        label={localization.cloneDialog.cancel}
+        style={styles.button}
+        onTouchTap={onRequestClose}
+      />,
+    ];
+
+    const saveDivides = type === 'divide' ? (
+      <div style={styles.center}>
+        <RaisedButton primary
+          label={localization.cloneDialog.saveHTML}
+          disabled={!composedFiles}
+          style={styles.button}
+          onTouchTap={this.handleClone}
+        />
+        <RaisedButton primary
+          label={localization.cloneDialog.saveLibrary}
+          disabled={!coreString}
+          style={styles.button}
+          onTouchTap={this.handleCloneLibrary}
+        />
+        <RaisedButton primary
+          label={localization.cloneDialog.saveAll}
+          disabled={!coreString}
+          style={styles.button}
+          onTouchTap={this.handleCloneAll}
+        />
+      </div>
+    ) : null;
 
     return (
       <Dialog
         title={localization.cloneDialog.title}
         modal={false}
         open={true}
+        actions={actions}
         onRequestClose={onRequestClose}
       >
-        <Table>
-          <TableBody
-            displayRowCheckbox={false}
-          >
-            <TableRow>
-              <TableRowColumn></TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.sourceOnly}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.bundleAll}</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>{localization.cloneDialog.libraryType}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.hostingOnCdn}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.embedInHtml}</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>{localization.cloneDialog.requirement}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.needInternet}</TableRowColumn>
-              <TableRowColumn>{localization.cloneDialog.maybeNothing}</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>{localization.cloneDialog.fileSize}</TableRowColumn>
-              <TableRowColumn>1-10KB</TableRowColumn>
-              <TableRowColumn>1MB+</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn></TableRowColumn>
-              <TableRowColumn>{buttonURL}</TableRowColumn>
-              <TableRowColumn>
-                {buttonRaw}
-              </TableRowColumn>
-            </TableRow>
-          </TableBody>
-        </Table>
+        {error ? (
+          <p style={styles.error}>{error}</p>
+        ) : null}
+        <RadioButtonGroup
+          name="libType"
+          valueSelected={type}
+          style={styles.group}
+          onChange={this.handleChange}
+        >
+        {BundleTypes.map((type) => (
+          <RadioButton
+            key={type}
+            value={type}
+            label={localization.cloneDialog[type]}
+            style={styles.radio}
+          />
+        ))}
+        </RadioButtonGroup>
+        {saveDivides}
       </Dialog>
     );
   }

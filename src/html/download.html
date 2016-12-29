@@ -4,10 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>{{TITLE}}</title>
-    {{#useCDN}}
-    <!-- h4p.js -->
-    <script async src="{{CORE_CDN_URL}}" onload="{{EXPORT_VAR_NAME}}()"></script>
-    {{/useCDN}}
     <style media="screen">
     body {
         margin: 0;
@@ -22,6 +18,7 @@
         height: 100vh;
     }
     </style>
+{{&head}}
   </head>
   <body>
     <!-- Config of the app -->
@@ -45,14 +42,6 @@
 {{& composed}}</script>
 {{/files}}
 
-  {{^useCDN}}
-  <!-- h4p.js -->
-  <script type="text/javascript" id="{{inlineScriptId}}">
-  {{& raw}}
-  </script>
-  <script type="text/javascript">
-  {{EXPORT_VAR_NAME}}({ inlineScriptId: "{{inlineScriptId}}" });
-  </script>
-  {{/useCDN}}
+{{&body}}
   </body>
 </html>

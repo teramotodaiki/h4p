@@ -17,14 +17,14 @@ export default class FileDialog extends Component {
     new Promise((resolve, reject) => {
       props = Object.assign({}, this.props, props, {
         resolve, reject,
-        onRequestClose: this.close,
+        onRequestClose: () => {
+          resolve();
+          this.setState({ dialogInstance: null });
+        },
       });
       const dialogInstance = React.createElement(reactClass, props);
       this.setState({ dialogInstance });
     });
-
-  close = () =>
-    this.setState({ dialogInstance: null });
 
   render () {
     return this.state.dialogInstance;

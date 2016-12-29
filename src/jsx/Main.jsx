@@ -22,6 +22,8 @@ import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialo
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
 
+const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
+
 const getStyle = (props, state, palette) => {
   const { isResizing } = state;
 
@@ -226,26 +228,31 @@ class Main extends Component {
     this.setState({ tabs }, () => resolve());
   });
 
-  saveAs = (file) => new Promise((resolve, reject) => {
-    const a = document.createElement('a');
+  saveAs = (...files) => {
+    if (DOWNLOAD_ENABLED) {
 
-    if (typeof a.download === 'string') {
-      a.download = file.name;
-      a.href = file.blobURL || URL.createObjectURL(
-        new Blob([file.text], { type: file.type })
-      );
-      const event = document.createEvent("MouseEvents");
-      event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      a.dispatchEvent(event);
-      if (a.href !== file.blobURL) {
-        URL.revokeObjectURL(a.href);
-      }
+      files.forEach((file) => {
+        const a = document.createElement('a');
+        const event = document.createEvent("MouseEvents");
+        event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+        a.download = file.name;
+        a.href = file.blobURL || URL.createObjectURL(
+          new Blob([file.text], { type: file.type })
+        );
+        a.dispatchEvent(event)
+
+        if (a.href !== file.blobURL) {
+          URL.revokeObjectURL(a.href);
+        }
+      });
+
       return Promise.resolve();
     } else {
       // for Safari/IE11/Edge
-      return this.openFileDialog(SaveDialog, { content: file });
+      return this.openFileDialog(SaveDialog, { content: files });
     }
-  });
+  };
 
   inspection = (newFile, reject) => {
     const { files } = this.state;

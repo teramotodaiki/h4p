@@ -101,14 +101,12 @@ class Menu extends Component {
   }
 
   handleClone = () => {
-    const dialogProps = {
+    this.props.openFileDialog(CloneDialog, {
       bundle: this.bundle,
       inlineScriptId: this.props.inlineScriptId,
       files: this.props.files,
-    };
-
-    this.props.openFileDialog(CloneDialog, dialogProps)
-      .then((file) => this.props.saveAs(file));
+      saveAs: this.props.saveAs,
+    });
   };
 
   handlePalette = () => {
@@ -159,7 +157,6 @@ class Menu extends Component {
     const [TITLE] = this.props.getConfig('env').TITLE || [''];
 
     props = Object.assign({
-      useCDN: true,
       EXPORT_VAR_NAME,
       CSS_PREFIX,
       CORE_CDN_URL,
