@@ -36,6 +36,10 @@ export default class DownloadDialog extends Component {
     return TITLE + '.html';
   }
 
+  get libraryName() {
+    return `feeles-${CORE_VERSION}.js`;
+  }
+
   componentDidMount() {
     const { inlineScriptId } = this.props;
 
@@ -81,6 +85,11 @@ export default class DownloadDialog extends Component {
   </script>
 `;
         break;
+      case 'divide':
+        params.head = `
+  <script async src="${this.libraryName}"></script>
+`;
+        break;
       case 'cdn':
         params.head = `
   <script async src="${CORE_CDN_URL}" onload="${EXPORT_VAR_NAME}()"></script>
@@ -99,6 +108,21 @@ export default class DownloadDialog extends Component {
   };
 
   handleCloneLibrary = () => {
+    const text = `(function() {
+  var e = document.createElement('script');
+  e.id = "${this.props.inlineScriptId}";
+  e.textContent = decodeURIComponent("${encodeURIComponent(this.state.coreString)}");
+  document.body.appendChild(e);
+  ${EXPORT_VAR_NAME}();
+})();`;
+    const file = new SourceFile({
+      name: this.libraryName,
+      type: 'text/javascript',
+      text,
+    });
+
+    this.props.resolve(file);
+    this.props.onRequestClose();
   };
 
   handleCloneAll = () => {
