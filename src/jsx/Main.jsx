@@ -237,6 +237,9 @@ class Main extends Component {
       const event = document.createEvent("MouseEvents");
       event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       a.dispatchEvent(event);
+      if (a.href !== file.blobURL) {
+        URL.revokeObjectURL(a.href);
+      }
       return Promise.resolve();
     } else {
       // for Safari/IE11/Edge
