@@ -22,6 +22,7 @@ export default class DownloadDialog extends Component {
     localization: PropTypes.object.isRequired,
     bundle: PropTypes.func.isRequired,
     inlineScriptId: PropTypes.string,
+    saveAs: PropTypes.func.isRequired,
   };
 
   state = {
@@ -70,62 +71,88 @@ export default class DownloadDialog extends Component {
     }
   }
 
-  handleClone = () => {
-    const params = {
-      files: this.state.composedFiles,
-    };
-    switch (this.state.type) {
-      case 'embed':
-        params.body = `
-  <script type="text/javascript" id="${this.props.inlineScriptId}">
-  ${this.state.coreString.replace(/\<\//g, '<\\/')}
-  </script>
-  <script type="text/javascript">
-  ${EXPORT_VAR_NAME}({ inlineScriptId: "${this.props.inlineScriptId}" });
-  </script>
-`;
-        break;
-      case 'divide':
-        params.head = `
-  <script async src="${this.libraryName}"></script>
-`;
-        break;
-      case 'cdn':
-        params.head = `
-  <script async src="${CORE_CDN_URL}" onload="${EXPORT_VAR_NAME}()"></script>
-`;
-        break;
-    }
-
-    const file = new SourceFile({
+  embed() {
+    return new SourceFile({
       name: this.fileName,
       type: 'text/html',
-      text: this.props.bundle(params),
+      text: this.props.bundle({
+        files: this.state.composedFiles,
+        body: `
+    <script type="text/javascript" id="${this.props.inlineScriptId}">
+    ${this.state.coreString.replace(/\<\//g, '<\\/')}
+    </script>
+    <script type="text/javascript">
+    ${EXPORT_VAR_NAME}({ inlineScriptId: "${this.props.inlineScriptId}" });
+    </script>
+`,
+      }),
     });
+  }
 
-    this.props.resolve(file);
-    this.props.onRequestClose();
-  };
+  divide() {
+    return new SourceFile({
+      name: this.fileName,
+      type: 'text/html',
+      text: this.props.bundle({
+        files: this.state.composedFiles,
+        head: `
+    <script async src="${this.libraryName}"></script>
+`,
+      }),
+    });
+  }
 
-  handleCloneLibrary = () => {
-    const text = `(function() {
+  cdn() {
+    return new SourceFile({
+      name: this.fileName,
+      type: 'text/html',
+      text: this.props.bundle({
+        files: this.state.composedFiles,
+        head: `
+    <script async src="${CORE_CDN_URL}" onload="${EXPORT_VAR_NAME}()"></script>
+`,
+      }),
+    });
+  }
+
+  library() {
+    return new SourceFile({
+      name: this.libraryName,
+      type: 'text/javascript',
+      text: `(function() {
   var e = document.createElement('script');
   e.id = "${this.props.inlineScriptId}";
   e.textContent = decodeURIComponent("${encodeURIComponent(this.state.coreString)}");
   document.body.appendChild(e);
   ${EXPORT_VAR_NAME}();
-})();`;
-    const file = new SourceFile({
-      name: this.libraryName,
-      type: 'text/javascript',
-      text,
+})();`,
     });
+  }
 
-    this.props.resolve(file);
-    this.props.onRequestClose();
+  handleClone = () => {
+    switch (this.state.type) {
+      case 'embed':
+        this.props.saveAs(this.embed())
+          .then(() => this.props.onRequestClose());
+        break;
+      case 'divide':
+        this.props.saveAs(this.divide());
+        break;
+      case 'cdn':
+        this.props.saveAs(this.cdn())
+          .then(() => this.props.onRequestClose());
+        break;
+    }
+  };
+
+  handleCloneLibrary = () => {
+    this.props.saveAs(this.library());
   };
 
   handleCloneAll = () => {
+    Promise.resolve()
+      .then(() => this.props.saveAs(this.library(), this.divide()))
+      .then(() => this.props.onRequestClose());
   };
 
   handleChange = (event, type) => {
