@@ -13,7 +13,6 @@ import FilenameInput from './FilenameInput';
 export default class SaveDialog extends Component {
 
   static propTypes = {
-    resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     content: PropTypes.any,
     localization: PropTypes.object.isRequired,
@@ -45,10 +44,6 @@ export default class SaveDialog extends Component {
     } = this.props;
 
     const actions = [
-      <Confirm primary
-        onTouchTap={this.props.resolve}
-        label="Confirm"
-      />,
       <Abort primary
         onTouchTap={onRequestClose}
         label={localization.saveDialog.cancel}
