@@ -19,12 +19,19 @@ export default class AboutDialog extends Component {
   static propTypes = {
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
+    files: PropTypes.array.isRequired,
     bundle: PropTypes.func.isRequired,
   };
 
   state = {
-    inputCoreVersion: null
+    composedFiles: null,
+    inputCoreVersion: null,
   };
+
+  componentDidMount() {
+    Promise.all(this.props.files.map((file) => file.compose()))
+      .then((composedFiles) => this.setState({ composedFiles }));
+  }
 
   handleCoreVersionInput = (event) => {
     const inputCoreVersion = event.target.value;
@@ -32,17 +39,16 @@ export default class AboutDialog extends Component {
   };
 
   handleChangeVersion = () => {
-    const { inputCoreVersion } = this.state;
+    const { inputCoreVersion, composedFiles } = this.state;
 
-    this.props.bundle({
+    const html = this.props.bundle({
+      files: composedFiles,
       CORE_CDN_URL: `${CORE_CDN_PREFIX}${inputCoreVersion}.js`,
-    })
-    .then((html) => {
-      const url = URL.createObjectURL(
-        new Blob([html], { type: 'text/html' })
-      );
-      location.assign(url);
     });
+    const url = URL.createObjectURL(
+      new Blob([html], { type: 'text/html' })
+    );
+    location.assign(url);
   };
 
   render() {
@@ -52,6 +58,7 @@ export default class AboutDialog extends Component {
     } = this.props;
     const {
       inputCoreVersion,
+      composedFiles,
     } = this.state;
 
     const { left } = getStyles(this.props);
@@ -85,7 +92,7 @@ export default class AboutDialog extends Component {
                   />
                   <FlatButton primary
                     label={aboutDialog.change}
-                    disabled={!inputCoreVersion}
+                    disabled={!inputCoreVersion || !composedFiles}
                     onTouchTap={this.handleChangeVersion}
                   />
                 </TableRowColumn>

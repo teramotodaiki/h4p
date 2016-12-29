@@ -11,72 +11,81 @@ export default class DownloadDialog extends Component {
   static propTypes = {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
+    files: PropTypes.array.isRequired,
     localization: PropTypes.object.isRequired,
     bundle: PropTypes.func.isRequired,
     inlineScriptId: PropTypes.string,
   };
 
   state = {
-    bundleWithURL: null,
-    bundleWithRaw: null,
-    errorInFetch: null
+    composedFiles: null,
+    coreString: null,
+    error: null,
   };
 
   componentDidMount() {
     const { inlineScriptId } = this.props;
 
-    this.bundle()
-      .then((bundleWithURL) => this.setState({ bundleWithURL }));
+    Promise.all(this.props.files.map((file) => file.compose()))
+      .then((composedFiles) => this.setState({ composedFiles }));
 
-    const lib = Promise.resolve()
-      .then(() => {
-        if (inlineScriptId) {
-          const inlineLib = document.getElementById(inlineScriptId);
-          if (inlineLib) {
-            return inlineLib.textContent;
+    if (inlineScriptId) {
+      const inlineLib = document.getElementById(inlineScriptId);
+      if (inlineLib) {
+        this.setState({
+          coreString: inlineLib.textContent,
+        });
+      } else {
+        this.setState({
+          error: new Error(`Missing script element has id="${inlineScriptId}"`),
+        });
+      }
+    } else {
+      fetch(CORE_CDN_URL, { mode: 'cors' })
+        .then(response => {
+          if (!response.ok) {
+            throw response.error ? response.error() : new Error(response.statusText);
           }
-          throw `Missing script element has id="${inlineScriptId}"`;
-        }
-        return fetch(CORE_CDN_URL, { mode: 'cors' })
-          .then(response => {
-            if (!response.ok) {
-              throw response.error ? response.error() : new Error(response.statusText);
-            }
-            return response.text();
-          });
-      })
-      .then(lib => {
-        const raw = lib.replace(/\<\//g, '<\\/'); // For Trust HTML
-        const inlineScriptId = `FEELES_CORE_${CORE_VERSION}`;
-        this.bundle({ useCDN: false, raw, inlineScriptId })
-          .then((bundleWithRaw) => this.setState({ bundleWithRaw }));
-      })
-      .catch(err => {
-        console.error(err);
-        this.setState({ errorInFetch: err });
-      });
-  }
-
-  bundle(config) {
-    const { getConfig } = this.props;
-    const [TITLE] = getConfig('env').TITLE || [''];
-
-    return this.props.bundle(config)
-      .then((text) => (
-        new SourceFile({
-          name: TITLE,
-          type: 'text/html',
-          text,
+          return response.text();
         })
-      ));
+        .then((coreString) => this.setState({ coreString }))
+        .catch((error) => this.setState({ error }));
+    }
   }
 
-  handleDownload = (content) => {
-    const { resolve, onRequestClose } = this.props;
+  handleDownloadCDN = () => {
+    const [TITLE] = this.props.getConfig('env').TITLE || [''];
 
-    resolve(content);
-    onRequestClose();
-  }
+    const file = new SourceFile({
+      name: TITLE,
+      type: 'text/html',
+      text: this.props.bundle({
+        files: this.state.composedFiles,
+      }),
+    });
+
+    this.props.resolve(file);
+    this.props.onRequestClose();
+  };
+
+  handleDownloadRaw = () => {
+    const [TITLE] = this.props.getConfig('env').TITLE || [''];
+    const raw = this.state.coreString.replace(/\<\//g, '<\\/'); // For Trust HTML
+
+    const file = new SourceFile({
+      name: TITLE,
+      type: 'text/html',
+      text: this.props.bundle({
+        files: this.state.composedFiles,
+        useCDN: false,
+        inlineScriptId: this.props.inlineScriptId,
+        raw,
+      }),
+    });
+
+    this.props.resolve(file);
+    this.props.onRequestClose();
+  };
 
   render() {
     const {
@@ -84,23 +93,23 @@ export default class DownloadDialog extends Component {
       content,
       localization: { downloadDialog },
     } = this.props;
-    const { bundleWithURL, bundleWithRaw, errorInFetch } = this.state;
+    const { composedFiles, coreString, error } = this.state;
 
     const buttonURL = (
       <RaisedButton
         label={downloadDialog.download}
         primary={true}
-        disabled={!bundleWithURL}
-        onTouchTap={() => this.handleDownload(bundleWithURL)}
+        disabled={!composedFiles}
+        onTouchTap={this.handleDownloadCDN}
       />
     );
 
     const buttonRaw = (
       <RaisedButton
-        label={errorInFetch ? errorInFetch.message : downloadDialog.download}
+        label={error ? error.message : downloadDialog.download}
         primary={true}
-        disabled={!bundleWithRaw}
-        onTouchTap={() => this.handleDownload(bundleWithRaw)}
+        disabled={!composedFiles || !coreString}
+        onTouchTap={this.handleDownloadRaw}
       />
     );
 

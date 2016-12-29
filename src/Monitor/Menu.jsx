@@ -104,6 +104,7 @@ class Menu extends Component {
     const dialogProps = {
       bundle: this.bundle,
       inlineScriptId: this.props.inlineScriptId,
+      files: this.props.files,
     };
 
     openFileDialog(DownloadDialog, dialogProps)
@@ -129,10 +130,9 @@ class Menu extends Component {
   };
 
   handleAbout = () => {
-    const { openFileDialog } = this.props;
-
-    openFileDialog(AboutDialog, {
+    this.props.openFileDialog(AboutDialog, {
       bundle: this.bundle,
+      files: this.props.files,
     });
   };
 
@@ -164,19 +164,15 @@ class Menu extends Component {
   bundle = (props) => {
     const [TITLE] = this.props.getConfig('env').TITLE || [''];
 
-    return Promise.all(
-      this.props.files.map((file) => file.compose())
-    )
-    .then(([...files]) => download(
-      Object.assign({
-        useCDN: true,
-        files,
-        EXPORT_VAR_NAME,
-        CSS_PREFIX,
-        CORE_CDN_URL,
-        TITLE,
-      }, props)
-    ));
+    props = Object.assign({
+      useCDN: true,
+      EXPORT_VAR_NAME,
+      CSS_PREFIX,
+      CORE_CDN_URL,
+      TITLE,
+    }, props);
+
+    return download(props);
   };
 
   render() {
