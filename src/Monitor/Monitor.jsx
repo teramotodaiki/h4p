@@ -109,6 +109,7 @@ export default class Monitor extends Component {
     addFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     inlineScriptId: PropTypes.string,
+    saveAs: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -360,6 +361,7 @@ export default class Monitor extends Component {
       getConfig: this.props.getConfig,
       setConfig: this.props.setConfig,
       inlineScriptId: this.props.inlineScriptId,
+      saveAs: this.props.saveAs,
     };
 
     const {

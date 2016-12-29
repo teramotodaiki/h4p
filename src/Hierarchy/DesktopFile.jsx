@@ -5,7 +5,6 @@ import HardwareComputer from 'material-ui/svg-icons/hardware/computer';
 import { transparent } from 'material-ui/styles/colors';
 
 
-import { SaveDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 
 const getStyles = (props, context, state) => {

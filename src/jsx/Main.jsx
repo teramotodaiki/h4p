@@ -359,6 +359,7 @@ class Main extends Component {
       setLocalization: this.setLocalization,
       onSizer: (isResizing) => this.setState({ isResizing }),
       inlineScriptId: this.props.inlineScriptId,
+      saveAs: this.saveAs,
     };
 
     const hierarchyProps = {

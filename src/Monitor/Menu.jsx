@@ -16,7 +16,6 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 import { BinaryFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
-import { SaveDialog } from '../FileDialog/';
 import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
@@ -80,6 +79,7 @@ class Menu extends Component {
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
     inlineScriptId: PropTypes.string,
+    saveAs: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -101,21 +101,14 @@ class Menu extends Component {
   }
 
   handleClone = () => {
-    const { openFileDialog } = this.props;
     const dialogProps = {
       bundle: this.bundle,
       inlineScriptId: this.props.inlineScriptId,
       files: this.props.files,
     };
 
-    openFileDialog(CloneDialog, dialogProps)
-      .then(content => {
-        openFileDialog(SaveDialog, {
-          content,
-          defaultType: 'text/html'
-        });
-      })
-      .catch((err) => alert(err.message));
+    this.props.openFileDialog(CloneDialog, dialogProps)
+      .then((file) => this.props.saveAs(file));
   };
 
   handlePalette = () => {
