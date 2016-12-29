@@ -6,7 +6,7 @@
     <title>{{TITLE}}</title>
     {{#useCDN}}
     <!-- h4p.js -->
-    <script src="{{CORE_CDN_URL}}" onload="{{EXPORT_VAR_NAME}}()"></script>
+    <script async src="{{CORE_CDN_URL}}" onload="{{EXPORT_VAR_NAME}}()"></script>
     {{/useCDN}}
     <style media="screen">
     body {
@@ -49,6 +49,8 @@
   <!-- h4p.js -->
   <script type="text/javascript">
   {{& raw}}
+  </script>
+  <script type="text/javascript">
   {{EXPORT_VAR_NAME}}();
   </script>
   {{/useCDN}}
