@@ -78,7 +78,7 @@ class Menu extends Component {
     onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
-    inlineScriptId: PropTypes.string,
+    coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
@@ -89,6 +89,10 @@ class Menu extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
+
+  get title() {
+    return (this.props.getConfig('env').TITLE || [''])[0];
+  }
 
   componentWillReceiveProps(nextProps) {
     const { isDragging, onSizer } = this.props;
@@ -135,8 +139,13 @@ class Menu extends Component {
         const provider = event.data;
 
         this.props.setConfig('provider', JSON.parse(provider))
-          .then(() => this.bundle())
-          .then((html) => port.postMessage(html));
+          .then(() => Promise.all( this.props.files.map((file) => file.compose()) ))
+          .then((files) => SourceFile.embed({
+            files,
+            TITLE: this.title,
+            coreString: this.props.coreString,
+          }))
+          .then((html) => port.postMessage(html.text));
       }
     };
 
@@ -271,16 +280,15 @@ class Menu extends Component {
         >
           <ActionAssignment color={alternateTextColor} />
         </IconButton>
-        {canDeploy ? (
-          <IconButton
-            tooltip={menu.deploy}
-            onTouchTap={this.handleDeploy}
-            tooltipPosition={tooltipPosition}
-            style={button}
-          >
-            <FileCloudUpload color={alternateTextColor} />
-          </IconButton>
-        ) : null}
+        <IconButton
+          tooltip={menu.deploy}
+          disabled={!canDeploy || !this.props.coreString}
+          onTouchTap={this.handleDeploy}
+          tooltipPosition={tooltipPosition}
+          style={button}
+        >
+          <FileCloudUpload color={alternateTextColor} />
+        </IconButton>
       </Paper>
     {connectDragPreview(
       <div style={prepareStyles(preview)} />
