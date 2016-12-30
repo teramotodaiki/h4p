@@ -93,10 +93,12 @@ export default class SnippetPane extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
+  static defaultCollapse = false;
+
   state = {
     snippetFiles: this.findSnippetFiles(),
     fileKey: '',
-    collapse: false,
+    collapse: SnippetPane.defaultCollapse,
     open: false,
     anchorEl: null,
     shownNode: null,
@@ -125,6 +127,7 @@ export default class SnippetPane extends Component {
 
   handleSwap = () => {
     const collapse = !this.state.collapse;
+    SnippetPane.defaultCollapse = collapse;
     this.setState({ collapse });
   };
 
