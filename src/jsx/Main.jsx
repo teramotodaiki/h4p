@@ -80,6 +80,7 @@ class Main extends Component {
       navigator.languages || [navigator.language]
     )),
     port: null,
+    coreString: null,
   };
 
   get rootWidth() {
@@ -102,6 +103,9 @@ class Main extends Component {
   };
 
   componentDidMount() {
+    const {
+      inlineScriptId,
+    } = this.props;
     const { localization } = this.state;
 
     if (!this.findFile('README.md')) {
@@ -115,6 +119,26 @@ class Main extends Component {
     }
 
     document.title = this.getConfig('env').TITLE[0];
+
+    if (inlineScriptId) {
+      const inlineLib = document.getElementById(inlineScriptId);
+      if (inlineLib) {
+        this.setState({
+          coreString: inlineLib.textContent,
+        });
+      } else {
+        throw `Missing script element has id="${inlineScriptId}"`;
+      }
+    } else {
+      fetch(CORE_CDN_URL, { mode: 'cors' })
+        .then(response => {
+          if (!response.ok) {
+            throw response.error ? response.error() : response.statusText;
+          }
+          return response.text();
+        })
+        .then((coreString) => this.setState({ coreString }));
+    }
 
     this.setState({ reboot: true });
   }
@@ -368,7 +392,7 @@ class Main extends Component {
       handleRun: this.handleRun,
       setLocalization: this.setLocalization,
       onSizer: (isResizing) => this.setState({ isResizing }),
-      inlineScriptId: this.props.inlineScriptId,
+      coreString: this.state.coreString,
       saveAs: this.saveAs,
     };
 

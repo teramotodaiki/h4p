@@ -5,6 +5,7 @@ import md5 from 'md5';
 import _File from './_File';
 import configs from './configs';
 import { SourceEditor } from '../EditorPane/';
+import download from '../html/download';
 
 
 export default class SourceFile extends _File {
@@ -115,6 +116,77 @@ export default class SourceFile extends _File {
 
   static shot(text) {
     return new SourceFile({ type: 'text/javascript', name: '', text });
+  }
+
+  static inlineScriptId = `feeles-inline-${CORE_VERSION}`;
+  static coreLibFilename = `feeles-${CORE_VERSION}.js`;
+
+  static embed({ TITLE, files, coreString }) {
+    const body = `
+    <script type="text/javascript" id="${SourceFile.inlineScriptId}">
+    ${coreString.replace(/\<\//g, '<\\/')}
+    </script>
+    <script type="text/javascript">
+    ${EXPORT_VAR_NAME}({ inlineScriptId: "${SourceFile.inlineScriptId}" });
+    </script>
+`;
+    return new SourceFile({
+      name: TITLE + '.html',
+      type: 'text/html',
+      text: download({
+        CSS_PREFIX,
+        TITLE,
+        files,
+        body,
+      }),
+    });
+  }
+
+  static divide({ TITLE, files }) {
+    const head = `
+    <script async src="${SourceFile.coreLibFilename}"></script>
+`;
+    return new SourceFile({
+      name: TITLE + '.html',
+      type: 'text/html',
+      text: download({
+        CSS_PREFIX,
+        TITLE,
+        files,
+        head,
+      }),
+    });
+  }
+
+  static cdn({ TITLE, files, src = CORE_CDN_URL }) {
+    const head = `
+    <script async src="${src}" onload="${EXPORT_VAR_NAME}()"></script>
+`;
+    return new SourceFile({
+      name: TITLE + '.html',
+      type: 'text/html',
+      text: download({
+        CSS_PREFIX,
+        TITLE,
+        files,
+        head,
+      }),
+    });
+  }
+
+  static library({ coreString }) {
+    const text = `(function() {
+  var e = document.createElement('script');
+  e.id = "${SourceFile.inlineScriptId}";
+  e.textContent = decodeURIComponent("${encodeURIComponent(coreString)}");
+  document.body.appendChild(e);
+  ${EXPORT_VAR_NAME}();
+})();`;
+    return new SourceFile({
+      name: SourceFile.coreLibFilename,
+      type: 'text/javascript',
+      text,
+    });
   }
 
 }

@@ -5,6 +5,8 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
 
+import { SourceFile } from '../File/';
+
 const getStyles = (props, context) => {
 
   return {
@@ -20,17 +22,15 @@ export default class AboutDialog extends Component {
     onRequestClose: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
-    bundle: PropTypes.func.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   state = {
-    composedFiles: null,
     inputCoreVersion: null,
   };
 
-  componentDidMount() {
-    Promise.all(this.props.files.map((file) => file.compose()))
-      .then((composedFiles) => this.setState({ composedFiles }));
+  get title() {
+    return (this.props.getConfig('env').TITLE || [''])[0];
   }
 
   handleCoreVersionInput = (event) => {
@@ -39,19 +39,20 @@ export default class AboutDialog extends Component {
   };
 
   handleChangeVersion = () => {
-    const { inputCoreVersion, composedFiles } = this.state;
 
-    const src = CORE_CDN_PREFIX + inputCoreVersion + '.js';
-    const html = this.props.bundle({
-      files: composedFiles,
-      head: `
-  <script async src="${src}" onload="${EXPORT_VAR_NAME}()"></script>
-`,
-    });
-    const url = URL.createObjectURL(
-      new Blob([html], { type: 'text/html' })
-    );
-    location.assign(url);
+    Promise.all(this.props.files.map((file) => file.compose()))
+      .then((files) => {
+
+        const file = SourceFile.cdn({
+          files,
+          TITLE: this.title,
+          src: CORE_CDN_PREFIX + this.state.inputCoreVersion + '.js',
+        });
+
+        const url = URL.createObjectURL(file.blob);
+        location.assign(url);
+
+      });
   };
 
   render() {
@@ -61,7 +62,6 @@ export default class AboutDialog extends Component {
     } = this.props;
     const {
       inputCoreVersion,
-      composedFiles,
     } = this.state;
 
     const { left } = getStyles(this.props);
@@ -95,7 +95,7 @@ export default class AboutDialog extends Component {
                   />
                   <FlatButton primary
                     label={aboutDialog.change}
-                    disabled={!inputCoreVersion || !composedFiles}
+                    disabled={!inputCoreVersion}
                     onTouchTap={this.handleChangeVersion}
                   />
                 </TableRowColumn>

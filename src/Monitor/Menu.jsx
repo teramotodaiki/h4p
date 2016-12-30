@@ -20,7 +20,6 @@ import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
 import CloneDialog from './CloneDialog';
-import download from '../html/download';
 import SizerDragSource from './SizerDragSource';
 
 export const MenuHeight = 40;
@@ -78,7 +77,7 @@ class Menu extends Component {
     onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
-    inlineScriptId: PropTypes.string,
+    coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
@@ -89,6 +88,10 @@ class Menu extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
+
+  get title() {
+    return (this.props.getConfig('env').TITLE || [''])[0];
+  }
 
   componentWillReceiveProps(nextProps) {
     const { isDragging, onSizer } = this.props;
@@ -102,8 +105,7 @@ class Menu extends Component {
 
   handleClone = () => {
     this.props.openFileDialog(CloneDialog, {
-      bundle: this.bundle,
-      inlineScriptId: this.props.inlineScriptId,
+      coreString: this.props.coreString,
       files: this.props.files,
       saveAs: this.props.saveAs,
     });
@@ -123,7 +125,6 @@ class Menu extends Component {
 
   handleAbout = () => {
     this.props.openFileDialog(AboutDialog, {
-      bundle: this.bundle,
       files: this.props.files,
     });
   };
@@ -136,8 +137,13 @@ class Menu extends Component {
         const provider = event.data;
 
         this.props.setConfig('provider', JSON.parse(provider))
-          .then(() => this.bundle())
-          .then((html) => port.postMessage(html));
+          .then(() => Promise.all( this.props.files.map((file) => file.compose()) ))
+          .then((files) => SourceFile.embed({
+            files,
+            TITLE: this.title,
+            coreString: this.props.coreString,
+          }))
+          .then((html) => port.postMessage(html.text));
       }
     };
 
@@ -151,19 +157,6 @@ class Menu extends Component {
     if (popout) {
       window.addEventListener('unload', () => popout.close());
     }
-  };
-
-  bundle = (props) => {
-    const [TITLE] = this.props.getConfig('env').TITLE || [''];
-
-    props = Object.assign({
-      EXPORT_VAR_NAME,
-      CSS_PREFIX,
-      CORE_CDN_URL,
-      TITLE,
-    }, props);
-
-    return download(props);
   };
 
   render() {
@@ -272,16 +265,15 @@ class Menu extends Component {
         >
           <ActionAssignment color={alternateTextColor} />
         </IconButton>
-        {canDeploy ? (
-          <IconButton
-            tooltip={menu.deploy}
-            onTouchTap={this.handleDeploy}
-            tooltipPosition={tooltipPosition}
-            style={button}
-          >
-            <FileCloudUpload color={alternateTextColor} />
-          </IconButton>
-        ) : null}
+        <IconButton
+          tooltip={menu.deploy}
+          disabled={!canDeploy || !this.props.coreString}
+          onTouchTap={this.handleDeploy}
+          tooltipPosition={tooltipPosition}
+          style={button}
+        >
+          <FileCloudUpload color={alternateTextColor} />
+        </IconButton>
       </Paper>
     {connectDragPreview(
       <div style={prepareStyles(preview)} />

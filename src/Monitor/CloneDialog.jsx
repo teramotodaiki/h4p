@@ -20,138 +20,71 @@ export default class DownloadDialog extends Component {
     onRequestClose: PropTypes.func.isRequired,
     files: PropTypes.array.isRequired,
     localization: PropTypes.object.isRequired,
-    bundle: PropTypes.func.isRequired,
-    inlineScriptId: PropTypes.string,
+    coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
+    getConfig: PropTypes.func.isRequired,
   };
 
   state = {
     type: BundleTypes[0],
     composedFiles: null,
-    coreString: null,
     error: null,
   };
 
-  get fileName() {
-    const [TITLE] = this.props.getConfig('env').TITLE || [''];
-    return TITLE + '.html';
-  }
-
-  get libraryName() {
-    return `feeles-${CORE_VERSION}.js`;
+  get title() {
+    return (this.props.getConfig('env').TITLE || [''])[0];
   }
 
   componentDidMount() {
-    const { inlineScriptId } = this.props;
 
     Promise.all(this.props.files.map((file) => file.compose()))
       .then((composedFiles) => this.setState({ composedFiles }));
 
-    if (inlineScriptId) {
-      const inlineLib = document.getElementById(inlineScriptId);
-      if (inlineLib) {
-        this.setState({
-          coreString: inlineLib.textContent,
-        });
-      } else {
-        this.setState({
-          error: new Error(`Missing script element has id="${inlineScriptId}"`),
-        });
-      }
-    } else {
-      fetch(CORE_CDN_URL, { mode: 'cors' })
-        .then(response => {
-          if (!response.ok) {
-            throw response.error ? response.error() : new Error(response.statusText);
-          }
-          return response.text();
-        })
-        .then((coreString) => this.setState({ coreString }))
-        .catch((error) => this.setState({ error }));
-    }
-  }
-
-  embed() {
-    return new SourceFile({
-      name: this.fileName,
-      type: 'text/html',
-      text: this.props.bundle({
-        files: this.state.composedFiles,
-        body: `
-    <script type="text/javascript" id="${this.props.inlineScriptId}">
-    ${this.state.coreString.replace(/\<\//g, '<\\/')}
-    </script>
-    <script type="text/javascript">
-    ${EXPORT_VAR_NAME}({ inlineScriptId: "${this.props.inlineScriptId}" });
-    </script>
-`,
-      }),
-    });
-  }
-
-  divide() {
-    return new SourceFile({
-      name: this.fileName,
-      type: 'text/html',
-      text: this.props.bundle({
-        files: this.state.composedFiles,
-        head: `
-    <script async src="${this.libraryName}"></script>
-`,
-      }),
-    });
-  }
-
-  cdn() {
-    return new SourceFile({
-      name: this.fileName,
-      type: 'text/html',
-      text: this.props.bundle({
-        files: this.state.composedFiles,
-        head: `
-    <script async src="${CORE_CDN_URL}" onload="${EXPORT_VAR_NAME}()"></script>
-`,
-      }),
-    });
-  }
-
-  library() {
-    return new SourceFile({
-      name: this.libraryName,
-      type: 'text/javascript',
-      text: `(function() {
-  var e = document.createElement('script');
-  e.id = "${this.props.inlineScriptId}";
-  e.textContent = decodeURIComponent("${encodeURIComponent(this.state.coreString)}");
-  document.body.appendChild(e);
-  ${EXPORT_VAR_NAME}();
-})();`,
-    });
   }
 
   handleClone = () => {
     switch (this.state.type) {
       case 'embed':
-        this.props.saveAs(this.embed())
+        this.props.saveAs(SourceFile.embed({
+          TITLE: this.title,
+          files: this.state.composedFiles,
+          coreString: this.props.coreString,
+        }))
           .then(() => this.props.onRequestClose());
         break;
       case 'divide':
-        this.props.saveAs(this.divide());
+        this.props.saveAs(SourceFile.divide({
+          TITLE: this.title,
+          files: this.state.composedFiles,
+        }));
         break;
       case 'cdn':
-        this.props.saveAs(this.cdn())
+        this.props.saveAs(SourceFile.cdn({
+          TITLE: this.title,
+          files: this.state.composedFiles,
+        }))
           .then(() => this.props.onRequestClose());
         break;
     }
   };
 
   handleCloneLibrary = () => {
-    this.props.saveAs(this.library());
+    this.props.saveAs(SourceFile.library({
+      coreString: this.props.coreString,
+    }));
   };
 
   handleCloneAll = () => {
     Promise.resolve()
-      .then(() => this.props.saveAs(this.library(), this.divide()))
+      .then(() => this.props.saveAs(
+        SourceFile.library({
+          coreString: this.props.coreString,
+        }),
+        SourceFile.divide({
+          TITLE: this.title,
+          files: this.state.composedFiles,
+        })
+      ))
       .then(() => this.props.onRequestClose());
   };
 
@@ -164,8 +97,9 @@ export default class DownloadDialog extends Component {
       onRequestClose,
       content,
       localization,
+      coreString,
     } = this.props;
-    const { type, composedFiles, coreString, error } = this.state;
+    const { type, composedFiles } = this.state;
 
     const styles = {
       button: {
@@ -176,9 +110,6 @@ export default class DownloadDialog extends Component {
       },
       group: {
         padding: 24,
-      },
-      error: {
-        color: 'red',
       },
       center: {
         textAlign: 'center',
@@ -232,9 +163,6 @@ export default class DownloadDialog extends Component {
         actions={actions}
         onRequestClose={onRequestClose}
       >
-        {error ? (
-          <p style={styles.error}>{error}</p>
-        ) : null}
         <RadioButtonGroup
           name="libType"
           valueSelected={type}
