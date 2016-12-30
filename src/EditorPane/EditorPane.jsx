@@ -79,7 +79,7 @@ export default class EditorPane extends Component {
 
   handleShot = (text) => {
     const { port, getConfig } = this.props;
-    if (text && port) {
+    if (port) {
       SourceFile.shot(text).babel(getConfig('babelrc'))
       .then((file) => port.postMessage({ query: 'shot', value: file.serialize() }));
     }

@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
+import IconButton from 'material-ui/IconButton';
 import ActionSearch from 'material-ui/svg-icons/action/search';
 import RaisedButton from 'material-ui/RaisedButton';
 import ActionDeleteForever from 'material-ui/svg-icons/action/delete-forever';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 
 import TrashBox from './TrashBox';
@@ -38,7 +40,6 @@ const getStyles = (props, context, state) => {
       alignItems: 'center',
       width: '100%',
       height: SearchBarHeight,
-      paddingRight: spacing.desktopGutterLess,
       paddingLeft: spacing.desktopGutterMini,
       backgroundColor: palette.canvasColor,
       opacity: focus ? 1 : 0.9,
@@ -151,6 +152,9 @@ export default class SearchBar extends Component {
             onBlur={() => this.setState({ focus: false })}
             fullWidth
           />
+          <IconButton disabled={!query} onTouchTap={() => this.handleUpdate('')}>
+            <NavigationClose color={secondaryTextColor} />
+          </IconButton>
         </Paper>
         {showTrashes ? (
           <RaisedButton secondary
