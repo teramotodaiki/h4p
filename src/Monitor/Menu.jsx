@@ -123,7 +123,6 @@ class Menu extends Component {
 
   handleAbout = () => {
     this.props.openFileDialog(AboutDialog, {
-      bundle: this.bundle,
       files: this.props.files,
     });
   };
