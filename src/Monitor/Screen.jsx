@@ -73,7 +73,7 @@ export default class Screen extends Component {
 
     const buttonStyle = {
       position: 'absolute',
-      left: 0,
+      right: 0,
       top: 0,
       backgroundColor: transparent,
       border: 'none',
