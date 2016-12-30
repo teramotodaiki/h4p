@@ -20,7 +20,6 @@ import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
 import CloneDialog from './CloneDialog';
-import download from '../html/download';
 import SizerDragSource from './SizerDragSource';
 
 export const MenuHeight = 40;
@@ -106,8 +105,7 @@ class Menu extends Component {
 
   handleClone = () => {
     this.props.openFileDialog(CloneDialog, {
-      bundle: this.bundle,
-      inlineScriptId: this.props.inlineScriptId,
+      coreString: this.props.coreString,
       files: this.props.files,
       saveAs: this.props.saveAs,
     });
@@ -159,19 +157,6 @@ class Menu extends Component {
     if (popout) {
       window.addEventListener('unload', () => popout.close());
     }
-  };
-
-  bundle = (props) => {
-    const [TITLE] = this.props.getConfig('env').TITLE || [''];
-
-    props = Object.assign({
-      EXPORT_VAR_NAME,
-      CSS_PREFIX,
-      CORE_CDN_URL,
-      TITLE,
-    }, props);
-
-    return download(props);
   };
 
   render() {
