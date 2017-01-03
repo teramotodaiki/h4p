@@ -46,7 +46,7 @@ export default new Map([
     defaultName: '.provider',
   }],
   ['snippets', {
-    test: /^snippets\//i,
+    test: /^snippets\/.*\.json$/i,
     multiple: true,
     defaultValue: {},
     defaultName: 'snippets/snippet.json',
@@ -68,12 +68,6 @@ export default new Map([
           return p;
         }, Object.create(null));
       const scopes = Object.keys(snippets);
-      scopes.forEach((scope) => {
-        snippets[scope] = snippets[scope].sort(
-          (a, b) =>
-            a.prefix.toLowerCase() > b.prefix.toLowerCase() ? 1 : -1
-        );
-      });
       return (file) =>
         scopes.filter((scope) => file.is(scope))
           .map((scope) => snippets[scope])

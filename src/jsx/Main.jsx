@@ -179,8 +179,9 @@ class Main extends Component {
     this.setState({ files }, () => resolve(nextFile));
   });
 
-  deleteFile = (file) => new Promise((resolve, reject) => {
-    const files = this.state.files.filter((item) => item.key !== file.key);
+  deleteFile = (...targets) => new Promise((resolve, reject) => {
+    const keys = targets.map((item) => item.key);
+    const files = this.state.files.filter((item) => !keys.includes(item.key));
     this.setState({ files }, () => resolve());
   });
 

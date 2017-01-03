@@ -9,7 +9,7 @@ const getSeed = (type) => {
   if (type === 'application/json') {
     return '{}';
   }
-  return '';
+  return '\n'.repeat(30);
 };
 
 export default class AddDialog extends Component {

@@ -43,87 +43,19 @@
     export default "It's fine! :-)";
 
     </script>
-    <script class="example1" name="snippets/es6-ja.json" data-type="application/json" type="hack">
+    <script class="example1" name="snippets/sample.json" data-type="application/json" type="hack">
     {
-        ".source.gfm": {
-    		"h1": {
-    			"prefix": "h1",
-    			"body": "# ",
-            	"leftLabel": "ヘッダー 1"
-    	  	}
-    	},
         ".source.js": {
-            "const": {
-                "prefix": "const",
-                "body": "const = ;",
-                "description": "[const]"
-            },
-            "import": {
-                "prefix": "import",
-                "body": "import  from '';",
-                "description": "[import]"
-            },
-            "export default": {
-                "prefix": "export default",
-                "body": "export default ;",
-                "description": "[export default]"
-            },
-            "export": {
-                "prefix": "export",
-                "body": "export {  :  };",
-                "description": "[export { name: var }]"
-            },
-            "fetchblob": {
-                "prefix": "fetchblob",
-                "body": "feeles.fetch('')\n.then(response => response.blob())\n.then(blob => {\n\t\n});",
-                "description": "fetch() [fetch:Blob]"
-            },
-            "fetchtext": {
-                "prefix": "fetchtext",
-                "body": "feeles.fetch('')\n.then(response => response.text())\n.then(text => {\n\t\n});",
-                "description": "fetch() [fetch:Text]"
-            },
-            "f": {
-                "prefix": "f",
-                "body": "const  = () => {\n\t// \n};",
-                "description": "() => {}; [function]"
-            },
-            "fun": {
-                "prefix": "fun",
-                "body": "function () {}",
-                "description": "[scoped anonymous function]"
-            },
-            "funcion": {
-                "prefix": "funcion",
-                "body": "function functionName() {\n\t// \n}",
-                "description": "[scoped function]"
-            },
-            "if": {
-                "prefix": "if",
-                "body": "if (true) {\n\t// \n}",
-                "description": "[if]"
-            },
-            "else": {
-                "prefix": "else",
-                "body": "else {\n\t// \n}",
-                "description": "[else]"
-            },
-            "try": {
-                "prefix": "try",
-                "body": "try {} catch (e) {}",
-                "description": "[try-catch]"
-            },
-            "log": {
-                "prefix": "log",
-                "body": "console.log();",
-                "description": "[console.log]"
-            },
-            "error": {
-                "prefix": "error",
-                "body": "console.error();",
-                "description": "[console.error]"
-            }
-        }
+    		"if": {
+    			"prefix": "if",
+    			"body": `
+if (1 === 1) {
+
+}`,
+                "description": "( ) の中の条件が正しいときだけ、{ } の中に入ります",
+            	"leftLabel": "if 文"
+    	  	}
+    	}
     }
     </script>
 
