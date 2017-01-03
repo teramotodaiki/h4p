@@ -1,5 +1,6 @@
 import React from 'react';
 import md5 from 'md5';
+import { parse } from './JSON6';
 
 
 import _File from './_File';
@@ -53,7 +54,7 @@ export default class SourceFile extends _File {
         .find((config) => config.test.test(this.name));
       const defaultValue = model ? model.defaultValue : {};
       try {
-        this._json = Object.assign({}, defaultValue, JSON.parse(this.text));
+        this._json = Object.assign({}, defaultValue, parse(this.text));
       } catch (e) {
         return {};
       }
