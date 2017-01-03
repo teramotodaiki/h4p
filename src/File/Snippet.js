@@ -28,27 +28,11 @@ export default class Snippet {
   }
 
   get leftLabel() {
-    const { leftLabel, leftLabelHTML } = this.props;
-    if (!this._leftLabel) {
-      if (leftLabelHTML) {
-        this._leftLabel = parseElement(leftLabelHTML);
-      } else {
-        this._leftLabel = leftLabel || null;
-      }
-    }
-    return this._leftLabel;
+    return this.props.leftLabelHTML || this.props.leftLabel || '';
   }
 
   get rightLabel() {
-    const { rightLabel, rightLabelHTML } = this.props;
-    if (!this._rightLabel) {
-      if (rightLabelHTML) {
-        this._rightLabel = parseElement(rightLabelHTML);
-      } else {
-        this._rightLabel = rightLabel || null;
-      }
-    }
-    return this._rightLabel;
+    return this.props.rightLabelHTML || this.props.rightLabel || '';
   }
 
   get plane() {
@@ -57,30 +41,6 @@ export default class Snippet {
 
   get fileKey() {
     return this.props.fileKey;
-  }
-
-  renderLeftLabel(findFile) {
-    if (React.isValidElement(this.leftLabel) && this.leftLabel.props.src) {
-      const file = findFile(this.leftLabel.props.src);
-      if (file) {
-        return React.cloneElement(this.leftLabel, {
-          src: file.blobURL,
-        });
-      }
-    }
-    return this.leftLabel;
-  }
-
-  renderRightLabel(findFile) {
-    if (React.isValidElement(this.rightLabel) && this.rightLabel.props.src) {
-      const file = findFile(this.rightLabel.props.src);
-      if (file) {
-        return React.cloneElement(this.rightLabel, {
-          src: file.blobURL,
-        });
-      }
-    }
-    return this.rightLabel;
   }
 
   test(tokenString) {
