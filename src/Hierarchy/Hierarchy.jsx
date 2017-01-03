@@ -127,8 +127,9 @@ export default class Hierarchy extends Component {
   };
 
   handleDelete = () => {
-    this.props.files.filter(this.state.filter)
-      .map((file) => this.props.deleteFile(file));
+    this.props.deleteFile(
+      ...this.props.files.filter(this.state.filter)
+    );
   };
 
   handleAdd = () => {
