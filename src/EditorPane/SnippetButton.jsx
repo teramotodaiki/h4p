@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
+import { grey200 } from 'material-ui/styles/colors';
 
 
 import DragTypes from '../utils/dragTypes';
@@ -98,6 +99,13 @@ class SnippetButton extends Component {
         fontSize: '.5rem',
         right: 0,
       },
+      code: {
+        width: '100%',
+        margin: '1rem .5rem',
+        padding: '0 .5rem',
+        backgroundColor: grey200,
+        borderRadius: 2,
+      }
     };
 
     this.props.onSelect(event, (
@@ -110,7 +118,7 @@ class SnippetButton extends Component {
             {localization.snippet.readMore}
           </a>
         ) : null}
-        <code style={styles.label}>{snippet.rightLabel}</code>
+        <code style={styles.code}><pre>{snippet.text}</pre></code>
       </div>
     ));
   };
