@@ -46,7 +46,7 @@ export default new Map([
     defaultName: '.provider',
   }],
   ['snippets', {
-    test: /^snippets\//i,
+    test: /^snippets\/.*\.json$/i,
     multiple: true,
     defaultValue: {},
     defaultName: 'snippets/snippet.json',
