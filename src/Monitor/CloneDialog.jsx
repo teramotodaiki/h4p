@@ -1,9 +1,18 @@
 import React, { Component, PropTypes } from 'react';
+import localforage from 'localforage';
 import Dialog from 'material-ui/Dialog';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
+import CircularProgress from 'material-ui/CircularProgress';
+import { Card, CardHeader, CardActions } from 'material-ui/Card';
+import ContentSave from 'material-ui/svg-icons/content/save';
+import ContentAddCircle from 'material-ui/svg-icons/content/add-circle';
+import ActionOpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
+import ActionOpenInNew from 'material-ui/svg-icons/action/open-in-new';
+import ActionDelete from 'material-ui/svg-icons/action/delete';
+import { lightBlue100, red100, brown50, red400 } from 'material-ui/styles/colors';
 
 
 import { SourceFile } from '../File/';
@@ -30,6 +39,7 @@ export default class CloneDialog extends Component {
     bundleType: BundleTypes[0],
     composedFiles: null,
     error: null,
+    apps: null,
   };
 
   get title() {
@@ -93,6 +103,96 @@ export default class CloneDialog extends Component {
     this.setState({ bundleType });
   };
 
+  handleSave = (index) => {
+
+  };
+
+  handleLoad = (index, openInNewTab) => {
+
+  };
+
+  handleRemove = (index) => {
+
+  };
+
+  renderAppCards(isSave) {
+    if (!this.state.apps) {
+      return <div style={{ textAlign: 'center' }}><CircularProgress size={120} /></div>;
+    }
+
+    const {
+      localization,
+    } = this.props;
+
+    const styles = {
+      container: {
+        margin: 16,
+        padding: 8,
+        paddingBottom: 16,
+        maxHeight: '20rem',
+        overflow: 'scroll',
+        backgroundColor: brown50,
+      },
+      card: {
+        marginTop: 16,
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderColor: isSave ? lightBlue100 : red100,
+      },
+      remove: {
+        color: red400,
+      },
+    };
+
+    return (
+      <div style={styles.container}>
+      {isSave ? (
+        <RaisedButton fullWidth
+          label={localization.cloneDialog.saveInNew}
+          style={styles.card}
+          icon={<ContentAddCircle />}
+        />
+      ) : null}
+      {this.state.apps.map((app, i) => (
+        <Card key={app.timestamp} style={styles.card}>
+          <CardHeader
+            title={app.title}
+            subtitle={new Date(app.timestamp).toLocaleString()}
+          />
+        {isSave ? (
+          <CardActions>
+            <FlatButton
+              label={localization.cloneDialog.overwriteSave}
+              icon={<ContentSave />}
+              onTouchTap={() => this.handleSave(i)}
+            />
+            <FlatButton
+              label={localization.cloneDialog.remove}
+              icon={<ActionDelete color={red400} />}
+              labelStyle={styles.remove}
+              onTouchTap={() => this.handleRemove(i)}
+            />
+          </CardActions>
+        ) : (
+          <CardActions>
+            <FlatButton
+              label={localization.cloneDialog.openOnThisTab}
+              icon={<ActionOpenInBrowser />}
+              onTouchTap={() => this.handleLoad(i, false)}
+            />
+            <FlatButton
+              label={localization.cloneDialog.openInNewTab}
+              icon={<ActionOpenInNew />}
+              onTouchTap={() => this.handleLoad(i, true)}
+            />
+          </CardActions>
+        )}
+        </Card>
+      ))}
+      </div>
+    );
+  }
+
   render() {
     const {
       onRequestClose,
@@ -111,9 +211,6 @@ export default class CloneDialog extends Component {
       },
       header: {
         marginLeft: 24,
-      },
-      container: {
-        margin: 16,
       },
       radio: {
         marginBottom: 16,
@@ -143,15 +240,11 @@ export default class CloneDialog extends Component {
         <Tabs>
           <Tab label={localization.cloneDialog.saveTitle}>
             <h1 style={styles.header}>{localization.cloneDialog.saveHeader}</h1>
-            <div style={styles.container}>
-              Save
-            </div>
+            {this.renderAppCards(true)}
           </Tab>
           <Tab label={localization.cloneDialog.loadTitle}>
             <h1 style={styles.header}>{localization.cloneDialog.loadHeader}</h1>
-            <div style={styles.container}>
-              Load
-            </div>
+            {this.renderAppCards(false)}
           </Tab>
           <Tab label={localization.cloneDialog.cloneTitle}>
             <h1 style={styles.header}>{localization.cloneDialog.cloneHeader}</h1>
