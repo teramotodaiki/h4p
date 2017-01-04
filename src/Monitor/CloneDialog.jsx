@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
+import {Tabs, Tab} from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
@@ -26,7 +27,7 @@ export default class CloneDialog extends Component {
   };
 
   state = {
-    type: BundleTypes[0],
+    bundleType: BundleTypes[0],
     composedFiles: null,
     error: null,
   };
@@ -43,7 +44,7 @@ export default class CloneDialog extends Component {
   }
 
   handleClone = () => {
-    switch (this.state.type) {
+    switch (this.state.bundleType) {
       case 'embed':
         this.props.saveAs(SourceFile.embed({
           TITLE: this.title,
@@ -88,8 +89,8 @@ export default class CloneDialog extends Component {
       .then(() => this.props.onRequestClose());
   };
 
-  handleChange = (event, type) => {
-    this.setState({ type });
+  handleBundleTypeChange = (event, bundleType) => {
+    this.setState({ bundleType });
   };
 
   render() {
@@ -99,11 +100,17 @@ export default class CloneDialog extends Component {
       localization,
       coreString,
     } = this.props;
-    const { type, composedFiles } = this.state;
+    const { bundleType, composedFiles } = this.state;
 
     const styles = {
+      body: {
+        padding: 0,
+      },
       button: {
         marginLeft: 16,
+      },
+      header: {
+        marginLeft: 24,
       },
       radio: {
         marginBottom: 16,
@@ -116,15 +123,7 @@ export default class CloneDialog extends Component {
       },
     };
 
-    const actions = [
-      type !== 'divide' ? (
-        <RaisedButton primary
-          label={localization.cloneDialog.save}
-          disabled={!composedFiles || !coreString}
-          style={styles.button}
-          onTouchTap={this.handleClone}
-        />
-      ) : null,
+    const actions =  [
       <FlatButton
         label={localization.cloneDialog.cancel}
         style={styles.button}
@@ -132,53 +131,71 @@ export default class CloneDialog extends Component {
       />,
     ];
 
-    const saveDivides = type === 'divide' ? (
-      <div style={styles.center}>
-        <RaisedButton primary
-          label={localization.cloneDialog.saveHTML}
-          disabled={!composedFiles}
-          style={styles.button}
-          onTouchTap={this.handleClone}
-        />
-        <RaisedButton primary
-          label={localization.cloneDialog.saveLibrary}
-          disabled={!coreString}
-          style={styles.button}
-          onTouchTap={this.handleCloneLibrary}
-        />
-        <RaisedButton primary
-          label={localization.cloneDialog.saveAll}
-          disabled={!coreString}
-          style={styles.button}
-          onTouchTap={this.handleCloneAll}
-        />
-      </div>
-    ) : null;
-
     return (
-      <Dialog
-        title={localization.cloneDialog.title}
-        modal={false}
-        open={true}
+      <Dialog open
+        bodyStyle={styles.body}
         actions={actions}
         onRequestClose={onRequestClose}
       >
-        <RadioButtonGroup
-          name="libType"
-          valueSelected={type}
-          style={styles.group}
-          onChange={this.handleChange}
-        >
-        {BundleTypes.map((type) => (
-          <RadioButton
-            key={type}
-            value={type}
-            label={localization.cloneDialog[type]}
-            style={styles.radio}
-          />
-        ))}
-        </RadioButtonGroup>
-        {saveDivides}
+        <Tabs>
+          <Tab label="Save">
+            <div>
+              Save
+            </div>
+          </Tab>
+          <Tab label="Load">
+            <div>
+              Load
+            </div>
+          </Tab>
+          <Tab label={localization.cloneDialog.cloneTitle}>
+            <h1 style={styles.header}>{localization.cloneDialog.cloneHeader}</h1>
+            <RadioButtonGroup
+              name="libType"
+              valueSelected={bundleType}
+              style={styles.group}
+              onChange={this.handleBundleTypeChange}
+            >
+            {BundleTypes.map((type) => (
+              <RadioButton
+                key={type}
+                value={type}
+                label={localization.cloneDialog[type]}
+                style={styles.radio}
+              />
+            ))}
+            </RadioButtonGroup>,
+          {bundleType === 'divide' ? (
+            <div style={styles.center}>
+              <RaisedButton primary
+                label={localization.cloneDialog.saveHTML}
+                disabled={!composedFiles}
+                style={styles.button}
+                onTouchTap={this.handleClone}
+              />
+              <RaisedButton primary
+                label={localization.cloneDialog.saveLibrary}
+                disabled={!coreString}
+                style={styles.button}
+                onTouchTap={this.handleCloneLibrary}
+              />
+              <RaisedButton primary
+                label={localization.cloneDialog.saveAll}
+                disabled={!coreString}
+                style={styles.button}
+                onTouchTap={this.handleCloneAll}
+              />
+            </div>
+          ) : (
+            <RaisedButton primary
+              label={localization.cloneDialog.save}
+              disabled={!composedFiles || !coreString}
+              style={styles.button}
+              onTouchTap={this.handleClone}
+            />
+          )}
+          </Tab>
+        </Tabs>
       </Dialog>
     );
   }
