@@ -14,6 +14,10 @@ export default {
     deploy: 'Deploy This App',
   },
   cloneDialog: {
+    saveTitle: 'Save',
+    saveHeader: 'Save to the browser',
+    loadTitle: 'Load',
+    loadHeader: 'Load from the browser',
     cloneTitle: 'Clone',
     cloneHeader: 'Clone to the desktop',
     embed: 'All in one HTML file',

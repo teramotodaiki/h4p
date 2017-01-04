@@ -14,6 +14,10 @@ export default {
     deploy: 'この作品をデプロイ',
   },
   cloneDialog: {
+    saveTitle: 'セーブ',
+    saveHeader: 'ブラウザにデータを保存する',
+    loadTitle: 'ロード',
+    loadHeader: 'ブラウザからデータを読み込む',
     cloneTitle: 'クローン',
     cloneHeader: 'クローンしてデスクトップに保存する',
     embed: 'すべて１つのHTMLファイルにまとめる',

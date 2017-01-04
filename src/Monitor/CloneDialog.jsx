@@ -112,6 +112,9 @@ export default class CloneDialog extends Component {
       header: {
         marginLeft: 24,
       },
+      container: {
+        margin: 16,
+      },
       radio: {
         marginBottom: 16,
       },
@@ -138,13 +141,15 @@ export default class CloneDialog extends Component {
         onRequestClose={onRequestClose}
       >
         <Tabs>
-          <Tab label="Save">
-            <div>
+          <Tab label={localization.cloneDialog.saveTitle}>
+            <h1 style={styles.header}>{localization.cloneDialog.saveHeader}</h1>
+            <div style={styles.container}>
               Save
             </div>
           </Tab>
-          <Tab label="Load">
-            <div>
+          <Tab label={localization.cloneDialog.loadTitle}>
+            <h1 style={styles.header}>{localization.cloneDialog.loadHeader}</h1>
+            <div style={styles.container}>
               Load
             </div>
           </Tab>
