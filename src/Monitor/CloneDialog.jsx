@@ -13,7 +13,7 @@ const BundleTypes = [
   'cdn'
 ];
 
-export default class DownloadDialog extends Component {
+export default class CloneDialog extends Component {
 
   static propTypes = {
     resolve: PropTypes.func.isRequired,
