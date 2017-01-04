@@ -43,6 +43,7 @@
     "es6-promise": "^4.0.5",
     "handlebars-loader": "^1.4.0",
     "js-beautify": "^1.6.4",
+    "localforage": "^1.4.3",
     "markdown-it": "^8.1.0",
     "material-ui": "^0.16.1",
     "md5": "^2.2.1",
