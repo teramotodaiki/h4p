@@ -251,6 +251,7 @@ class Menu extends Component {
         </IconButton>
         <IconButton
           tooltip={menu.clone}
+          disabled={!this.props.coreString}
           onTouchTap={this.handleClone}
           tooltipPosition={tooltipPosition}
           style={button}
