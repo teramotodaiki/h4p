@@ -63,7 +63,7 @@ CodeMirror.hint.markdown = (instance, options) => {
     return empty;
   }
 
-  const result = anywordHint(instance, options) || empty;
+  const result = empty;
 
   result.list = options.snippets
     .filter((snippet) => startWith(snippet.prefix, token.string))
