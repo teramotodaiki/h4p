@@ -33,6 +33,8 @@ export default {
     saveHTML: 'HTMLだけ保存する',
     saveLibrary: 'ライブラリだけ保存する',
     saveAll: 'どちらも保存する',
+    defaultAppName: (n) => `アプリ ${n}`,
+    failedToSave: 'アプリの保存に失敗しました',
   },
   saveDialog: {
     title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',

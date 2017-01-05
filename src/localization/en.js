@@ -33,6 +33,8 @@ export default {
     saveHTML: 'Save Only HTML',
     saveLibrary: 'Save Only Library',
     saveAll: 'Save All',
+    defaultAppName: (n) => `My App ${n}`,
+    failedToSave: 'Failed to save this app.',
   },
   saveDialog: {
     title: 'You need to download it manually, because Your browser does not support HTML5!',

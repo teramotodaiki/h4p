@@ -25,6 +25,16 @@ const BundleTypes = [
 
 const KEY_APPS = 'apps';
 
+const gen = (template, begin, array) => {
+  for (let i = 0; i < array.length + 1; i++) {
+    const name = template(begin + i);
+    if (array.includes(name)) {
+      continue;
+    }
+    return name;
+  }
+};
+
 export default class CloneDialog extends Component {
 
   static propTypes = {
@@ -111,29 +121,15 @@ export default class CloneDialog extends Component {
   };
 
   handleCreate = () => {
+    const titles = this.state.apps.map((item) => item.title);
 
     Promise.resolve()
       .then(() => localforage.keys())
-      .then((keys) => {
-        const created = new Date().getTime();
-        for (let i = 0; i < 1000000; i++) {
-          const htmlKey = `app_${created + i}`;
-          if (keys.includes(htmlKey)) {
-            continue;
-          }
-          return htmlKey;
-        }
-        throw 'Failed to generate unique key!';
-      })
-      .then((htmlKey) => this.handleSave({
-        htmlKey,
-        title: this.title,
+      .then((keys) => this.handleSave({
+        htmlKey: gen((n) => `app_${n}`, new Date().getTime(), keys),
+        title: gen(this.props.localization.cloneDialog.defaultAppName, 1, titles),
         created: new Date().getTime(),
-      }))
-      .catch((err) => {
-        alert('Failed to create new app.');
-        throw err;
-      });
+      }));
 
   };
 
@@ -169,7 +165,7 @@ export default class CloneDialog extends Component {
         throw err;
       })
       .catch((err) => {
-        alert('Failed to save');
+        alert(this.props.localization.cloneDialog.failedToSave);
         this.setState({ processing: false });
         throw err;
       });
