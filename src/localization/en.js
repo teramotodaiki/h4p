@@ -103,6 +103,7 @@ Thanks
   },
   common: {
     tapTwiceQuickly: 'Tap twice quickly',
+    cannotBeUndone: 'This operation can not be undone',
   },
 
 };
