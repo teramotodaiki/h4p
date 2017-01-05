@@ -283,9 +283,8 @@ class Main extends Component {
     const { files } = this.state;
     if (files.some(file =>
       !file.options.isTrashed &&
-      file.moduleName &&
-      file.moduleName === newFile.moduleName &&
-      file.key !== newFile.key
+      file.key !== newFile.key &&
+      file.name === newFile.name
     )) {
       // file.moduleName should be unique
       return true;
