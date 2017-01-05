@@ -40,7 +40,7 @@ export default class EnvDialog extends Component {
     const {
       updateEnv,
       onRequestClose,
-      localization: { envDialog },
+      localization,
     } = this.props;
     const { env } = this.state;
 
@@ -76,7 +76,7 @@ export default class EnvDialog extends Component {
 
     return (
       <Dialog open
-        title={envDialog.title}
+        title={localization.envDialog.title}
         modal={false}
         actions={addActions}
         onRequestClose={onRequestClose}
@@ -87,6 +87,7 @@ export default class EnvDialog extends Component {
           key={key}
           itemKey={key}
           item={env[key]}
+          localization={localization}
           updateEnv={this.handleUpdateEnv}
         />
       ))}
@@ -100,7 +101,8 @@ class EnvItem extends Component {
   static propTypes = {
     item: PropTypes.array.isRequired,
     itemKey: PropTypes.any.isRequired,
-    updateEnv: PropTypes.func.isRequired
+    updateEnv: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   changeKey = (key) => {
@@ -135,7 +137,10 @@ class EnvItem extends Component {
   };
 
   render() {
-    const { itemKey } = this.props;
+    const {
+      itemKey,
+      localization,
+    } = this.props;
     const [value, type, tooltip] = this.props.item;
 
     const divStyle = {
@@ -169,6 +174,7 @@ class EnvItem extends Component {
           id="tf1"
           defaultValue={itemKey}
           style={keyStyle}
+          tapTwiceQuickly={localization.common.tapTwiceQuickly}
           onEditEnd={this.changeKey}
         />
         <div style={valueStyle}>
@@ -182,6 +188,7 @@ class EnvItem extends Component {
           id="tf2"
           defaultValue={tooltip}
           style={tooltipStyle}
+          tapTwiceQuickly={localization.common.tapTwiceQuickly}
           onEditEnd={this.changeTooltip}
         />
         <IconButton
