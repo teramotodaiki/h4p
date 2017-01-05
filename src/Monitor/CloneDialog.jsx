@@ -6,7 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import { Card, CardHeader, CardActions } from 'material-ui/Card';
+import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import ContentSave from 'material-ui/svg-icons/content/save';
 import ContentAddCircle from 'material-ui/svg-icons/content/add-circle';
 import ActionOpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
@@ -279,6 +279,10 @@ export default class CloneDialog extends Component {
       remove: {
         color: red400,
       },
+      label: {
+        fontWeight: 600,
+        marginRight: '1rem',
+      },
     };
 
     return (
@@ -298,7 +302,7 @@ export default class CloneDialog extends Component {
           key={app.htmlKey}
           style={styles.card}
         >
-          <CardHeader
+          <CardHeader showExpandableButton
             title={(
               <EditableLabel id="title"
                 defaultValue={app.title}
@@ -308,6 +312,20 @@ export default class CloneDialog extends Component {
             )}
             subtitle={new Date(app.updated).toLocaleString()}
           />
+          <CardText expandable>
+            <div>
+              <span style={styles.label}>{localization.cloneDialog.created}</span>
+              {new Date(app.created).toLocaleString()}
+            </div>
+            <div>
+              <span style={styles.label}>{localization.cloneDialog.updated}</span>
+              {new Date(app.updated).toLocaleString()}
+            </div>
+            <div>
+              <span style={styles.label}>{localization.cloneDialog.size}</span>
+              {`${(app.size / 1024 / 1024).toFixed(2)}MB`}
+            </div>
+          </CardText>
         {isSave ? (
           <CardActions>
             <FlatButton
