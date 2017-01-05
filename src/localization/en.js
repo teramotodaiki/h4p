@@ -35,6 +35,7 @@ export default {
     saveAll: 'Save All',
     defaultAppName: (n) => `My App ${n}`,
     failedToSave: 'Failed to save this app.',
+    failedToRemove: 'Failed to remove this app.',
   },
   saveDialog: {
     title: 'You need to download it manually, because Your browser does not support HTML5!',

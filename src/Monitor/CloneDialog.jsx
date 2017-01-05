@@ -177,7 +177,22 @@ export default class CloneDialog extends Component {
   };
 
   handleRemove = (app) => {
+    this.setState({ processing: true });
 
+    const apps = this.state.apps.filter((item) => item.htmlKey !== app.htmlKey);
+
+    Promise.resolve()
+      .then(() => localforage.removeItem(app.htmlKey))
+      .then(() => localforage.setItem(KEY_APPS, apps))
+      .then(() => this.setState({
+        apps,
+        processing: false,
+      }))
+      .catch((err) => {
+        alert(this.props.localization.cloneDialog.failedToRemove);
+        throw err;
+      });
+      
   };
 
   renderAppCards(isSave) {
