@@ -103,6 +103,7 @@ alert('こんにちは！');
   },
   common: {
     tapTwiceQuickly: 'すばやく２回クリック',
+    cannotBeUndone: 'この操作は取り消せません',
   },
 
 };

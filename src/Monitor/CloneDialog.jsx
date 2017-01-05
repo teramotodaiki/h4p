@@ -200,6 +200,9 @@ export default class CloneDialog extends Component {
   };
 
   handleRemove = (app) => {
+    if (!confirm(this.props.localization.common.cannotBeUndone)) {
+      return;
+    }
     this.setState({ processing: true });
 
     const apps = this.state.apps.filter((item) => item.htmlKey !== app.htmlKey);
