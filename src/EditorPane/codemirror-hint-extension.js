@@ -18,7 +18,7 @@ CodeMirror.hint.javascript = (instance, options) => {
   const result = anywordHint(instance, options) || empty;
 
   result.list = options.snippets
-    .filter((snippet) => snippet.test(token.string))
+    .filter((snippet) => startWith(snippet.prefix, token.string))
     .concat(result.list);
 
   if (token.type === 'string') {
@@ -31,7 +31,7 @@ CodeMirror.hint.javascript = (instance, options) => {
   }
 
   result.list = options.completes
-    .filter((complete) => complete.indexOf(token.string) === 0)
+    .filter((complete) => startWith(complete, token.string))
     .concat(result.list);
 
   return result;
@@ -63,10 +63,10 @@ CodeMirror.hint.markdown = (instance, options) => {
     return empty;
   }
 
-  const result = anywordHint(instance, options) || empty;
+  const result = empty;
 
   result.list = options.snippets
-    .filter((snippet) => snippet.test(token.string))
+    .filter((snippet) => startWith(snippet.prefix, token.string))
     .concat(result.list);
 
   return result;
@@ -75,8 +75,11 @@ CodeMirror.hint.markdown = (instance, options) => {
 
 
 function getCompleteNames(files, from, prefix = '') {
-  prefix = prefix.toLowerCase();
   return files
-    .filter(file => file.name.toLowerCase().indexOf(prefix) === 0)
+    .filter(file => startWith(file.name, prefix))
     .map(file => ({ text: file.name, from }));
+}
+
+function startWith(text, needle) {
+  return text.toLowerCase().indexOf(needle.toLowerCase()) === 0;
 }

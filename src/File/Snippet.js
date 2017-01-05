@@ -43,11 +43,6 @@ export default class Snippet {
     return this.props.fileKey;
   }
 
-  test(tokenString) {
-    const prefix = this.props.prefix.toLowerCase();
-    return prefix.indexOf(tokenString.toLowerCase()) === 0;
-  }
-
   render(element, self, data) {
     element.textContent = this.props.prefix + ' ' + this.props.description;
     return element;

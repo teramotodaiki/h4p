@@ -71,6 +71,9 @@ export default function (file, babelrc) {
     }
   })
   .then((result) => (release(), result))
-  .catch((error) => (release(), result));
+  .catch((error) => {
+    release();
+    throw error;
+  });
 
 };

@@ -166,7 +166,7 @@ export default class Monitor extends Component {
 
     let sent = 0;
     const workerProcess = this.props.files
-      .filter((file) => file.isScript)
+      .filter((file) => !file.options.isTrashed && file.isScript)
       .map((file, i, send) => file.babel(getConfig('babelrc'))
       .then((file) => {
         // To indicate
@@ -237,6 +237,11 @@ export default class Monitor extends Component {
         break;
       case 'reload':
         this.props.handleRun();
+        break;
+      case 'error':
+        if (!this.state.error) {
+          this.setState({ error: new Error(data.message) });
+        }
         break;
     }
   };
