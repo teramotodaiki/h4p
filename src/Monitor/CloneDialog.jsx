@@ -23,6 +23,8 @@ const BundleTypes = [
   'cdn'
 ];
 
+const KEY_APPS = 'apps';
+
 export default class CloneDialog extends Component {
 
   static propTypes = {
@@ -40,6 +42,7 @@ export default class CloneDialog extends Component {
     composedFiles: null,
     error: null,
     apps: null,
+    processing: false,
   };
 
   get title() {
@@ -50,6 +53,10 @@ export default class CloneDialog extends Component {
 
     Promise.all(this.props.files.map((file) => file.compose()))
       .then((composedFiles) => this.setState({ composedFiles }));
+
+    localforage.getItem(KEY_APPS)
+      .then((apps) => apps || [])
+      .then((apps) => this.setState({ apps }));
 
   }
 
@@ -103,21 +110,91 @@ export default class CloneDialog extends Component {
     this.setState({ bundleType });
   };
 
-  handleSave = (index) => {
+  handleCreate = () => {
+
+    Promise.resolve()
+      .then(() => localforage.keys())
+      .then((keys) => {
+        const created = new Date().getTime();
+        for (let i = 0; i < 1000000; i++) {
+          const htmlKey = `app_${created + i}`;
+          if (keys.includes(htmlKey)) {
+            continue;
+          }
+          return htmlKey;
+        }
+        throw 'Failed to generate unique key!';
+      })
+      .then((htmlKey) => this.handleSave({
+        htmlKey,
+        title: this.title,
+        created: new Date().getTime(),
+      }))
+      .catch((err) => {
+        alert('Failed to create new app.');
+        throw err;
+      });
 
   };
 
-  handleLoad = (index, openInNewTab) => {
+  handleSave = (app) => {
+    this.setState({ processing: true });
+
+    const html = SourceFile.embed({
+      TITLE: this.title,
+      files: this.state.composedFiles,
+      coreString: this.props.coreString,
+    });
+
+    app = Object.assign({}, app, {
+      size: html.blob.size,
+      updated: new Date().getTime(),
+      CORE_VERSION,
+      CORE_CDN_URL,
+    });
+
+    const apps = [app].concat(
+      this.state.apps.filter((item) => item.htmlKey !== app.htmlKey)
+    );
+
+    return Promise.resolve()
+      .then(() => localforage.setItem(app.htmlKey, html.blob))
+      .then(() => localforage.setItem(KEY_APPS, apps))
+      .then(() => this.setState({
+        apps,
+        processing: false,
+      }))
+      .catch((err) => {
+        localforage.removeItem(htmlKey);
+        throw err;
+      })
+      .catch((err) => {
+        alert('Failed to save');
+        this.setState({ processing: false });
+        throw err;
+      });
 
   };
 
-  handleRemove = (index) => {
+  handleLoad = (app, openInNewTab) => {
+
+  };
+
+  handleRemove = (app) => {
 
   };
 
   renderAppCards(isSave) {
-    if (!this.state.apps) {
-      return <div style={{ textAlign: 'center' }}><CircularProgress size={120} /></div>;
+    if (
+      !this.state.apps ||
+      !this.state.composedFiles ||
+      !this.props.coreString
+    ) {
+      return (
+        <div style={{ textAlign: 'center' }}>
+          <CircularProgress size={120} />
+        </div>
+      );
     }
 
     const {
@@ -148,29 +225,34 @@ export default class CloneDialog extends Component {
       <div style={styles.container}>
       {isSave ? (
         <RaisedButton fullWidth
+          key={'new_app'}
           label={localization.cloneDialog.saveInNew}
           style={styles.card}
           icon={<ContentAddCircle />}
+          disabled={this.state.processing}
+          onTouchTap={this.handleCreate}
         />
       ) : null}
       {this.state.apps.map((app, i) => (
-        <Card key={app.timestamp} style={styles.card}>
+        <Card key={app.htmlKey} style={styles.card}>
           <CardHeader
             title={app.title}
-            subtitle={new Date(app.timestamp).toLocaleString()}
+            subtitle={new Date(app.updated).toLocaleString()}
           />
         {isSave ? (
           <CardActions>
             <FlatButton
               label={localization.cloneDialog.overwriteSave}
               icon={<ContentSave />}
-              onTouchTap={() => this.handleSave(i)}
+              disabled={this.state.processing}
+              onTouchTap={() => this.handleSave(app)}
             />
             <FlatButton
               label={localization.cloneDialog.remove}
               icon={<ActionDelete color={red400} />}
               labelStyle={styles.remove}
-              onTouchTap={() => this.handleRemove(i)}
+              disabled={this.state.processing}
+              onTouchTap={() => this.handleRemove(app)}
             />
           </CardActions>
         ) : (
@@ -178,12 +260,14 @@ export default class CloneDialog extends Component {
             <FlatButton
               label={localization.cloneDialog.openOnThisTab}
               icon={<ActionOpenInBrowser />}
-              onTouchTap={() => this.handleLoad(i, false)}
+              disabled={this.state.processing}
+              onTouchTap={() => this.handleLoad(app, false)}
             />
             <FlatButton
               label={localization.cloneDialog.openInNewTab}
               icon={<ActionOpenInNew />}
-              onTouchTap={() => this.handleLoad(i, true)}
+              disabled={this.state.processing}
+              onTouchTap={() => this.handleLoad(app, true)}
             />
           </CardActions>
         )}
