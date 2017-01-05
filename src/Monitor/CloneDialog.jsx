@@ -173,6 +173,28 @@ export default class CloneDialog extends Component {
   };
 
   handleLoad = (app, openInNewTab) => {
+    const tab = openInNewTab ? window.open('', '_blank') : null;
+    if (openInNewTab && tab) {
+      this.setState({ processing: true });
+    }
+
+    Promise.resolve()
+      .then(() => localforage.getItem(app.htmlKey))
+      .then((blob) => {
+        if (openInNewTab) {
+          if (!tab) {
+            throw this.props.localization.cloneDialog.failedToOpenTab;
+          }
+          tab.location.href = URL.createObjectURL(blob);
+          this.setState({ processing: false });
+        } else {
+          location.href = URL.createObjectURL(blob);
+        }
+      })
+      .catch((err) => {
+        alert(err.message);
+        throw err;
+      });
 
   };
 
@@ -190,9 +212,10 @@ export default class CloneDialog extends Component {
       }))
       .catch((err) => {
         alert(this.props.localization.cloneDialog.failedToRemove);
+        this.setState({ processing: false });
         throw err;
       });
-      
+
   };
 
   renderAppCards(isSave) {
@@ -328,6 +351,7 @@ export default class CloneDialog extends Component {
 
     return (
       <Dialog open
+        modal={this.state.processing}
         bodyStyle={styles.body}
         actions={actions}
         onRequestClose={onRequestClose}

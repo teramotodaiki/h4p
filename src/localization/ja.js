@@ -36,6 +36,7 @@ export default {
     defaultAppName: (n) => `アプリ ${n}`,
     failedToSave: 'アプリの保存に失敗しました',
     failedToRemove: 'アプリの削除に失敗しました',
+    failedToOpenTab: 'ポップアップがブロックされたため、アプリの読み込みに失敗しました',
   },
   saveDialog: {
     title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',
