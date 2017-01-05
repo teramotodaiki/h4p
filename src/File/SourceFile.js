@@ -28,8 +28,7 @@ export default class SourceFile extends _File {
 
   static visible = _File.visible.concat(
     'text',
-    'isScript',
-    'blob'
+    'isScript'
   );
 
   get text() {
