@@ -1,5 +1,11 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
+import localforage from 'localforage';
+
+localforage.config({
+  name: 'Feeles',
+  storeName: 'feeles_alpha_apps',
+});
 
 import init from './jsx/init';
 import { default as Feeles } from './jsx/RootComponent';

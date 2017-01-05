@@ -3,8 +3,6 @@ import TextField from 'material-ui/TextField';
 import ContentCreate from 'material-ui/svg-icons/content/create';
 
 
-const TapTwiceQuickly = 'Tap twice quickly';
-
 const getStyles = (props, context) => {
   const {
     prepareStyles,
@@ -27,8 +25,13 @@ const getStyles = (props, context) => {
 export default class EditableLabel extends Component {
 
   static propTypes = Object.assign({
+    tapTwiceQuickly: PropTypes.string.isRequired,
     onEditEnd: PropTypes.func,
   }, TextField.propTypes);
+
+  static defaultProps = {
+    tapTwiceQuickly: 'Tap twice quickly',
+  };
 
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
@@ -90,6 +93,7 @@ export default class EditableLabel extends Component {
 
     const props = Object.assign({}, this.props);
     delete props.onEditEnd;
+    delete props.tapTwiceQuickly;
 
     return isEditing ? (
       <TextField
@@ -111,7 +115,7 @@ export default class EditableLabel extends Component {
         onTouchTap={this.handleTouch}
       >
         <ContentCreate color={secondaryTextColor} />
-        {TapTwiceQuickly}
+        {this.props.tapTwiceQuickly}
       </div>
     );
   }
