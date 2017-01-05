@@ -1,6 +1,8 @@
 import React from 'react';
 
 
+import { SourceFile } from '../File/';
+
 const getUniqueId = ((id) => () => 'Tab__' + ++id)(0);
 
 export default class Tab {
@@ -10,7 +12,11 @@ export default class Tab {
   }
 
   get file() {
-    return this.props.getFile();
+    return this.props.getFile() || new SourceFile({
+      name: 'Not Found',
+      type: 'text/plane',
+      text: 'File Not Found :-/',
+    });
   }
 
   get component() {
