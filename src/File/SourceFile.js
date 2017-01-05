@@ -39,9 +39,15 @@ export default class SourceFile extends _File {
     return this.is('javascript');
   }
 
+  static blobCache = new WeakMap();
   get blob() {
-    const { type, text } = this;
-    return new Blob([text], { type });
+    const { blobCache } = this.constructor;
+    if (blobCache.has(this)) {
+      return blobCache.get(this);
+    }
+    const blob = new Blob([this.text], { type: this.type });
+    blobCache.set(this, blob);
+    return blob;
   }
 
   get json() {
