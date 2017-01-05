@@ -238,6 +238,11 @@ export default class Monitor extends Component {
       case 'reload':
         this.props.handleRun();
         break;
+      case 'error':
+        if (!this.state.error) {
+          this.setState({ error: new Error(data.message) });
+        }
+        break;
     }
   };
 
