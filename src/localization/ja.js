@@ -33,10 +33,10 @@ export default {
     saveHTML: 'HTMLだけ保存する',
     saveLibrary: 'ライブラリだけ保存する',
     saveAll: 'どちらも保存する',
-    defaultAppName: (n) => `アプリ ${n}`,
     failedToSave: 'アプリの保存に失敗しました',
     failedToRemove: 'アプリの削除に失敗しました',
     failedToOpenTab: 'ポップアップがブロックされたため、アプリの読み込みに失敗しました',
+    failedToRename: 'アプリの名前を変更できませんでした',
   },
   saveDialog: {
     title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',
@@ -97,6 +97,9 @@ alert('こんにちは！');
     credits: 'クレジット',
     whoMade: (name) => `ファイル "${name}" を作った人は?`,
     website: 'ウェブサイトのURL (なくてもよい)',
+  },
+  common: {
+    tapTwiceQuickly: 'すばやく２回クリック',
   },
 
 };

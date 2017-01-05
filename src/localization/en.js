@@ -33,10 +33,10 @@ export default {
     saveHTML: 'Save Only HTML',
     saveLibrary: 'Save Only Library',
     saveAll: 'Save All',
-    defaultAppName: (n) => `My App ${n}`,
     failedToSave: 'Failed to save this app.',
     failedToRemove: 'Failed to remove this app.',
     failedToOpenTab: 'Failed to open an app because new tab is blocked!!',
+    failedToRename: 'Failed to rename this app.',
   },
   saveDialog: {
     title: 'You need to download it manually, because Your browser does not support HTML5!',
@@ -97,6 +97,9 @@ Thanks
     credits: 'Credits',
     whoMade: (name) => `Who made the file "${name}"?`,
     website: 'Website URL (optional)',
+  },
+  common: {
+    tapTwiceQuickly: 'Tap twice quickly',
   },
 
 };

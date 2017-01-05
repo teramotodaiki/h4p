@@ -16,6 +16,7 @@ import { lightBlue100, red100, brown50, red400 } from 'material-ui/styles/colors
 
 
 import { SourceFile } from '../File/';
+import EditableLabel from '../jsx/EditableLabel';
 
 const BundleTypes = [
   'embed',
@@ -127,7 +128,7 @@ export default class CloneDialog extends Component {
       .then(() => localforage.keys())
       .then((keys) => this.handleSave({
         htmlKey: gen((n) => `app_${n}`, new Date().getTime(), keys),
-        title: gen(this.props.localization.cloneDialog.defaultAppName, 1, titles),
+        title: '',
         created: new Date().getTime(),
       }));
 
@@ -218,6 +219,31 @@ export default class CloneDialog extends Component {
 
   };
 
+  handleTitleChange = (app, title) => {
+    this.setState({ processing: true });
+
+    const apps = this.state.apps
+      .map((item) => {
+        if (item.htmlKey === app.htmlKey) {
+          return Object.assign({}, app, { title });
+        }
+        return item;
+      });
+
+    Promise.resolve()
+      .then(() => localforage.setItem(KEY_APPS, apps))
+      .then(() => this.setState({
+        apps,
+        processing: false,
+      }))
+      .catch((err) => {
+        alert(this.props.localization.cloneDialog.failedToRename);
+        this.setState({ processing: false });
+        throw err;
+      });
+
+  };
+
   renderAppCards(isSave) {
     if (
       !this.state.apps ||
@@ -268,9 +294,18 @@ export default class CloneDialog extends Component {
         />
       ) : null}
       {this.state.apps.map((app, i) => (
-        <Card key={app.htmlKey} style={styles.card}>
+        <Card
+          key={app.htmlKey}
+          style={styles.card}
+        >
           <CardHeader
-            title={app.title}
+            title={(
+              <EditableLabel id="title"
+                defaultValue={app.title}
+                tapTwiceQuickly={localization.common.tapTwiceQuickly}
+                onEditEnd={(text) => this.handleTitleChange(app, text)}
+              />
+            )}
             subtitle={new Date(app.updated).toLocaleString()}
           />
         {isSave ? (
