@@ -190,12 +190,12 @@ export default class ShotFrame extends Component {
 
     return (
       <Paper style={root}>
-        {this.state.error ? (
-          <pre style={error}>{this.state.error.message}</pre>
-        ) : null}
-        {this.state.loading ? (
-          <LinearProgress />
-        ) : null}
+      {this.state.error ? (
+        <pre style={error}>{this.state.error.message}</pre>
+      ) : null}
+      {this.state.loading ? (
+        <LinearProgress secondary />
+      ) : null}
         <div style={editor}>
           <Editor isSelected isCared
             file={file}
