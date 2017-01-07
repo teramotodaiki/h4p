@@ -105,5 +105,9 @@ alert('こんにちは！');
     tapTwiceQuickly: 'すばやく２回クリック',
     cannotBeUndone: 'この操作は取り消せません',
   },
+  editor: {
+    undo: 'もどす',
+    save: 'セーブ',
+  },
 
 };

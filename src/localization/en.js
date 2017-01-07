@@ -105,5 +105,9 @@ Thanks
     tapTwiceQuickly: 'Tap twice quickly',
     cannotBeUndone: 'This operation can not be undone',
   },
+  editor: {
+    undo: 'Undo',
+    save: 'Save',
+  },
 
 };
