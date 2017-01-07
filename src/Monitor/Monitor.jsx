@@ -398,9 +398,6 @@ export default class Monitor extends Component {
         <Sizer
           monitorWidth={monitorWidth}
           monitorHeight={monitorHeight}
-          hover={hover}
-          onMouseEnter={this.handleMouseEnter}
-          onMouseLeave={this.handleMouseLeave}
           onSizer={onSizer}
         />
       </div>

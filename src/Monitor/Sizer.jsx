@@ -52,11 +52,8 @@ const getStyles = (props, context) => {
 class Sizer extends Component {
 
   static propTypes = {
-    hover: PropTypes.bool.isRequired,
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
-    onMouseEnter: PropTypes.func.isRequired,
-    onMouseLeave: PropTypes.func.isRequired,
     onSizer: PropTypes.func.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
@@ -69,6 +66,7 @@ class Sizer extends Component {
   };
 
   state = {
+    hover: false,
     isActive: false,
   };
 
@@ -86,9 +84,6 @@ class Sizer extends Component {
 
   render() {
     const {
-      hover,
-      onMouseEnter,
-      onMouseLeave,
       connectDragSource,
       connectDragPreview,
     } = this.props;
@@ -102,14 +97,14 @@ class Sizer extends Component {
     return connectDragSource(
       <div
         style={root}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={() => this.setState({ hover: true })}
+        onMouseLeave={() => this.setState({ hover: false })}
       >
       {connectDragPreview(
         <div style={preview}>
           <Paper
             rounded={false}
-            zDepth={hover ? 2 : 1}
+            zDepth={this.state.hover ? 2 : 1}
             style={color}
           />
         </div>
