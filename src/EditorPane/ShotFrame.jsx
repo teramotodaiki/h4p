@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import LinearProgress from 'material-ui/LinearProgress';
 import AvPlayArrow from 'material-ui/svg-icons/av/play-arrow';
 import AvStop from 'material-ui/svg-icons/av/stop';
 import transitions from 'material-ui/styles/transitions';
@@ -88,6 +89,7 @@ export default class ShotFrame extends Component {
     anim: 0,
     height: 0,
     error: null,
+    loading: false,
   };
 
   componentDidMount() {
@@ -108,11 +110,10 @@ export default class ShotFrame extends Component {
     };
 
     Promise.resolve()
-    .then(() => transition(1))
     .then(() => this.handleShot())
+    .then(() => transition(1))
     .then(() => transition(2))
-    .then(() => transition(0))
-    .then(() => this.forceUpdate());
+    .then(() => transition(0));
 
   };
 
@@ -146,10 +147,24 @@ export default class ShotFrame extends Component {
       this.codemirror.getValue('\n') :
       this.props.file.text;
 
-    Promise.resolve()
+    const waitForRender = new Promise((resolve, reject) => {
+      this.setState({
+        error: null,
+        loading: true,
+      }, resolve);
+    });
+
+    waitForRender
       .then(() => this.props.onShot(text))
-      .then(() => this.setState({ error: null }))
-      .catch((error) => this.setState({ error }));
+      .then(() => this.setState({
+        loading: false,
+      }))
+      .catch((error) => this.setState({
+        error,
+        loading: false,
+      }));
+
+    return waitForRender;
   };
 
   render() {
@@ -177,6 +192,9 @@ export default class ShotFrame extends Component {
       <Paper style={root}>
         {this.state.error ? (
           <pre style={error}>{this.state.error.message}</pre>
+        ) : null}
+        {this.state.loading ? (
+          <LinearProgress />
         ) : null}
         <div style={editor}>
           <Editor isSelected isCared
