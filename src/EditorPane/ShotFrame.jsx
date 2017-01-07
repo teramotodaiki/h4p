@@ -193,7 +193,7 @@ export default class ShotFrame extends Component {
         <pre style={error}>{this.state.error.message}</pre>
       ) : null}
       {this.state.loading ? (
-        <LinearProgress secondary />
+        <LinearProgress />
       ) : null}
         <div style={editor}>
           <Editor isSelected isCared
