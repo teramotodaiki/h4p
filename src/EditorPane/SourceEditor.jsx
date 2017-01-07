@@ -184,7 +184,7 @@ class SourceEditor extends Component {
       ) : null}
       <div style={menuBar}>
         <FlatButton
-          label="Undo"
+          label={localization.editor.undo}
           disabled={!this.state.hasHistory}
           style={barButton}
           labelStyle={barButtonLabel}
@@ -192,7 +192,7 @@ class SourceEditor extends Component {
           onTouchTap={this.handleUndo}
         />
         <FlatButton
-          label="Save"
+          label={localization.editor.save}
           disabled={!this.state.hasChanged}
           style={barButton}
           labelStyle={barButtonLabel}
