@@ -231,3 +231,10 @@ export default class Readme extends Component {
     );
   }
 }
+
+
+function isValidURL(text) {
+  const a = document.createElement('a');
+  a.href = text;
+  return a.host && a.host != window.location.host;
+}
