@@ -16,6 +16,8 @@ import Screen, { SrcDocEnabled } from './Screen';
 import { MenuHeight } from './Menu';
 
 
+const FramePadding = 8;
+
 const ConnectionTimeout = 1000;
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
@@ -51,36 +53,22 @@ const getStyle = (props, context, state) => {
 
   return {
     root: {
-      position: 'relative',
       flex: '0 0 auto',
-      width: monitorWidth,
-      height: isPopout ? 0 : monitorHeight,
-      maxWidth: '100%',
-      maxHeight: '100%',
-      minWidth: 0,
-      minHeight: MenuHeight,
-      zIndex: 300,
-      transition: transitions.easeOut(),
-    },
-    container: {
       position: 'relative',
-      width: '100%',
-      height: '100%',
+      width: monitorWidth,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
-      zIndex: 1,
+      zIndex: 300,
+      transition: transitions.easeOut(),
     },
     linear1: {
-      position: 'absolute',
-      bottom: MenuHeight - 6,
-      zIndex: 201,
+      borderRadius: 0,
     },
     linear2: {
-      position: 'absolute',
-      bottom: MenuHeight - 4,
+      borderRadius: 0,
       opacity: progress < 1 ? 1 : 0,
-      zIndex: 202,
+      zIndex: 2,
     },
   };
 };
@@ -299,7 +287,7 @@ export default class Monitor extends Component {
     }
     const screenRect = this.props.isPopout ?
       { width: this.parent.innerWidth, height: this.parent.innerHeight } :
-      { width: monitorWidth, height: monitorHeight - MenuHeight };
+      { width: monitorWidth - FramePadding * 2, height: monitorHeight - FramePadding * 2 };
 
     this.iframe.width = width + 'px';
     this.iframe.height = height + 'px';
@@ -357,23 +345,21 @@ export default class Monitor extends Component {
 
     return (
       <div style={prepareStyles(root)}>
-        <div style={prepareStyles(container)}>
-          {popout}
-          <Screen animation
-            display={!isPopout}
-            frameRef={(ref) => ref && (this.inlineFrame = ref)}
-            handleRun={handleRun}
-            reboot={reboot}
-            error={error}
-          />
-          <LinearProgress
-            mode="determinate"
-            max={1}
-            value={progress}
-            style={linear1}
-          />
-          <LinearProgress mode="indeterminate" style={linear2} />
-        </div>
+        {popout}
+        <Screen animation
+          display={!isPopout}
+          frameRef={(ref) => ref && (this.inlineFrame = ref)}
+          handleRun={handleRun}
+          reboot={reboot}
+          error={error}
+        />
+        <LinearProgress
+          mode="determinate"
+          max={1}
+          value={progress}
+          style={linear1}
+        />
+        <LinearProgress mode="indeterminate" style={linear2} />
       </div>
     );
   }

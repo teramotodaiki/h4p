@@ -53,7 +53,6 @@ export default class Hierarchy extends Component {
     saveAs: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
-    isShrinked: PropTypes.bool.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
@@ -140,10 +139,6 @@ export default class Hierarchy extends Component {
   };
 
   render() {
-    if (this.props.isShrinked) {
-      return null;
-    }
-
     const {
       files,
       selectTab,

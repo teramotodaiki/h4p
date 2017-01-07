@@ -36,6 +36,7 @@ const getStyles = (props, context) => {
       height: MenuHeight,
       zIndex: 100,
       backgroundColor: palette.primary1Color,
+      overflow: 'hidden',
     },
     button: {
       marginRight: 20,

@@ -33,12 +33,13 @@ const getStyle = (props, state, palette) => {
       width: '100%',
       height: '100%',
       display: 'flex',
-      flexDirection: 'row',
       alignItems: 'stretch',
       backgroundColor: palette.backgroundColor,
       overflow: 'hidden',
     },
     left: {
+      flex: '1 1 auto',
+      width: 0,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
@@ -81,6 +82,8 @@ class Main extends Component {
     )),
     port: null,
     coreString: null,
+
+    showMonitor: true,
   };
 
   get rootWidth() {
@@ -382,7 +385,7 @@ class Main extends Component {
 
     const monitorProps = {
       monitorWidth,
-      monitorHeight,
+      monitorHeight: this.rootHeight,
       reboot,
       isPopout,
       portRef: (port) => this.setState({ port }),
@@ -399,10 +402,6 @@ class Main extends Component {
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
       saveAs: this.saveAs,
-      isShrinked: isShrinked(
-        monitorWidth,
-        this.rootHeight - monitorHeight
-      ),
     };
 
     const menuProps = {
@@ -423,7 +422,6 @@ class Main extends Component {
           <div style={dropCover}></div>
           <div style={left}>
             <Menu {...commonProps} {...menuProps} />
-            <Monitor {...commonProps} {...monitorProps} />
             <Hierarchy {...commonProps} {...hierarchyProps} />
           </div>
           <Sizer
@@ -431,7 +429,11 @@ class Main extends Component {
             monitorHeight={monitorHeight}
             onSizer={(isResizing) => this.setState({ isResizing })}
           />
+        {this.state.showMonitor ? (
+          <Monitor {...commonProps} {...monitorProps} />
+        ) : (
           <EditorPane {...commonProps} {...editorPaneProps} />
+        )}
           <FileDialog
             ref={this.handleFileDialog}
             localization={localization}
@@ -450,7 +452,7 @@ const spec = {
     const offset = monitor.getDifferenceFromInitialOffset();
     const init = monitor.getItem();
     component.resize(
-      init.width + offset.x,
+      init.width - offset.x,
       init.height + offset.y,
       true
     );
@@ -461,7 +463,7 @@ const spec = {
     if (offset) {
       const init = monitor.getItem();
       component.resize(
-        init.width + offset.x,
+        init.width - offset.x,
         init.height + offset.y
       );
     }
