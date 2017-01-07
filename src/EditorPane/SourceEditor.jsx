@@ -1,13 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
+import FlatButton from 'material-ui/FlatButton';
 import { red50, red500 } from 'material-ui/styles/colors';
+import HardwareKeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-backspace';
+import ContentSave from 'material-ui/svg-icons/content/save';
 
 
 import { SizerWidth } from '../Monitor/';
 import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
-import SaveProgress from './SaveProgress';
 import CreditBar from './CreditBar';
 
 
@@ -39,8 +41,19 @@ const getStyle = (props, context) => {
       flex: '1 1 auto',
       position: 'relative',
     },
-    barStyle: {
+    menuBar: {
+      display: 'flex',
       paddingLeft: SizerWidth,
+      backgroundColor: palette.canvasColor,
+      borderBottom: `1px solid ${palette.borderColor}`,
+    },
+    barButton: {
+      padding: 0,
+      height: '1.6rem',
+      lineHeight: '1.6rem',
+    },
+    barButtonLabel: {
+      fontSize: '.5rem',
     },
   };
 };
@@ -78,6 +91,8 @@ class SourceEditor extends Component {
 
   state = {
     showHint: !this.props.file.is('json'),
+    hasHistory: false,
+    hasChanged: false,
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -89,26 +104,47 @@ class SourceEditor extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.reboot && nextProps.reboot) {
-      if (this.force) this.force();
+      if (this.state.hasChanged) {
+        this.handleSave();
+      }
     }
   }
 
-  handleChange = (text) => {
-    if (!this.start) {
+  handleSave = () => {
+    if (!this.codemirror) {
       return;
     }
+    const text = this.codemirror.getValue('\n');
     const babelrc = this.props.getConfig('babelrc');
-    const completed = () => {
-      this.props.onChange(text)
-        .then((file) => file.babel(babelrc))
-        .catch((err) => this.selectThis());
-    };
-    this.start(completed);
+
+    Promise.resolve()
+      .then(() => this.setState({
+        hasChanged: false,
+      }))
+      .then(() => this.props.onChange(text))
+      .then((file) => file.babel(babelrc))
+      .catch((err) => this.props.selectTab(this.props.tab));
   };
 
-  selectThis() {
-    this.props.selectTab(this.props.tab);
-  }
+  handleUndo = () => {
+    if (!this.codemirror) {
+      return;
+    }
+
+    this.codemirror.undo();
+    this.handleChange();
+  };
+
+  handleChange = () => {
+    if (!this.codemirror) {
+      return;
+    }
+
+    this.setState({
+      hasHistory: this.codemirror.historySize().undo > 0,
+      hasChanged: this.codemirror.getValue('\n') !== this.props.file.text,
+    });
+  };
 
   render() {
     const {
@@ -127,7 +163,9 @@ class SourceEditor extends Component {
       root,
       error,
       editorContainer,
-      barStyle,
+      menuBar,
+      barButton,
+      barButtonLabel,
     } = getStyle(this.props, this.context);
 
     const snippets = getConfig('snippets')(file);
@@ -138,17 +176,30 @@ class SourceEditor extends Component {
       showHint,
     });
 
+
     return (
       <div style={root}>
       {file.error ? (
         <pre style={error}>{file.error.message}</pre>
       ) : null}
-      <SaveProgress
-        time={3000}
-        startRef={(ref) => (this.start = ref)}
-        forceRef={(ref) => (this.force = ref)}
-        barStyle={barStyle}
-      />
+      <div style={menuBar}>
+        <FlatButton
+          label="Undo"
+          disabled={!this.state.hasHistory}
+          style={barButton}
+          labelStyle={barButtonLabel}
+          icon={<HardwareKeyboardBackspace />}
+          onTouchTap={this.handleUndo}
+        />
+        <FlatButton
+          label="Save"
+          disabled={!this.state.hasChanged}
+          style={barButton}
+          labelStyle={barButtonLabel}
+          icon={<ContentSave />}
+          onTouchTap={this.handleSave}
+        />
+      </div>
       {connectDropTarget(
         <div style={editorContainer}>
           <Editor {...props} />

@@ -2,13 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import LinearProgress from 'material-ui/LinearProgress';
 import AvPlayArrow from 'material-ui/svg-icons/av/play-arrow';
 import AvStop from 'material-ui/svg-icons/av/stop';
 import transitions from 'material-ui/styles/transitions';
 import { red50, red500 } from 'material-ui/styles/colors';
 
 
-import SaveProgress from './SaveProgress';
 import Editor from './Editor';
 
 const durations = [600, 1400, 0];
@@ -62,6 +62,7 @@ const getStyles = (props, context, state) => {
       backgroundColor: red50,
       color: red500,
       fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
+      overflow: 'scroll',
     },
   };
 };
@@ -86,6 +87,8 @@ export default class ShotFrame extends Component {
   state = {
     anim: 0,
     height: 0,
+    error: null,
+    loading: false,
   };
 
   componentDidMount() {
@@ -96,7 +99,6 @@ export default class ShotFrame extends Component {
     if (this.state.anim !== 0) {
       return;
     }
-    if (this.force) this.force();
 
     const transition = (anim, delay) => {
       return new Promise((resolve, reject) => {
@@ -107,11 +109,10 @@ export default class ShotFrame extends Component {
     };
 
     Promise.resolve()
-    .then(() => transition(1))
     .then(() => this.handleShot())
+    .then(() => transition(1))
     .then(() => transition(2))
-    .then(() => transition(0))
-    .then(() => this.forceUpdate());
+    .then(() => transition(0));
 
   };
 
@@ -128,16 +129,6 @@ export default class ShotFrame extends Component {
 
   handleChange = (text) => {
     this.handleResize();
-    if (!this.start) {
-      return;
-    }
-    const babelrc = this.props.getConfig('babelrc');
-    const completed = () => {
-      this.props.onChange(text)
-        .then((file) => file.babel(babelrc))
-        .catch((error) => this.setState({ error }));
-    };
-    this.start(completed);
   };
 
   handleRestore = () => {
@@ -154,7 +145,25 @@ export default class ShotFrame extends Component {
     const text = this.codemirror ?
       this.codemirror.getValue('\n') :
       this.props.file.text;
-    this.props.onShot(text);
+
+    const waitForRender = new Promise((resolve, reject) => {
+      this.setState({
+        error: null,
+        loading: true,
+      }, resolve);
+    });
+
+    waitForRender
+      .then(() => this.props.onShot(text))
+      .then(() => this.setState({
+        loading: false,
+      }))
+      .catch((error) => this.setState({
+        error,
+        loading: false,
+      }));
+
+    return waitForRender;
   };
 
   render() {
@@ -180,14 +189,12 @@ export default class ShotFrame extends Component {
 
     return (
       <Paper style={root}>
-        {file.error ? (
-          <pre style={error}>{file.error.message}</pre>
-        ) : null}
-        <SaveProgress
-          time={3000}
-          startRef={(ref) => (this.start = ref)}
-          forceRef={(ref) => (this.force = ref)}
-        />
+      {this.state.error ? (
+        <pre style={error}>{this.state.error.message}</pre>
+      ) : null}
+      {this.state.loading ? (
+        <LinearProgress />
+      ) : null}
         <div style={editor}>
           <Editor isSelected isCared
             file={file}
