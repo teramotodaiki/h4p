@@ -388,7 +388,6 @@ class Main extends Component {
       portRef: (port) => this.setState({ port }),
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
-      onSizer: (isResizing) => this.setState({ isResizing }),
       coreString: this.state.coreString,
       saveAs: this.saveAs,
     };
@@ -427,6 +426,11 @@ class Main extends Component {
             <Monitor {...commonProps} {...monitorProps} />
             <Hierarchy {...commonProps} {...hierarchyProps} />
           </div>
+          <Sizer
+            monitorWidth={monitorWidth}
+            monitorHeight={monitorHeight}
+            onSizer={(isResizing) => this.setState({ isResizing })}
+          />
           <EditorPane {...commonProps} {...editorPaneProps} />
           <FileDialog
             ref={this.handleFileDialog}

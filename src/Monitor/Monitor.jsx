@@ -13,8 +13,7 @@ import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
-import Menu, { MenuHeight } from './Menu';
-import Sizer from './Sizer';
+import { MenuHeight } from './Menu';
 
 
 const ConnectionTimeout = 1000;
@@ -99,7 +98,6 @@ export default class Monitor extends Component {
     portRef: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
-    onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     addFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
@@ -326,7 +324,6 @@ export default class Monitor extends Component {
       handleRun,
       monitorWidth,
       monitorHeight,
-      onSizer,
     } = this.props;
 
     const {
@@ -377,11 +374,6 @@ export default class Monitor extends Component {
           />
           <LinearProgress mode="indeterminate" style={linear2} />
         </div>
-        <Sizer
-          monitorWidth={monitorWidth}
-          monitorHeight={monitorHeight}
-          onSizer={onSizer}
-        />
       </div>
     );
   }
