@@ -62,6 +62,7 @@ const getStyles = (props, context, state) => {
       backgroundColor: red50,
       color: red500,
       fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
+      overflow: 'scroll',
     },
   };
 };
@@ -86,6 +87,7 @@ export default class ShotFrame extends Component {
   state = {
     anim: 0,
     height: 0,
+    error: null,
   };
 
   componentDidMount() {
@@ -96,7 +98,6 @@ export default class ShotFrame extends Component {
     if (this.state.anim !== 0) {
       return;
     }
-    if (this.force) this.force();
 
     const transition = (anim, delay) => {
       return new Promise((resolve, reject) => {
@@ -128,16 +129,6 @@ export default class ShotFrame extends Component {
 
   handleChange = (text) => {
     this.handleResize();
-    if (!this.start) {
-      return;
-    }
-    const babelrc = this.props.getConfig('babelrc');
-    const completed = () => {
-      this.props.onChange(text)
-        .then((file) => file.babel(babelrc))
-        .catch((error) => this.setState({ error }));
-    };
-    this.start(completed);
   };
 
   handleRestore = () => {
@@ -154,7 +145,11 @@ export default class ShotFrame extends Component {
     const text = this.codemirror ?
       this.codemirror.getValue('\n') :
       this.props.file.text;
-    this.props.onShot(text);
+
+    Promise.resolve()
+      .then(() => this.props.onShot(text))
+      .then(() => this.setState({ error: null }))
+      .catch((error) => this.setState({ error }));
   };
 
   render() {
@@ -180,14 +175,9 @@ export default class ShotFrame extends Component {
 
     return (
       <Paper style={root}>
-        {file.error ? (
-          <pre style={error}>{file.error.message}</pre>
+        {this.state.error ? (
+          <pre style={error}>{this.state.error.message}</pre>
         ) : null}
-        <SaveProgress
-          time={3000}
-          startRef={(ref) => (this.start = ref)}
-          forceRef={(ref) => (this.force = ref)}
-        />
         <div style={editor}>
           <Editor isSelected isCared
             file={file}
