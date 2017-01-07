@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react';
+import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import transitions from 'material-ui/styles/transitions';
 
 
-import SizerDragSource from './SizerDragSource';
+import DragTypes from '../utils/dragTypes';
 
 const SkewY = 66;
 export const SizerWidth = 24;
@@ -114,5 +115,19 @@ class Sizer extends Component {
   }
 }
 
+const spec = {
+  beginDrag(props) {
+    return {
+      width: props.monitorWidth,
+      height: props.monitorHeight,
+    };
+  },
+};
 
-export default SizerDragSource(Sizer);
+const collect = (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
+  isDragging: monitor.isDragging()
+});
+
+export default DragSource(DragTypes.Sizer, spec, collect)(Sizer);
