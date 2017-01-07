@@ -152,11 +152,13 @@ export default class Readme extends Component {
       return <a {...props} target="_blank">{children}</a>;
     }
     if (tag === 'img') {
-      const file = findFile(decodeURIComponent(props.src));
-      if (file) {
-        props = Object.assign({}, props, {
-          src: file.blobURL,
-        });
+      if (!isValidURL(props.src)) {
+        const file = findFile(decodeURIComponent(props.src));
+        if (file) {
+          props = Object.assign({}, props, {
+            src: file.blobURL,
+          });
+        }
       }
       return <img {...props} />
     }
