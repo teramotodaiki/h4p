@@ -33,6 +33,7 @@ const getStyles = (props, context) => {
     root: {
       flex: '0 0 auto',
       zIndex: 100,
+      backgroundColor: palette.primary1Color,
     },
     bar: {
       display: 'flex',
@@ -47,14 +48,6 @@ const getStyles = (props, context) => {
     },
     popoutIcon: {
       transform: isPopout ? 'rotate(180deg)' : '',
-    },
-    preview: {
-      position: 'absolute',
-      bottom: 0,
-      backgroundColor: palette.primary1Color,
-      height: MenuHeight,
-      width: '100%',
-      zIndex: 1,
     },
   };
 };
@@ -83,6 +76,14 @@ class Menu extends Component {
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
+  };
+
+  static defaultProps = {
+    hover: false,
+    onMouseEnter: () => {},
+    onMouseLeave: () => {},
+    onSizer: () => {},
+    tooltipPosition: 'bottom-center',
   };
 
   static contextTypes = {
@@ -276,9 +277,6 @@ class Menu extends Component {
           <FileCloudUpload color={alternateTextColor} />
         </IconButton>
       </Paper>
-    {connectDragPreview(
-      <div style={prepareStyles(preview)} />
-    )}
   </div>);
   }
 }

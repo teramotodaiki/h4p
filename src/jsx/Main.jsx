@@ -409,12 +409,24 @@ class Main extends Component {
       ),
     };
 
+    const menuProps = {
+      togglePopout: this.handleTogglePopout,
+      setLocalization: this.setLocalization,
+      openFileDialog: this.openFileDialog,
+      isPopout,
+      monitorWidth,
+      monitorHeight,
+      coreString: this.state.coreString,
+      saveAs: this.saveAs,
+    };
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
         <div style={root}>
           <div style={dropCover}></div>
           <div style={left}>
+            <Menu {...commonProps} {...menuProps} />
             <Monitor {...commonProps} {...monitorProps} />
             <Hierarchy {...commonProps} {...hierarchyProps} />
           </div>

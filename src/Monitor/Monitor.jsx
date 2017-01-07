@@ -347,28 +347,6 @@ export default class Monitor extends Component {
       onSizer,
     } = this.props;
 
-    const menuProps = {
-      files: this.props.files,
-      openFileDialog: this.props.openFileDialog,
-      togglePopout: this.props.togglePopout,
-      localization: this.props.localization,
-      setLocalization: this.props.setLocalization,
-      availableLanguages: this.props.availableLanguages,
-      isPopout,
-      hover,
-      monitorWidth,
-      monitorHeight,
-      onSizer,
-      onMouseEnter: this.handleMouseEnter,
-      onMouseLeave: this.handleMouseLeave,
-      tooltipPosition: rootHeight - monitorHeight > 40 ?
-        'bottom-center' : 'top-center',
-      getConfig: this.props.getConfig,
-      setConfig: this.props.setConfig,
-      coreString: this.props.coreString,
-      saveAs: this.props.saveAs,
-    };
-
     const {
       root,
       container,
@@ -416,7 +394,6 @@ export default class Monitor extends Component {
             style={linear1}
           />
           <LinearProgress mode="indeterminate" style={linear2} />
-          <Menu {...menuProps} />
         </div>
         <Sizer
           monitorWidth={monitorWidth}
