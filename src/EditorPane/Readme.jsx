@@ -136,17 +136,19 @@ export default class Readme extends Component {
       return React.createElement(tag, props, children);
     }
     if (tag === 'a') {
-      const href = props.href;
-      props = Object.assign({}, props, {
-        href: 'javascript:void(0)',
-        onTouchTap: () => {
-          const found = findFile(href);
-          if (found) {
-            const getFile = () => findFile(({key}) => key === found.key);
-            selectTab(new Tab({ getFile }));
-          }
-        },
-      });
+      const href = decodeURIComponent(props.href);
+      if (!isValidURL(href)) {
+        props = Object.assign({}, props, {
+          href: 'javascript:void(0)',
+          onTouchTap: () => {
+            const found = findFile(href);
+            if (found) {
+              const getFile = () => findFile(({key}) => key === found.key);
+              selectTab(new Tab({ getFile }));
+            }
+          },
+        });
+      }
       return <a {...props} target="_blank">{children}</a>;
     }
     if (tag === 'img') {
