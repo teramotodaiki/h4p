@@ -91,7 +91,6 @@ export default class Monitor extends Component {
   static propTypes = {
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
-    rootHeight: PropTypes.number.isRequired,
     isResizing: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
@@ -99,13 +98,9 @@ export default class Monitor extends Component {
     togglePopout: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
-    openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
-    setLocalization: PropTypes.func.isRequired,
-    provider: PropTypes.object,
     onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
-    setConfig: PropTypes.func.isRequired,
     addFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     coreString: PropTypes.string,
@@ -120,7 +115,6 @@ export default class Monitor extends Component {
     width: 300,
     height: 150,
     progress: 0,
-    hover: false,
     error: null,
   };
 
@@ -319,31 +313,19 @@ export default class Monitor extends Component {
     this.iframe.style.transform = `scale(${scale})`;
   };
 
-  handleMouseEnter = () => {
-    this.setState({ hover: true });
-  };
-
-  handleMouseLeave = () => {
-    this.setState({ hover: false });
-  };
-
   render() {
     const {
       width,
       height,
       progress,
-      hover,
-      provider,
       error,
     } = this.state;
     const {
       isPopout,
       reboot,
       handleRun,
-      handleResize,
       monitorWidth,
       monitorHeight,
-      rootHeight,
       onSizer,
     } = this.props;
 
