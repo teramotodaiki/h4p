@@ -10,7 +10,6 @@ import { SizerWidth } from '../Monitor/';
 import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
-import SaveProgress from './SaveProgress';
 import CreditBar from './CreditBar';
 
 

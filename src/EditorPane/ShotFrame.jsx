@@ -9,7 +9,6 @@ import transitions from 'material-ui/styles/transitions';
 import { red50, red500 } from 'material-ui/styles/colors';
 
 
-import SaveProgress from './SaveProgress';
 import Editor from './Editor';
 
 const durations = [600, 1400, 0];
