@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { DropTarget } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import IconButton from 'material-ui/IconButton';
+import ActionSwapHoriz from 'material-ui/svg-icons/action/swap-horiz';
 import { faintBlack } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -40,6 +42,14 @@ const getStyle = (props, state, palette) => {
     left: {
       flex: '1 1 auto',
       width: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    },
+    right: {
+      flex: '0 0 auto',
+      width: state.monitorWidth,
+      height: '100%',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
@@ -332,6 +342,19 @@ class Main extends Component {
     this.setState({ localization });
   };
 
+  handleToggleMonitor = () => {
+    if (this.state.showMonitor) {
+      this.setState({
+        showMonitor: false,
+      });
+    } else {
+      this.setState({
+        reboot: true,
+        showMonitor: true,
+      });
+    }
+  };
+
   openFileDialog = () => console.error('openFileDialog has not be declared');
   handleFileDialog = (ref) => this.openFileDialog = ref.open;
 
@@ -354,6 +377,7 @@ class Main extends Component {
       root,
       left,
       dropCover,
+      right,
     } = getStyle(this.props, this.state, this.getConfig('palette'));
 
     const commonProps = {
@@ -429,11 +453,23 @@ class Main extends Component {
             monitorHeight={monitorHeight}
             onSizer={(isResizing) => this.setState({ isResizing })}
           />
-        {this.state.showMonitor ? (
-          <Monitor {...commonProps} {...monitorProps} />
-        ) : (
-          <EditorPane {...commonProps} {...editorPaneProps} />
-        )}
+          <div style={right}>
+          {this.state.showMonitor ? (
+            <Monitor {...commonProps} {...monitorProps} />
+          ) : (
+            <EditorPane {...commonProps} {...editorPaneProps} />
+          )}
+            <IconButton
+              style={{
+                position: 'absolute',
+                right: 0,
+                zIndex: 1000
+              }}
+              onTouchTap={this.handleToggleMonitor}
+            >
+              <ActionSwapHoriz color="white" />
+            </IconButton>
+          </div>
           <FileDialog
             ref={this.handleFileDialog}
             localization={localization}

@@ -34,9 +34,8 @@ const getStyles = (props, context) => {
       flexDirection: 'row-reverse',
       alignItems: 'center',
       height: MenuHeight,
-      zIndex: 100,
+      zIndex: 101,
       backgroundColor: palette.primary1Color,
-      overflow: 'hidden',
     },
     button: {
       marginRight: 20,

@@ -53,8 +53,7 @@ export default class Screen extends Component {
     } = this.state;
 
     const style = {
-      width: '100%',
-      height: '100%',
+      flex: '1 1 auto',
       background: 'linear-gradient(gray, black)',
       display: display ? 'flex' : 'none',
       justifyContent: 'center',
@@ -73,7 +72,7 @@ export default class Screen extends Component {
 
     const buttonStyle = {
       position: 'absolute',
-      right: 0,
+      left: 0,
       top: 0,
       backgroundColor: transparent,
       border: 'none',

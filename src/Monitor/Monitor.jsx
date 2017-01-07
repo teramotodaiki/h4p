@@ -53,9 +53,8 @@ const getStyle = (props, context, state) => {
 
   return {
     root: {
-      flex: '0 0 auto',
+      flex: '1 1 auto',
       position: 'relative',
-      width: monitorWidth,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
