@@ -21,6 +21,7 @@ import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
 import ReadmePane from '../ReadmePane/';
+import SnippetPane from '../EditorPane/SnippetPane';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
@@ -426,6 +427,10 @@ class Main extends Component {
       port: this.state.port,
     };
 
+    const snippetProps = {
+      tabs,
+    };
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
@@ -435,6 +440,7 @@ class Main extends Component {
             <Menu {...commonProps} {...menuProps} />
             <div style={scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
+              <SnippetPane {...commonProps} {...snippetProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
           </div>

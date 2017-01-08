@@ -88,18 +88,18 @@ class SourceEditor extends Component {
     hasChanged: false,
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.isOver || nextProps.isOver) {
-      return false;
-    }
-    return true;
-  }
-
   componentWillReceiveProps(nextProps) {
     if (!this.props.reboot && nextProps.reboot) {
       if (this.state.hasChanged) {
         this.handleSave();
       }
+    }
+  }
+
+  componentDidMount() {
+    if (this.codemirror) {
+      this.codemirror.on('change', this.handleChange);
+      this.codemirror.clearHistory();
     }
   }
 
@@ -165,7 +165,7 @@ class SourceEditor extends Component {
 
     const props = Object.assign({}, this.props, {
       codemirrorRef: (ref) => (this.codemirror = ref),
-      onChange: this.handleChange,
+      onChange: () => {},
       showHint,
     });
 
@@ -206,13 +206,6 @@ class SourceEditor extends Component {
           <Editor {...props} />
         </div>
       )}
-      {showHint ? (
-        <SnippetPane
-          snippets={snippets}
-          findFile={findFile}
-          localization={localization}
-        />
-      ) : null}
         <CreditBar
           file={file}
           openFileDialog={this.props.openFileDialog}
