@@ -185,7 +185,13 @@ export default class Monitor extends Component {
           files, env,
         }, '*', [channel.port2]);
       })
-      .catch((error) => this.setState({ error }));
+      .catch((error) => {
+        if (error) {
+          this.setState({ error });
+        } else if (this.props.isPopout) {
+          this.start();
+        }
+      });
   }
 
   handleMessage = ({ data }, reply) => {
