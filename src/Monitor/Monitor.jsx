@@ -42,35 +42,6 @@ const frameLoader = (() => {
   }
 })();
 
-const getStyle = (props, context, state) => {
-  const {
-    isResizing,
-    isPopout,
-    monitorWidth,
-    monitorHeight,
-  } = props;
-  const { progress } = state;
-
-  return {
-    root: {
-      flex: '1 1 auto',
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
-      zIndex: 300,
-      transition: transitions.easeOut(),
-    },
-    linear1: {
-      borderRadius: 0,
-    },
-    linear2: {
-      borderRadius: 0,
-      opacity: progress < 1 ? 1 : 0,
-      zIndex: 2,
-    },
-  };
-};
 
 export default class Monitor extends Component {
 
@@ -307,8 +278,6 @@ export default class Monitor extends Component {
 
   render() {
     const {
-      width,
-      height,
       progress,
       error,
     } = this.state;
@@ -317,17 +286,30 @@ export default class Monitor extends Component {
       isPopout,
       reboot,
       handleRun,
-      monitorWidth,
-      monitorHeight,
     } = this.props;
 
-    const {
-      root,
-      container,
-      linear1,
-      linear2,
-    } = getStyle(this.props, this.context, this.state);
-    const { prepareStyles } = this.context.muiTheme;
+    const styles = {
+      root: {
+        flex: '1 1 auto',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        zIndex: 300,
+      },
+      linear1: {
+        position: 'absolute',
+        bottom: 0,
+        borderRadius: 0,
+        height: 8,
+      },
+      linear2: {
+        position: 'absolute',
+        bottom: 0,
+        borderRadius: 0,
+        opacity: progress < 1 ? 1 : 0,
+      },
+    };
 
     if (!showMonitor) {
       return isPopout && !reboot ? (
@@ -353,7 +335,7 @@ export default class Monitor extends Component {
     }
 
     return (
-      <div style={prepareStyles(root)}>
+      <div style={styles.root}>
         <Screen animation
           display={!isPopout}
           frameRef={(ref) => ref && (this.inlineFrame = ref)}
@@ -365,9 +347,12 @@ export default class Monitor extends Component {
           mode="determinate"
           max={1}
           value={progress}
-          style={linear1}
+          style={styles.linear1}
         />
-        <LinearProgress mode="indeterminate" style={linear2} />
+        <LinearProgress
+          mode="indeterminate"
+          style={styles.linear2}
+        />
       </div>
     );
   }

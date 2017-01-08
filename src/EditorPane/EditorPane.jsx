@@ -29,7 +29,7 @@ const getStyles = (props, context) => {
       paddingTop: spacing.desktopGutterMini,
       paddingRight: spacing.desktopGutterLess,
       paddingBottom: 10,
-      paddingLeft: 10 + spacing.desktopGutterMore,
+      paddingLeft: 10,
       marginRight: spacing.desktopGutterMore,
       marginBottom: -10,
       overflow: 'hidden',

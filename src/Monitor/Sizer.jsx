@@ -20,7 +20,7 @@ const getStyles = (props, context) => {
     root: {
       flex: '0 0 auto',
       width: SizerWidth,
-      padding: '0 4px 4px 0',
+      paddingBottom: 4,
       overflow: 'hidden',
       cursor: 'col-resize',
       zIndex: 200,
@@ -34,7 +34,7 @@ const getStyles = (props, context) => {
     color: {
       width: '100%',
       height: '100%',
-      borderRadius: '0 0 4px 4px',
+      borderRadius: '0 0 0 4px',
       backgroundColor: palette.primary1Color,
     },
   };
@@ -58,7 +58,6 @@ class Sizer extends Component {
   };
 
   state = {
-    hover: false,
     isActive: false,
   };
 
@@ -85,17 +84,10 @@ class Sizer extends Component {
     } = getStyles(this.props, this.context);
 
     return connectDragSource(
-      <div
-        style={root}
-        onMouseEnter={() => this.setState({ hover: true })}
-        onMouseLeave={() => this.setState({ hover: false })}
-      >
+      <div style={root}>
       {connectDragPreview(
         <div style={preview}>
-          <Paper
-            zDepth={this.state.hover ? 2 : 1}
-            style={color}
-          />
+          <Paper style={color} />
         </div>
       )}
       </div>
