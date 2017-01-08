@@ -6,7 +6,6 @@ import MenuItem from 'material-ui/MenuItem';
 import CommunicationImportContacts from 'material-ui/svg-icons/communication/import-contacts';
 
 
-import { SizerWidth } from '../Monitor/';
 import { Tab } from '../ChromeTab/';
 import Readme from './Readme';
 
@@ -15,7 +14,6 @@ const getStyle = (props, context) => {
   return {
     root: {
       position: 'absolute',
-      paddingLeft: SizerWidth,
       zIndex: 1100,
     },
   };

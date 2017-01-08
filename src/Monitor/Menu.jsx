@@ -3,7 +3,6 @@ import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import { transparent } from 'material-ui/styles/colors';
 import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import FileCloudUpload from 'material-ui/svg-icons/file/cloud-upload';
@@ -20,7 +19,6 @@ import PaletteDialog from './PaletteDialog';
 import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
 import CloneDialog from './CloneDialog';
-import SizerDragSource from './SizerDragSource';
 
 export const MenuHeight = 40;
 
@@ -32,14 +30,12 @@ const getStyles = (props, context) => {
   return {
     root: {
       flex: '0 0 auto',
-      zIndex: 100,
-    },
-    bar: {
       display: 'flex',
       flexDirection: 'row-reverse',
       alignItems: 'center',
       height: MenuHeight,
-      backgroundColor: transparent,
+      zIndex: 101,
+      backgroundColor: palette.primary1Color,
     },
     button: {
       marginRight: 20,
@@ -48,18 +44,10 @@ const getStyles = (props, context) => {
     popoutIcon: {
       transform: isPopout ? 'rotate(180deg)' : '',
     },
-    preview: {
-      position: 'absolute',
-      bottom: 0,
-      backgroundColor: palette.primary1Color,
-      height: MenuHeight,
-      width: '100%',
-      zIndex: 1,
-    },
   };
 };
 
-class Menu extends Component {
+export default class Menu extends Component {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
@@ -70,19 +58,10 @@ class Menu extends Component {
     monitorHeight: PropTypes.number.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
-    hover: PropTypes.bool.isRequired,
-    onMouseEnter: PropTypes.func.isRequired,
-    onMouseLeave: PropTypes.func.isRequired,
-    tooltipPosition: PropTypes.string.isRequired,
-    onSizer: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
     coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
-
-    connectDragSource: PropTypes.func.isRequired,
-    connectDragPreview: PropTypes.func.isRequired,
-    isDragging: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -91,16 +70,6 @@ class Menu extends Component {
 
   get title() {
     return (this.props.getConfig('env').TITLE || [''])[0];
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { isDragging, onSizer } = this.props;
-
-    if (!isDragging && nextProps.isDragging) {
-      onSizer(true);
-    } else if (isDragging && !nextProps.isDragging) {
-      onSizer(false);
-    }
   }
 
   handleClone = () => {
@@ -165,22 +134,13 @@ class Menu extends Component {
       togglePopout,
       localization: { menu },
       setLocalization,
-      hover,
-      onMouseEnter,
-      onMouseLeave,
-      tooltipPosition,
       getConfig,
-
-      connectDragSource,
-      connectDragPreview,
     } = this.props;
 
     const {
       root,
-      bar,
       button,
       popoutIcon,
-      preview,
     } = getStyles(this.props, this.context);
 
     const {
@@ -190,23 +150,14 @@ class Menu extends Component {
 
     const canDeploy = !!getConfig('provider').publishUrl;
 
-    return connectDragSource(
-    <div
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      style={prepareStyles(root)}
-    >
+    return (
       <Paper
         rounded={false}
-        zDepth={hover ? 2 : 1}
-        style={bar}
+        style={root}
       >
         <IconMenu
           iconButtonElement={(
-            <IconButton
-              tooltip={menu.language}
-              tooltipPosition={tooltipPosition}
-            >
+            <IconButton tooltip={menu.language}>
               <ActionLanguage color={alternateTextColor} />
             </IconButton>
           )}
@@ -227,7 +178,6 @@ class Menu extends Component {
         <IconButton
           tooltip={menu.palette}
           onTouchTap={this.handlePalette}
-          tooltipPosition={tooltipPosition}
           style={button}
         >
           <ImagePalette color={alternateTextColor} />
@@ -235,7 +185,6 @@ class Menu extends Component {
         <IconButton
           tooltip={menu.env}
           onTouchTap={this.handleEnv}
-          tooltipPosition={tooltipPosition}
           style={button}
         >
           <ImageTune color={alternateTextColor} />
@@ -243,7 +192,6 @@ class Menu extends Component {
         <IconButton
           tooltip={menu.popout}
           onTouchTap={togglePopout}
-          tooltipPosition={tooltipPosition}
           style={button}
           iconStyle={popoutIcon}
         >
@@ -253,7 +201,6 @@ class Menu extends Component {
           tooltip={menu.clone}
           disabled={!this.props.coreString}
           onTouchTap={this.handleClone}
-          tooltipPosition={tooltipPosition}
           style={button}
         >
           <FileDownload color={alternateTextColor} />
@@ -261,7 +208,6 @@ class Menu extends Component {
         <IconButton
           tooltip={menu.aboutFeeles}
           onTouchTap={this.handleAbout}
-          tooltipPosition={tooltipPosition}
           style={button}
         >
           <ActionAssignment color={alternateTextColor} />
@@ -270,18 +216,11 @@ class Menu extends Component {
           tooltip={menu.deploy}
           disabled={!canDeploy || !this.props.coreString}
           onTouchTap={this.handleDeploy}
-          tooltipPosition={tooltipPosition}
           style={button}
         >
           <FileCloudUpload color={alternateTextColor} />
         </IconButton>
       </Paper>
-    {connectDragPreview(
-      <div style={prepareStyles(preview)} />
-    )}
-  </div>);
+    );
   }
 }
-
-
-export default SizerDragSource(Menu);

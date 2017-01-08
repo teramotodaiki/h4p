@@ -4,9 +4,9 @@ import FlatButton from 'material-ui/FlatButton';
 import { red50, red500 } from 'material-ui/styles/colors';
 import HardwareKeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import ContentSave from 'material-ui/svg-icons/content/save';
+import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 
 
-import { SizerWidth } from '../Monitor/';
 import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
@@ -32,7 +32,6 @@ const getStyle = (props, context) => {
       margin: 0,
       padding: 8,
       borderStyle: 'double none double solid',
-      borderLeftWidth: SizerWidth,
       backgroundColor: red50,
       color: red500,
       fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
@@ -43,7 +42,6 @@ const getStyle = (props, context) => {
     },
     menuBar: {
       display: 'flex',
-      paddingLeft: SizerWidth,
       backgroundColor: palette.canvasColor,
       borderBottom: `1px solid ${palette.borderColor}`,
     },
@@ -65,7 +63,6 @@ class SourceEditor extends Component {
     tab: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
-    gutterMarginWidth: PropTypes.number,
     handleRun: PropTypes.func.isRequired,
     closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
@@ -79,10 +76,6 @@ class SourceEditor extends Component {
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
-  };
-
-  static defaultProps = {
-    gutterMarginWidth: SizerWidth,
   };
 
   static contextTypes = {
@@ -198,6 +191,14 @@ class SourceEditor extends Component {
           labelStyle={barButtonLabel}
           icon={<ContentSave />}
           onTouchTap={this.handleSave}
+        />
+        <div style={{ flex: '1 1 auto' }}></div>
+        <FlatButton
+          label={localization.editor.play}
+          style={barButton}
+          labelStyle={barButtonLabel}
+          icon={<AVPlayCircleOutline />}
+          onTouchTap={this.props.handleRun}
         />
       </div>
       {connectDropTarget(

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { DropTarget } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import IconButton from 'material-ui/IconButton';
+import ActionSwapHoriz from 'material-ui/svg-icons/action/swap-horiz';
 import { faintBlack } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -33,12 +35,21 @@ const getStyle = (props, state, palette) => {
       width: '100%',
       height: '100%',
       display: 'flex',
-      flexDirection: 'row',
       alignItems: 'stretch',
       backgroundColor: palette.backgroundColor,
       overflow: 'hidden',
     },
     left: {
+      flex: '1 1 auto',
+      width: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    },
+    right: {
+      flex: '0 0 auto',
+      width: state.monitorWidth,
+      height: '100%',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
@@ -81,6 +92,8 @@ class Main extends Component {
     )),
     port: null,
     coreString: null,
+
+    showMonitor: true,
   };
 
   get rootWidth() {
@@ -317,7 +330,10 @@ class Main extends Component {
   })();
 
   handleRun = () => {
-    this.setState({ reboot: true });
+    this.setState({
+      reboot: true,
+      showMonitor: true,
+    });
   };
 
   handleTogglePopout = () => {
@@ -351,6 +367,7 @@ class Main extends Component {
       root,
       left,
       dropCover,
+      right,
     } = getStyle(this.props, this.state, this.getConfig('palette'));
 
     const commonProps = {
@@ -382,16 +399,12 @@ class Main extends Component {
 
     const monitorProps = {
       monitorWidth,
-      monitorHeight,
+      monitorHeight: this.rootHeight,
       reboot,
-      rootHeight: this.rootHeight,
-      isPopout: isPopout,
+      isPopout,
       portRef: (port) => this.setState({ port }),
-      openFileDialog: this.openFileDialog,
       togglePopout: this.handleTogglePopout,
       handleRun: this.handleRun,
-      setLocalization: this.setLocalization,
-      onSizer: (isResizing) => this.setState({ isResizing }),
       coreString: this.state.coreString,
       saveAs: this.saveAs,
     };
@@ -403,10 +416,17 @@ class Main extends Component {
       closeTab: this.closeTab,
       openFileDialog: this.openFileDialog,
       saveAs: this.saveAs,
-      isShrinked: isShrinked(
-        monitorWidth,
-        this.rootHeight - monitorHeight
-      ),
+    };
+
+    const menuProps = {
+      togglePopout: this.handleTogglePopout,
+      setLocalization: this.setLocalization,
+      openFileDialog: this.openFileDialog,
+      isPopout,
+      monitorWidth,
+      monitorHeight,
+      coreString: this.state.coreString,
+      saveAs: this.saveAs,
     };
 
     return (
@@ -415,10 +435,33 @@ class Main extends Component {
         <div style={root}>
           <div style={dropCover}></div>
           <div style={left}>
-            <Monitor {...commonProps} {...monitorProps} />
+            <Menu {...commonProps} {...menuProps} />
             <Hierarchy {...commonProps} {...hierarchyProps} />
           </div>
-          <EditorPane {...commonProps} {...editorPaneProps} />
+          <Sizer
+            monitorWidth={monitorWidth}
+            monitorHeight={monitorHeight}
+            onSizer={(isResizing) => this.setState({ isResizing })}
+          />
+          <div style={right}>
+          {this.state.showMonitor ? (
+            <Monitor {...commonProps} {...monitorProps} />
+          ) : (
+            <EditorPane {...commonProps} {...editorPaneProps} />
+          )}
+          {this.state.showMonitor ? (
+            <IconButton
+              style={{
+                position: 'absolute',
+                right: 0,
+                zIndex: 1000
+              }}
+              onTouchTap={() => this.setState({ showMonitor: false })}
+            >
+              <ActionSwapHoriz color="white" />
+            </IconButton>
+          ) : null}
+          </div>
           <FileDialog
             ref={this.handleFileDialog}
             localization={localization}
@@ -437,7 +480,7 @@ const spec = {
     const offset = monitor.getDifferenceFromInitialOffset();
     const init = monitor.getItem();
     component.resize(
-      init.width + offset.x,
+      init.width - offset.x,
       init.height + offset.y,
       true
     );
@@ -448,7 +491,7 @@ const spec = {
     if (offset) {
       const init = monitor.getItem();
       component.resize(
-        init.width + offset.x,
+        init.width - offset.x,
         init.height + offset.y
       );
     }

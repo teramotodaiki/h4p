@@ -4,7 +4,6 @@ import transitions from 'material-ui/styles/transitions';
 
 import MDReactComponent from '../../lib/MDReactComponent';
 import { SourceFile } from '../File/';
-import { SizerWidth } from '../Monitor/';
 import { Tab } from '../ChromeTab/';
 import Editor from './Editor';
 import ShotFrame from './ShotFrame';
@@ -24,7 +23,6 @@ const getStyle = (props, state, context) => {
       width: '100%',
       height: '100%',
       boxSizing: 'border-box',
-      paddingLeft: SizerWidth,
       paddingRight: spacing.desktopGutterMini,
       display: 'flex',
       transition: transitions.easeOut(),
