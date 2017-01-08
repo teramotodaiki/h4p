@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import FlatButton from 'material-ui/FlatButton';
+import LinearProgress from 'material-ui/LinearProgress';
 import { red50, red500 } from 'material-ui/styles/colors';
 import HardwareKeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import ContentSave from 'material-ui/svg-icons/content/save';
@@ -31,10 +32,11 @@ const getStyle = (props, context) => {
       flex: '0 1 auto',
       margin: 0,
       padding: 8,
-      borderStyle: 'double none double solid',
+      borderStyle: 'double',
       backgroundColor: red50,
       color: red500,
       fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
+      overflow: 'scroll',
     },
     editorContainer: {
       flex: '1 1 auto',
@@ -52,6 +54,10 @@ const getStyle = (props, context) => {
     },
     barButtonLabel: {
       fontSize: '.5rem',
+    },
+    progressColor: palette.accent1Color,
+    progress: {
+      borderRadius: 0,
     },
   };
 };
@@ -86,6 +92,7 @@ class SourceEditor extends Component {
     showHint: !this.props.file.is('json'),
     hasHistory: false,
     hasChanged: false,
+    loading: false,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -110,13 +117,23 @@ class SourceEditor extends Component {
     const text = this.codemirror.getValue('\n');
     const babelrc = this.props.getConfig('babelrc');
 
-    Promise.resolve()
+    return Promise.resolve()
       .then(() => this.setState({
         hasChanged: false,
+        loading: true,
       }))
       .then(() => this.props.onChange(text))
       .then((file) => file.babel(babelrc))
-      .catch((err) => this.props.selectTab(this.props.tab));
+      .then(() => this.setState({
+        loading: false,
+      }))
+      .catch((error) => {
+        this.props.selectTab(this.props.tab);
+        this.setState({
+          loading: false,
+        });
+        throw error;
+      });
   };
 
   handleUndo = () => {
@@ -139,6 +156,13 @@ class SourceEditor extends Component {
     });
   };
 
+  handlePlay = () => {
+    Promise.resolve()
+      .then(() => this.handleSave())
+      .then(() => this.props.handleRun())
+      .catch(() => {});
+  };
+
   render() {
     const {
       file,
@@ -159,6 +183,8 @@ class SourceEditor extends Component {
       menuBar,
       barButton,
       barButtonLabel,
+      progressColor,
+      progress,
     } = getStyle(this.props, this.context);
 
     const snippets = getConfig('snippets')(file);
@@ -166,9 +192,9 @@ class SourceEditor extends Component {
     const props = Object.assign({}, this.props, {
       codemirrorRef: (ref) => (this.codemirror = ref),
       onChange: () => {},
+      handleRun: this.handlePlay,
       showHint,
     });
-
 
     return (
       <div style={root}>
@@ -201,6 +227,12 @@ class SourceEditor extends Component {
             onTouchTap={this.handlePlay}
           />
         </div>
+      {this.state.loading ? (
+        <LinearProgress
+          color={progressColor}
+          style={progress}
+        />
+      ) : null}
       {connectDropTarget(
         <div style={editorContainer}>
           <Editor {...props} />
