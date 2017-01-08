@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 
 
 import { Readme } from '../EditorPane/';
@@ -38,7 +40,6 @@ export default class ReadmePane extends Component {
         );
       })
       .then((selectedFile) => {
-        console.log(selectedFile);
         this.setState({ selectedFile });
       });
   }
@@ -70,11 +71,48 @@ export default class ReadmePane extends Component {
     return Promise.reject();
   };
 
+  handleSelect = (event, index, value) => {
+    this.setState({
+      selectedFile: this.resolveFile(value),
+    });
+  };
+
   resolveFile(key) {
     if (!key) {
       return null;
     }
     return this.props.findFile((item) => item.key === key);
+  }
+
+  renderDropDownMenu() {
+    const {
+      selectedFile,
+    } = this.state;
+
+    const markdowns = this.props.files
+      .filter((item) => item.is('markdown'));
+
+    const styles = {
+      underline: {
+        display: 'none',
+      },
+    };
+
+    return (
+      <DropDownMenu
+        value={selectedFile.key}
+        underlineStyle={styles.underline}
+        onChange={this.handleSelect}
+      >
+      {markdowns.map((file) => (
+        <MenuItem
+          key={file.key}
+          value={file.key}
+          primaryText={file.header}
+        />
+      ))}
+      </DropDownMenu>
+    );
   }
 
   render() {
@@ -90,16 +128,21 @@ export default class ReadmePane extends Component {
       root: {
         margin: 16,
       },
+      text: {
+        paddingTop: 0,
+      },
     };
     return (
       <Card initiallyExpanded
         style={styles.root}
       >
         <CardHeader showExpandableButton
-          title="README"
-          subtitle={<div>{selectedFile.header}</div>}
+          title={this.renderDropDownMenu()}
         />
-        <CardText expandable >
+        <CardText
+          expandable
+          style={styles.text}
+        >
           <Readme
             file={selectedFile}
             selectTab={this.props.selectTab}

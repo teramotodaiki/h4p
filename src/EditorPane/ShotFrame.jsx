@@ -25,15 +25,15 @@ const getStyles = (props, context, state) => {
     root: {
       display: 'flex',
       flexDirection: 'column',
-      margin: '1rem 1rem 1rem 0',
+      margin: '1rem 0',
     },
     editor: {
       boxSizing: 'border-box',
       width: '100%',
       height: Math.min(500, height + spacing.desktopGutterMore),
-      marginLeft: anim === 1 ? -400 : 0,
+      marginLeft: anim === 1 ? 400 : 0,
       transform: `
-        rotateZ(${anim === 1 ? -180 : 0}deg)
+        rotateZ(${anim === 1 ? 180 : 0}deg)
         scaleY(${anim === 2 ? 0 : 1})`,
       opacity: anim === 0 ? 1 : 0.1,
       transition: transitions.easeOut(durations[anim] + 'ms'),
@@ -41,12 +41,13 @@ const getStyles = (props, context, state) => {
     menu: {
       position: 'relative',
       display: 'flex',
+      flexDirection: 'row-reverse',
       justifyContent: 'space-between',
       alignItems: 'flex-end',
       height: 36,
     },
     shoot: {
-      marginLeft: 9,
+      marginRight: 9,
       marginBottom: 4,
       transform: `
         rotateY(${anim === 0 ? 0 : 180}deg)`,
@@ -205,20 +206,19 @@ export default class ShotFrame extends Component {
           />
         </div>
         <div style={menu}>
-          <div>
-            <FloatingActionButton mini
-              disabled={anim !== 0}
-              onTouchTap={this.shoot}
-              style={shoot}
-            >
-            {anim === 0 ? (
-              <AvPlayArrow />
-            ) : (
-              <AvStop />
-            )}
-            </FloatingActionButton>
-            <span style={label}>{localization.shot.shoot}</span>
-          </div>
+          <FloatingActionButton mini
+            disabled={anim !== 0}
+            onTouchTap={this.shoot}
+            style={shoot}
+          >
+          {anim === 0 ? (
+            <AvPlayArrow />
+          ) : (
+            <AvStop />
+          )}
+          </FloatingActionButton>
+          <span style={label}>{localization.shot.shoot}</span>
+          <div style={{ flex: '1 1 auto' }}></div>
           <FlatButton secondary
             label={localization.shot.restore}
             onTouchTap={this.handleRestore}

@@ -16,10 +16,12 @@ const getStyles = (props, context) => {
   } = context.muiTheme;
 
   return {
-    root: prepareStyles({
-      flex: '1 1 auto',
+    root: {
       position: 'relative',
-    }),
+      flex: '0 0 auto',
+      height: 500,
+      marginBottom: 16,
+    },
     scroll: prepareStyles({
       position: 'absolute',
       boxSizing: 'border-box',
@@ -31,6 +33,7 @@ const getStyles = (props, context) => {
       direction: 'rtl',
     }),
     button: {
+      position: 'absolute',
       right: 23,
       bottom: 23,
       zIndex: 1000,
