@@ -55,6 +55,7 @@ export default class SnippetPane extends Component {
       this.setState({
         snippets: [],
         snippetFiles: [],
+        fileKey: '',
       });
     }
   }
@@ -131,6 +132,8 @@ export default class SnippetPane extends Component {
     };
 
     const HasSnippets = snippets.length > 0;
+    const subtitle = this.state.fileKey ?
+      '' : localization.snippet.fileNotSelected;
 
     return (
       <Card initiallyExpanded
@@ -139,8 +142,8 @@ export default class SnippetPane extends Component {
         <CardHeader
           actAsExpander={HasSnippets}
           showExpandableButton={HasSnippets}
-          title="Assets"
-          subtitle="File not selected"
+          title={localization.snippet.title}
+          subtitle={subtitle}
         />
         <CardActions expandable >
         {this.renderChips()}
