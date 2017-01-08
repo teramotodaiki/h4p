@@ -7,7 +7,6 @@ export default {
     shutdown: 'Shutdown',
     popout: 'Pop-out Screen',
     palette: 'Palette',
-    env: 'Configure env',
     language: 'Language',
     clone: 'Save / Load / Clone',
     aboutFeeles: 'About Feeles',

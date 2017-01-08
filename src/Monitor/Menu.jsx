@@ -16,7 +16,6 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import { BinaryFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
 import PaletteDialog from './PaletteDialog';
-import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
 import CloneDialog from './CloneDialog';
 
@@ -83,12 +82,6 @@ export default class Menu extends Component {
     const { openFileDialog } = this.props;
 
     openFileDialog(PaletteDialog);
-  };
-
-  handleEnv = () => {
-    const { openFileDialog } = this.props;
-
-    openFileDialog(EnvDialog);
   };
 
   handleAbout = () => {
@@ -181,14 +174,6 @@ export default class Menu extends Component {
           style={button}
         >
           <ImagePalette color={alternateTextColor} />
-        </IconButton>
-        <IconButton
-          tooltipPosition="top-center"
-          tooltip={menu.env}
-          onTouchTap={this.handleEnv}
-          style={button}
-        >
-          <ImageTune color={alternateTextColor} />
         </IconButton>
         <IconButton
           tooltipPosition="top-center"
