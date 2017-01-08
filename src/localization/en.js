@@ -93,6 +93,8 @@ Thanks
     emptyTrashBox: 'Empty trash',
   },
   snippet: {
+    title: 'Assets',
+    fileNotSelected: 'File not selected',
     readMore: 'Read more',
   },
   credit: {

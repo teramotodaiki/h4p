@@ -16,10 +16,12 @@ const getStyles = (props, context) => {
   } = context.muiTheme;
 
   return {
-    root: prepareStyles({
-      flex: '1 1 auto',
+    root: {
       position: 'relative',
-    }),
+      flex: '0 0 auto',
+      height: 500,
+      marginBottom: 16,
+    },
     scroll: prepareStyles({
       position: 'absolute',
       boxSizing: 'border-box',
@@ -114,7 +116,7 @@ export default class Hierarchy extends Component {
 
     const selected = tabs.find((tab) => tab.isSelected);
 
-    if (selected.is(tab)) {
+    if (selected && selected.is(tab)) {
       closeTab(selected);
     } else {
       selectTab(tab);
@@ -135,7 +137,8 @@ export default class Hierarchy extends Component {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(AddDialog)
       .then(seed => new SourceFile(seed))
-      .then(file => addFile(file));
+      .then(file => addFile(file))
+      .catch(() => {});
   };
 
   render() {

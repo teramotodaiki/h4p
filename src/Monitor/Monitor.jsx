@@ -75,6 +75,7 @@ const getStyle = (props, context, state) => {
 export default class Monitor extends Component {
 
   static propTypes = {
+    showMonitor: PropTypes.bool.isRequired,
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
     isResizing: PropTypes.bool.isRequired,
@@ -306,6 +307,7 @@ export default class Monitor extends Component {
       error,
     } = this.state;
     const {
+      showMonitor,
       isPopout,
       reboot,
       handleRun,
@@ -321,30 +323,31 @@ export default class Monitor extends Component {
     } = getStyle(this.props, this.context, this.state);
     const { prepareStyles } = this.context.muiTheme;
 
-    const popout = isPopout && !reboot ? (
-      <Popout
-        url={popoutURL}
-        title='app'
-        options={this.popoutOptions}
-        window={{
-          open: this.handlePopoutOpen,
-          addEventListener: window.addEventListener.bind(window),
-          removeEventListener: window.removeEventListener.bind(window),
-        }}
-        onClosing={this.handlePopoutClose}
-      >
-        <Screen display
-          frameRef={(ref) => ref && (this.popoutFrame = ref)}
-          handleRun={handleRun}
-          reboot={reboot}
-          error={error}
-        />
-      </Popout>
-    ) : null;
+    if (!showMonitor) {
+      return isPopout && !reboot ? (
+        <Popout
+          url={popoutURL}
+          title='app'
+          options={this.popoutOptions}
+          window={{
+            open: this.handlePopoutOpen,
+            addEventListener: window.addEventListener.bind(window),
+            removeEventListener: window.removeEventListener.bind(window),
+          }}
+          onClosing={this.handlePopoutClose}
+        >
+          <Screen display
+            frameRef={(ref) => ref && (this.popoutFrame = ref)}
+            handleRun={handleRun}
+            reboot={reboot}
+            error={error}
+          />
+        </Popout>
+      ) : null;
+    }
 
     return (
       <div style={prepareStyles(root)}>
-        {popout}
         <Screen animation
           display={!isPopout}
           frameRef={(ref) => ref && (this.inlineFrame = ref)}

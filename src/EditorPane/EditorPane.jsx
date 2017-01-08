@@ -1,11 +1,9 @@
 import React, { PropTypes, Component } from 'react';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 
 import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
-import MarkdownMenu from './MarkdownMenu';
 
 
 const getStyles = (props, context) => {
@@ -47,6 +45,7 @@ const getStyles = (props, context) => {
 export default class EditorPane extends Component {
 
   static propTypes = {
+    showMonitor: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     tabs: PropTypes.array.isRequired,
     putFile: PropTypes.func.isRequired,
@@ -75,18 +74,10 @@ export default class EditorPane extends Component {
     return true;
   }
 
-  handleShot = (text) => {
-    const { port, getConfig } = this.props;
-    if (port) {
-      return Promise.resolve()
-        .then(() => SourceFile.shot(text).babel(getConfig('babelrc')))
-        .then((file) => port.postMessage({ query: 'shot', value: file.serialize() }));
-    }
-    return Promise.reject();
-  };
+
 
   render() {
-    if (this.props.isShrinked) {
+    if (this.props.showMonitor) {
       return null;
     }
 
@@ -114,11 +105,6 @@ export default class EditorPane extends Component {
 
     return (
     <div style={prepareStyles(root)}>
-      <MarkdownMenu
-        files={files}
-        tabs={tabs}
-        selectTab={selectTab}
-      />
       <EditorMenu
         localization={localization}
         getConfig={getConfig}
@@ -148,7 +134,6 @@ export default class EditorPane extends Component {
           isSelected: tab.isSelected,
           getConfig,
           findFile,
-          onShot: this.handleShot,
           selectTab,
           localization,
           port,

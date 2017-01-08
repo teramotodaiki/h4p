@@ -20,6 +20,8 @@ import getCustomTheme from '../js/getCustomTheme';
 import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
+import ReadmePane from '../ReadmePane/';
+import SnippetPane from '../EditorPane/SnippetPane';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
@@ -45,6 +47,9 @@ const getStyle = (props, state, palette) => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
+    },
+    scroll: {
+      overflow: 'scroll',
     },
     right: {
       flex: '0 0 auto',
@@ -121,15 +126,7 @@ class Main extends Component {
     } = this.props;
     const { localization } = this.state;
 
-    if (!this.findFile('README.md')) {
-      this.addFile(
-        new SourceFile({
-          type: 'text/x-markdown',
-          name: 'README.md',
-          text: localization.readme.text,
-        })
-      );
-    }
+
 
     document.title = this.getConfig('env').TITLE[0];
 
@@ -159,13 +156,6 @@ class Main extends Component {
   componentDidUpdate() {
     if (this.state.reboot) {
       this.setState({ reboot: false });
-    }
-
-    if (!this.state.tabs.length) {
-      this.selectTab(new Tab({
-        getFile: () => this.findFile('README.md'),
-        component: Readme,
-      }));
     }
 
     document.title = this.getConfig('env').TITLE[0];
@@ -249,11 +239,13 @@ class Main extends Component {
       const replace = found.select(true);
       this.setState({
         tabs: tabs.map((item) => item === found ? replace : item),
+        showMonitor: false,
       }, () => resolve(replace));
     } else {
       if (!tab.isSelected) tab = tab.select(true);
       this.setState({
         tabs: tabs.concat(tab),
+        showMonitor: false,
       }, () => resolve(tab));
     }
   });
@@ -332,13 +324,16 @@ class Main extends Component {
   handleRun = () => {
     this.setState({
       reboot: true,
-      showMonitor: true,
+      showMonitor: !this.state.isPopout,
     });
   };
 
   handleTogglePopout = () => {
-    const isPopout = !this.state.isPopout;
-    this.setState({ isPopout, reboot: true });
+    this.setState({
+      reboot: true,
+      isPopout: !this.state.isPopout,
+      showMonitor: false,
+    });
   };
 
   setLocalization = (localization) => {
@@ -366,6 +361,7 @@ class Main extends Component {
     const {
       root,
       left,
+      scroll,
       dropCover,
       right,
     } = getStyle(this.props, this.state, this.getConfig('palette'));
@@ -384,6 +380,7 @@ class Main extends Component {
     const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
+      showMonitor: this.state.showMonitor,
       tabs,
       selectTab: this.selectTab,
       closeTab: this.closeTab,
@@ -398,6 +395,7 @@ class Main extends Component {
     };
 
     const monitorProps = {
+      showMonitor: this.state.showMonitor,
       monitorWidth,
       monitorHeight: this.rootHeight,
       reboot,
@@ -429,6 +427,15 @@ class Main extends Component {
       saveAs: this.saveAs,
     };
 
+    const readmeProps = {
+      selectTab: this.selectTab,
+      port: this.state.port,
+    };
+
+    const snippetProps = {
+      tabs,
+    };
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
@@ -436,7 +443,11 @@ class Main extends Component {
           <div style={dropCover}></div>
           <div style={left}>
             <Menu {...commonProps} {...menuProps} />
-            <Hierarchy {...commonProps} {...hierarchyProps} />
+            <div style={scroll}>
+              <ReadmePane {...commonProps} {...readmeProps} />
+              <SnippetPane {...commonProps} {...snippetProps} />
+              <Hierarchy {...commonProps} {...hierarchyProps} />
+            </div>
           </div>
           <Sizer
             monitorWidth={monitorWidth}
@@ -444,11 +455,8 @@ class Main extends Component {
             onSizer={(isResizing) => this.setState({ isResizing })}
           />
           <div style={right}>
-          {this.state.showMonitor ? (
             <Monitor {...commonProps} {...monitorProps} />
-          ) : (
             <EditorPane {...commonProps} {...editorPaneProps} />
-          )}
           {this.state.showMonitor ? (
             <IconButton
               style={{

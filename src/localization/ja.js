@@ -93,6 +93,8 @@ alert('こんにちは！');
     emptyTrashBox: '空にする',
   },
   snippet: {
+    title: 'アセット',
+    fileNotSelected: 'ファイルが選択されていません',
     readMore: 'もっと読む',
   },
   credit: {

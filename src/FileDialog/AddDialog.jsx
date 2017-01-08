@@ -16,6 +16,7 @@ export default class AddDialog extends Component {
 
   static propTypes = {
     resolve: PropTypes.func.isRequired,
+    reject: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired
   };
 
@@ -27,11 +28,16 @@ export default class AddDialog extends Component {
     onRequestClose();
   };
 
+  cancel = () => {
+    this.props.reject();
+    this.props.onRequestClose();
+  };
+
   render() {
     const { onRequestClose } = this.props;
 
     const actions = [
-      <Abort onTouchTap={onRequestClose} />,
+      <Abort onTouchTap={this.cancel} />,
       <Confirm label="Add" onTouchTap={this.handleAdd} />
     ];
 
@@ -41,7 +47,7 @@ export default class AddDialog extends Component {
         actions={actions}
         modal={false}
         open={true}
-        onRequestClose={onRequestClose}
+        onRequestClose={this.cancel}
       >
         <FilenameInput ref={(input) => this.input = input} />
       </Dialog>
