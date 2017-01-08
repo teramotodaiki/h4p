@@ -6,7 +6,6 @@ import HardwareKeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-b
 import ContentSave from 'material-ui/svg-icons/content/save';
 
 
-import { SizerWidth } from '../Monitor/';
 import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
 import SnippetPane from './SnippetPane';
@@ -32,7 +31,6 @@ const getStyle = (props, context) => {
       margin: 0,
       padding: 8,
       borderStyle: 'double none double solid',
-      borderLeftWidth: SizerWidth,
       backgroundColor: red50,
       color: red500,
       fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
@@ -43,7 +41,6 @@ const getStyle = (props, context) => {
     },
     menuBar: {
       display: 'flex',
-      paddingLeft: SizerWidth,
       backgroundColor: palette.canvasColor,
       borderBottom: `1px solid ${palette.borderColor}`,
     },
@@ -65,7 +62,6 @@ class SourceEditor extends Component {
     tab: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
-    gutterMarginWidth: PropTypes.number,
     handleRun: PropTypes.func.isRequired,
     closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
@@ -79,10 +75,6 @@ class SourceEditor extends Component {
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
-  };
-
-  static defaultProps = {
-    gutterMarginWidth: SizerWidth,
   };
 
   static contextTypes = {

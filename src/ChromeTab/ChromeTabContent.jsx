@@ -9,8 +9,6 @@ const getStyles = (props, context) => {
     palette,
   } = context.muiTheme;
 
-  const sizerWidth = 24;
-
   return {
     root: {
       position: 'absolute',

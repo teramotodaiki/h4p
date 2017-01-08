@@ -6,7 +6,6 @@ import transitions from 'material-ui/styles/transitions';
 
 
 import SnippetButton from './SnippetButton';
-import { SizerWidth } from '../Monitor/';
 import { configs } from '../File/';
 
 
@@ -40,7 +39,6 @@ const getStyle = (props, context, state) => {
     menu: {
       display: 'flex',
       borderTop: `1px solid ${palette.borderColor}`,
-      paddingLeft: SizerWidth,
       paddingBottom: collapse ? 8 : 0,
     },
     container: {
@@ -50,7 +48,6 @@ const getStyle = (props, context, state) => {
       flexWrap: 'wrap',
       overflow: 'scroll',
       boxSizing: 'border-box',
-      paddingLeft: SizerWidth,
       justifyContent: 'flex-start',
       transition: transitions.easeOut(),
     },

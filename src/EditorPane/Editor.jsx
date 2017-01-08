@@ -25,7 +25,6 @@ import './codemirror-hint-extension';
 import '../css/codemirror-extension.css';
 
 import excessiveCare from './excessiveCare';
-import { SizerWidth } from '../Monitor/';
 
 const AlreadySetSymbol = Symbol('AlreadySetSymbol');
 
@@ -38,7 +37,6 @@ export const MimeTypes = {
 
 const getStyles = (props, context, state) => {
   const {
-    gutterMarginWidth,
   } = props;
   const {
     tabVisibility,
@@ -82,7 +80,6 @@ const getStyles = (props, context, state) => {
         border-color: ${palette.borderColor};
         background-color: ${palette.canvasColor};
         filter: invert(${darkness ? 100 : 0}%);
-        padding-left: ${gutterMarginWidth}px;
       }
       #${CssScopeId} .CodeMirror-gutter:first-child {
       }
@@ -101,7 +98,6 @@ const getStyles = (props, context, state) => {
       }
       #${CssScopeId} .CodeMirror-dialog {
         background-color: ${palette.canvasColor};
-        margin-left: ${SizerWidth}px;
       }
     `,
   }
@@ -113,7 +109,6 @@ export default class Editor extends Component {
     file: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
-    gutterMarginWidth: PropTypes.number,
     handleRun: PropTypes.func.isRequired,
     closeSelectedTab: PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
@@ -127,7 +122,6 @@ export default class Editor extends Component {
   static defaultProps = {
     handleRun: () => {},
     getFiles: () => [],
-    gutterMarginWidth: 0,
     closeSelectedTab: () => {},
     isCared: false,
     codemirrorRef: () => {},

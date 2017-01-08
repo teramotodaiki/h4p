@@ -5,7 +5,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
-import { SizerWidth } from '../Monitor/';
 import MarkdownMenu from './MarkdownMenu';
 
 
@@ -35,7 +34,6 @@ const getStyles = (props, context) => {
       paddingLeft: 10 + spacing.desktopGutterMore,
       marginRight: spacing.desktopGutterMore,
       marginBottom: -10,
-      marginLeft: SizerWidth,
       overflow: 'hidden',
       zIndex: 10,
     },
@@ -145,7 +143,6 @@ export default class EditorPane extends Component {
         {tab.renderContent({
           getFiles: () => files,
           onChange: (text) => putFile(tab.file, tab.file.set({ text })),
-          gutterMarginWidth: SizerWidth,
           handleRun,
           closeSelectedTab: () => tab.isSelected && closeTab(tab),
           isSelected: tab.isSelected,
