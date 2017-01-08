@@ -161,13 +161,6 @@ class Main extends Component {
       this.setState({ reboot: false });
     }
 
-    if (!this.state.tabs.length) {
-      this.selectTab(new Tab({
-        getFile: () => this.findFile('README.md'),
-        component: Readme,
-      }));
-    }
-
     document.title = this.getConfig('env').TITLE[0];
   }
 
@@ -249,11 +242,13 @@ class Main extends Component {
       const replace = found.select(true);
       this.setState({
         tabs: tabs.map((item) => item === found ? replace : item),
+        showMonitor: false,
       }, () => resolve(replace));
     } else {
       if (!tab.isSelected) tab = tab.select(true);
       this.setState({
         tabs: tabs.concat(tab),
+        showMonitor: false,
       }, () => resolve(tab));
     }
   });

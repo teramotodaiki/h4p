@@ -114,7 +114,7 @@ export default class Hierarchy extends Component {
 
     const selected = tabs.find((tab) => tab.isSelected);
 
-    if (selected.is(tab)) {
+    if (selected && selected.is(tab)) {
       closeTab(selected);
     } else {
       selectTab(tab);
