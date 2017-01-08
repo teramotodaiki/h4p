@@ -22,6 +22,7 @@ import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
 import ReadmePane from '../ReadmePane/';
 import SnippetPane from '../EditorPane/SnippetPane';
+import EnvPane from '../EnvPane/';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
@@ -447,6 +448,7 @@ class Main extends Component {
             <div style={scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
+              <EnvPane {...commonProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
           </div>
