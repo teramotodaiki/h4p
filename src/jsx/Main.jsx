@@ -53,8 +53,10 @@ const getStyle = (props, state, palette) => {
     },
     right: {
       flex: '0 0 auto',
+      boxSizing: 'border-box',
       width: state.monitorWidth,
       height: '100%',
+      paddingBottom: 4,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
@@ -442,7 +444,6 @@ class Main extends Component {
         <div style={root}>
           <div style={dropCover}></div>
           <div style={left}>
-            <Menu {...commonProps} {...menuProps} />
             <div style={scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
@@ -457,6 +458,7 @@ class Main extends Component {
           <div style={right}>
             <Monitor {...commonProps} {...monitorProps} />
             <EditorPane {...commonProps} {...editorPaneProps} />
+            <Menu {...commonProps} {...menuProps} />
           {this.state.showMonitor ? (
             <IconButton
               style={{
