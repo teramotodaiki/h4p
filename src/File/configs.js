@@ -24,7 +24,6 @@ export default new Map([
     test: /^\.env$/i,
     multiple: false,
     defaultValue: {
-      DEBUG: [true, 'boolean', 'A flag means test mode'],
       TITLE: ['My App', 'string', 'A name of this app'],
     },
     defaultName: '.env',
