@@ -29,11 +29,6 @@ const getStyles = (props, context) => {
     preview: {
       width: '100%',
       height: '100%',
-      backgroundColor: 'transparent',
-    },
-    color: {
-      width: '100%',
-      height: '100%',
       borderRadius: '0 0 0 4px',
       backgroundColor: palette.primary1Color,
     },
@@ -79,16 +74,13 @@ class Sizer extends Component {
 
     const {
       root,
-      color,
       preview,
     } = getStyles(this.props, this.context);
 
     return connectDragSource(
       <div style={root}>
       {connectDragPreview(
-        <div style={preview}>
-          <Paper style={color} />
-        </div>
+        <div style={preview} />
       )}
       </div>
     );

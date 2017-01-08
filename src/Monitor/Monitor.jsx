@@ -13,7 +13,6 @@ import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
-import { MenuHeight } from './Menu';
 
 
 const FramePadding = 8;
