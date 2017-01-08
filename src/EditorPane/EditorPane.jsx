@@ -1,11 +1,9 @@
 import React, { PropTypes, Component } from 'react';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 
 import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
-import MarkdownMenu from './MarkdownMenu';
 
 
 const getStyles = (props, context) => {
@@ -106,11 +104,6 @@ export default class EditorPane extends Component {
 
     return (
     <div style={prepareStyles(root)}>
-      <MarkdownMenu
-        files={files}
-        tabs={tabs}
-        selectTab={selectTab}
-      />
       <EditorMenu
         localization={localization}
         getConfig={getConfig}
