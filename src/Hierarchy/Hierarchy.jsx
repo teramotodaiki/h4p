@@ -137,7 +137,8 @@ export default class Hierarchy extends Component {
     const { openFileDialog, addFile } = this.props;
     openFileDialog(AddDialog)
       .then(seed => new SourceFile(seed))
-      .then(file => addFile(file));
+      .then(file => addFile(file))
+      .catch(() => {});
   };
 
   render() {
