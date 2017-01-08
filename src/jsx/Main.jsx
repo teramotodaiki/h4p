@@ -330,7 +330,7 @@ class Main extends Component {
 
   handleTogglePopout = () => {
     this.setState({
-      reboot: true,
+      reboot: !this.state.isPopout,
       isPopout: !this.state.isPopout,
       showMonitor: false,
     });

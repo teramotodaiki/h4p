@@ -117,6 +117,10 @@ class SourceEditor extends Component {
     const text = this.codemirror.getValue('\n');
     const babelrc = this.props.getConfig('babelrc');
 
+    if (text === this.props.file.text) {
+      return Promise.resolve();
+    }
+
     return Promise.resolve()
       .then(() => this.setState({
         hasChanged: false,
