@@ -20,6 +20,7 @@ import getCustomTheme from '../js/getCustomTheme';
 import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
+import ReadmePane from '../ReadmePane/';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
@@ -45,6 +46,9 @@ const getStyle = (props, state, palette) => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
+    },
+    scroll: {
+      overflow: 'scroll',
     },
     right: {
       flex: '0 0 auto',
@@ -121,15 +125,7 @@ class Main extends Component {
     } = this.props;
     const { localization } = this.state;
 
-    if (!this.findFile('README.md')) {
-      this.addFile(
-        new SourceFile({
-          type: 'text/x-markdown',
-          name: 'README.md',
-          text: localization.readme.text,
-        })
-      );
-    }
+
 
     document.title = this.getConfig('env').TITLE[0];
 
@@ -361,6 +357,7 @@ class Main extends Component {
     const {
       root,
       left,
+      scroll,
       dropCover,
       right,
     } = getStyle(this.props, this.state, this.getConfig('palette'));
@@ -424,6 +421,11 @@ class Main extends Component {
       saveAs: this.saveAs,
     };
 
+    const readmeProps = {
+      selectTab: this.selectTab,
+      port: this.state.port,
+    };
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
@@ -431,7 +433,10 @@ class Main extends Component {
           <div style={dropCover}></div>
           <div style={left}>
             <Menu {...commonProps} {...menuProps} />
-            <Hierarchy {...commonProps} {...hierarchyProps} />
+            <div style={scroll}>
+              <ReadmePane {...commonProps} {...readmeProps} />
+              <Hierarchy {...commonProps} {...hierarchyProps} />
+            </div>
           </div>
           <Sizer
             monitorWidth={monitorWidth}

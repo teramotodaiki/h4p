@@ -49,7 +49,7 @@ const getStyles = (props, context, state) => {
       marginLeft: 9,
       marginBottom: 4,
       transform: `
-        rotateY(${anim === 0 ? 180 : 0}deg)`,
+        rotateY(${anim === 0 ? 0 : 180}deg)`,
     },
     label: {
       color: palette.secondaryTextColor,

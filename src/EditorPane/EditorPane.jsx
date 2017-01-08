@@ -75,15 +75,7 @@ export default class EditorPane extends Component {
     return true;
   }
 
-  handleShot = (text) => {
-    const { port, getConfig } = this.props;
-    if (port) {
-      return Promise.resolve()
-        .then(() => SourceFile.shot(text).babel(getConfig('babelrc')))
-        .then((file) => port.postMessage({ query: 'shot', value: file.serialize() }));
-    }
-    return Promise.reject();
-  };
+
 
   render() {
     if (this.props.isShrinked) {
@@ -148,7 +140,6 @@ export default class EditorPane extends Component {
           isSelected: tab.isSelected,
           getConfig,
           findFile,
-          onShot: this.handleShot,
           selectTab,
           localization,
           port,

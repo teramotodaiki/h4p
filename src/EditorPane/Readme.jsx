@@ -10,33 +10,6 @@ import ShotFrame from './ShotFrame';
 
 const BarHeight = 36;
 
-const getStyle = (props, state, context) => {
-  const {
-    palette,
-    spacing,
-    prepareStyles,
-  } = context.muiTheme;
-
-  return {
-    root: prepareStyles({
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      boxSizing: 'border-box',
-      paddingRight: spacing.desktopGutterMini,
-      display: 'flex',
-      transition: transitions.easeOut(),
-      backgroundColor: palette.canvasColor,
-    }),
-    markdown: prepareStyles({
-      flex: '1 1 auto',
-      display: 'block',
-      overflow: 'scroll',
-      paddingLeft: spacing.desktopGutterMini,
-      paddingBottom: spacing.desktopGutterMore,
-    }),
-  };
-};
 
 const mdStyle = (props, state, context) => {
   const {
@@ -79,7 +52,6 @@ export default class Readme extends Component {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
-    isSelected: PropTypes.bool.isRequired,
     onShot: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
@@ -96,13 +68,6 @@ export default class Readme extends Component {
     updates: {},
     completes: [],
   };
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!this.props.isSelected && !nextProps.isSelected) {
-      return false;
-    }
-    return true;
-  }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.readme !== nextProps.readme) {
@@ -205,11 +170,6 @@ export default class Readme extends Component {
       prepareStyles,
     } = this.context.muiTheme;
 
-    const {
-      root,
-      markdown,
-    } = getStyle(this.props, this.state, this.context);
-
     const mdStyles = mdStyle(this.props, this.state, this.context);
 
     const onIterate = (tag, props, children) => {
@@ -222,14 +182,19 @@ export default class Readme extends Component {
       return this.renderIterate(tag, props, children);
     };
 
+    const styles = {
+      root: {
+        boxSizing: 'border-box',
+        overflow: 'scroll',
+      },
+    };
+
     return (
-      <div style={root}>
-        <MDReactComponent
-          text={file.text}
-          style={markdown}
-          onIterate={onIterate}
-        />
-      </div>
+      <MDReactComponent
+        text={file.text}
+        style={styles.root}
+        onIterate={onIterate}
+      />
     );
   }
 }
