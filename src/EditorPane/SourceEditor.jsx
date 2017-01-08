@@ -175,32 +175,32 @@ class SourceEditor extends Component {
       {file.error ? (
         <pre style={error}>{file.error.message}</pre>
       ) : null}
-      <div style={menuBar}>
-        <FlatButton
-          label={localization.editor.undo}
-          disabled={!this.state.hasHistory}
-          style={barButton}
-          labelStyle={barButtonLabel}
-          icon={<HardwareKeyboardBackspace />}
-          onTouchTap={this.handleUndo}
-        />
-        <FlatButton
-          label={localization.editor.save}
-          disabled={!this.state.hasChanged}
-          style={barButton}
-          labelStyle={barButtonLabel}
-          icon={<ContentSave />}
-          onTouchTap={this.handleSave}
-        />
-        <div style={{ flex: '1 1 auto' }}></div>
-        <FlatButton
-          label={localization.editor.play}
-          style={barButton}
-          labelStyle={barButtonLabel}
-          icon={<AVPlayCircleOutline />}
-          onTouchTap={this.props.handleRun}
-        />
-      </div>
+        <div style={menuBar}>
+          <FlatButton
+            label={localization.editor.undo}
+            disabled={!this.state.hasHistory}
+            style={barButton}
+            labelStyle={barButtonLabel}
+            icon={<HardwareKeyboardBackspace />}
+            onTouchTap={this.handleUndo}
+          />
+          <FlatButton
+            label={localization.editor.save}
+            disabled={!this.state.hasChanged}
+            style={barButton}
+            labelStyle={barButtonLabel}
+            icon={<ContentSave />}
+            onTouchTap={this.handleSave}
+          />
+          <div style={{ flex: '1 1 auto' }}></div>
+          <FlatButton
+            label={localization.editor.play}
+            style={barButton}
+            labelStyle={barButtonLabel}
+            icon={<AVPlayCircleOutline />}
+            onTouchTap={this.handlePlay}
+          />
+        </div>
       {connectDropTarget(
         <div style={editorContainer}>
           <Editor {...props} />
