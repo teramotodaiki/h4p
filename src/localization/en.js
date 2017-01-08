@@ -46,9 +46,6 @@ export default {
     description: (filename) => `Right click on the above link, click "download with alias", and save it with the name "${filename}"`,
     cancel: 'Cancel',
   },
-  envDialog: {
-    title: 'Configure Environment Variables',
-  },
   paletteDialog: {
     title: 'Color Palette',
   },
@@ -111,6 +108,10 @@ Thanks
     undo: 'Undo',
     save: 'Save',
     play: 'Play',
+  },
+  env: {
+    title: 'Environment Variables',
+    remove: 'Remove',
   },
 
 };

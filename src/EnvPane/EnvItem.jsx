@@ -105,7 +105,7 @@ export default class EnvItem extends Component {
           onEditEnd={this.changeTooltip}
         />
         <IconButton
-          tooltip="Remove"
+          tooltip={localization.env.remove}
           style={styles.remove}
           onTouchTap={this.removeItem}
         >

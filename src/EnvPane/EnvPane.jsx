@@ -53,7 +53,7 @@ export default class EnvPane extends Component {
     return (
       <Card style={styles.root}>
         <CardHeader showExpandableButton actAsExpander
-          title="Environment Variables"
+          title={localization.env.title}
         />
         <CardText expandable >
         {Object.keys(this.state.env).map((key) => (

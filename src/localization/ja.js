@@ -46,9 +46,6 @@ export default {
     description: (filename) => `上のリンクを右クリックして、「別名でダウンロード」をクリックし、「${filename}」という名前をつけて保存して下さい`,
     cancel: 'キャンセル',
   },
-  envDialog: {
-    title: '環境変数 env のせってい',
-  },
   paletteDialog: {
     title: 'カラーパレット',
   },
@@ -111,6 +108,10 @@ alert('こんにちは！');
     undo: 'もどす',
     save: 'セーブ',
     play: 'プレイ',
+  },
+  env: {
+    title: '環境変数',
+    remove: '削除',
   },
 
 };
