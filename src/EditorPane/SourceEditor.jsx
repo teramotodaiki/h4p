@@ -4,6 +4,7 @@ import FlatButton from 'material-ui/FlatButton';
 import { red50, red500 } from 'material-ui/styles/colors';
 import HardwareKeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import ContentSave from 'material-ui/svg-icons/content/save';
+import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 
 
 import DragTypes from '../utils/dragTypes';
@@ -190,6 +191,14 @@ class SourceEditor extends Component {
           labelStyle={barButtonLabel}
           icon={<ContentSave />}
           onTouchTap={this.handleSave}
+        />
+        <div style={{ flex: '1 1 auto' }}></div>
+        <FlatButton
+          label={localization.editor.play}
+          style={barButton}
+          labelStyle={barButtonLabel}
+          icon={<AVPlayCircleOutline />}
+          onTouchTap={this.props.handleRun}
         />
       </div>
       {connectDropTarget(

@@ -108,6 +108,7 @@ Thanks
   editor: {
     undo: 'Undo',
     save: 'Save',
+    play: 'Play',
   },
 
 };

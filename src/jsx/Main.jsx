@@ -330,7 +330,10 @@ class Main extends Component {
   })();
 
   handleRun = () => {
-    this.setState({ reboot: true });
+    this.setState({
+      reboot: true,
+      showMonitor: true,
+    });
   };
 
   handleTogglePopout = () => {
@@ -340,19 +343,6 @@ class Main extends Component {
 
   setLocalization = (localization) => {
     this.setState({ localization });
-  };
-
-  handleToggleMonitor = () => {
-    if (this.state.showMonitor) {
-      this.setState({
-        showMonitor: false,
-      });
-    } else {
-      this.setState({
-        reboot: true,
-        showMonitor: true,
-      });
-    }
   };
 
   openFileDialog = () => console.error('openFileDialog has not be declared');
@@ -459,16 +449,18 @@ class Main extends Component {
           ) : (
             <EditorPane {...commonProps} {...editorPaneProps} />
           )}
+          {this.state.showMonitor ? (
             <IconButton
               style={{
                 position: 'absolute',
                 right: 0,
                 zIndex: 1000
               }}
-              onTouchTap={this.handleToggleMonitor}
+              onTouchTap={() => this.setState({ showMonitor: false })}
             >
               <ActionSwapHoriz color="white" />
             </IconButton>
+          ) : null}
           </div>
           <FileDialog
             ref={this.handleFileDialog}
