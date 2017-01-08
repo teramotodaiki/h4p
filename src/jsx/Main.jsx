@@ -324,13 +324,16 @@ class Main extends Component {
   handleRun = () => {
     this.setState({
       reboot: true,
-      showMonitor: true,
+      showMonitor: !this.state.isPopout,
     });
   };
 
   handleTogglePopout = () => {
-    const isPopout = !this.state.isPopout;
-    this.setState({ isPopout, reboot: true });
+    this.setState({
+      reboot: true,
+      isPopout: !this.state.isPopout,
+      showMonitor: false,
+    });
   };
 
   setLocalization = (localization) => {
@@ -377,6 +380,7 @@ class Main extends Component {
     const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
+      showMonitor: this.state.showMonitor,
       tabs,
       selectTab: this.selectTab,
       closeTab: this.closeTab,
@@ -391,6 +395,7 @@ class Main extends Component {
     };
 
     const monitorProps = {
+      showMonitor: this.state.showMonitor,
       monitorWidth,
       monitorHeight: this.rootHeight,
       reboot,
@@ -450,11 +455,8 @@ class Main extends Component {
             onSizer={(isResizing) => this.setState({ isResizing })}
           />
           <div style={right}>
-          {this.state.showMonitor ? (
             <Monitor {...commonProps} {...monitorProps} />
-          ) : (
             <EditorPane {...commonProps} {...editorPaneProps} />
-          )}
           {this.state.showMonitor ? (
             <IconButton
               style={{

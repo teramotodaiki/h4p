@@ -45,6 +45,7 @@ const getStyles = (props, context) => {
 export default class EditorPane extends Component {
 
   static propTypes = {
+    showMonitor: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     tabs: PropTypes.array.isRequired,
     putFile: PropTypes.func.isRequired,
@@ -76,7 +77,7 @@ export default class EditorPane extends Component {
 
 
   render() {
-    if (this.props.isShrinked) {
+    if (this.props.showMonitor) {
       return null;
     }
 
