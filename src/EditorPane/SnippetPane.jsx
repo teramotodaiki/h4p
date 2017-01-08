@@ -139,9 +139,7 @@ export default class SnippetPane extends Component {
       <Card initiallyExpanded
         style={styles.root}
       >
-        <CardHeader
-          actAsExpander={HasSnippets}
-          showExpandableButton={HasSnippets}
+        <CardHeader actAsExpander showExpandableButton
           title={localization.snippet.title}
           subtitle={subtitle}
         />

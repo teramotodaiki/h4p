@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
+import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
@@ -136,8 +136,8 @@ export default class ReadmePane extends Component {
       <Card initiallyExpanded
         style={styles.root}
       >
-        <CardHeader showExpandableButton
-          title={this.renderDropDownMenu()}
+        <CardHeader showExpandableButton actAsExpander
+          title={selectedFile.header}
         />
         <CardText
           expandable
@@ -154,6 +154,9 @@ export default class ReadmePane extends Component {
             onShot={this.handleShot}
           />
         </CardText>
+        <CardActions expandable >
+        {this.renderDropDownMenu()}
+        </CardActions>
 
       </Card>
     );
