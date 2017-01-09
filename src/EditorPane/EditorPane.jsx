@@ -58,7 +58,6 @@ export default class EditorPane extends Component {
     localization: PropTypes.object.isRequired,
     findFile: PropTypes.func.isRequired,
     isResizing: PropTypes.bool.isRequired,
-    isShrinked: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     setConfig: PropTypes.func.isRequired,
     port: PropTypes.object,

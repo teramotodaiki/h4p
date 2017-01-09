@@ -19,20 +19,13 @@ export default class Tab {
     });
   }
 
-  get component() {
-    return this.props.component || this.file.component;
+  get label() {
+    const { plane, ext } = this.file;
+    return plane + ext;
   }
 
   get isSelected() {
     return !!this.props.isSelected;
-  }
-
-  get label() {
-    const { file } = this;
-    if (file.is('markdown') && this.props.component) {
-      return file.header;
-    }
-    return file.plane + file.ext;
   }
 
   is(tab) {
@@ -40,7 +33,7 @@ export default class Tab {
       return false;
     }
     return (tab.key === this.key) ||
-      tab.file.key === this.file.key && tab.component === this.component;
+      tab.file.key === this.file.key;
   };
 
   select(isSelected) {
@@ -56,7 +49,7 @@ export default class Tab {
       return null;
     }
     return (
-      <this.component
+      <this.file.component
         file={this.file}
         tab={this}
         {...props}
