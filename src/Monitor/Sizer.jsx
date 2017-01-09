@@ -19,18 +19,16 @@ const getStyles = (props, context) => {
       flex: '0 0 auto',
       width: SizerWidth,
       paddingBottom: 4,
+      display: 'flex',
       overflow: 'hidden',
       cursor: 'col-resize',
       zIndex: 200,
-      transition: transitions.easeOut(),
     },
     preview: {
-      width: '100%',
-      height: '100%',
+      flex: '1 1 auto',
       borderRadius: '0 0 0 4px',
       backgroundColor: props.showMonitor ?
          palette.accent1Color : palette.primary1Color,
-      transition: transitions.easeOut(),
     },
   };
 
