@@ -6,7 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 
-import { Readme } from '../EditorPane/';
+import Readme from './Readme';
 import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
 

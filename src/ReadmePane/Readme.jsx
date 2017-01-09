@@ -4,7 +4,7 @@ import transitions from 'material-ui/styles/transitions';
 
 import MDReactComponent from '../../lib/MDReactComponent';
 import { Tab } from '../ChromeTab/';
-import Editor from './Editor';
+import { Editor } from '../EditorPane/';
 import ShotFrame from './ShotFrame';
 
 const BarHeight = 36;

@@ -10,7 +10,6 @@ import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 
 import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
-import SnippetPane from './SnippetPane';
 import CreditBar from './CreditBar';
 
 

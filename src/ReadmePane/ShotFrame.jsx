@@ -9,7 +9,7 @@ import transitions from 'material-ui/styles/transitions';
 import { red50, red500 } from 'material-ui/styles/colors';
 
 
-import Editor from './Editor';
+import { Editor } from '../EditorPane/';
 import { SourceFile } from '../File/';
 
 const durations = [600, 1400, 0];
