@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import { transparent, grey100 } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
@@ -104,7 +104,7 @@ const getStyles = (props, context, state) => {
 };
 
 
-export default class Editor extends Component {
+export default class Editor extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
@@ -112,7 +112,6 @@ export default class Editor extends Component {
     getFiles: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
     closeSelectedTab: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool.isRequired,
     isCared: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     codemirrorRef: PropTypes.func.isRequired,
