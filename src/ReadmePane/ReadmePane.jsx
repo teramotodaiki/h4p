@@ -21,6 +21,7 @@ export default class ReadmePane extends Component {
 
   state = {
     selectedFile: null,
+    completes: [],
   };
 
   componentDidMount() {
@@ -52,6 +53,16 @@ export default class ReadmePane extends Component {
       const key = this.state.selectedFile.key;
       this.setState({
         selectedFile: this.resolveFile(key),
+      });
+    }
+
+    if (this.props.port !== nextProps.port) {
+      nextProps.port.addEventListener('message', (event) => {
+        if (event.data.query === 'complete') {
+          this.setState({
+            completes: event.data.value,
+          });
+        }
       });
     }
   }
@@ -150,7 +161,7 @@ export default class ReadmePane extends Component {
             addFile={this.props.addFile}
             getConfig={this.props.getConfig}
             localization={this.props.localization}
-            port={this.props.port}
+            completes={this.state.completes}
             onShot={this.handleShot}
           />
         </CardText>
