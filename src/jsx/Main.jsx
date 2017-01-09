@@ -342,6 +342,10 @@ class Main extends Component {
     });
   };
 
+  setResizing = (isResizing) => {
+    return this.setState({ isResizing })
+  };
+
   setLocalization = (localization) => {
     this.setState({ localization });
   };
@@ -460,7 +464,7 @@ class Main extends Component {
           <Sizer
             monitorWidth={monitorWidth}
             monitorHeight={monitorHeight}
-            onSizer={(isResizing) => this.setState({ isResizing })}
+            onSizer={this.setResizing}
             showMonitor={this.state.showMonitor}
           />
           <div style={right}>

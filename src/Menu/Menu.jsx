@@ -54,7 +54,6 @@ export default class Menu extends Component {
     openFileDialog: PropTypes.func.isRequired,
     togglePopout: PropTypes.func.isRequired,
     monitorWidth: PropTypes.number.isRequired,
-    monitorHeight: PropTypes.number.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
