@@ -112,5 +112,8 @@ Thanks
     title: 'Environment Variables',
     remove: 'Remove',
   },
+  palette: {
+    title: 'Color Palette',
+  },
 
 };

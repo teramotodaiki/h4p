@@ -113,5 +113,8 @@ alert('こんにちは！');
     title: '環境変数',
     remove: '削除',
   },
+  palette: {
+    title: 'カラーパレット',
+  },
 
 };

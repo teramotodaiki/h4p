@@ -23,6 +23,7 @@ import Monitor, { Sizer, Menu } from '../Monitor/';
 import ReadmePane from '../ReadmePane/';
 import SnippetPane from '../EditorPane/SnippetPane';
 import EnvPane from '../EnvPane/';
+import PalettePane from '../PalettePane/';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
@@ -449,6 +450,7 @@ class Main extends Component {
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
               <EnvPane {...commonProps} />
+              <PalettePane {...commonProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
           </div>
