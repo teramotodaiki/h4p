@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -46,7 +46,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class Menu extends Component {
+export default class Menu extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,

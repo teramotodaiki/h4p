@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import localforage from 'localforage';
 import Dialog from 'material-ui/Dialog';
 import {Tabs, Tab} from 'material-ui/Tabs';
@@ -36,7 +36,7 @@ const gen = (template, begin, array) => {
   }
 };
 
-export default class CloneDialog extends Component {
+export default class CloneDialog extends PureComponent {
 
   static propTypes = {
     resolve: PropTypes.func.isRequired,
