@@ -7,15 +7,12 @@ import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import FileCloudUpload from 'material-ui/svg-icons/file/cloud-upload';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
-import ImagePalette from 'material-ui/svg-icons/image/palette';
-import ImageTune from 'material-ui/svg-icons/image/tune';
 import ActionLanguage from 'material-ui/svg-icons/action/language';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 
 import { BinaryFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
-import PaletteDialog from './PaletteDialog';
 import AboutDialog from './AboutDialog';
 import CloneDialog from './CloneDialog';
 
@@ -76,12 +73,6 @@ export default class Menu extends Component {
       files: this.props.files,
       saveAs: this.props.saveAs,
     });
-  };
-
-  handlePalette = () => {
-    const { openFileDialog } = this.props;
-
-    openFileDialog(PaletteDialog);
   };
 
   handleAbout = () => {
@@ -167,14 +158,6 @@ export default class Menu extends Component {
           />
         ))}
         </IconMenu>
-        <IconButton
-          tooltipPosition="top-center"
-          tooltip={menu.palette}
-          onTouchTap={this.handlePalette}
-          style={button}
-        >
-          <ImagePalette color={alternateTextColor} />
-        </IconButton>
         <IconButton
           tooltipPosition="top-center"
           tooltip={menu.popout}

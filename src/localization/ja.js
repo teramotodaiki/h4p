@@ -6,7 +6,6 @@ export default {
   menu: {
     shutdown: 'とじる',
     popout: 'ポップアウト',
-    palette: 'パレット',
     env: 'envのせってい',
     language: '言語',
     clone: 'セーブ / ロード / クローン',
@@ -45,9 +44,6 @@ export default {
     title: 'あなたのブラウザはHTML5に対応しないので、手動でダウンロードする必要があります',
     description: (filename) => `上のリンクを右クリックして、「別名でダウンロード」をクリックし、「${filename}」という名前をつけて保存して下さい`,
     cancel: 'キャンセル',
-  },
-  paletteDialog: {
-    title: 'カラーパレット',
   },
   aboutDialog: {
     title: 'この Feeles について',

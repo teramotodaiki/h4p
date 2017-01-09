@@ -6,7 +6,6 @@ export default {
   menu: {
     shutdown: 'Shutdown',
     popout: 'Pop-out Screen',
-    palette: 'Palette',
     language: 'Language',
     clone: 'Save / Load / Clone',
     aboutFeeles: 'About Feeles',
@@ -44,9 +43,6 @@ export default {
     title: 'You need to download it manually, because Your browser does not support HTML5!',
     description: (filename) => `Right click on the above link, click "download with alias", and save it with the name "${filename}"`,
     cancel: 'Cancel',
-  },
-  paletteDialog: {
-    title: 'Color Palette',
   },
   aboutDialog: {
     title: 'About Feeles',
