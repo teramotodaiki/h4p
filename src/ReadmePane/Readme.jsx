@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import transitions from 'material-ui/styles/transitions';
 
 
@@ -47,7 +47,7 @@ const mdStyle = (props, state, context) => {
   };
 };
 
-export default class Readme extends Component {
+export default class Readme extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,

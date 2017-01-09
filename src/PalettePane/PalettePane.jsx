@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import Popover from 'material-ui/Popover';
 import Paper from 'material-ui/Paper';
@@ -84,7 +84,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class PalettePane extends Component {
+export default class PalettePane extends PureComponent {
 
   static propTypes = {
     getConfig: PropTypes.func.isRequired,

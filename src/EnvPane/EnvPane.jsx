@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import { grey600 } from 'material-ui/styles/colors';
@@ -10,7 +10,7 @@ import AvPlaylistAdd from 'material-ui/svg-icons/av/playlist-add';
 
 import EnvItem from './EnvItem';
 
-export default class EnvPane extends Component {
+export default class EnvPane extends PureComponent {
 
   static propTypes = {
     getConfig: PropTypes.func.isRequired,
