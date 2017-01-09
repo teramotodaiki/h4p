@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 
 
@@ -32,7 +32,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class Filename extends Component {
+export default class Filename extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
@@ -65,7 +65,7 @@ const getStyles = (props, context) => {
   };
 };
 
-class FileCard extends Component {
+class FileCard extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,

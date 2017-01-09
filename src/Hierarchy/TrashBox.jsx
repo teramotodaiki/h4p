@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import IconButton from 'material-ui/IconButton';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
@@ -28,7 +28,7 @@ const getStyles = (props, state, context) => {
   };
 };
 
-class _TrashBox extends Component {
+class _TrashBox extends PureComponent {
 
   static propTypes = {
     showTrashes: PropTypes.bool.isRequired,

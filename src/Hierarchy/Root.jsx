@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 
 
 import DirCard from './DirCard';
@@ -17,7 +17,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class Hierarchy extends Component {
+export default class Root extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
