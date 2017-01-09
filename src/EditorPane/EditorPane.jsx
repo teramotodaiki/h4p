@@ -150,8 +150,6 @@ export default class EditorPane extends Component {
       button,
     } = getStyles(this.props, this.context);
 
-    const tabbedFiles = tabs.map((tab) => tab.file);
-
     return (
     <div style={prepareStyles(root)}>
       <EditorMenu
@@ -164,8 +162,8 @@ export default class EditorPane extends Component {
         <ChromeTab
           key={tab.key}
           tab={tab}
+          length={tabs.length}
           isSelected={tab.isSelected}
-          tabbedFiles={tabbedFiles}
           handleSelect={selectTab}
           handleClose={closeTab}
           handleRun={handleRun}
