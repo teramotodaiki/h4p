@@ -22,7 +22,7 @@ import Hierarchy from '../Hierarchy/';
 import Monitor from '../Monitor/';
 import Menu from '../Menu/';
 import ReadmePane from '../ReadmePane/';
-import SnippetPane from '../EditorPane/SnippetPane';
+import SnippetPane from '../SnippetPane/';
 import EnvPane from '../EnvPane/';
 import PalettePane from '../PalettePane/';
 import Sizer from './Sizer';

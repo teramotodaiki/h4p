@@ -1,6 +1,7 @@
 import React from 'react';
-import separate from './separate';
 
+
+import { separate } from '../File/';
 
 export default class Snippet {
   constructor(props) {

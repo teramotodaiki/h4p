@@ -1,5 +1,5 @@
 import { defaultPalette } from '../js/getCustomTheme';
-import Snippet from './Snippet';
+import { Snippet } from '../SnippetPane/';
 
 
 export default new Map([
