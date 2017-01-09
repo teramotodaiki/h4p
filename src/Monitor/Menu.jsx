@@ -7,24 +7,22 @@ import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
 import FileDownload from 'material-ui/svg-icons/file/file-download';
 import FileCloudUpload from 'material-ui/svg-icons/file/cloud-upload';
 import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
-import ImagePalette from 'material-ui/svg-icons/image/palette';
-import ImageTune from 'material-ui/svg-icons/image/tune';
 import ActionLanguage from 'material-ui/svg-icons/action/language';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 
 import { BinaryFile, SourceFile } from '../File/';
 import getLocalization, { acceptedLanguages } from '../localization/';
-import PaletteDialog from './PaletteDialog';
-import EnvDialog from './EnvDialog';
 import AboutDialog from './AboutDialog';
 import CloneDialog from './CloneDialog';
 
-export const MenuHeight = 40;
 
 const getStyles = (props, context) => {
 
-  const { isPopout } = props;
+  const {
+    isPopout,
+    showMonitor
+  } = props;
   const { palette } = context.muiTheme;
 
   return {
@@ -32,10 +30,11 @@ const getStyles = (props, context) => {
       flex: '0 0 auto',
       display: 'flex',
       flexDirection: 'row-reverse',
+      flexWrap: 'wrap',
       alignItems: 'center',
-      height: MenuHeight,
-      zIndex: 101,
-      backgroundColor: palette.primary1Color,
+      zIndex: 400,
+      backgroundColor: showMonitor ?
+         palette.accent1Color : palette.primary1Color,
     },
     button: {
       marginRight: 20,
@@ -62,6 +61,7 @@ export default class Menu extends Component {
     setConfig: PropTypes.func.isRequired,
     coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
+    showMonitor: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -78,18 +78,6 @@ export default class Menu extends Component {
       files: this.props.files,
       saveAs: this.props.saveAs,
     });
-  };
-
-  handlePalette = () => {
-    const { openFileDialog } = this.props;
-
-    openFileDialog(PaletteDialog);
-  };
-
-  handleEnv = () => {
-    const { openFileDialog } = this.props;
-
-    openFileDialog(EnvDialog);
   };
 
   handleAbout = () => {
@@ -151,18 +139,18 @@ export default class Menu extends Component {
     const canDeploy = !!getConfig('provider').publishUrl;
 
     return (
-      <Paper
-        rounded={false}
-        style={root}
-      >
+      <div style={root}>
         <IconMenu
           iconButtonElement={(
-            <IconButton tooltip={menu.language}>
+            <IconButton
+              tooltipPosition="top-center"
+              tooltip={menu.language}
+            >
               <ActionLanguage color={alternateTextColor} />
             </IconButton>
           )}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+          targetOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           style={button}
         >
         {acceptedLanguages.map(lang => (
@@ -176,20 +164,7 @@ export default class Menu extends Component {
         ))}
         </IconMenu>
         <IconButton
-          tooltip={menu.palette}
-          onTouchTap={this.handlePalette}
-          style={button}
-        >
-          <ImagePalette color={alternateTextColor} />
-        </IconButton>
-        <IconButton
-          tooltip={menu.env}
-          onTouchTap={this.handleEnv}
-          style={button}
-        >
-          <ImageTune color={alternateTextColor} />
-        </IconButton>
-        <IconButton
+          tooltipPosition="top-center"
           tooltip={menu.popout}
           onTouchTap={togglePopout}
           style={button}
@@ -198,6 +173,7 @@ export default class Menu extends Component {
           <OpenInBrowser color={alternateTextColor} />
         </IconButton>
         <IconButton
+          tooltipPosition="top-center"
           tooltip={menu.clone}
           disabled={!this.props.coreString}
           onTouchTap={this.handleClone}
@@ -206,6 +182,7 @@ export default class Menu extends Component {
           <FileDownload color={alternateTextColor} />
         </IconButton>
         <IconButton
+          tooltipPosition="top-center"
           tooltip={menu.aboutFeeles}
           onTouchTap={this.handleAbout}
           style={button}
@@ -213,6 +190,7 @@ export default class Menu extends Component {
           <ActionAssignment color={alternateTextColor} />
         </IconButton>
         <IconButton
+          tooltipPosition="top-center"
           tooltip={menu.deploy}
           disabled={!canDeploy || !this.props.coreString}
           onTouchTap={this.handleDeploy}
@@ -220,7 +198,7 @@ export default class Menu extends Component {
         >
           <FileCloudUpload color={alternateTextColor} />
         </IconButton>
-      </Paper>
+      </div>
     );
   }
 }

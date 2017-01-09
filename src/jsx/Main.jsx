@@ -22,6 +22,8 @@ import Hierarchy from '../Hierarchy/';
 import Monitor, { Sizer, Menu } from '../Monitor/';
 import ReadmePane from '../ReadmePane/';
 import SnippetPane from '../EditorPane/SnippetPane';
+import EnvPane from '../EnvPane/';
+import PalettePane from '../PalettePane/';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
@@ -53,8 +55,10 @@ const getStyle = (props, state, palette) => {
     },
     right: {
       flex: '0 0 auto',
+      boxSizing: 'border-box',
       width: state.monitorWidth,
       height: '100%',
+      paddingBottom: 4,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
@@ -425,6 +429,7 @@ class Main extends Component {
       monitorHeight,
       coreString: this.state.coreString,
       saveAs: this.saveAs,
+      showMonitor: this.state.showMonitor,
     };
 
     const readmeProps = {
@@ -442,10 +447,11 @@ class Main extends Component {
         <div style={root}>
           <div style={dropCover}></div>
           <div style={left}>
-            <Menu {...commonProps} {...menuProps} />
             <div style={scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
+              <EnvPane {...commonProps} />
+              <PalettePane {...commonProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
           </div>
@@ -453,10 +459,12 @@ class Main extends Component {
             monitorWidth={monitorWidth}
             monitorHeight={monitorHeight}
             onSizer={(isResizing) => this.setState({ isResizing })}
+            showMonitor={this.state.showMonitor}
           />
           <div style={right}>
             <Monitor {...commonProps} {...monitorProps} />
             <EditorPane {...commonProps} {...editorPaneProps} />
+            <Menu {...commonProps} {...menuProps} />
           {this.state.showMonitor ? (
             <IconButton
               style={{

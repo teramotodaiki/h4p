@@ -13,7 +13,6 @@ import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen, { SrcDocEnabled } from './Screen';
-import { MenuHeight } from './Menu';
 
 
 const FramePadding = 8;
@@ -42,14 +41,11 @@ const frameLoader = (() => {
   }
 })();
 
+
 const getStyle = (props, context, state) => {
   const {
-    isResizing,
-    isPopout,
-    monitorWidth,
-    monitorHeight,
-  } = props;
-  const { progress } = state;
+    palette,
+  } = context.muiTheme;
 
   return {
     root: {
@@ -59,16 +55,21 @@ const getStyle = (props, context, state) => {
       flexDirection: 'column',
       alignItems: 'stretch',
       zIndex: 300,
-      transition: transitions.easeOut(),
     },
     linear1: {
+      position: 'absolute',
+      bottom: 0,
       borderRadius: 0,
+      height: 8,
     },
     linear2: {
+      position: 'absolute',
+      bottom: 0,
       borderRadius: 0,
-      opacity: progress < 1 ? 1 : 0,
-      zIndex: 2,
+      opacity: state.progress < 1 ? 1 : 0,
     },
+    progressColor: props.showMonitor ?
+       palette.accent1Color : palette.primary1Color,
   };
 };
 
@@ -307,8 +308,6 @@ export default class Monitor extends Component {
 
   render() {
     const {
-      width,
-      height,
       progress,
       error,
     } = this.state;
@@ -317,17 +316,7 @@ export default class Monitor extends Component {
       isPopout,
       reboot,
       handleRun,
-      monitorWidth,
-      monitorHeight,
     } = this.props;
-
-    const {
-      root,
-      container,
-      linear1,
-      linear2,
-    } = getStyle(this.props, this.context, this.state);
-    const { prepareStyles } = this.context.muiTheme;
 
     if (!showMonitor) {
       return isPopout && !reboot ? (
@@ -352,8 +341,10 @@ export default class Monitor extends Component {
       ) : null;
     }
 
+    const styles = getStyle(this.props, this.context, this.state);
+
     return (
-      <div style={prepareStyles(root)}>
+      <div style={styles.root}>
         <Screen animation
           display={!isPopout}
           frameRef={(ref) => ref && (this.inlineFrame = ref)}
@@ -365,9 +356,14 @@ export default class Monitor extends Component {
           mode="determinate"
           max={1}
           value={progress}
-          style={linear1}
+          style={styles.linear1}
+          color={styles.progressColor}
         />
-        <LinearProgress mode="indeterminate" style={linear2} />
+        <LinearProgress
+          mode="indeterminate"
+          style={styles.linear2}
+          color={styles.progressColor}
+        />
       </div>
     );
   }

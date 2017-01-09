@@ -1,4 +1,6 @@
 import React, { PropTypes, Component } from 'react';
+import IconButton from 'material-ui/IconButton';
+import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 
 
 import { SourceFile } from '../File/';
@@ -29,7 +31,7 @@ const getStyles = (props, context) => {
       paddingTop: spacing.desktopGutterMini,
       paddingRight: spacing.desktopGutterLess,
       paddingBottom: 10,
-      paddingLeft: 10 + spacing.desktopGutterMore,
+      paddingLeft: 10,
       marginRight: spacing.desktopGutterMore,
       marginBottom: -10,
       overflow: 'hidden',
@@ -74,11 +76,56 @@ export default class EditorPane extends Component {
     return true;
   }
 
+  renderBackground() {
+    const {
+      localization,
+    } = this.props;
+    const {
+      palette,
+    } = this.context.muiTheme;
 
+    const styles = {
+      noFileBg: {
+        flex: '1 1 auto',
+        backgroundColor: palette.primary1Color,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      logo: {
+        color: palette.secondaryTextColor,
+      },
+      largeIcon: {
+        width: 40,
+        height: 40,
+      },
+      large: {
+        width: 80,
+        height: 80,
+        padding: 20,
+      },
+    };
+
+    return (
+      <div style={styles.noFileBg}>
+        <h1 style={styles.logo}>Feeles</h1>
+        <IconButton
+          iconStyle={styles.largeIcon}
+          style={styles.large}
+          onTouchTap={this.props.handleRun}
+        >
+          <AVPlayCircleOutline color={palette.alternateTextColor} />
+        </IconButton>
+      </div>
+    );
+  }
 
   render() {
     if (this.props.showMonitor) {
       return null;
+    }
+    if (!this.props.tabs.length) {
+      return this.renderBackground();
     }
 
     const {
@@ -92,6 +139,10 @@ export default class EditorPane extends Component {
       port,
       reboot,
     } = this.props;
+    const {
+      prepareStyles,
+      palette,
+    } = this.context.muiTheme;
 
     const {
       root,
@@ -99,7 +150,6 @@ export default class EditorPane extends Component {
       tabContentContainer,
       button,
     } = getStyles(this.props, this.context);
-    const { prepareStyles } = this.context.muiTheme;
 
     const tabbedFiles = tabs.map((tab) => tab.file);
 

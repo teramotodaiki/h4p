@@ -77,7 +77,7 @@ const getStyles = (props, context, state) => {
         filter: invert(${darkness ? 100 : 0}%);
       }
       #${CssScopeId} .CodeMirror-gutters {
-        border-color: ${palette.borderColor};
+        border-color: ${palette.primary1Color};
         background-color: ${palette.canvasColor};
         filter: invert(${darkness ? 100 : 0}%);
       }

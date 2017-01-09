@@ -6,8 +6,6 @@ export default {
   menu: {
     shutdown: 'Shutdown',
     popout: 'Pop-out Screen',
-    palette: 'Palette',
-    env: 'Configure env',
     language: 'Language',
     clone: 'Save / Load / Clone',
     aboutFeeles: 'About Feeles',
@@ -46,12 +44,6 @@ export default {
     description: (filename) => `Right click on the above link, click "download with alias", and save it with the name "${filename}"`,
     cancel: 'Cancel',
   },
-  envDialog: {
-    title: 'Configure Environment Variables',
-  },
-  paletteDialog: {
-    title: 'Color Palette',
-  },
   aboutDialog: {
     title: 'About Feeles',
     coreVersion: 'Core Version',
@@ -65,6 +57,8 @@ export default {
     indentUnit4: '4 spaces indent',
   },
   readme: {
+    subtitle: 'Please read this first',
+    edit: 'Edit',
     text: `# Introduction
 This is an application can do... ← You can write here
 ## How to edit this
@@ -94,6 +88,7 @@ Thanks
   },
   snippet: {
     title: 'Assets',
+    subtitle: 'Drag and drop it to the code on the right',
     fileNotSelected: 'File not selected',
     readMore: 'Read more',
   },
@@ -111,6 +106,15 @@ Thanks
     undo: 'Undo',
     save: 'Save',
     play: 'Play',
+  },
+  env: {
+    title: 'Environment Variables',
+    subtitle: '',
+    remove: 'Remove',
+  },
+  palette: {
+    title: 'Color Palette',
+    subtitle: `Let's change the color according to your mood`,
   },
 
 };

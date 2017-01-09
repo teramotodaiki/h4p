@@ -3,7 +3,6 @@ import transitions from 'material-ui/styles/transitions';
 
 
 import MDReactComponent from '../../lib/MDReactComponent';
-import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
 import Editor from './Editor';
 import ShotFrame from './ShotFrame';
@@ -57,32 +56,12 @@ export default class Readme extends Component {
     selectTab: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
-    port: PropTypes.object,
+    completes: PropTypes.array.isRequired,
   };
 
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
-
-  state = {
-    updates: {},
-    completes: [],
-  };
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.readme !== nextProps.readme) {
-      this.setState({ updates: {} });
-    }
-    if (this.props.port !== nextProps.port) {
-      nextProps.port.addEventListener('message', (event) => {
-        if (event.data.query === 'complete') {
-          this.setState({
-            completes: event.data.value,
-          });
-        }
-      });
-    }
-  }
 
   renderIterate(tag, props, children) {
     const {
@@ -90,10 +69,8 @@ export default class Readme extends Component {
       selectTab,
       getConfig,
       localization,
-    } = this.props;
-    const {
       completes,
-    } = this.state;
+    } = this.props;
 
     if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
       return React.createElement(tag, props, children);
@@ -126,30 +103,11 @@ export default class Readme extends Component {
       return <img {...props} />
     }
     if (tag === 'pre') {
-      const { updates } = this.state;
-      const getInit = () => new SourceFile({
-        type: 'text/javascript',
-        text: children[0].props.children[0],
-      });
-      const hasFile = updates[props.key] instanceof SourceFile;
-      const file = hasFile ? updates[props.key] : getInit();
-      const update = (nextFile) => new Promise((resolve, reject) => {
-        const updates = Object.assign({},
-          this.state.updates,
-          { [props.key]: nextFile });
-        this.setState({ updates }, () => resolve(nextFile));
-      });
-      const onChange = (text) => update(file.set({ text }));
-      const onRestore = () => update(getInit());
-
       return (
         <ShotFrame
           key={props.key}
-          file={file}
+          text={children[0].props.children[0]}
           onShot={this.props.onShot}
-          onRestore={onRestore}
-          canRestore={hasFile}
-          onChange={onChange}
           localization={localization}
           getConfig={getConfig}
           completes={completes}

@@ -133,7 +133,8 @@ export default class SnippetPane extends Component {
 
     const HasSnippets = snippets.length > 0;
     const subtitle = this.state.fileKey ?
-      '' : localization.snippet.fileNotSelected;
+      localization.snippet.subtitle :
+      localization.snippet.fileNotSelected;
 
     return (
       <Card initiallyExpanded

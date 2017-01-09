@@ -37,7 +37,7 @@ const getStyles = (props, context, state) => {
     borderBottomWidth: 0,
     borderLeftWidth: left ? 1 : 0,
     borderStyle: 'solid',
-    borderColor: palette.borderColor,
+    borderColor: palette.primary1Color,
     transform: `skewX(${(left ? -1 : 1) * TabSkewX}deg)`,
     backgroundColor,
     zIndex: left ? 1 : 2,

@@ -6,7 +6,6 @@ export default {
   menu: {
     shutdown: 'とじる',
     popout: 'ポップアウト',
-    palette: 'パレット',
     env: 'envのせってい',
     language: '言語',
     clone: 'セーブ / ロード / クローン',
@@ -46,12 +45,6 @@ export default {
     description: (filename) => `上のリンクを右クリックして、「別名でダウンロード」をクリックし、「${filename}」という名前をつけて保存して下さい`,
     cancel: 'キャンセル',
   },
-  envDialog: {
-    title: '環境変数 env のせってい',
-  },
-  paletteDialog: {
-    title: 'カラーパレット',
-  },
   aboutDialog: {
     title: 'この Feeles について',
     coreVersion: 'Feelse のバージョン',
@@ -65,6 +58,8 @@ export default {
     indentUnit4: '４文字ずつそろえる',
   },
   readme: {
+    subtitle: 'まずはこれを読んでください',
+    edit: '書きかえる',
     text: `# はじめに
 これは、こういうかんじのアプリです。←っていうのを、ここに書けます
 ## 「はじめに」の 書きかえ
@@ -94,6 +89,7 @@ alert('こんにちは！');
   },
   snippet: {
     title: 'アセット',
+    subtitle: '右側のコードにドラッグ&ドロップします',
     fileNotSelected: 'ファイルが選択されていません',
     readMore: 'もっと読む',
   },
@@ -111,6 +107,15 @@ alert('こんにちは！');
     undo: 'もどす',
     save: 'セーブ',
     play: 'プレイ',
+  },
+  env: {
+    title: '環境変数',
+    subtitle: 'かんきょうへんすう',
+    remove: '削除',
+  },
+  palette: {
+    title: 'カラーパレット',
+    subtitle: '気分に合わせて色を変えてみましょう',
   },
 
 };

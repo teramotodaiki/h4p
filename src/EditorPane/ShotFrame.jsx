@@ -10,6 +10,7 @@ import { red50, red500 } from 'material-ui/styles/colors';
 
 
 import Editor from './Editor';
+import { SourceFile } from '../File/';
 
 const durations = [600, 1400, 0];
 
@@ -71,11 +72,8 @@ const getStyles = (props, context, state) => {
 export default class ShotFrame extends Component {
 
   static propTypes = {
-    file: PropTypes.object.isRequired,
-    canRestore: PropTypes.bool.isRequired,
+    text: PropTypes.string.isRequired,
     onShot: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onRestore: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     completes: PropTypes.array.isRequired,
     getConfig: PropTypes.func.isRequired,
@@ -90,11 +88,33 @@ export default class ShotFrame extends Component {
     height: 0,
     error: null,
     loading: false,
+    file: SourceFile.shot(this.props.text),
+    canRestore: false,
   };
 
   componentDidMount() {
-    this.handleResize();
+    this.setState({
+      height: this.getHeight(),
+    });
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.text !== nextProps.text) {
+      this.setState({
+        file: SourceFile.shot(nextProps.text),
+      });
+    }
+  }
+
+  getHeight = () => {
+    if (!this.codemirror) {
+      return 0;
+    }
+    const lastLine = this.codemirror.lastLine() + 1;
+    const height = this.codemirror.heightAtLine(lastLine, 'local');
+    return height;
+  };
+
 
   shoot = () => {
     if (this.state.anim !== 0) {
@@ -117,35 +137,26 @@ export default class ShotFrame extends Component {
 
   };
 
-  handleResize = () => {
-    if (!this.codemirror) {
-      return;
-    }
-    const lastLine = this.codemirror.lastLine() + 1;
-    const height = this.codemirror.heightAtLine(lastLine, 'local');
-    if (this.state.height !== height) {
-      this.setState({ height });
-    }
-  };
-
   handleChange = (text) => {
-    this.handleResize();
+    this.setState({
+      canRestore: text !== this.props.text,
+      height: this.getHeight(),
+    });
   };
 
   handleRestore = () => {
-    this.props.onRestore()
-      .then((file) => {
-        if (this.codemirror) {
-          this.codemirror.setValue(file.text);
-          this.handleResize();
-        }
-      });
+    this.codemirror.setValue(this.props.text);
+    this.setState({
+      file: SourceFile.shot(this.props.text),
+      canRestore: false,
+      height: this.getHeight(),
+    });
   };
 
   handleShot = () => {
     const text = this.codemirror ?
       this.codemirror.getValue('\n') :
-      this.props.file.text;
+      this.props.text;
 
     const waitForRender = new Promise((resolve, reject) => {
       this.setState({
@@ -169,8 +180,6 @@ export default class ShotFrame extends Component {
 
   render() {
     const {
-      file,
-      canRestore,
       updateShot,
       onRestore,
       localization,
@@ -198,7 +207,7 @@ export default class ShotFrame extends Component {
       ) : null}
         <div style={editor}>
           <Editor isSelected isCared
-            file={file}
+            file={this.state.file}
             onChange={this.handleChange}
             getConfig={getConfig}
             codemirrorRef={(ref) => (this.codemirror = ref)}
@@ -222,7 +231,7 @@ export default class ShotFrame extends Component {
           <FlatButton secondary
             label={localization.shot.restore}
             onTouchTap={this.handleRestore}
-            disabled={!canRestore}
+            disabled={!this.state.canRestore}
           />
         </div>
       </Paper>

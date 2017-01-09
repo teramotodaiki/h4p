@@ -54,7 +54,7 @@ export default class Screen extends Component {
 
     const style = {
       flex: '1 1 auto',
-      background: 'linear-gradient(gray, black)',
+      background: 'linear-gradient(rgba(0,0,0,0.8), rgba(128,128,128,0.8))',
       display: display ? 'flex' : 'none',
       justifyContent: 'center',
       alignItems: 'center',

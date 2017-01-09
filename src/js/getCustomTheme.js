@@ -1,7 +1,7 @@
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
-  lightGreenA100,
-  fullWhite, fullBlack
+  redA100, pinkA100, purpleA100, deepPurpleA100, indigoA100, blueA100, lightBlueA100, cyanA100, tealA100, greenA100, lightGreenA100, limeA100, yellowA100, amberA100, orangeA100, deepOrangeA100, brown100, blueGrey100,
+  fullWhite,
 } from 'material-ui/styles/colors';
 import {
   fade,
@@ -12,11 +12,15 @@ import {
 } from 'material-ui/utils/colorManipulator';
 
 
+const bgColors = [redA100, pinkA100, purpleA100, deepPurpleA100, indigoA100, blueA100, lightBlueA100, cyanA100, tealA100, greenA100, lightGreenA100, limeA100, yellowA100, amberA100, orangeA100, deepOrangeA100, brown100, blueGrey100];
+
+const themeColors = ['#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3', '#ABB8C3', '#EB144C', '#F78DA7', '#9900EF'];
+
 export const defaultPalette = {
-  backgroundColor: fade(lightGreenA100, 0.15),
   canvasColor: fullWhite,
-  primary1Color: '#00d084',
-  accent1Color: '#f78da7',
+  primary1Color: random(themeColors),
+  accent1Color: random(themeColors),
+  backgroundColor: fade(random(bgColors), 0.15),
 };
 
 export default ({ palette }) => {
@@ -43,7 +47,7 @@ export default ({ palette }) => {
     disabledColor: fade(emphasize(canvasColor, 1), 0.3),
     pickerHeaderColor: primary1Color,
     clockCircleColor: fade(emphasize(canvasColor, 1), 0.07),
-    shadowColor: fade(emphasize(backgroundColor, 1), 1),
+    shadowColor: fade(emphasize(canvasColor, 1), 1),
 
     backgroundColor,
   };
@@ -60,4 +64,9 @@ function monochrome(color) {
   const _ = r * 0.3 + g * 0.59 + b * 0.11;
   color = { type: 'rgb', values: [_, _, _] };
   return convertColorToString(color);
+}
+
+function random(colors) {
+  const index = Math.random() * colors.length >> 0;
+  return colors[index];
 }

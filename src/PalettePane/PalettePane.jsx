@@ -1,30 +1,33 @@
 import React, { Component, PropTypes } from 'react';
-import Dialog from 'material-ui/Dialog';
+import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import Popover from 'material-ui/Popover';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import { convertColorToString } from 'material-ui/utils/colorManipulator';
 import { transparent, fullWhite } from 'material-ui/styles/colors';
-import ActionList from 'material-ui/svg-icons/action/list';
 import { ChromePicker, TwitterPicker } from 'react-color';
 
 
-const getStyles = (props, context, state) => {
-  const { palette, spacing, button } = context.muiTheme;
-  const { showAll } = state;
+import LayeredStyle from './LayeredStyle';
+
+
+const getStyles = (props, context) => {
+  const {
+    palette,
+    spacing,
+  } = context.muiTheme;
 
   const bodyColor = getComputedStyle(document.body)['background-color'];
-  const boxSize = 100;
+  const boxSize = 60;
 
   return {
     root: {
-      overflowY: 'scroll',
+      margin: 16,
     },
     html: {
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: fullWhite,
-      marginBottom: spacing.desktopGutterMore,
     },
     body: {
       backgroundColor: bodyColor,
@@ -36,7 +39,7 @@ const getStyles = (props, context, state) => {
     canvas: {
       display: 'flex',
       alignItems: 'center',
-      height: boxSize + spacing.desktopGutterMore * 2,
+      height: boxSize + 32,
       backgroundColor: palette.canvasColor,
     },
     primary: {
@@ -58,7 +61,6 @@ const getStyles = (props, context, state) => {
       backgroundColor: transparent,
     },
     container: {
-      maxHeight: showAll ? 1000 : button.height,
       textAlign: 'center',
       overflow: 'hidden',
     },
@@ -82,10 +84,11 @@ const getStyles = (props, context, state) => {
   };
 };
 
-export default class CustomDialog extends Component {
+export default class PalettePane extends Component {
 
   static propTypes = {
-    onRequestClose: PropTypes.func.isRequired,
+    getConfig: PropTypes.func.isRequired,
+    setConfig: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
@@ -99,7 +102,6 @@ export default class CustomDialog extends Component {
     key: null,
     anchorEl: null,
     limited: false,
-    showAll: false,
   };
 
   handleRectClick = (event, key, limited = false) => {
@@ -122,11 +124,6 @@ export default class CustomDialog extends Component {
     setConfig('palette', palette)
       .then((file) => file.json)
       .then(palette => this.setState({ palette }));
-  };
-
-  toggleShowAll = () => {
-    const showAll = !this.state.showAll;
-    this.setState({ showAll });
   };
 
   closePopover = () => {
@@ -156,55 +153,51 @@ export default class CustomDialog extends Component {
 
   render() {
     const {
-      onRequestClose,
-      localization: { paletteDialog },
+      localization,
     } = this.props;
-    const { open, key, anchorEl, showAll, limited } = this.state;
+    const { open, key, anchorEl, limited } = this.state;
     const { palette, prepareStyles } = this.context.muiTheme;
 
-    const styles = getStyles(this.props, this.context, this.state);
+    const styles = getStyles(this.props, this.context);
     styles.item = prepareStyles(styles.item);
     styles.label = prepareStyles(styles.label);
 
     return (
-      <Dialog open
-        title={paletteDialog.title}
-        modal={false}
-        bodyStyle={styles.root}
-        onRequestClose={onRequestClose}
-      >
-        <LayeredStyle
-          styles={[
-            prepareStyles(styles.html),
-            prepareStyles(styles.body),
-            prepareStyles(styles.overlay),
-          ]}
-          onTouchTap={e => this.handleRectClick(e, 'backgroundColor')}
-        >
-          <Paper
-            style={styles.canvas}
-            onTouchTap={e => this.handleRectClick(e, 'canvasColor')}
+      <Card style={styles.root}>
+        <CardHeader showExpandableButton actAsExpander
+          title={localization.palette.title}
+          subtitle={localization.palette.subtitle}
+        />
+        <CardActions>
+          <LayeredStyle
+            styles={[
+              prepareStyles(styles.html),
+              prepareStyles(styles.body),
+              prepareStyles(styles.overlay),
+            ]}
+            onTouchTap={(e) => this.handleRectClick(e, 'backgroundColor')}
           >
             <Paper
-              style={styles.primary}
-              onTouchTap={e => this.handleRectClick(e, 'primary1Color', true)}
-            />
-            <Paper
-              style={styles.secondary}
-              onTouchTap={e => this.handleRectClick(e, 'accent1Color', true)}
-            />
-            <div style={prepareStyles(styles.blank)}></div>
-          </Paper>
-        </LayeredStyle>
-        <div style={prepareStyles(styles.container)}>
-          <FlatButton secondary
-            icon={<ActionList />}
-            onTouchTap={this.toggleShowAll}
-          />
-          {showAll ? (
-            Object.keys(palette).map(key => this.renderItem(key, styles))
-          ): null}
-        </div>
+              style={styles.canvas}
+              onTouchTap={(e) => this.handleRectClick(e, 'canvasColor')}
+            >
+              <Paper
+                style={styles.primary}
+                onTouchTap={(e) => this.handleRectClick(e, 'primary1Color', true)}
+              />
+              <Paper
+                style={styles.secondary}
+                onTouchTap={(e) => this.handleRectClick(e, 'accent1Color', true)}
+              />
+              <div style={prepareStyles(styles.blank)}></div>
+            </Paper>
+          </LayeredStyle>
+        </CardActions>
+        <CardText expandable
+          style={styles.container}
+        >
+        {Object.keys(palette).map((key) => this.renderItem(key, styles))}
+        </CardText>
         <Popover
           open={open}
           anchorEl={anchorEl}
@@ -224,36 +217,7 @@ export default class CustomDialog extends Component {
           />
         )}
         </Popover>
-      </Dialog>
+      </Card>
     );
   }
 }
-
-const isEmpty = (array) => !array || !array.length;
-
-const LayeredStyle = (props) => {
-  if (isEmpty(props.styles)) {
-    return (
-      <div {...props}>
-      {props.children}
-      </div>
-    );
-  }
-
-  const styles = [props.style].concat(props.styles)
-    .filter(s => s);
-
-  const nextProps = Object.assign({}, props, {
-    style: styles[1],
-    styles: styles.slice(2)
-  });
-  if (isEmpty(nextProps.styles)) {
-    delete nextProps.styles;
-  }
-
-  return (
-    <div style={styles[0]}>
-      <LayeredStyle {...nextProps} />
-    </div>
-  );
-};

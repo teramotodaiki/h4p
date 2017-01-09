@@ -1,11 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
+import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 
 import { Readme } from '../EditorPane/';
 import { SourceFile } from '../File/';
+import { Tab } from '../ChromeTab/';
 
 export default class ReadmePane extends Component {
 
@@ -21,6 +24,7 @@ export default class ReadmePane extends Component {
 
   state = {
     selectedFile: null,
+    completes: [],
   };
 
   componentDidMount() {
@@ -54,6 +58,16 @@ export default class ReadmePane extends Component {
         selectedFile: this.resolveFile(key),
       });
     }
+
+    if (this.props.port !== nextProps.port) {
+      nextProps.port.addEventListener('message', (event) => {
+        if (event.data.query === 'complete') {
+          this.setState({
+            completes: event.data.value,
+          });
+        }
+      });
+    }
   }
 
   handleShot = (text) => {
@@ -83,6 +97,18 @@ export default class ReadmePane extends Component {
     }
     return this.props.findFile((item) => item.key === key);
   }
+
+  handleEdit = () => {
+    const {
+      selectedFile,
+    } = this.state;
+    const getFile = () => this.props.findFile((file) => (
+      file.key === selectedFile.key
+    ));
+    const tab = new Tab({ getFile });
+
+    this.props.selectTab(tab);
+  };
 
   renderDropDownMenu() {
     const {
@@ -117,6 +143,9 @@ export default class ReadmePane extends Component {
 
   render() {
     const {
+      localization,
+    } = this.props;
+    const {
       selectedFile,
     } = this.state;
 
@@ -138,6 +167,7 @@ export default class ReadmePane extends Component {
       >
         <CardHeader showExpandableButton actAsExpander
           title={selectedFile.header}
+          subtitle={localization.readme.subtitle}
         />
         <CardText
           expandable
@@ -150,12 +180,17 @@ export default class ReadmePane extends Component {
             addFile={this.props.addFile}
             getConfig={this.props.getConfig}
             localization={this.props.localization}
-            port={this.props.port}
+            completes={this.state.completes}
             onShot={this.handleShot}
           />
         </CardText>
         <CardActions expandable >
         {this.renderDropDownMenu()}
+          <FlatButton
+            label={localization.readme.edit}
+            icon={<EditorModeEdit />}
+            onTouchTap={this.handleEdit}
+          />
         </CardActions>
 
       </Card>

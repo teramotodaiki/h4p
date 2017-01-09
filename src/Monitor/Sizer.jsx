@@ -10,32 +10,25 @@ export const SizerWidth = 24;
 
 const getStyles = (props, context) => {
 
-  const { monitorWidth, monitorHeight } = props;
   const {
     palette,
-    spacing,
   } = context.muiTheme;
 
   return {
     root: {
       flex: '0 0 auto',
       width: SizerWidth,
-      padding: '0 4px 4px 0',
+      paddingBottom: 4,
+      display: 'flex',
       overflow: 'hidden',
       cursor: 'col-resize',
       zIndex: 200,
-      transition: transitions.easeOut(),
     },
     preview: {
-      width: '100%',
-      height: '100%',
-      backgroundColor: 'transparent',
-    },
-    color: {
-      width: '100%',
-      height: '100%',
-      borderRadius: '0 0 4px 4px',
-      backgroundColor: palette.primary1Color,
+      flex: '1 1 auto',
+      borderRadius: '0 0 0 4px',
+      backgroundColor: props.showMonitor ?
+         palette.accent1Color : palette.primary1Color,
     },
   };
 
@@ -47,6 +40,7 @@ class Sizer extends Component {
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
     onSizer: PropTypes.func.isRequired,
+    showMonitor: PropTypes.bool.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
@@ -58,7 +52,6 @@ class Sizer extends Component {
   };
 
   state = {
-    hover: false,
     isActive: false,
   };
 
@@ -80,23 +73,13 @@ class Sizer extends Component {
 
     const {
       root,
-      color,
       preview,
     } = getStyles(this.props, this.context);
 
     return connectDragSource(
-      <div
-        style={root}
-        onMouseEnter={() => this.setState({ hover: true })}
-        onMouseLeave={() => this.setState({ hover: false })}
-      >
+      <div style={root}>
       {connectDragPreview(
-        <div style={preview}>
-          <Paper
-            zDepth={this.state.hover ? 2 : 1}
-            style={color}
-          />
-        </div>
+        <div style={preview} />
       )}
       </div>
     );
