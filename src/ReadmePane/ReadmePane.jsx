@@ -1,11 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
+import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 
 import { Readme } from '../EditorPane/';
 import { SourceFile } from '../File/';
+import { Tab } from '../ChromeTab/';
 
 export default class ReadmePane extends Component {
 
@@ -95,6 +98,18 @@ export default class ReadmePane extends Component {
     return this.props.findFile((item) => item.key === key);
   }
 
+  handleEdit = () => {
+    const {
+      selectedFile,
+    } = this.state;
+    const getFile = () => this.props.findFile((file) => (
+      file.key === selectedFile.key
+    ));
+    const tab = new Tab({ getFile });
+
+    this.props.selectTab(tab);
+  };
+
   renderDropDownMenu() {
     const {
       selectedFile,
@@ -127,6 +142,9 @@ export default class ReadmePane extends Component {
   }
 
   render() {
+    const {
+      localization,
+    } = this.props;
     const {
       selectedFile,
     } = this.state;
@@ -167,6 +185,11 @@ export default class ReadmePane extends Component {
         </CardText>
         <CardActions expandable >
         {this.renderDropDownMenu()}
+          <FlatButton
+            label={localization.readme.edit}
+            icon={<EditorModeEdit />}
+            onTouchTap={this.handleEdit}
+          />
         </CardActions>
 
       </Card>

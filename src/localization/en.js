@@ -57,6 +57,7 @@ export default {
     indentUnit4: '4 spaces indent',
   },
   readme: {
+    edit: 'Edit',
     text: `# Introduction
 This is an application can do... ← You can write here
 ## How to edit this
