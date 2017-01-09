@@ -103,6 +103,7 @@ const getStyles = (props, context, state) => {
   }
 };
 
+
 export default class Editor extends Component {
 
   static propTypes = {
@@ -120,6 +121,7 @@ export default class Editor extends Component {
   };
 
   static defaultProps = {
+    onChange: () => {},
     handleRun: () => {},
     getFiles: () => [],
     closeSelectedTab: () => {},
@@ -138,13 +140,10 @@ export default class Editor extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!nextProps.isSelected) {
+    if (this.props.file === nextProps.file) {
       return false;
     }
-    return (
-      this.props.file !== nextProps.file ||
-      this.props.completes !== nextProps.completes
-    );
+    return true;
   }
 
   handleCodemirror = (ref) => {
@@ -188,7 +187,6 @@ export default class Editor extends Component {
       "end_with_newline": true,
     });
     cm.setValue(text);
-    this.props.onChange(text);
   };
 
   render() {

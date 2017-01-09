@@ -166,6 +166,13 @@ class SourceEditor extends Component {
       .catch(() => {});
   };
 
+  handleCodemirror = (ref) => {
+    if (!ref) {
+      return;
+    }
+    this.codemirror = ref;
+  };
+
   render() {
     const {
       file,
@@ -193,8 +200,8 @@ class SourceEditor extends Component {
     const snippets = getConfig('snippets')(file);
 
     const props = Object.assign({}, this.props, {
-      codemirrorRef: (ref) => (this.codemirror = ref),
-      onChange: () => {},
+      codemirrorRef: this.handleCodemirror,
+      onChange: undefined,
       handleRun: this.handlePlay,
       showHint,
     });
