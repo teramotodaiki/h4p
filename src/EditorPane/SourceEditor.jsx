@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import FlatButton from 'material-ui/FlatButton';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -61,23 +61,20 @@ const getStyle = (props, context) => {
   };
 };
 
-class SourceEditor extends Component {
+class SourceEditor extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
-    tab: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
     getFiles: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
-    closeSelectedTab: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
-    selectTab: PropTypes.func.isRequired,
     reboot: PropTypes.bool.isRequired,
     localization: PropTypes.object.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
+    closeSelectedTab: PropTypes.func.isRequired,
+    selectTabFromFile: PropTypes.func.isRequired,
 
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
@@ -125,13 +122,16 @@ class SourceEditor extends Component {
         hasChanged: false,
         loading: true,
       }))
-      .then(() => this.props.onChange(text))
+      .then(() => this.props.putFile(
+        this.props.file,
+        this.props.file.set({ text })
+      ))
       .then((file) => file.babel(babelrc))
       .then(() => this.setState({
         loading: false,
       }))
       .catch((error) => {
-        this.props.selectTab(this.props.tab);
+        this.props.selectTabFromFile(this.props.file);
         this.setState({
           loading: false,
         });
@@ -166,6 +166,13 @@ class SourceEditor extends Component {
       .catch(() => {});
   };
 
+  handleCodemirror = (ref) => {
+    if (!ref) {
+      return;
+    }
+    this.codemirror = ref;
+  };
+
   render() {
     const {
       file,
@@ -193,8 +200,8 @@ class SourceEditor extends Component {
     const snippets = getConfig('snippets')(file);
 
     const props = Object.assign({}, this.props, {
-      codemirrorRef: (ref) => (this.codemirror = ref),
-      onChange: () => {},
+      codemirrorRef: this.handleCodemirror,
+      onChange: undefined,
       handleRun: this.handlePlay,
       showHint,
     });

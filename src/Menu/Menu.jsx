@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -46,7 +46,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class Menu extends Component {
+export default class Menu extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
@@ -54,7 +54,6 @@ export default class Menu extends Component {
     openFileDialog: PropTypes.func.isRequired,
     togglePopout: PropTypes.func.isRequired,
     monitorWidth: PropTypes.number.isRequired,
-    monitorHeight: PropTypes.number.isRequired,
     localization: PropTypes.object.isRequired,
     setLocalization: PropTypes.func.isRequired,
     getConfig: PropTypes.func.isRequired,

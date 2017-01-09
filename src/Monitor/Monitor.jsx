@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import Popout from '../jsx/ReactPopout';
 import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -73,7 +73,7 @@ const getStyle = (props, context, state) => {
   };
 };
 
-export default class Monitor extends Component {
+export default class Monitor extends PureComponent {
 
   static propTypes = {
     showMonitor: PropTypes.bool.isRequired,
@@ -306,6 +306,16 @@ export default class Monitor extends Component {
     this.iframe.style.transform = `scale(${scale})`;
   };
 
+  handleFrame = (ref) => {
+    if (!ref) return;
+
+    if (this.props.showMonitor) {
+      this.inlineFrame = ref;
+    } else {
+      this.popoutFrame = ref;
+    }
+  };
+
   render() {
     const {
       progress,
@@ -332,7 +342,7 @@ export default class Monitor extends Component {
           onClosing={this.handlePopoutClose}
         >
           <Screen display
-            frameRef={(ref) => ref && (this.popoutFrame = ref)}
+            frameRef={this.handleFrame}
             handleRun={handleRun}
             reboot={reboot}
             error={error}
@@ -347,7 +357,7 @@ export default class Monitor extends Component {
       <div style={styles.root}>
         <Screen animation
           display={!isPopout}
-          frameRef={(ref) => ref && (this.inlineFrame = ref)}
+          frameRef={this.handleFrame}
           handleRun={handleRun}
           reboot={reboot}
           error={error}

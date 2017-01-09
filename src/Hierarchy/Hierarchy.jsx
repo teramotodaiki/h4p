@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
@@ -41,7 +41,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class Hierarchy extends Component {
+export default class Hierarchy extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
@@ -64,8 +64,20 @@ export default class Hierarchy extends Component {
 
   state = {
     openedPaths: [''],
+    tabbedFiles: [],
     filter: (file) => false,
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.props.files !== nextProps.files ||
+      this.props.tabs !== nextProps.tabs
+    ) {
+      this.setState({
+        tabbedFiles: nextProps.tabs.map((tab) => tab.file),
+      });
+    }
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.isResizing) {
@@ -154,11 +166,10 @@ export default class Hierarchy extends Component {
     const tabs = this.props.tabs
       .filter((tab) => !tab.props.component);
     const selected = tabs.find((tab) => tab.isSelected);
-    const tabbedFiles = tabs.map((tab) => tab.file);
 
     const transfer = {
       selectedFile: selected && selected.file,
-      tabbedFiles,
+      tabbedFiles: this.state.tabbedFiles,
       openFileDialog,
       putFile,
       isDirOpened: this.isDirOpened,

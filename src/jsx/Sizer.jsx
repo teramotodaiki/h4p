@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
 import transitions from 'material-ui/styles/transitions';
@@ -34,7 +34,7 @@ const getStyles = (props, context) => {
 
 };
 
-class Sizer extends Component {
+class Sizer extends PureComponent {
 
   static propTypes = {
     monitorWidth: PropTypes.number.isRequired,

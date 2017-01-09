@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
 import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
@@ -12,13 +12,13 @@ const TabHeight = 32;
 const TabSkewX = 24;
 
 const getStyles = (props, context, state) => {
-  const { isSelected, tabbedFiles } = props;
+  const { isSelected } = props;
   const { palette, spacing, fontFamily } = context.muiTheme;
   const { containerStyle, closerMouseOver } = state;
 
   const tabHeight = TabHeight + (isSelected ? 1 : 0);
   const tabWidth = Math.min(MaxTabWidth, Math.max(MinTabWidth,
-    parseInt(containerStyle.width) / tabbedFiles.length
+    parseInt(containerStyle.width) / props.length
   ));
   const blank = tabHeight / Math.tan((90 - TabSkewX) / 180 * Math.PI);
   const backgroundColor = fade(isSelected ?
@@ -100,10 +100,11 @@ const getStyles = (props, context, state) => {
 };
 
 
-export default class ChromeTabs extends Component {
+export default class ChromeTabs extends PureComponent {
 
   static propTypes = {
     tab: PropTypes.object.isRequired,
+    length: PropTypes.number.isRequired,
     isSelected: PropTypes.bool.isRequired,
     handleSelect: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,

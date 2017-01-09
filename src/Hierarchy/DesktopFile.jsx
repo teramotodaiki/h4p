@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
 import { DropTarget } from 'react-dnd';
 import HardwareComputer from 'material-ui/svg-icons/hardware/computer';
@@ -30,7 +30,7 @@ const getStyles = (props, context, state) => {
   };
 };
 
-class _DesktopFile extends Component {
+class _DesktopFile extends PureComponent {
 
   static propTypes = {
     onOpen: PropTypes.func.isRequired,

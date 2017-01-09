@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
@@ -31,7 +31,7 @@ const getStyles = (props, context) => {
 };
 
 
-export default class EditorMenu extends Component {
+export default class EditorMenu extends PureComponent {
 
   static propTypes = {
     localization: PropTypes.object.isRequired,

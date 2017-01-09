@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import { transparent } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
@@ -70,7 +70,7 @@ const getStyles = (props, context) => {
   };
 };
 
-class _DirCard extends Component {
+class _DirCard extends PureComponent {
 
   static propTypes = {
     dir: PropTypes.object.isRequired,

@@ -1,11 +1,11 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import { white, transparent } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 
 
 export const SrcDocEnabled = !!('srcdoc' in document.createElement('iframe'));
 
-export default class Screen extends Component {
+export default class Screen extends PureComponent {
 
   static propTypes = {
     animation: PropTypes.bool.isRequired,

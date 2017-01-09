@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { fullWhite, fullBlack } from 'material-ui/styles/colors';
 
 
@@ -28,7 +28,7 @@ const getStyles = (props, context, state) => {
   };
 };
 
-export default class Preview extends Component {
+export default class Preview extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,

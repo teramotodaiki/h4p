@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import Table, { TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 import TextField from 'material-ui/TextField';
@@ -16,7 +16,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class AboutDialog extends Component {
+export default class AboutDialog extends PureComponent {
 
   static propTypes = {
     onRequestClose: PropTypes.func.isRequired,

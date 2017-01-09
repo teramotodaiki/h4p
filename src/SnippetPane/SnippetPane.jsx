@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
 import Popover from 'material-ui/Popover';
 import Chip from 'material-ui/Chip';
@@ -11,7 +11,7 @@ import SnippetButton from './SnippetButton';
 import { configs } from '../File/';
 
 
-export default class SnippetPane extends Component {
+export default class SnippetPane extends PureComponent {
 
   static propTypes = {
     tabs: PropTypes.array.isRequired,

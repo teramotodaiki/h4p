@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import transitions from 'material-ui/styles/transitions';
 import { fade } from 'material-ui/utils/colorManipulator';
 
@@ -27,7 +27,7 @@ const getStyles = (props, context) => {
   }
 };
 
-export default class ChromeTabContent extends Component {
+export default class ChromeTabContent extends PureComponent {
 
   static propTypes = {
     show: PropTypes.bool.isRequired,
@@ -37,6 +37,13 @@ export default class ChromeTabContent extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
+
+  shouldComponentUpdate(nextProps) {
+    if (!this.props.show && !nextProps.show) {
+      return false;
+    }
+    return true;
+  }
 
   render() {
     const { children } = this.props;

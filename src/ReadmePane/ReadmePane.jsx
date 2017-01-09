@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import FlatButton from 'material-ui/FlatButton';
@@ -10,7 +10,7 @@ import Readme from './Readme';
 import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
 
-export default class ReadmePane extends Component {
+export default class ReadmePane extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
@@ -61,9 +61,13 @@ export default class ReadmePane extends Component {
 
     if (this.props.port !== nextProps.port) {
       nextProps.port.addEventListener('message', (event) => {
-        if (event.data.query === 'complete') {
+        const { query, value } = event.data;
+        if (
+          query === 'complete' &&
+          !shallowEqual(value, this.state.completes)
+        ) {
           this.setState({
-            completes: event.data.value,
+            completes: value,
           });
         }
       });
@@ -196,4 +200,16 @@ export default class ReadmePane extends Component {
       </Card>
     );
   }
+}
+
+function shallowEqual(a, b) {
+  if (a.length !== b.length) {
+    return false;
+  }
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+  return true;
 }

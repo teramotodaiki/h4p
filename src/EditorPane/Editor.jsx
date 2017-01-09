@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import ReactCodeMirror from 'react-codemirror';
 import { transparent, grey100 } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
@@ -103,7 +103,8 @@ const getStyles = (props, context, state) => {
   }
 };
 
-export default class Editor extends Component {
+
+export default class Editor extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,
@@ -111,7 +112,6 @@ export default class Editor extends Component {
     getFiles: PropTypes.func.isRequired,
     handleRun: PropTypes.func.isRequired,
     closeSelectedTab: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool.isRequired,
     isCared: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     codemirrorRef: PropTypes.func.isRequired,
@@ -120,6 +120,7 @@ export default class Editor extends Component {
   };
 
   static defaultProps = {
+    onChange: () => {},
     handleRun: () => {},
     getFiles: () => [],
     closeSelectedTab: () => {},
@@ -138,13 +139,10 @@ export default class Editor extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!nextProps.isSelected) {
+    if (this.props.file === nextProps.file) {
       return false;
     }
-    return (
-      this.props.file !== nextProps.file ||
-      this.props.completes !== nextProps.completes
-    );
+    return true;
   }
 
   handleCodemirror = (ref) => {
@@ -188,7 +186,6 @@ export default class Editor extends Component {
       "end_with_newline": true,
     });
     cm.setValue(text);
-    this.props.onChange(text);
   };
 
   render() {

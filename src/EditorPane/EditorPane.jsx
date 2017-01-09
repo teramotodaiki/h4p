@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import IconButton from 'material-ui/IconButton';
 import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 
@@ -44,7 +44,7 @@ const getStyles = (props, context) => {
   };
 };
 
-export default class EditorPane extends Component {
+export default class EditorPane extends PureComponent {
 
   static propTypes = {
     showMonitor: PropTypes.bool.isRequired,
@@ -119,6 +119,20 @@ export default class EditorPane extends Component {
     );
   }
 
+  getFiles = () => this.props.files;
+
+  handleCloseSelectedTab = () => {
+    this.props.tabs
+      .filter((item) => item.isSelected)
+      .forEach((item) => this.props.closeTab(item));
+  };
+
+  handleSelectTabFromFile = (file) => {
+    this.props.tabs
+      .filter((item) => item.file.key === file.key)
+      .forEach((item) => this.props.selectTab(item));
+  };
+
   render() {
     if (this.props.showMonitor) {
       return null;
@@ -150,8 +164,6 @@ export default class EditorPane extends Component {
       button,
     } = getStyles(this.props, this.context);
 
-    const tabbedFiles = tabs.map((tab) => tab.file);
-
     return (
     <div style={prepareStyles(root)}>
       <EditorMenu
@@ -164,8 +176,8 @@ export default class EditorPane extends Component {
         <ChromeTab
           key={tab.key}
           tab={tab}
+          length={tabs.length}
           isSelected={tab.isSelected}
-          tabbedFiles={tabbedFiles}
           handleSelect={selectTab}
           handleClose={closeTab}
           handleRun={handleRun}
@@ -176,14 +188,12 @@ export default class EditorPane extends Component {
       {tabs.map((tab) => (
         <ChromeTabContent key={tab.key} show={tab.isSelected}>
         {tab.renderContent({
-          getFiles: () => files,
-          onChange: (text) => putFile(tab.file, tab.file.set({ text })),
+          getFiles: this.getFiles,
           handleRun,
-          closeSelectedTab: () => tab.isSelected && closeTab(tab),
-          isSelected: tab.isSelected,
+          closeSelectedTab: this.handleCloseSelectedTab,
+          selectTabFromFile: this.handleSelectTabFromFile,
           getConfig,
           findFile,
-          selectTab,
           localization,
           port,
           reboot,

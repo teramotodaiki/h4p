@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 
@@ -31,7 +31,7 @@ const getStyle = (props, context) => {
   };
 };
 
-export default class CreditBar extends Component {
+export default class CreditBar extends PureComponent {
 
   static propTypes = {
     file: PropTypes.object.isRequired,

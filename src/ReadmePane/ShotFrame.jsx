@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -69,7 +69,7 @@ const getStyles = (props, context, state) => {
   };
 };
 
-export default class ShotFrame extends Component {
+export default class ShotFrame extends PureComponent {
 
   static propTypes = {
     text: PropTypes.string.isRequired,
@@ -92,17 +92,22 @@ export default class ShotFrame extends Component {
     canRestore: false,
   };
 
-  componentDidMount() {
-    this.setState({
-      height: this.getHeight(),
-    });
-  }
-
   componentWillReceiveProps(nextProps) {
-    if (this.props.text !== nextProps.text) {
+    if (!this.codemirror) {
+      return;
+    }
+    if (
+      this.props.text !== nextProps.text &&
+      this.codemirror.getValue('\n') !== nextProps.text
+    ) {
       this.setState({
         file: SourceFile.shot(nextProps.text),
       });
+
+      // ここで file を setState しただけでは
+      // ReactCodeMirror の componentWillReceiveProps に入らず
+      // エディタが更新されない. [バグ？]
+      this.codemirror.setValue(nextProps.text);
     }
   }
 
@@ -178,6 +183,16 @@ export default class ShotFrame extends Component {
     return waitForRender;
   };
 
+  handleCodemirror = (ref) => {
+    if (!ref) {
+      return;
+    }
+    this.codemirror = ref;
+    this.setState({
+      height: this.getHeight(),
+    });
+  };
+
   render() {
     const {
       updateShot,
@@ -210,7 +225,7 @@ export default class ShotFrame extends Component {
             file={this.state.file}
             onChange={this.handleChange}
             getConfig={getConfig}
-            codemirrorRef={(ref) => (this.codemirror = ref)}
+            codemirrorRef={this.handleCodemirror}
             completes={completes}
           />
         </div>

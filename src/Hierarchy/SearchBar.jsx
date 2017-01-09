@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
@@ -56,7 +56,7 @@ const getStyles = (props, context, state) => {
   };
 };
 
-export default class SearchBar extends Component {
+export default class SearchBar extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
