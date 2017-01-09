@@ -167,6 +167,7 @@ export default class ReadmePane extends Component {
       >
         <CardHeader showExpandableButton actAsExpander
           title={selectedFile.header}
+          subtitle={localization.readme.subtitle}
         />
         <CardText
           expandable

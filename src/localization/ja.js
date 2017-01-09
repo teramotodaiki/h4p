@@ -58,6 +58,7 @@ export default {
     indentUnit4: '４文字ずつそろえる',
   },
   readme: {
+    subtitle: 'まずはこれを読んでください',
     edit: '書きかえる',
     text: `# はじめに
 これは、こういうかんじのアプリです。←っていうのを、ここに書けます
@@ -88,6 +89,7 @@ alert('こんにちは！');
   },
   snippet: {
     title: 'アセット',
+    subtitle: '右側のコードにドラッグ&ドロップします',
     fileNotSelected: 'ファイルが選択されていません',
     readMore: 'もっと読む',
   },
@@ -108,10 +110,12 @@ alert('こんにちは！');
   },
   env: {
     title: '環境変数',
+    subtitle: 'かんきょうへんすう',
     remove: '削除',
   },
   palette: {
     title: 'カラーパレット',
+    subtitle: '気分に合わせて色を変えてみましょう',
   },
 
 };
