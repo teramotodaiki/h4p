@@ -45,7 +45,7 @@ const getStyle = (props, context) => {
     menuBar: {
       display: 'flex',
       backgroundColor: palette.canvasColor,
-      borderBottom: `1px solid ${palette.borderColor}`,
+      borderBottom: `1px solid ${palette.primary1Color}`,
     },
     barButton: {
       padding: 0,
@@ -55,7 +55,7 @@ const getStyle = (props, context) => {
     barButtonLabel: {
       fontSize: '.5rem',
     },
-    progressColor: palette.accent1Color,
+    progressColor: palette.primary1Color,
     progress: {
       borderRadius: 0,
     },

@@ -429,6 +429,7 @@ class Main extends Component {
       monitorHeight,
       coreString: this.state.coreString,
       saveAs: this.saveAs,
+      showMonitor: this.state.showMonitor,
     };
 
     const readmeProps = {
@@ -458,6 +459,7 @@ class Main extends Component {
             monitorWidth={monitorWidth}
             monitorHeight={monitorHeight}
             onSizer={(isResizing) => this.setState({ isResizing })}
+            showMonitor={this.state.showMonitor}
           />
           <div style={right}>
             <Monitor {...commonProps} {...monitorProps} />

@@ -16,7 +16,7 @@ const getStyle = (props, context) => {
       display: 'flex',
       justifyContent: 'space-between',
       padding: 4,
-      borderTop: `1px solid ${palette.borderColor}`,
+      borderTop: `1px solid ${palette.primary1Color}`,
       backgroundColor: palette.canvasColor,
     }, props.style),
     smallButton: {

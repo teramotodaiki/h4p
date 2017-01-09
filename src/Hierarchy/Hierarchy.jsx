@@ -189,7 +189,7 @@ export default class Hierarchy extends Component {
         <div style={scroll}>
           <Root files={files.filter(filter)} {...transfer} />
         </div>
-        <FloatingActionButton secondary
+        <FloatingActionButton
           style={button}
           onClick={this.handleAdd}
         >

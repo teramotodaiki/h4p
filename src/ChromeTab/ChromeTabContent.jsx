@@ -22,7 +22,7 @@ const getStyles = (props, context) => {
     },
     container: {
       flex: '1 1 auto',
-      borderTop: `1px solid ${palette.borderColor}`,
+      borderTop: `1px solid ${palette.primary1Color}`,
     },
   }
 };

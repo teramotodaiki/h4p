@@ -19,7 +19,10 @@ import CloneDialog from './CloneDialog';
 
 const getStyles = (props, context) => {
 
-  const { isPopout } = props;
+  const {
+    isPopout,
+    showMonitor
+  } = props;
   const { palette } = context.muiTheme;
 
   return {
@@ -30,7 +33,8 @@ const getStyles = (props, context) => {
       flexWrap: 'wrap',
       alignItems: 'center',
       zIndex: 400,
-      backgroundColor: palette.primary1Color,
+      backgroundColor: showMonitor ?
+         palette.accent1Color : palette.primary1Color,
     },
     button: {
       marginRight: 20,
@@ -57,6 +61,7 @@ export default class Menu extends Component {
     setConfig: PropTypes.func.isRequired,
     coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
+    showMonitor: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {

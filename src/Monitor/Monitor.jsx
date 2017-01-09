@@ -42,6 +42,37 @@ const frameLoader = (() => {
 })();
 
 
+const getStyle = (props, context, state) => {
+  const {
+    palette,
+  } = context.muiTheme;
+
+  return {
+    root: {
+      flex: '1 1 auto',
+      position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'stretch',
+      zIndex: 300,
+    },
+    linear1: {
+      position: 'absolute',
+      bottom: 0,
+      borderRadius: 0,
+      height: 8,
+    },
+    linear2: {
+      position: 'absolute',
+      bottom: 0,
+      borderRadius: 0,
+      opacity: state.progress < 1 ? 1 : 0,
+    },
+    progressColor: props.showMonitor ?
+       palette.accent1Color : palette.primary1Color,
+  };
+};
+
 export default class Monitor extends Component {
 
   static propTypes = {
@@ -287,29 +318,6 @@ export default class Monitor extends Component {
       handleRun,
     } = this.props;
 
-    const styles = {
-      root: {
-        flex: '1 1 auto',
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        zIndex: 300,
-      },
-      linear1: {
-        position: 'absolute',
-        bottom: 0,
-        borderRadius: 0,
-        height: 8,
-      },
-      linear2: {
-        position: 'absolute',
-        bottom: 0,
-        borderRadius: 0,
-        opacity: progress < 1 ? 1 : 0,
-      },
-    };
-
     if (!showMonitor) {
       return isPopout && !reboot ? (
         <Popout
@@ -333,6 +341,8 @@ export default class Monitor extends Component {
       ) : null;
     }
 
+    const styles = getStyle(this.props, this.context, this.state);
+
     return (
       <div style={styles.root}>
         <Screen animation
@@ -347,10 +357,12 @@ export default class Monitor extends Component {
           max={1}
           value={progress}
           style={styles.linear1}
+          color={styles.progressColor}
         />
         <LinearProgress
           mode="indeterminate"
           style={styles.linear2}
+          color={styles.progressColor}
         />
       </div>
     );

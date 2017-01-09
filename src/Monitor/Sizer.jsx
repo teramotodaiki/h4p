@@ -10,10 +10,8 @@ export const SizerWidth = 24;
 
 const getStyles = (props, context) => {
 
-  const { monitorWidth, monitorHeight } = props;
   const {
     palette,
-    spacing,
   } = context.muiTheme;
 
   return {
@@ -30,7 +28,9 @@ const getStyles = (props, context) => {
       width: '100%',
       height: '100%',
       borderRadius: '0 0 0 4px',
-      backgroundColor: palette.primary1Color,
+      backgroundColor: props.showMonitor ?
+         palette.accent1Color : palette.primary1Color,
+      transition: transitions.easeOut(),
     },
   };
 
@@ -42,6 +42,7 @@ class Sizer extends Component {
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
     onSizer: PropTypes.func.isRequired,
+    showMonitor: PropTypes.bool.isRequired,
 
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
