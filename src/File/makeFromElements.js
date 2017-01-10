@@ -56,5 +56,5 @@ function makeFromElement(script) {
     return new BinaryFile({ type, name, blob, options, credits, hash });
   }
 
-  return Promise.reject('Unknown File Type' . file.type);
+  return Promise.reject('Unknown File Type ' + type);
 }
