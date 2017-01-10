@@ -12,8 +12,9 @@ import template from '../html/screen';
 import fallbackTemplate from '../html/dangerScreen';
 import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
-import Screen, { SrcDocEnabled } from './Screen';
+import Screen from './Screen';
 
+import setSrcDoc from './setSrcDoc';
 
 const FramePadding = 8;
 
@@ -23,22 +24,11 @@ const popoutURL = URL.createObjectURL(
 );
 
 const frameLoader = (() => {
-  if (SrcDocEnabled) {
-    const screen = template({ title: 'app', screenJs });
-    return (frame, callback) => {
-      frame.onload = () => callback(frame);
-      frame.srcdoc = screen;
-    };
-  } else {
-    const fallback = fallbackTemplate({ title: 'app' });
-    return (frame, callback) =>  {
-      frame.onload = () => {
-        frame.contentWindow.postMessage(screenJs, '*');
-        callback(frame, 1);
-      };
-      frame.src = `javascript: '${fallback}'`;
-    };
-  }
+  const screen = template({ title: 'app', screenJs });
+
+  return (frame, callback) => {
+    setSrcDoc(frame, screen, () => callback(frame));
+  };
 })();
 
 
@@ -89,6 +79,7 @@ export default class Monitor extends PureComponent {
     localization: PropTypes.object.isRequired,
     getConfig: PropTypes.func.isRequired,
     addFile: PropTypes.func.isRequired,
+    findFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
