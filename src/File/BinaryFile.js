@@ -60,28 +60,23 @@ export default class BinaryFile extends _File {
     return new BinaryFile(seed);
   }
 
-  compose() {
-    return new Promise((resolve, reject) => {
-      const serialized = this.serialize();
-      if (this.sign && this.sign === this.credit) {
-        const sign = Object.assign({}, this.sign, {
-          timestamp: new Date().getTime(),
-          hash: this.hash,
-        });
-        serialized.credits = JSON.stringify(
-          this.credits.concat(sign)
-        );
-      } else {
-        serialized.credits = JSON.stringify(this.credits);
-      }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const { result } = e.target;
-        serialized.composed = result.substr(result.indexOf(',') + 1);
-        resolve(serialized);
-      };
-      reader.readAsDataURL(this.blob);
-    });
+  async compose() {
+    const serialized = this.serialize();
+    if (this.sign && this.sign === this.credit) {
+      const sign = Object.assign({}, this.sign, {
+        timestamp: new Date().getTime(),
+        hash: this.hash,
+      });
+      serialized.credits = JSON.stringify(
+        this.credits.concat(sign)
+      );
+    } else {
+      serialized.credits = JSON.stringify(this.credits);
+    }
+    const dataURL = await this.toDataURL();
+    serialized.composed = dataURL.substr(dataURL.indexOf(',') + 1);
+
+    return serialized;
   }
 
   /**
