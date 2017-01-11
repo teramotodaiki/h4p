@@ -29,7 +29,9 @@ function makeFromElement(script) {
 
   const text = (code => {
     // Indent
-    code = code.replace(/^\n*/g, '');
+    code = code
+      .replace(/^\s*\<\!\-\-\n*/m, '')
+      .replace(/\-\-\>\s*$/m, '');
     const spaces = /^\s*/.exec(code)[0];
     if (spaces) {
       code = code
