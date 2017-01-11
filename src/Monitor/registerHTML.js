@@ -25,10 +25,8 @@ export default async (html, findFile, scriptFiles) => {
   // 2. src 属性を BinaryFile の Data URL に差し替える
   const binaries = [...doc.images];
   for (const node of binaries) {
-    if (!node.hasAttribute('src')) return;
-    const src = node.getAttribute('src');
-    const file = findFile(src);
-    if (!file) return;
+    const file = findFile(node.getAttribute('src'));
+    if (!file) continue;
 
     const dataURL = await file.toDataURL();
     node.setAttribute('src', dataURL);
