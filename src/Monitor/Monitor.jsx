@@ -11,7 +11,7 @@ import composeEnv from '../File/composeEnv';
 import popoutTemplate from '../html/popout';
 import Screen from './Screen';
 import setSrcDoc from './setSrcDoc';
-import htmlRegister from './htmlRegister';
+import registerHTML from './registerHTML';
 
 const FramePadding = 8;
 
@@ -125,10 +125,6 @@ export default class Monitor extends PureComponent {
     this.setState({ error: null });
     const env = composeEnv(getConfig('env'));
 
-    const html = htmlRegister(
-      this.props.findFile('index.html').text
-    );
-
     let sent = 0;
     const workerProcess = this.props.files
       .filter((file) => !file.options.isTrashed && file.isScript)
@@ -143,13 +139,20 @@ export default class Monitor extends PureComponent {
         return Promise.reject(error);
       }));
 
+    const frameProcess = Promise.resolve()
+      .then(() => {
+        const html = this.props.findFile('index.html').text;
+        return registerHTML(html, this.props.findFile);
+      })
+      .then((html) => new Promise((resolve, reject) => {
+        setTimeout(reject, ConnectionTimeout);
+        setSrcDoc(this.iframe, html, () => resolve(this.iframe));
+      }));
+
     this.prevent =
       (this.prevent || Promise.resolve())
       .then(() => Promise.all([
-        new Promise((resolve, reject) => {
-          setTimeout(reject, ConnectionTimeout);
-          setSrcDoc(this.iframe, html, () => resolve(this.iframe));
-        }),
+        frameProcess,
         ...workerProcess,
       ]))
       .then(([frame, ...files]) => {
