@@ -39,7 +39,7 @@ export default async (html, findFile, scriptFiles) => {
   doc.head.insertBefore(defineScript, screenJs.nextSibling);
 
   // 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
-  for (const node of doc.scripts) {
+  for (const node of [...doc.scripts]) {
     const file = findFile(node.getAttribute('src'));
     if (!file) continue;
 
