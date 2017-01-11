@@ -8,12 +8,8 @@ import transitions from 'material-ui/styles/transitions';
 
 import { BinaryFile, SourceFile, makeFromFile} from '../File/';
 import composeEnv from '../File/composeEnv';
-import template from '../html/screen';
-import fallbackTemplate from '../html/dangerScreen';
-import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
 import Screen from './Screen';
-
 import setSrcDoc from './setSrcDoc';
 import htmlRegister from './htmlRegister';
 
@@ -23,14 +19,6 @@ const ConnectionTimeout = 1000;
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
-
-const frameLoader = (() => {
-  const screen = template({ title: 'app', screenJs });
-
-  return (frame, callback) => {
-    setSrcDoc(frame, screen, () => callback(frame));
-  };
-})();
 
 
 const getStyle = (props, context, state) => {
