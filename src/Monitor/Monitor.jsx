@@ -160,7 +160,8 @@ export default class Monitor extends PureComponent {
 
     const html = await registerHTML(
       this.props.findFile('index.html').text,
-      this.props.findFile
+      this.props.findFile,
+      files
     );
 
     await new Promise((resolve, reject) => {
