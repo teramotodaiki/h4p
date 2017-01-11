@@ -118,61 +118,12 @@ export default class Monitor extends PureComponent {
     return this.props.isPopout ? this.popoutFrame : this.inlineFrame;
   }
 
-  prevent = null;
-  start () {
-    const { portRef, getConfig } = this.props;
+  prevent = Promise.resolve();
+  async start () {
+    const _prevent = this.prevent;
 
-    this.setState({ error: null });
-    const env = composeEnv(getConfig('env'));
-
-    let sent = 0;
-    const workerProcess = this.props.files
-      .filter((file) => !file.options.isTrashed && file.isScript)
-      .map((file, i, send) => file.babel(getConfig('babelrc'))
-      .then((file) => {
-        // To indicate
-        const progress = Math.min(1, ++sent / send.length);
-        this.setState({ progress });
-        return file.serialize();
-      }, (error) => {
-        // Babel is failed
-        return Promise.reject(error);
-      }));
-
-    const frameProcess = Promise.resolve()
-      .then(() => {
-        const html = this.props.findFile('index.html').text;
-        return registerHTML(html, this.props.findFile);
-      })
-      .then((html) => new Promise((resolve, reject) => {
-        setTimeout(reject, ConnectionTimeout);
-        setSrcDoc(this.iframe, html, () => resolve(this.iframe));
-      }));
-
-    this.prevent =
-      (this.prevent || Promise.resolve())
-      .then(() => Promise.all([
-        frameProcess,
-        ...workerProcess,
-      ]))
-      .then(([frame, ...files]) => {
-        const channel = new MessageChannel();
-        channel.port1.addEventListener('message', (event) => {
-          const reply = (params) => {
-            params = Object.assign({
-              id: event.data.id,
-            }, params);
-            channel.port1.postMessage(params);
-          };
-          this.handleMessage(event, reply);
-        });
-        portRef(channel.port1);
-        channel.port1.start();
-
-        frame.contentWindow.postMessage({
-          files, env,
-        }, '*', [channel.port2]);
-      })
+    this.prevent = _prevent
+      .then(() => this.startProcess())
       .catch((error) => {
         if (error) {
           this.setState({ error });
@@ -180,6 +131,62 @@ export default class Monitor extends PureComponent {
           this.start();
         }
       });
+
+    await _prevent;
+
+    this.setState({ error: null });
+  }
+
+  async startProcess() {
+    const { portRef, getConfig } = this.props;
+
+    const babelrc = getConfig('babelrc');
+    const env = composeEnv(getConfig('env'));
+
+    const scriptFiles = this.props.files
+      .filter((file) => !file.options.isTrashed && file.isScript);
+
+    const indicate = ((sent) => () => {
+      const progress = Math.min(1, ++sent / scriptFiles.length);
+      this.setState({ progress });
+    })(0);
+
+    const buildProcess = scriptFiles
+      .map((file) => {
+        return file.babel(babelrc)
+          .then((es5) => indicate() || es5.serialize());
+      });
+    const files = await Promise.all(buildProcess);
+
+    const html = await registerHTML(
+      this.props.findFile('index.html').text,
+      this.props.findFile
+    );
+
+    await new Promise((resolve, reject) => {
+      setSrcDoc(this.iframe, html, resolve);
+      setTimeout(() => {
+        reject(new Error('Connection Timeout'));
+      }, ConnectionTimeout);
+    });
+
+    const channel = new MessageChannel();
+    channel.port1.addEventListener('message', (event) => {
+      const reply = (params) => {
+        params = Object.assign({
+          id: event.data.id,
+        }, params);
+        channel.port1.postMessage(params);
+      };
+      this.handleMessage(event, reply);
+    });
+    portRef(channel.port1);
+    channel.port1.start();
+
+    this.iframe.contentWindow.postMessage({
+      files, env,
+    }, '*', [channel.port2]);
+
   }
 
   handleMessage = ({ data }, reply) => {
