@@ -154,7 +154,7 @@ export default class Monitor extends PureComponent {
     const buildProcess = scriptFiles
       .map((file) => {
         return file.babel(babelrc)
-          .then((es5) => indicate() || es5.serialize());
+          .then((es5) => indicate() || es5);
       });
     const files = await Promise.all(buildProcess);
 
@@ -185,7 +185,7 @@ export default class Monitor extends PureComponent {
     channel.port1.start();
 
     this.iframe.contentWindow.postMessage({
-      files, env,
+      env,
     }, '*', [channel.port2]);
 
   }
