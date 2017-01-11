@@ -11,6 +11,7 @@ import screenJs from '../../lib/screen';
  * 1. headタグの一番上に screenJs を埋め込む
  * 2. src 属性を BinaryFile の Data URL に差し替える
  * 3. screenJs のすぐ下で、全てのスクリプトを define する
+ * 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
  */
 export default async (html, findFile, scriptFiles) => {
 
@@ -37,6 +38,17 @@ export default async (html, findFile, scriptFiles) => {
   defineScript.text = scriptFiles.map(defineTemplate).join('');
   doc.head.insertBefore(defineScript, screenJs.nextSibling);
 
+  // 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
+  for (const node of doc.scripts) {
+    const file = findFile(node.getAttribute('src'));
+    if (!file) continue;
+
+    const dataURL =
+      'data:text/javascript;charset=UTF-8,' +
+      encodeURIComponent(requireTemplate(file.moduleName, scriptFiles));
+    node.setAttribute('src', dataURL);
+  }
+
   return doc.documentElement.outerHTML;
 
 }
@@ -47,3 +59,14 @@ define('${file.moduleName}', new Function('require, exports, module', '${
     .replace(/\'/g, '\\\'')
     .replace(/\n/g, '\\n')
 }'))`;
+
+const requireTemplate = (src, scriptFiles) =>
+`requirejs({
+  map: {
+    '*': {
+      ${scriptFiles.map(nameToModuleName).join()}
+    }
+  }
+}, ['${src}'], function () {})`;
+
+const nameToModuleName = (file) => `"${file.name}":"${file.moduleName}"`;
