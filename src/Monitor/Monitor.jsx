@@ -8,12 +8,10 @@ import transitions from 'material-ui/styles/transitions';
 
 import { BinaryFile, SourceFile, makeFromFile} from '../File/';
 import composeEnv from '../File/composeEnv';
-import template from '../html/screen';
-import fallbackTemplate from '../html/dangerScreen';
-import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
-import Screen, { SrcDocEnabled } from './Screen';
-
+import Screen from './Screen';
+import setSrcDoc from './setSrcDoc';
+import htmlRegister from './htmlRegister';
 
 const FramePadding = 8;
 
@@ -21,25 +19,6 @@ const ConnectionTimeout = 1000;
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
-
-const frameLoader = (() => {
-  if (SrcDocEnabled) {
-    const screen = template({ title: 'app', screenJs });
-    return (frame, callback) => {
-      frame.onload = () => callback(frame);
-      frame.srcdoc = screen;
-    };
-  } else {
-    const fallback = fallbackTemplate({ title: 'app' });
-    return (frame, callback) =>  {
-      frame.onload = () => {
-        frame.contentWindow.postMessage(screenJs, '*');
-        callback(frame, 1);
-      };
-      frame.src = `javascript: '${fallback}'`;
-    };
-  }
-})();
 
 
 const getStyle = (props, context, state) => {
@@ -89,6 +68,7 @@ export default class Monitor extends PureComponent {
     localization: PropTypes.object.isRequired,
     getConfig: PropTypes.func.isRequired,
     addFile: PropTypes.func.isRequired,
+    findFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
@@ -145,6 +125,10 @@ export default class Monitor extends PureComponent {
     this.setState({ error: null });
     const env = composeEnv(getConfig('env'));
 
+    const html = htmlRegister(
+      this.props.findFile('index.html').text
+    );
+
     let sent = 0;
     const workerProcess = this.props.files
       .filter((file) => !file.options.isTrashed && file.isScript)
@@ -164,7 +148,7 @@ export default class Monitor extends PureComponent {
       .then(() => Promise.all([
         new Promise((resolve, reject) => {
           setTimeout(reject, ConnectionTimeout);
-          frameLoader(this.iframe, resolve);
+          setSrcDoc(this.iframe, html, () => resolve(this.iframe));
         }),
         ...workerProcess,
       ]))
