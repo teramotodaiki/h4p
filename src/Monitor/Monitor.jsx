@@ -15,6 +15,7 @@ import popoutTemplate from '../html/popout';
 import Screen from './Screen';
 
 import setSrcDoc from './setSrcDoc';
+import htmlRegister from './htmlRegister';
 
 const FramePadding = 8;
 
@@ -136,6 +137,10 @@ export default class Monitor extends PureComponent {
     this.setState({ error: null });
     const env = composeEnv(getConfig('env'));
 
+    const html = htmlRegister(
+      this.props.findFile('index.html').text
+    );
+
     let sent = 0;
     const workerProcess = this.props.files
       .filter((file) => !file.options.isTrashed && file.isScript)
@@ -155,7 +160,7 @@ export default class Monitor extends PureComponent {
       .then(() => Promise.all([
         new Promise((resolve, reject) => {
           setTimeout(reject, ConnectionTimeout);
-          frameLoader(this.iframe, resolve);
+          setSrcDoc(this.iframe, html, () => resolve(this.iframe));
         }),
         ...workerProcess,
       ]))
