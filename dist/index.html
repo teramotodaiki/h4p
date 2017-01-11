@@ -23,60 +23,68 @@
     </style>
   </head>
   <body>
-    <h1>h4p example</h1>
 
     <!-- Config of the app -->
     <div class="h4p__app" data-target=".example1"></div>
 
     <!-- Files as a <script> -->
     <script class="example1" name="main.js" data-type="text/javascript" is-entry-point is-opened type="hack">
-    import message from 'sub/message';
+<!--
+import message from 'sub/message';
 
-    const body = document.body;
-    body.style.backgroundColor = 'white';
-    body.style.height = '200px';
+const body = document.body;
+body.style.backgroundColor = 'white';
+body.style.height = '200px';
 
-    body.textContent = message;
+body.textContent = message;
 
+-->
     </script>
     <script class="example1" name="sub/message.js" data-type="text/javascript" type="hack">
-    export default "It's fine! :-)";
+<!--
+export default "It's fine! :-)";
 
+-->
     </script>
     <script class="example1" name="snippets/sample.json" data-type="application/json" type="hack">
-    {
-        ".source.js": {
-    		"if": {
-    			"prefix": "if",
-    			"body": `
+<!--
+{
+    ".source.js": {
+        "if": {
+            "prefix": "if",
+            "body": `
 if (1 === 1) {
 
 }`,
-                "description": "( ) の中の条件が正しいときだけ、{ } の中に入ります",
-            	"leftLabel": "if 文"
-    	  	}
-    	}
+            "description": "( ) の中の条件が正しいときだけ、{ } の中に入ります",
+            "leftLabel": "if 文"
+        }
     }
+}
+-->
     </script>
     <script class="example1" name="index.html" data-type="text/html" type="hack">
-    <!DOCTYPE html>
-    <html>
-        <head>
-            <meta charset="utf-8">
-            <title></title>
-            <style media="screen">
-            body {
-              margin: 0;
-              padding: 0;
-              border: 0 none;
-              overflow: hidden;
-            }
-            </style>
-        </head>
-        <body>
-            <h1>LOADING...</h1>
-        </body>
-    </html>
+<!--
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style media="screen">
+        body {
+          margin: 0;
+          padding: 0;
+          border: 0 none;
+          overflow: hidden;
+        }
+        </style>
+        <script src="main.js"></script>
+    </head>
+    <body>
+        <h1>LOADING...</h1>
+    </body>
+</html>
+-->
     </script>
 
   </body>
