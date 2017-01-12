@@ -17,7 +17,7 @@ const getStyles = (props, context) => {
 
   return {
     root: {
-      flex: '1 1 auto',
+      flex: props.showMonitor ? '0 0 0' : '1 1 auto',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
@@ -70,6 +70,9 @@ export default class EditorPane extends PureComponent {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.isResizing) {
+      return false;
+    }
+    if (this.props.showMonitor && nextProps.showMonitor) {
       return false;
     }
     return true;
@@ -138,10 +141,7 @@ export default class EditorPane extends PureComponent {
   };
 
   render() {
-    if (this.props.showMonitor) {
-      return null;
-    }
-    if (!this.props.tabs.length) {
+    if (!this.props.tabs.length && !this.props.showMonitor) {
       return this.renderBackground();
     }
 
