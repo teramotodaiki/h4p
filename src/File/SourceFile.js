@@ -20,7 +20,6 @@ export default class SourceFile extends _File {
   };
 
   static defaultOptions = {
-    isEntryPoint: false,
     isReadOnly: false,
     isTrashed: false,
     noBabel: false,

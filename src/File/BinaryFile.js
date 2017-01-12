@@ -16,7 +16,6 @@ export default class BinaryFile extends _File {
   };
 
   static defaultOptions = {
-    isEntryPoint: false,
     isReadOnly: true,
     isTrashed: false,
     noBabel: false,

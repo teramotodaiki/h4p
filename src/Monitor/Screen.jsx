@@ -12,7 +12,7 @@ export default class Screen extends PureComponent {
     animation: PropTypes.bool.isRequired,
     display: PropTypes.bool.isRequired,
     frameRef: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
+    handleReload: PropTypes.func.isRequired,
     error: PropTypes.object,
   };
 
@@ -28,14 +28,14 @@ export default class Screen extends PureComponent {
 
   handleTap = () => {
     if (!this.props.animation) {
-      this.props.handleRun();
+      this.props.handleReload();
       return;
     }
     if (this.state.loading) {
       return;
     }
     this.setState({ loading: true }, () => {
-      this.props.handleRun();
+      this.props.handleReload();
       setTimeout(() => {
         this.setState({ loading: false });
       }, 250);
