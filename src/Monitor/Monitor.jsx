@@ -225,6 +225,11 @@ export default class Monitor extends PureComponent {
       case 'reload':
         this.handleReload();
         break;
+      case 'replace':
+        this.props.setLocation({
+          href: data.value,
+        });
+        break;
       case 'error':
         if (!this.state.error) {
           this.setState({ error: new Error(data.message) });
