@@ -62,9 +62,9 @@ export default class Monitor extends PureComponent {
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
+    href: PropTypes.string.isRequired,
     togglePopout: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     getConfig: PropTypes.func.isRequired,
     addFile: PropTypes.func.isRequired,
@@ -72,6 +72,7 @@ export default class Monitor extends PureComponent {
     putFile: PropTypes.func.isRequired,
     coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
+    setLocation: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -118,6 +119,10 @@ export default class Monitor extends PureComponent {
     return this.props.isPopout ? this.popoutFrame : this.inlineFrame;
   }
 
+  get href() {
+    return this.props.href || 'index.html';
+  }
+
   prevent = Promise.resolve();
   async start () {
     const _prevent = this.prevent;
@@ -159,7 +164,7 @@ export default class Monitor extends PureComponent {
     const files = await Promise.all(buildProcess);
 
     const html = await registerHTML(
-      this.props.findFile('index.html').text,
+      this.props.findFile(this.href).text,
       this.props.findFile,
       files
     );
@@ -218,7 +223,7 @@ export default class Monitor extends PureComponent {
         });
         break;
       case 'reload':
-        this.props.handleRun();
+        this.handleReload();
         break;
       case 'error':
         if (!this.state.error) {
@@ -311,6 +316,12 @@ export default class Monitor extends PureComponent {
     }
   };
 
+  handleReload = () => {
+    this.props.setLocation({
+      href: this.props.href,
+    });
+  };
+
   render() {
     const {
       progress,
@@ -320,7 +331,6 @@ export default class Monitor extends PureComponent {
       showMonitor,
       isPopout,
       reboot,
-      handleRun,
     } = this.props;
 
     if (!showMonitor) {
@@ -338,7 +348,7 @@ export default class Monitor extends PureComponent {
         >
           <Screen display
             frameRef={this.handleFrame}
-            handleRun={handleRun}
+            handleReload={this.handleReload}
             reboot={reboot}
             error={error}
           />
@@ -353,7 +363,7 @@ export default class Monitor extends PureComponent {
         <Screen animation
           display={!isPopout}
           frameRef={this.handleFrame}
-          handleRun={handleRun}
+          handleReload={this.handleReload}
           reboot={reboot}
           error={error}
         />

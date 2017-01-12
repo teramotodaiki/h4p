@@ -95,6 +95,7 @@ class Main extends Component {
     files: this.props.files,
     isPopout: false,
     reboot: false,
+    href: '',
 
     tabs: [],
 
@@ -342,6 +343,14 @@ class Main extends Component {
     });
   };
 
+  setLocation = ({ href = '' }) => {
+    this.setState({
+      reboot: true,
+      showMonitor: !this.state.isPopout,
+      href,
+    });
+  };
+
   setResizing = (isResizing) => {
     return this.setState({ isResizing })
   };
@@ -415,6 +424,8 @@ class Main extends Component {
       handleRun: this.handleRun,
       coreString: this.state.coreString,
       saveAs: this.saveAs,
+      href: this.state.href,
+      setLocation: this.setLocation,
     };
 
     const hierarchyProps = {
