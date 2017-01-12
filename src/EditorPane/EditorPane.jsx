@@ -184,6 +184,7 @@ export default class EditorPane extends PureComponent {
           tab={tab}
           length={tabs.length}
           isSelected={tab.isSelected}
+          localization={localization}
           handleSelect={selectTab}
           handleClose={closeTab}
         />
