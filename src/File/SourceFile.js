@@ -194,4 +194,30 @@ export default class SourceFile extends _File {
     });
   }
 
+  static html() {
+    const text = `<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style media="screen">
+        body {
+          margin: 0;
+          padding: 0;
+          border: 0 none;
+          overflow: hidden;
+        }
+        </style>
+        <script src="main.js"></script>
+    </head>
+    <body>
+    </body>
+</html>`;
+    return new SourceFile({
+      name: 'index.html',
+      type: 'text/html',
+      text,
+    });
+  }
+
 }

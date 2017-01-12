@@ -163,8 +163,10 @@ export default class Monitor extends PureComponent {
       });
     const files = await Promise.all(buildProcess);
 
+    const htmlFile = this.props.findFile(this.href) || SourceFile.html();
+
     const html = await registerHTML(
-      this.props.findFile(this.href).text,
+      htmlFile.text,
       this.props.findFile,
       files
     );
