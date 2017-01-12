@@ -8,12 +8,10 @@ import transitions from 'material-ui/styles/transitions';
 
 import { BinaryFile, SourceFile, makeFromFile} from '../File/';
 import composeEnv from '../File/composeEnv';
-import template from '../html/screen';
-import fallbackTemplate from '../html/dangerScreen';
-import screenJs from '../../lib/screen';
 import popoutTemplate from '../html/popout';
-import Screen, { SrcDocEnabled } from './Screen';
-
+import Screen from './Screen';
+import setSrcDoc from './setSrcDoc';
+import registerHTML from './registerHTML';
 
 const FramePadding = 8;
 
@@ -21,25 +19,6 @@ const ConnectionTimeout = 1000;
 const popoutURL = URL.createObjectURL(
   new Blob([popoutTemplate()], { type: 'text/html' })
 );
-
-const frameLoader = (() => {
-  if (SrcDocEnabled) {
-    const screen = template({ title: 'app', screenJs });
-    return (frame, callback) => {
-      frame.onload = () => callback(frame);
-      frame.srcdoc = screen;
-    };
-  } else {
-    const fallback = fallbackTemplate({ title: 'app' });
-    return (frame, callback) =>  {
-      frame.onload = () => {
-        frame.contentWindow.postMessage(screenJs, '*');
-        callback(frame, 1);
-      };
-      frame.src = `javascript: '${fallback}'`;
-    };
-  }
-})();
 
 
 const getStyle = (props, context, state) => {
@@ -83,15 +62,17 @@ export default class Monitor extends PureComponent {
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
     reboot: PropTypes.bool.isRequired,
+    href: PropTypes.string.isRequired,
     togglePopout: PropTypes.func.isRequired,
     portRef: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     getConfig: PropTypes.func.isRequired,
     addFile: PropTypes.func.isRequired,
+    findFile: PropTypes.func.isRequired,
     putFile: PropTypes.func.isRequired,
     coreString: PropTypes.string,
     saveAs: PropTypes.func.isRequired,
+    setLocation: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -138,54 +119,16 @@ export default class Monitor extends PureComponent {
     return this.props.isPopout ? this.popoutFrame : this.inlineFrame;
   }
 
-  prevent = null;
-  start () {
-    const { portRef, getConfig } = this.props;
+  get href() {
+    return this.props.href || 'index.html';
+  }
 
-    this.setState({ error: null });
-    const env = composeEnv(getConfig('env'));
+  prevent = Promise.resolve();
+  async start () {
+    const _prevent = this.prevent;
 
-    let sent = 0;
-    const workerProcess = this.props.files
-      .filter((file) => !file.options.isTrashed && file.isScript)
-      .map((file, i, send) => file.babel(getConfig('babelrc'))
-      .then((file) => {
-        // To indicate
-        const progress = Math.min(1, ++sent / send.length);
-        this.setState({ progress });
-        return file.serialize();
-      }, (error) => {
-        // Babel is failed
-        return Promise.reject(error);
-      }));
-
-    this.prevent =
-      (this.prevent || Promise.resolve())
-      .then(() => Promise.all([
-        new Promise((resolve, reject) => {
-          setTimeout(reject, ConnectionTimeout);
-          frameLoader(this.iframe, resolve);
-        }),
-        ...workerProcess,
-      ]))
-      .then(([frame, ...files]) => {
-        const channel = new MessageChannel();
-        channel.port1.addEventListener('message', (event) => {
-          const reply = (params) => {
-            params = Object.assign({
-              id: event.data.id,
-            }, params);
-            channel.port1.postMessage(params);
-          };
-          this.handleMessage(event, reply);
-        });
-        portRef(channel.port1);
-        channel.port1.start();
-
-        frame.contentWindow.postMessage({
-          files, env,
-        }, '*', [channel.port2]);
-      })
+    this.prevent = _prevent
+      .then(() => this.startProcess())
       .catch((error) => {
         if (error) {
           this.setState({ error });
@@ -193,6 +136,65 @@ export default class Monitor extends PureComponent {
           this.start();
         }
       });
+
+    await _prevent;
+
+    this.setState({ error: null });
+  }
+
+  async startProcess() {
+    const { portRef, getConfig } = this.props;
+
+    const babelrc = getConfig('babelrc');
+    const env = composeEnv(getConfig('env'));
+
+    const scriptFiles = this.props.files
+      .filter((file) => !file.options.isTrashed && file.isScript);
+
+    const indicate = ((sent) => () => {
+      const progress = Math.min(1, ++sent / scriptFiles.length);
+      this.setState({ progress });
+    })(0);
+
+    const buildProcess = scriptFiles
+      .map((file) => {
+        return file.babel(babelrc)
+          .then((es5) => indicate() || es5);
+      });
+    const files = await Promise.all(buildProcess);
+
+    const htmlFile = this.props.findFile(this.href) || SourceFile.html();
+
+    const html = await registerHTML(
+      htmlFile.text,
+      this.props.findFile,
+      files
+    );
+
+    await new Promise((resolve, reject) => {
+      setSrcDoc(this.iframe, html, resolve);
+      setTimeout(() => {
+        reject(new Error('Connection Timeout'));
+      }, ConnectionTimeout);
+    });
+
+    const channel = new MessageChannel();
+    channel.port1.addEventListener('message', (event) => {
+      const reply = (params) => {
+        params = Object.assign({
+          id: event.data.id,
+        }, params);
+        channel.port1.postMessage(params);
+      };
+      this.handleMessage(event, reply);
+    });
+    portRef(channel.port1);
+    channel.port1.start();
+
+    this.iframe.contentWindow.postMessage({
+      env,
+    }, '*', [channel.port2]);
+
   }
 
   handleMessage = ({ data }, reply) => {
@@ -223,7 +225,12 @@ export default class Monitor extends PureComponent {
         });
         break;
       case 'reload':
-        this.props.handleRun();
+        this.handleReload();
+        break;
+      case 'replace':
+        this.props.setLocation({
+          href: data.value,
+        });
         break;
       case 'error':
         if (!this.state.error) {
@@ -316,6 +323,12 @@ export default class Monitor extends PureComponent {
     }
   };
 
+  handleReload = () => {
+    this.props.setLocation({
+      href: this.props.href,
+    });
+  };
+
   render() {
     const {
       progress,
@@ -325,7 +338,6 @@ export default class Monitor extends PureComponent {
       showMonitor,
       isPopout,
       reboot,
-      handleRun,
     } = this.props;
 
     if (!showMonitor) {
@@ -343,7 +355,7 @@ export default class Monitor extends PureComponent {
         >
           <Screen display
             frameRef={this.handleFrame}
-            handleRun={handleRun}
+            handleReload={this.handleReload}
             reboot={reboot}
             error={error}
           />
@@ -358,7 +370,7 @@ export default class Monitor extends PureComponent {
         <Screen animation
           display={!isPopout}
           frameRef={this.handleFrame}
-          handleRun={handleRun}
+          handleReload={this.handleReload}
           reboot={reboot}
           error={error}
         />

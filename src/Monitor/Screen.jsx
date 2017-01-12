@@ -3,15 +3,16 @@ import { white, transparent } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 
 
-export const SrcDocEnabled = !!('srcdoc' in document.createElement('iframe'));
+import { SrcDocEnabled } from './setSrcDoc';
 
 export default class Screen extends PureComponent {
 
   static propTypes = {
+    reboot: PropTypes.bool.isRequired,
     animation: PropTypes.bool.isRequired,
     display: PropTypes.bool.isRequired,
     frameRef: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
+    handleReload: PropTypes.func.isRequired,
     error: PropTypes.object,
   };
 
@@ -27,14 +28,14 @@ export default class Screen extends PureComponent {
 
   handleTap = () => {
     if (!this.props.animation) {
-      this.props.handleRun();
+      this.props.handleReload();
       return;
     }
     if (this.state.loading) {
       return;
     }
     this.setState({ loading: true }, () => {
-      this.props.handleRun();
+      this.props.handleReload();
       setTimeout(() => {
         this.setState({ loading: false });
       }, 250);
@@ -115,11 +116,13 @@ export default class Screen extends PureComponent {
             <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
           </svg>
         </button>
-        <iframe
-          sandbox={sandbox}
-          style={frameStyle}
-          ref={frameRef}
-        ></iframe>
+        {this.props.reboot ? null : (
+          <iframe
+            sandbox={sandbox}
+            style={frameStyle}
+            ref={frameRef}
+          ></iframe>
+        )}
         {error ? (
           <pre style={errorStyle}>{error.message}</pre>
         ) : null}

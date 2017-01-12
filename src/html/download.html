@@ -32,14 +32,16 @@
   data-type="{{type}}"
   data-credits="{{credits}}"
 {{#options}}
-  {{#isEntryPoint}}is-entry-point{{/isEntryPoint}}
   {{#isReadOnly}}is-read-only{{/isReadOnly}}
   {{#isTrashed}}is-trashed{{/isTrashed}}
   {{#noBabel}}no-babel{{/noBabel}}
 {{/options}}
   type="hack"
 >
-{{& composed}}</script>
+<!--
+{{& composed}}
+-->
+</script>
 {{/files}}
 
 {{&body}}

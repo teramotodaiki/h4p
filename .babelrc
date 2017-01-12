@@ -1,4 +1,4 @@
 {
-  "presets": [["es2015", { "modules": false }], "react"],
+  "presets": [["es2015", { "modules": false }], "stage-3", "react"],
   "plugins": ["transform-runtime", "transform-class-properties"]
 }

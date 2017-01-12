@@ -1,6 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
-import PlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { transparent, redA200 } from 'material-ui/styles/colors';
 import { emphasize, fade } from 'material-ui/utils/colorManipulator';
@@ -69,14 +68,6 @@ const getStyles = (props, context, state) => {
       alignItems: 'center',
       height: tabHeight,
     },
-    leftButton: {
-      flex: '0 0 auto',
-      padding: 0,
-      marginLeft: -4,
-      width: spacing.iconSize,
-      height: spacing.iconSize,
-      transform: 'scale(0.8)',
-    },
     label: {
       flex: '1 1 auto',
       color: palette.textColor,
@@ -108,7 +99,6 @@ export default class ChromeTabs extends PureComponent {
     isSelected: PropTypes.bool.isRequired,
     handleSelect: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -137,7 +127,6 @@ export default class ChromeTabs extends PureComponent {
       isSelected,
       handleSelect,
       handleClose,
-      handleRun,
     } = this.props;
     const {
       palette: {
@@ -149,11 +138,6 @@ export default class ChromeTabs extends PureComponent {
     const { closerMouseOver } = this.state;
 
     const styles = getStyles(this.props, this.context, this.state);
-
-    const handleLeftTouchTap = (e) => {
-      e.stopPropagation();
-      handleRun();
-    };
 
     const handleRightTouchTap = (e) => {
       e.stopPropagation();
@@ -178,14 +162,6 @@ export default class ChromeTabs extends PureComponent {
             style={prepareStyles(styles.innerItem)}
             onTouchTap={() => handleSelect(tab)}
           >
-          {file.options.isEntryPoint ? (
-            <IconButton
-              style={styles.leftButton}
-              onTouchTap={handleLeftTouchTap}
-            >
-              <PlayCircleOutline color={secondaryTextColor} />
-            </IconButton>
-          ) : null}
             <a
               href="#"
               style={prepareStyles(styles.label)}

@@ -84,6 +84,24 @@ export default class _File {
     return this.sign || null;
   }
 
+  static _dataURLCache = new WeakMap();
+  async toDataURL() {
+    const { _dataURLCache } = this.constructor;
+
+    if (_dataURLCache.has(this)) {
+      return _dataURLCache.get(this);
+    }
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const { result } = reader;
+        _dataURLCache.set(this, result);
+        resolve(result);
+      };
+      reader.readAsDataURL(this.blob);
+    });
+  }
+
   get error() {
     return this.constructor._babelError.get(this);
   }
