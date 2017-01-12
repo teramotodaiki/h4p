@@ -170,11 +170,13 @@ export default class EditorPane extends PureComponent {
 
     return (
     <div style={prepareStyles(root)}>
+    {this.props.showMonitor ? null : (
       <EditorMenu
         localization={localization}
         getConfig={getConfig}
         setConfig={setConfig}
       />
+    )}
       <div style={prepareStyles(tabContainer)}>
       {tabs.map((tab) => (
         <ChromeTab
