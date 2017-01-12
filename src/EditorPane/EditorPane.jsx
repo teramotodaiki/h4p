@@ -184,7 +184,6 @@ export default class EditorPane extends PureComponent {
           isSelected={tab.isSelected}
           handleSelect={selectTab}
           handleClose={closeTab}
-          handleRun={this.handleRun}
         />
       ))}
       </div>
