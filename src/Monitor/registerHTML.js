@@ -12,6 +12,7 @@ import screenJs from '../../lib/screen';
  * 2. src 属性を BinaryFile の Data URL に差し替える
  * 3. screenJs のすぐ下で、全てのスクリプトを define する
  * 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
+ * 5. a 要素の href 属性を feeles.replace の Data URL に差し替える
  */
 export default async (html, findFile, scriptFiles) => {
 
@@ -47,6 +48,14 @@ export default async (html, findFile, scriptFiles) => {
       'data:text/javascript;charset=UTF-8,' +
       encodeURIComponent(requireTemplate(file.moduleName, scriptFiles));
     node.setAttribute('src', dataURL);
+  }
+
+  // 5. a 要素の href 属性を feeles.replace に差し替える
+  for (const node of [...doc.links]) {
+    const file = findFile(node.getAttribute('href'));
+    if (!file) continue;
+
+    node.setAttribute('href', `javascript: feeles.replace('${file.name}')`);
   }
 
   return doc.documentElement.outerHTML;
