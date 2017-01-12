@@ -227,7 +227,7 @@ export default class Editor extends PureComponent {
     return (
       <div id={CssScopeId}>
         <style>{codemirror}</style>
-        <ReactCodeMirror
+        <ReactCodeMirror preserveScrollPosition
           ref={this.handleCodemirror}
           value={file.text}
           onChange={onChange}
