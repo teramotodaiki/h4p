@@ -328,13 +328,6 @@ class Main extends Component {
     waitFlag = true;
   })();
 
-  handleRun = () => {
-    this.setState({
-      reboot: true,
-      showMonitor: !this.state.isPopout,
-    });
-  };
-
   handleTogglePopout = () => {
     this.setState({
       reboot: !this.state.isPopout,
@@ -403,7 +396,7 @@ class Main extends Component {
       tabs,
       selectTab: this.selectTab,
       closeTab: this.closeTab,
-      handleRun: this.handleRun,
+      setLocation: this.setLocation,
       openFileDialog: this.openFileDialog,
       port,
       reboot,
@@ -421,7 +414,6 @@ class Main extends Component {
       isPopout,
       portRef: (port) => this.setState({ port }),
       togglePopout: this.handleTogglePopout,
-      handleRun: this.handleRun,
       coreString: this.state.coreString,
       saveAs: this.saveAs,
       href: this.state.href,

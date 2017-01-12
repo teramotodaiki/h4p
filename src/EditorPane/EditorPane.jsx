@@ -53,7 +53,7 @@ export default class EditorPane extends PureComponent {
     putFile: PropTypes.func.isRequired,
     selectTab: PropTypes.func.isRequired,
     closeTab: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
+    setLocation: PropTypes.func.isRequired,
     openFileDialog: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     findFile: PropTypes.func.isRequired,
@@ -111,7 +111,7 @@ export default class EditorPane extends PureComponent {
         <IconButton
           iconStyle={styles.largeIcon}
           style={styles.large}
-          onTouchTap={this.props.handleRun}
+          onTouchTap={this.handleRun}
         >
           <AVPlayCircleOutline color={palette.alternateTextColor} />
         </IconButton>
@@ -131,6 +131,10 @@ export default class EditorPane extends PureComponent {
     this.props.tabs
       .filter((item) => item.file.key === file.key)
       .forEach((item) => this.props.selectTab(item));
+  };
+
+  handleRun = () => {
+    this.props.setLocation({});
   };
 
   render() {
@@ -180,7 +184,7 @@ export default class EditorPane extends PureComponent {
           isSelected={tab.isSelected}
           handleSelect={selectTab}
           handleClose={closeTab}
-          handleRun={handleRun}
+          handleRun={this.handleRun}
         />
       ))}
       </div>
@@ -189,7 +193,7 @@ export default class EditorPane extends PureComponent {
         <ChromeTabContent key={tab.key} show={tab.isSelected}>
         {tab.renderContent({
           getFiles: this.getFiles,
-          handleRun,
+          handleRun: this.handleRun,
           closeSelectedTab: this.handleCloseSelectedTab,
           selectTabFromFile: this.handleSelectTabFromFile,
           getConfig,
