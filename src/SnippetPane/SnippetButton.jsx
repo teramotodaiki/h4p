@@ -1,8 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 import Paper from 'material-ui/Paper';
-import { grey200 } from 'material-ui/styles/colors';
-
+import { emphasize } from 'material-ui/utils/colorManipulator';
 
 import DragTypes from '../utils/dragTypes';
 import SnippetInnerElement from './SnippetInnerElement';
@@ -86,6 +85,7 @@ class SnippetButton extends PureComponent {
 
   handleTouch = (event) => {
     const { snippet, findFile, localization } = this.props;
+    const { palette } = this.context.muiTheme;
     const styles = {
       container: {
         display: 'flex',
@@ -104,7 +104,7 @@ class SnippetButton extends PureComponent {
         width: '100%',
         margin: '1rem .5rem',
         padding: '0 .5rem',
-        backgroundColor: grey200,
+        backgroundColor: emphasize(palette.canvasColor, 0.07),
         borderRadius: 2,
       }
     };

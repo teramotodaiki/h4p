@@ -4,8 +4,7 @@ import Popover from 'material-ui/Popover';
 import Chip from 'material-ui/Chip';
 import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import transitions from 'material-ui/styles/transitions';
-import { lightBlue100 } from 'material-ui/styles/colors';
-
+import { fade } from 'material-ui/utils/colorManipulator';
 
 import SnippetButton from './SnippetButton';
 import { configs } from '../File/';
@@ -76,6 +75,9 @@ export default class SnippetPane extends PureComponent {
   };
 
   renderChips() {
+    const {
+      palette,
+    } = this.context.muiTheme;
     const styles = {
       bar: {
         display: 'flex',
@@ -86,6 +88,7 @@ export default class SnippetPane extends PureComponent {
         lineHeight: '1.4rem',
         marginLeft: 4,
       },
+      activeColor: fade(palette.primary1Color, 0.3),
     };
 
     return (
@@ -93,7 +96,7 @@ export default class SnippetPane extends PureComponent {
       {this.state.snippetFiles.map((file) => (
         <Chip
           key={file.key}
-          backgroundColor={file.key === this.state.fileKey ? lightBlue100 : null}
+          backgroundColor={file.key === this.state.fileKey ? styles.activeColor : null}
           labelStyle={styles.label}
           onTouchTap={() => this.setState({ fileKey: file.key })}
         >{file.plane}</Chip>
