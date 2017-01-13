@@ -62,6 +62,22 @@ CodeMirror.hint.html = (instance, options) => {
 
 };
 
+const cssHint = CodeMirror.hint.css;
+
+CodeMirror.hint.css = (instance, options) => {
+
+  const { cursor, token, from, to, empty } = getTokenInfo(instance);
+
+  if (token.type === null) {
+    return empty;
+  }
+
+  const result = cssHint(instance, options) || empty;
+
+  return result;
+
+};
+
 CodeMirror.hint.markdown = (instance, options) => {
 
   const { cursor, token, from, to, empty } = getTokenInfo(instance);
