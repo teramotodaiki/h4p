@@ -195,11 +195,28 @@ export default class Editor extends PureComponent {
   }
 
   beautify = (cm) => {
-    const text = beautify(cm.getValue(), {
-      "indent_with_tabs": true,
-      "end_with_newline": true,
-    });
-    cm.setValue(text);
+    const { file } = this.props;
+    if (file.is('javascript')) {
+      cm.setValue(
+        beautify(cm.getValue(), {
+          "indent_with_tabs": true,
+          "end_with_newline": true,
+        })
+      );
+    } else if (file.is('html')) {
+      cm.setValue(
+        beautify.html(cm.getValue(), {
+          "indent_inner_html": true,
+          "extra_liners": [],
+        })
+      );
+    } else if (file.is('css')) {
+      cm.setValue(
+        beautify.css(cm.getValue(), {
+
+        })
+      );
+    }
   };
 
   render() {
