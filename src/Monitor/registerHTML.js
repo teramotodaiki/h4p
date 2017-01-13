@@ -64,11 +64,9 @@ export default async (html, findFile, scriptFiles) => {
 }
 
 const defineTemplate = (file) => `;
-define('${file.moduleName}', new Function('require, exports, module', '${
-  file.text
-    .replace(/\'/g, '\\\'')
-    .replace(/\n/g, '\\n')
-}'))`;
+define('${file.moduleName}', new Function('require, exports, module',
+  unescape('${escape(file.text)}')
+))`;
 
 const requireTemplate = (src, scriptFiles) =>
 `requirejs({
