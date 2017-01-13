@@ -172,6 +172,7 @@ export default class EditorPane extends PureComponent {
     <div style={prepareStyles(root)}>
     {this.props.showMonitor ? null : (
       <EditorMenu
+        files={files}
         localization={localization}
         getConfig={getConfig}
         setConfig={setConfig}
