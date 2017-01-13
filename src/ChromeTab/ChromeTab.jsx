@@ -99,6 +99,7 @@ export default class ChromeTabs extends PureComponent {
     isSelected: PropTypes.bool.isRequired,
     handleSelect: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
+    localization: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -127,6 +128,7 @@ export default class ChromeTabs extends PureComponent {
       isSelected,
       handleSelect,
       handleClose,
+      localization,
     } = this.props;
     const {
       palette: {
@@ -141,7 +143,9 @@ export default class ChromeTabs extends PureComponent {
 
     const handleRightTouchTap = (e) => {
       e.stopPropagation();
-      handleClose(tab);
+      if (confirm(localization.editor.notice)) {
+        handleClose(tab);
+      }
     };
 
     const handleRightMouseEnter = (e) => {

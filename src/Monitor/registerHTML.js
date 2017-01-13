@@ -41,6 +41,7 @@ export default async (html, findFile, scriptFiles) => {
 
   // 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
   for (const node of [...doc.scripts]) {
+    if (node.type && node.type !== 'text/javascript') continue;
     const file = findFile(node.getAttribute('src'));
     if (!file) continue;
 
@@ -63,11 +64,9 @@ export default async (html, findFile, scriptFiles) => {
 }
 
 const defineTemplate = (file) => `;
-define('${file.moduleName}', new Function('require, exports, module', '${
-  file.text
-    .replace(/\'/g, '\\\'')
-    .replace(/\n/g, '\\n')
-}'))`;
+define('${file.moduleName}', new Function('require, exports, module',
+  unescape('${escape(file.text)}')
+))`;
 
 const requireTemplate = (src, scriptFiles) =>
 `requirejs({

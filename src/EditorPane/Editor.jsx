@@ -7,10 +7,12 @@ import beautify from 'js-beautify';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
 import 'codemirror/mode/htmlmixed/htmlmixed';
+import 'codemirror/mode/css/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/html-hint';
+import 'codemirror/addon/hint/css-hint';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/comment/comment';
@@ -227,7 +229,7 @@ export default class Editor extends PureComponent {
     return (
       <div id={CssScopeId}>
         <style>{codemirror}</style>
-        <ReactCodeMirror
+        <ReactCodeMirror preserveScrollPosition
           ref={this.handleCodemirror}
           value={file.text}
           onChange={onChange}

@@ -106,6 +106,7 @@ Thanks
     undo: 'Undo',
     save: 'Save',
     play: 'Play',
+    notice: 'This tab has not saved. Are you sure?',
   },
   env: {
     title: 'Environment Variables',
