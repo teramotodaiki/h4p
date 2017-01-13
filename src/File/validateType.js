@@ -5,6 +5,7 @@ export default function validateType(name, mimeType) {
 const mimes = new Map([
   ['text', /^text\/plane$/i],
   ['html', /^text\/html/i],
+  ['css', /^text\/css/i],
   ['javascript', /^(text|application)\/javascript$/i],
   ['json', /^(text|application)\/json$/i],
   ['markdown', /^text\/(x-)?markdown$/i],
@@ -16,6 +17,7 @@ const metas = [
   ['text', [
     mimes.get('text'),
     mimes.get('html'),
+    mimes.get('css'),
     mimes.get('javascript'),
     mimes.get('json'),
     mimes.get('markdown')

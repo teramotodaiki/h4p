@@ -34,6 +34,15 @@ export default async (html, findFile, scriptFiles) => {
     node.setAttribute('src', dataURL);
   }
 
+  // 2.1 link 要素の href 属性を Data URL に差し替える
+  for (const node of [...doc.querySelectorAll('link')]) {
+    const file = findFile(node.getAttribute('href'));
+    if (!file) continue;
+
+    const dataURL = await file.toDataURL();
+    node.setAttribute('href', dataURL);
+  }
+
   // 3. screenJs のすぐ下で、全てのスクリプトを define する
   const defineScript = doc.createElement('script');
   defineScript.text = scriptFiles.map(defineTemplate).join('');
@@ -41,6 +50,7 @@ export default async (html, findFile, scriptFiles) => {
 
   // 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
   for (const node of [...doc.scripts]) {
+    if (node.type && node.type !== 'text/javascript') continue;
     const file = findFile(node.getAttribute('src'));
     if (!file) continue;
 
@@ -63,11 +73,9 @@ export default async (html, findFile, scriptFiles) => {
 }
 
 const defineTemplate = (file) => `;
-define('${file.moduleName}', new Function('require, exports, module', '${
-  file.text
-    .replace(/\'/g, '\\\'')
-    .replace(/\n/g, '\\n')
-}'))`;
+define('${file.moduleName}', new Function('require, exports, module',
+  unescape('${escape(file.text)}')
+))`;
 
 const requireTemplate = (src, scriptFiles) =>
 `requirejs({

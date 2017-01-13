@@ -7,10 +7,12 @@ import beautify from 'js-beautify';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
 import 'codemirror/mode/htmlmixed/htmlmixed';
+import 'codemirror/mode/css/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/html-hint';
+import 'codemirror/addon/hint/css-hint';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/edit/matchbrackets';
 import 'codemirror/addon/comment/comment';
@@ -35,7 +37,10 @@ export const MimeTypes = {
   'text/x-markdown': '.md',
   'application/json': '.json',
   'text/html': '.html',
+  'text/css': '.css',
 };
+
+export const FileEditorMap = new WeakMap();
 
 const getStyles = (props, context, state) => {
   const {
@@ -147,6 +152,13 @@ export default class Editor extends PureComponent {
     return true;
   }
 
+  componentDidUpdate(prevProps) {
+    if (FileEditorMap.has(prevProps.file)) {
+      const editor = FileEditorMap.get(prevProps.file);
+      FileEditorMap.set(this.props.file, editor);
+    }
+  }
+
   handleCodemirror = (ref) => {
     if (!ref) return;
     if (!ref[AlreadySetSymbol]) {
@@ -154,6 +166,7 @@ export default class Editor extends PureComponent {
       this.props.codemirrorRef(cm);
       this.showHint(cm);
       ref[AlreadySetSymbol] = true;
+      FileEditorMap.set(this.props.file, cm);
     }
   }
 
@@ -183,11 +196,28 @@ export default class Editor extends PureComponent {
   }
 
   beautify = (cm) => {
-    const text = beautify(cm.getValue(), {
-      "indent_with_tabs": true,
-      "end_with_newline": true,
-    });
-    cm.setValue(text);
+    const { file } = this.props;
+    if (file.is('javascript')) {
+      cm.setValue(
+        beautify(cm.getValue(), {
+          "indent_with_tabs": true,
+          "end_with_newline": true,
+        })
+      );
+    } else if (file.is('html')) {
+      cm.setValue(
+        beautify.html(cm.getValue(), {
+          "indent_inner_html": true,
+          "extra_liners": [],
+        })
+      );
+    } else if (file.is('css')) {
+      cm.setValue(
+        beautify.css(cm.getValue(), {
+
+        })
+      );
+    }
   };
 
   render() {
@@ -227,7 +257,7 @@ export default class Editor extends PureComponent {
     return (
       <div id={CssScopeId}>
         <style>{codemirror}</style>
-        <ReactCodeMirror
+        <ReactCodeMirror preserveScrollPosition
           ref={this.handleCodemirror}
           value={file.text}
           onChange={onChange}

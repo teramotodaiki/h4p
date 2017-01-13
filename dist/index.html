@@ -32,11 +32,11 @@
 <!--
 import message from 'sub/message';
 
-const body = document.body;
-body.style.backgroundColor = 'white';
-body.style.height = '200px';
+window.onload = () => {
 
-body.textContent = message;
+    document.body.textContent = message;
+
+};
 
 -->
     </script>
@@ -70,20 +70,22 @@ if (1 === 1) {
     <head>
         <meta charset="utf-8">
         <title></title>
-        <style media="screen">
-        body {
-          margin: 0;
-          padding: 0;
-          border: 0 none;
-          overflow: hidden;
-        }
-        </style>
+        <link rel="stylesheet" href="style.css">
         <script src="main.js"></script>
     </head>
     <body>
         <h1>LOADING...</h1>
     </body>
 </html>
+-->
+    </script>
+    <script class="example1" name="style.css" data-type="text/css" type="hack">
+<!--
+body {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
 -->
     </script>
 

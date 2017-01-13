@@ -60,23 +60,37 @@ export default {
     subtitle: 'Please read this first',
     edit: 'Edit',
     text: `# Introduction
-This is an application can do... ← You can write here
-## How to edit this
-1. First open [Getting Started](README.md)
-2. Next change the letters
-3. Take a tab \`README\`
-## Advanced
-If you have ordinary letters, **such things** or *like this* let's try it
-\`\`\`
-\/\/ How, you can code here!
-alert('Hi!');
-\`\`\`
-> It seems to say \`Markdown\` how to write such a symbol. ~~Strange!~~
+This is an editor for making games and applications
+
+Please call me **Feeles**
+
+## Screen description
+- The right half is the **application screen** or **code screen**
+- The left half is the screen of the rest (explanation, asset, folder etc.)
+
+## Overview
+- HTML / CSS / javascript (ES 6) can be written
+  - [index.html](index.html) Starting point of the application
+  - [style.css](style.css) Design of the application
+  - [main.js](main.js) Main program of the application
+- You can load files on the desktop
+  - Since there is a **folder screen** at the bottom of the this side, **click the icon of the computer** in it
+- You can save and load data, and clone
+  - Click the ↓ icon at the bottom of the application screen
+  - It can also be **downloaded as an HTML file.** This is called **clone** in Feeles
+
 - - -
-Thanks
+
+If this explanation remains, this Feeles is probably **an empty Feeles**
+
+Let's get started from there as there are various Feeles such as gaming Feeles
+
+- - -
+
+## Acknowledgments
 - When making this application,
-- If someone help you,
-- Write down his/her name here.
+- If there is a person who is inappropriate,
+- Let's write a name here and thank you.
 `,
   },
   shot: {
@@ -106,6 +120,7 @@ Thanks
     undo: 'Undo',
     save: 'Save',
     play: 'Play',
+    notice: 'This tab has not saved. Are you sure?',
   },
   env: {
     title: 'Environment Variables',
