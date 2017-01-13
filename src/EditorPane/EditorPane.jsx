@@ -182,6 +182,7 @@ export default class EditorPane extends PureComponent {
         <ChromeTab
           key={tab.key}
           tab={tab}
+          file={tab.file}
           length={tabs.length}
           isSelected={tab.isSelected}
           localization={localization}

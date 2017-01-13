@@ -1,6 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import { transparent, redA200 } from 'material-ui/styles/colors';
 import { emphasize, fade } from 'material-ui/utils/colorManipulator';
 
@@ -9,6 +10,8 @@ const MaxTabWidth = 160;
 const MinTabWidth = 0;
 const TabHeight = 32;
 const TabSkewX = 24;
+
+import { FileEditorMap } from '../EditorPane/';
 
 const getStyles = (props, context, state) => {
   const { isSelected } = props;
@@ -95,6 +98,7 @@ export default class ChromeTabs extends PureComponent {
 
   static propTypes = {
     tab: PropTypes.object.isRequired,
+    file: PropTypes.object.isRequired,
     length: PropTypes.number.isRequired,
     isSelected: PropTypes.bool.isRequired,
     handleSelect: PropTypes.func.isRequired,
@@ -112,6 +116,15 @@ export default class ChromeTabs extends PureComponent {
     },
     closerMouseOver: false,
   };
+
+  get hasChanged() {
+    if (FileEditorMap.has(this.props.file)) {
+      const editor = FileEditorMap.get(this.props.file);
+      return editor.getValue('\n') !== this.props.file.text;
+    } else {
+      return false;
+    }
+  }
 
   handleRef = (ref) => {
     if (!ref) return;
@@ -143,7 +156,7 @@ export default class ChromeTabs extends PureComponent {
 
     const handleRightTouchTap = (e) => {
       e.stopPropagation();
-      if (confirm(localization.editor.notice)) {
+      if (!this.hasChanged || confirm(localization.editor.notice)) {
         handleClose(tab);
       }
     };
@@ -156,8 +169,6 @@ export default class ChromeTabs extends PureComponent {
       this.setState({ closerMouseOver: false });
     };
 
-    const { file } = tab;
-
     return (
       <div style={prepareStyles(styles.root)} ref={this.handleRef}>
         <div style={prepareStyles(styles.left)}></div>
@@ -169,7 +180,7 @@ export default class ChromeTabs extends PureComponent {
             <a
               href="#"
               style={prepareStyles(styles.label)}
-              title={file.moduleName || file.name}
+              title={this.props.file.moduleName || this.props.file.name}
             >
             {tab.label}
             </a>
@@ -179,9 +190,13 @@ export default class ChromeTabs extends PureComponent {
               onMouseEnter={handleRightMouseEnter}
               onMouseLeave={handleRightMouseLeave}
             >
-              <NavigationClose color={
-                closerMouseOver ? alternateTextColor : secondaryTextColor
-              } />
+            {this.state.closerMouseOver ? (
+              <NavigationClose color={alternateTextColor} />
+            ) : this.hasChanged ? (
+              <EditorModeEdit color={secondaryTextColor} />
+            ) : (
+              <NavigationClose color={secondaryTextColor} />
+            )}
             </IconButton>
           </div>
         </div>
