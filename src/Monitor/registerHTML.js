@@ -34,6 +34,15 @@ export default async (html, findFile, scriptFiles) => {
     node.setAttribute('src', dataURL);
   }
 
+  // 2.1 link 要素の href 属性を Data URL に差し替える
+  for (const node of [...doc.querySelectorAll('link')]) {
+    const file = findFile(node.getAttribute('href'));
+    if (!file) continue;
+
+    const dataURL = await file.toDataURL();
+    node.setAttribute('href', dataURL);
+  }
+
   // 3. screenJs のすぐ下で、全てのスクリプトを define する
   const defineScript = doc.createElement('script');
   defineScript.text = scriptFiles.map(defineTemplate).join('');

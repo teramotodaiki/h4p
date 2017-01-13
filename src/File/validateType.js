@@ -17,6 +17,7 @@ const metas = [
   ['text', [
     mimes.get('text'),
     mimes.get('html'),
+    mimes.get('css'),
     mimes.get('javascript'),
     mimes.get('json'),
     mimes.get('markdown')

@@ -37,6 +37,7 @@ export const MimeTypes = {
   'text/x-markdown': '.md',
   'application/json': '.json',
   'text/html': '.html',
+  'text/css': '.css',
 };
 
 export const FileEditorMap = new WeakMap();
