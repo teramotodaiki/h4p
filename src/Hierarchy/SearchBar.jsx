@@ -26,12 +26,10 @@ const getStyles = (props, context, state) => {
     root: prepareStyles({
       display: 'flex',
       alignItems: 'center',
-      position: 'absolute',
       boxSizing: 'border-box',
       width: '100%',
       height: SearchBarHeight,
-      top: spacing.desktopGutterMini,
-      paddingRight: spacing.desktopGutterMini,
+      paddingRight: 16,
       paddingLeft: spacing.desktopGutterMini,
       zIndex: 100,
     }),
