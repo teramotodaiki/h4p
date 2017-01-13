@@ -26,10 +26,10 @@ const getStyles = (props, context) => {
 
   return {
     root: isRoot ? {
-      paddingTop: spacing.desktopGutterMore,
+      paddingTop: 16,
       paddingRight: 0,
-      paddingBottom: spacing.desktopGutterMore,
-      paddingLeft: spacing.desktopGutterLess,
+      paddingBottom: 0,
+      paddingLeft: 16,
     } : {
       display: 'flex',
       flexDirection: 'column',

@@ -17,26 +17,12 @@ const getStyles = (props, context) => {
 
   return {
     root: {
-      position: 'relative',
-      flex: '0 0 auto',
-      height: 500,
-      marginBottom: 16,
+      display: 'flex',
+      flexDirection: 'column',
     },
-    scroll: prepareStyles({
-      position: 'absolute',
-      boxSizing: 'border-box',
-      width: '100%',
-      height: '100%',
-      paddingTop: spacing.desktopGutterMore,
-      paddingBottom: 80,
-      overflowY: 'scroll',
-      direction: 'rtl',
-    }),
     button: {
-      position: 'absolute',
-      right: 23,
-      bottom: 23,
-      zIndex: 1000,
+      margin: 16,
+      alignSelf: 'flex-end',
     },
   };
 };
@@ -181,7 +167,6 @@ export default class Hierarchy extends PureComponent {
 
     const {
       root,
-      scroll,
       button,
     } = getStyles(this.props, this.context);
 
@@ -197,9 +182,7 @@ export default class Hierarchy extends PureComponent {
           saveAs={this.props.saveAs}
           localization={localization}
         />
-        <div style={scroll}>
-          <Root files={files.filter(filter)} {...transfer} />
-        </div>
+        <Root files={files.filter(filter)} {...transfer} />
         <FloatingActionButton
           style={button}
           onClick={this.handleAdd}
