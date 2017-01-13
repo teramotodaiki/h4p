@@ -4,12 +4,8 @@ import 'codemirror/addon/hint/anyword-hint';
 const anywordHint = CodeMirror.hint.anyword;
 
 CodeMirror.hint.javascript = (instance, options) => {
-
-  const cursor = instance.getCursor();
-  const token = instance.getTokenAt(cursor);
-  const from = { line: cursor.line, ch: token.start };
-  const to = { line: cursor.line, ch: cursor.ch };
-  const empty = { list: [], from, to };
+  
+  const { cursor, token, from, to, empty } = getTokenInfo(instance);
 
   if (!/[A-Za-z\.\'\"\`]$/.test(token.string)) {
     return empty;
@@ -40,11 +36,7 @@ CodeMirror.hint.javascript = (instance, options) => {
 
 CodeMirror.hint.markdown = (instance, options) => {
 
-  const cursor = instance.getCursor();
-  const token = instance.getTokenAt(cursor);
-  const from = { line: cursor.line, ch: token.start };
-  const to = { line: cursor.line, ch: cursor.ch };
-  const empty = { list: [], from, to };
+  const { cursor, token, from, to, empty } = getTokenInfo(instance);
 
   if (token.type === 'string url') {
     const start = {
@@ -82,4 +74,16 @@ function getCompleteNames(files, from, prefix = '') {
 
 function startWith(text, needle) {
   return text.toLowerCase().indexOf(needle.toLowerCase()) === 0;
+}
+
+function getTokenInfo(instance) {
+
+  const cursor = instance.getCursor();
+  const token = instance.getTokenAt(cursor);
+  const from = { line: cursor.line, ch: token.start };
+  const to = { line: cursor.line, ch: cursor.ch };
+  const empty = { list: [], from, to };
+
+  return { cursor, token, from, to, empty };
+
 }
