@@ -39,6 +39,8 @@ export const MimeTypes = {
   'text/html': '.html',
 };
 
+export const FileEditorMap = new WeakMap();
+
 const getStyles = (props, context, state) => {
   const {
   } = props;
@@ -149,6 +151,13 @@ export default class Editor extends PureComponent {
     return true;
   }
 
+  componentDidUpdate(prevProps) {
+    if (FileEditorMap.has(prevProps.file)) {
+      const editor = FileEditorMap.get(prevProps.file);
+      FileEditorMap.set(this.props.file, editor);
+    }
+  }
+
   handleCodemirror = (ref) => {
     if (!ref) return;
     if (!ref[AlreadySetSymbol]) {
@@ -156,6 +165,7 @@ export default class Editor extends PureComponent {
       this.props.codemirrorRef(cm);
       this.showHint(cm);
       ref[AlreadySetSymbol] = true;
+      FileEditorMap.set(this.props.file, cm);
     }
   }
 
