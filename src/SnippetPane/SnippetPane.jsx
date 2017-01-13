@@ -79,10 +79,12 @@ export default class SnippetPane extends PureComponent {
     const styles = {
       bar: {
         display: 'flex',
+        flexWrap: 'wrap',
       },
       label: {
         fontSize: '.8rem',
         lineHeight: '1.4rem',
+        marginLeft: 4,
       },
     };
 
@@ -121,7 +123,6 @@ export default class SnippetPane extends PureComponent {
         maxHeight: '100%',
         display: 'flex',
         flexWrap: 'wrap',
-        overflow: 'scroll',
         boxSizing: 'border-box',
         justifyContent: 'flex-start',
       },
