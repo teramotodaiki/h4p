@@ -34,6 +34,34 @@ CodeMirror.hint.javascript = (instance, options) => {
 
 };
 
+const htmlHint = CodeMirror.hint.html;
+
+CodeMirror.hint.html = (instance, options) => {
+
+  const { cursor, token, from, to, empty } = getTokenInfo(instance);
+
+  if (token.type === null) {
+    return empty;
+  }
+  if (token.type === 'tag bracket' && token.string === '>') {
+    return empty;
+  }
+
+  const result = htmlHint(instance, options) || empty;
+
+  if (token.type === 'string') {
+    const start = { line: cursor.line, ch: token.start + 1 };
+    const prefix = instance.getLine(cursor.line)
+      .substr(start.ch, cursor.ch - start.ch);
+
+    result.list = getCompleteNames(options.files, start, prefix)
+      .concat(result.list);
+  }
+
+  return result;
+
+};
+
 CodeMirror.hint.markdown = (instance, options) => {
 
   const { cursor, token, from, to, empty } = getTokenInfo(instance);
