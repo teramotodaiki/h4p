@@ -25,6 +25,7 @@ export default new Map([
     multiple: false,
     defaultValue: {
       TITLE: ['My App', 'string', 'A name of this app'],
+      MODULE: [true, 'boolean', 'A flag to use module bundler'],
     },
     defaultName: '.env',
   }],
