@@ -32,7 +32,7 @@ export default async (html, findFile, scriptFiles, env) => {
   })(doc.head.firstChild);
 
   // 1. headタグの一番上に screenJs を埋め込む
-  appendScript(screenJs);
+  appendScript(screenJs(env.MODULE));
 
   // 2. src 属性を BinaryFile の Data URL に差し替える
   const binaries = [...doc.images];
@@ -54,7 +54,9 @@ export default async (html, findFile, scriptFiles, env) => {
   }
 
   // 3. screenJs のすぐ下で、全てのスクリプトを define する
-  appendScript(scriptFiles.map(defineTemplate).join(''));
+  if (env.MODULE) {
+    appendScript(scriptFiles.map(defineTemplate).join(''));
+  }
 
   // 3.1 環境変数 env のエクスポート
   appendScript(Object.entries(env).map(envTemplate).join(''));
@@ -66,8 +68,11 @@ export default async (html, findFile, scriptFiles, env) => {
     if (!file) continue;
 
     const dataURL =
-      'data:text/javascript;charset=UTF-8,' +
-      encodeURIComponent(requireTemplate(file.moduleName, scriptFiles));
+      'data:text/javascript;charset=UTF-8,' + (
+        env.MODULE ?
+          encodeURIComponent(requireTemplate(file.moduleName, scriptFiles)) :
+          file.text
+      );
     node.setAttribute('src', dataURL);
   }
 
