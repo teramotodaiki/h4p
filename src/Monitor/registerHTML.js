@@ -9,6 +9,7 @@ import screenJs from '../../lib/screen';
  * @return Promise<String>
  *
  * iframe にユーザーが入力したHTMLに、次の操作を加える
+ * 0. window.feeles と 環境変数 env のエクスポート
  * 1. headタグの一番上に screenJs を埋め込む
  * 2. src 属性を BinaryFile の Data URL に差し替える
  * 3. screenJs のすぐ下で、全てのスクリプトを define する
@@ -31,8 +32,11 @@ export default async (html, findFile, scriptFiles, env) => {
 
   })(doc.head.firstChild);
 
+  // 0. window.feeles と 環境変数 env のエクスポート
+  appendScript(`window.feeles = { env: ${JSON.stringify(env)} };`);
+
   // 1. headタグの一番上に screenJs を埋め込む
-  appendScript(screenJs);
+  appendScript(screenJs(env.MODULE));
 
   // 2. src 属性を BinaryFile の Data URL に差し替える
   const binaries = [...doc.images];
@@ -54,10 +58,9 @@ export default async (html, findFile, scriptFiles, env) => {
   }
 
   // 3. screenJs のすぐ下で、全てのスクリプトを define する
-  appendScript(scriptFiles.map(defineTemplate).join(''));
-
-  // 3.1 環境変数 env のエクスポート
-  appendScript(Object.entries(env).map(envTemplate).join(''));
+  if (env.MODULE) {
+    appendScript(scriptFiles.map(defineTemplate).join(''));
+  }
 
   // 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
   for (const node of [...doc.scripts]) {
@@ -66,8 +69,11 @@ export default async (html, findFile, scriptFiles, env) => {
     if (!file) continue;
 
     const dataURL =
-      'data:text/javascript;charset=UTF-8,' +
-      encodeURIComponent(requireTemplate(file.moduleName, scriptFiles));
+      'data:text/javascript;charset=UTF-8,' + (
+        env.MODULE ?
+          encodeURIComponent(requireTemplate(file.moduleName, scriptFiles)) :
+          encodeURIComponent(file.text)
+      );
     node.setAttribute('src', dataURL);
   }
 
@@ -82,9 +88,6 @@ export default async (html, findFile, scriptFiles, env) => {
   return doc.documentElement.outerHTML;
 
 }
-
-const envTemplate = ([key, value]) => `;
-feeles.env['${key}'] = ${JSON.stringify(value)}`;
 
 const defineTemplate = (file) => `;
 define('${file.moduleName}', new Function('require, exports, module',
