@@ -9,6 +9,7 @@ import screenJs from '../../lib/screen';
  * @return Promise<String>
  *
  * iframe にユーザーが入力したHTMLに、次の操作を加える
+ * 0. window.feeles と 環境変数 env のエクスポート
  * 1. headタグの一番上に screenJs を埋め込む
  * 2. src 属性を BinaryFile の Data URL に差し替える
  * 3. screenJs のすぐ下で、全てのスクリプトを define する
@@ -30,6 +31,9 @@ export default async (html, findFile, scriptFiles, env) => {
     lastNode = script;
 
   })(doc.head.firstChild);
+
+  // 0. window.feeles と 環境変数 env のエクスポート
+  appendScript(`window.feeles = { env: ${JSON.stringify(env)} };`);
 
   // 1. headタグの一番上に screenJs を埋め込む
   appendScript(screenJs(env.MODULE));
@@ -58,9 +62,6 @@ export default async (html, findFile, scriptFiles, env) => {
     appendScript(scriptFiles.map(defineTemplate).join(''));
   }
 
-  // 3.1 環境変数 env のエクスポート
-  appendScript(Object.entries(env).map(envTemplate).join(''));
-
   // 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
   for (const node of [...doc.scripts]) {
     if (node.type && node.type !== 'text/javascript') continue;
@@ -87,9 +88,6 @@ export default async (html, findFile, scriptFiles, env) => {
   return doc.documentElement.outerHTML;
 
 }
-
-const envTemplate = ([key, value]) => `;
-feeles.env['${key}'] = ${JSON.stringify(value)}`;
 
 const defineTemplate = (file) => `;
 define('${file.moduleName}', new Function('require, exports, module',
