@@ -72,7 +72,7 @@ export default async (html, findFile, scriptFiles, env) => {
       'data:text/javascript;charset=UTF-8,' + (
         env.MODULE ?
           encodeURIComponent(requireTemplate(file.moduleName, scriptFiles)) :
-          file.text
+          encodeURIComponent(file.text)
       );
     node.setAttribute('src', dataURL);
   }
