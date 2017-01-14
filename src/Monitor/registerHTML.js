@@ -19,10 +19,19 @@ export default async (html, findFile, scriptFiles) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
 
+  const appendScript = ((lastNode) => (text) => {
+
+    const script = doc.createElement('script');
+    script.type = 'text/javascript';
+    script.text = text;
+    doc.head.insertBefore(script, lastNode && lastNode.nextSibling);
+
+    lastNode = script;
+
+  })(doc.head.firstChild);
+
   // 1. headタグの一番上に screenJs を埋め込む
-  const screenJsScript = doc.createElement('script');
-  screenJsScript.text = screenJs;
-  doc.head.insertBefore(screenJsScript, doc.head.firstChild);
+  appendScript(screenJs);
 
   // 2. src 属性を BinaryFile の Data URL に差し替える
   const binaries = [...doc.images];
@@ -44,9 +53,7 @@ export default async (html, findFile, scriptFiles) => {
   }
 
   // 3. screenJs のすぐ下で、全てのスクリプトを define する
-  const defineScript = doc.createElement('script');
-  defineScript.text = scriptFiles.map(defineTemplate).join('');
-  doc.head.insertBefore(defineScript, screenJs.nextSibling);
+  appendScript(scriptFiles.map(defineTemplate).join(''));
 
   // 4. スクリプトタグの src 属性を requirejs を Data URL に差し替える
   for (const node of [...doc.scripts]) {
