@@ -69,6 +69,7 @@ if (1 === 1) {
         <meta charset="utf-8">
         <title></title>
         <link rel="stylesheet" href="style.css">
+        <script src="interrupt.js"></script>
         <script src="main.js"></script>
     </head>
     <body>
@@ -83,6 +84,96 @@ body {
     background-color: white;
     margin: 0;
     padding: 0;
+}
+-->
+    </script>
+    <script class="example1" name="interrupt.js" data-type="text/javascript" type="hack">
+<!--
+const a_href = false;
+const img_src = false;
+const audio_src = false;
+const script_src = false;
+const xhr_url = false;
+
+// Hyper link
+if (a_href) {
+    const hrefLoader = (node, href, set) => {
+        set(`javascript: feeles.replace('${href}');`);
+    };
+	interruptSetter(HTMLAnchorElement, 'href', hrefLoader);
+}
+
+// Image source
+if (img_src) {
+	interruptSetter(HTMLImageElement, 'src', resourceLoader);
+}
+
+// Audio source
+if (audio_src) {
+	interruptSetter(HTMLAudioElement, 'src', resourceLoader);
+}
+
+// Script source
+if (script_src) {
+	interruptSetter(HTMLScriptElement, 'src', resourceLoader);
+}
+
+// XHR open()
+if (xhr_url) {
+    window.XMLHttpRequest = feeles.XMLHttpRequest;
+}
+
+/**
+ * @param node: HTMLElement
+ * @param src: String
+ * @param set: Function
+ */
+function resourceLoader(node, src, set) {
+
+	// Check path absolute or relative
+	var a = document.createElement('a');
+	a.href = src;
+	if (a.href === src) {
+		// If absolute path:
+		set(src);
+	} else {
+		// If relative path:
+		feeles.fetch(src)
+			.then(response => response.blob())
+			.then((blob) => {
+				const url = URL.createObjectURL(blob);
+				const revokeHandler = () => {
+					node.removeEventListener('load', revokeHandler);
+					node.removeEventListener('error', revokeHandler);
+					URL.revokeObjectURL(url);
+				};
+				node.addEventListener('load', removeEventListener);
+				node.addEventListener('error', removeEventListener);
+
+				set(url);
+			});
+	}
+}
+
+/**
+ * @param constructor: HTMLElement
+ * @param attr: String
+ * @param delegate: Function(
+ *	 node: HTMLElement,
+ *	 value: any,
+ *	 set: Function
+ * )
+ */
+function interruptSetter(constructor, attr, delegate) {
+
+	const proto = constructor.prototype;
+	const desc = Object.getOwnPropertyDescriptor(proto, attr);
+	Object.defineProperty(proto, attr, {
+		set: function(value) {
+			delegate(this, value, desc.set.bind(this));
+		}
+	});
+
 }
 -->
     </script>
