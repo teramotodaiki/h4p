@@ -93,6 +93,7 @@ const a_href = false;
 const img_src = false;
 const audio_src = false;
 const script_src = false;
+const xhr_url = false;
 
 // Hyper link
 if (a_href) {
@@ -115,6 +116,11 @@ if (audio_src) {
 // Script source
 if (script_src) {
 	interruptSetter(HTMLScriptElement, 'src', resourceLoader);
+}
+
+// XHR open()
+if (xhr_url) {
+    window.XMLHttpRequest = feeles.XMLHttpRequest;
 }
 
 /**
