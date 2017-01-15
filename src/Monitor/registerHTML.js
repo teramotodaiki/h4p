@@ -68,13 +68,16 @@ export default async (html, findFile, scriptFiles, env) => {
     const file = findFile(node.getAttribute('src'));
     if (!file) continue;
 
-    const dataURL =
-      'data:text/javascript;charset=UTF-8,' + (
-        env.MODULE ?
-          encodeURIComponent(requireTemplate(file.moduleName, scriptFiles)) :
-          encodeURIComponent(file.text)
-      );
-    node.setAttribute('src', dataURL);
+    if (env.MODULE) {
+      const dataURL =
+        'data:text/javascript;charset=UTF-8,' +
+        encodeURIComponent(requireTemplate(file.moduleName, scriptFiles));
+      node.setAttribute('src', dataURL);
+    } else {
+      node.text = file.text;
+      node.removeAttribute('src');
+    }
+
   }
 
   // 5. a 要素の href 属性を feeles.replace に差し替える
