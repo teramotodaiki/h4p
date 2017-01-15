@@ -69,7 +69,7 @@ if (1 === 1) {
         <meta charset="utf-8">
         <title></title>
         <link rel="stylesheet" href="style.css">
-        <script src="interrupt.js"></script>
+        <script src="lib/interrupt.js"></script>
         <script src="main.js"></script>
     </head>
     <body>
@@ -87,7 +87,7 @@ body {
 }
 -->
     </script>
-    <script class="example1" name="interrupt.js" data-type="text/javascript" type="hack">
+    <script class="example1" name="lib/interrupt.js" data-type="text/javascript" type="hack">
 <!--
 const a_href = false;
 const img_src = false;
@@ -97,9 +97,9 @@ const xhr_url = false;
 
 // Hyper link
 if (a_href) {
-    const hrefLoader = (node, href, set) => {
-        set(`javascript: feeles.replace('${href}');`);
-    };
+	const hrefLoader = (node, href, set) => {
+		set(`javascript: feeles.replace('${href}');`);
+	};
 	interruptSetter(HTMLAnchorElement, 'href', hrefLoader);
 }
 
@@ -120,7 +120,7 @@ if (script_src) {
 
 // XHR open()
 if (xhr_url) {
-    window.XMLHttpRequest = feeles.XMLHttpRequest;
+	interruptXHR(XMLHttpRequest);
 }
 
 /**
@@ -173,6 +173,55 @@ function interruptSetter(constructor, attr, delegate) {
 			delegate(this, value, desc.set.bind(this));
 		}
 	});
+
+}
+
+/**
+ * @param constructor: XMLHttpRequest
+ * @param attr: String
+ * @param delegate: Function(
+ *	 node: HTMLElement,
+ *	 value: any,
+ *	 set: Function
+ * )
+ */
+function interruptXHR(constructor) {
+	const {
+		open,
+		send
+	} = constructor.prototype;
+
+	Object.defineProperty(constructor.prototype, 'open', {
+		value: interruptOpen,
+	});
+
+	function interruptOpen(...openArgs) {
+		if (openArgs[2] === false) {
+			throw new Error('feeles.XMLHttpRequest does not support synchronization requests.');
+		}
+		this.send = function(...sendArgs) {
+			feeles.fetch(openArgs[1])
+				.then((response) => response.blob())
+				.then((blob) => {
+					const url = URL.createObjectURL(blob);
+
+					const revokeHandler = () => {
+						this.removeEventListener('load', revokeHandler);
+						this.removeEventListener('error', revokeHandler);
+						this.removeEventListener('abort', revokeHandler);
+						URL.revokeObjectURL(url);
+					};
+
+					this.addEventListener('load', revokeHandler);
+					this.addEventListener('error', revokeHandler);
+					this.addEventListener('abort', revokeHandler);
+
+					openArgs[1] = url;
+					open.apply(this, openArgs);
+					send.apply(this, sendArgs);
+				});
+		};
+	}
 
 }
 -->
