@@ -232,12 +232,17 @@ const baseURL = (() => {
 	const a = document.createElement('a');
 	a.href = '';
 
+	if (!a.href) {
+		return '';
+	}
+
 	// 	If a.origin === "null" (e.g. Open in Blob URL), a.pathname doesn't work.
 	if (a.origin === "null") {
 		return 'http://fake.origin/';
 	}
 
-	return a.origin + a.pathname;
+	const index = a.href.lastIndexOf('/');
+	return a.href.substr(0, index + 1);
 })();
 
 /**
@@ -245,8 +250,11 @@ const baseURL = (() => {
  * @return String
  */
 function getFeelesName(url) {
-	const fullPath = new URL(url, baseURL).href;
-	return fullPath.substr(baseURL.length);
+	if (baseURL) {
+		const fullPath = new URL(url, baseURL).href;
+		return fullPath.substr(baseURL.length);
+	}
+	return url;
 }
 
 /**
