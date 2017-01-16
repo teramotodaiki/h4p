@@ -135,7 +135,7 @@ function resourceLoader(node, src, set) {
 		return;
 	}
 	// If relative path:
-	feeles.fetch(getPathname(src))
+	feeles.fetch(getFeelesName(src))
 		.then(response => response.blob())
 		.then((blob) => {
 			const url = URL.createObjectURL(blob);
@@ -201,7 +201,7 @@ function interruptXHR(constructor) {
 			return;
 		}
 		this.send = function(...sendArgs) {
-			feeles.fetch(getPathname(_url))
+			feeles.fetch(getFeelesName(_url))
 				.then((response) => response.blob())
 				.then((blob) => {
 					const url = URL.createObjectURL(blob);
@@ -227,7 +227,27 @@ function interruptXHR(constructor) {
 
 
 
-const currentOrigin = getOrigin(''); // Current Window Origin
+const currentOrigin = getOrigin('');
+const baseURL = (() => {
+	const a = document.createElement('a');
+	a.href = '';
+
+	// 	If a.origin === "null" (e.g. Open in Blob URL), a.pathname doesn't work.
+	if (a.origin === "null") {
+		return 'http://fake.origin/';
+	}
+
+	return a.origin + a.pathname;
+})();
+
+/**
+ * @param url: String
+ * @return String
+ */
+function getFeelesName(url) {
+	const fullPath = new URL(url, baseURL).href;
+	return fullPath.substr(baseURL.length);
+}
 
 /**
  * @param url: String
@@ -245,20 +265,6 @@ function getOrigin(url) {
 	const a = document.createElement('a');
 	a.href = url;
 	return a.origin;
-}
-
-/**
- * @param url: String
- * @return String
- */
-function getPathname(url) {
-	const a = document.createElement('a');
- 	a.href = url;
-	// 	If a.origin === "null" (e.g. Open in Blob URL), a.pathname doesn't work.
-	if (a.origin === "null") {
-		a.href = 'http://fake.domain/' + url;
-	}
-	return a.pathname;
 }
 -->
     </script>
