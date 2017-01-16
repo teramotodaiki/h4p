@@ -253,7 +253,11 @@ function getOrigin(url) {
  */
 function getPathname(url) {
 	const a = document.createElement('a');
-	a.href = url;
+ 	a.href = url;
+	// 	If a.origin === "null" (e.g. Open in Blob URL), a.pathname doesn't work.
+	if (a.origin === "null") {
+		a.href = 'http://fake.domain/' + url;
+	}
 	return a.pathname;
 }
 -->
