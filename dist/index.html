@@ -130,29 +130,26 @@ if (xhr_url) {
  */
 function resourceLoader(node, src, set) {
 
-	// Check path absolute or relative
-	var a = document.createElement('a');
-	a.href = src;
-	if (a.href === src) {
-		// If absolute path:
+	if (!isSameOrigin(src)) {
 		set(src);
-	} else {
-		// If relative path:
-		feeles.fetch(src)
-			.then(response => response.blob())
-			.then((blob) => {
-				const url = URL.createObjectURL(blob);
-				const revokeHandler = () => {
-					node.removeEventListener('load', revokeHandler);
-					node.removeEventListener('error', revokeHandler);
-					URL.revokeObjectURL(url);
-				};
-				node.addEventListener('load', removeEventListener);
-				node.addEventListener('error', removeEventListener);
-
-				set(url);
-			});
+		return;
 	}
+	// If relative path:
+	feeles.fetch(getPathname(src))
+		.then(response => response.blob())
+		.then((blob) => {
+			const url = URL.createObjectURL(blob);
+			const revokeHandler = () => {
+				node.removeEventListener('load', revokeHandler);
+				node.removeEventListener('error', revokeHandler);
+				URL.revokeObjectURL(url);
+			};
+			node.addEventListener('load', revokeHandler);
+			node.addEventListener('error', revokeHandler);
+
+			set(url);
+		});
+
 }
 
 /**
@@ -195,12 +192,16 @@ function interruptXHR(constructor) {
 		value: interruptOpen,
 	});
 
-	function interruptOpen(...openArgs) {
-		if (openArgs[2] === false) {
+	function interruptOpen(_method, _url, _async = true, _user = '', _password = '') {
+		if (_async === false) {
 			throw new Error('feeles.XMLHttpRequest does not support synchronization requests.');
 		}
+		if (!isSameOrigin(_url)) {
+			open.call(this, _method, _url, _async, _user, _password);
+			return;
+		}
 		this.send = function(...sendArgs) {
-			feeles.fetch(openArgs[1])
+			feeles.fetch(getPathname(_url))
 				.then((response) => response.blob())
 				.then((blob) => {
 					const url = URL.createObjectURL(blob);
@@ -216,13 +217,44 @@ function interruptXHR(constructor) {
 					this.addEventListener('error', revokeHandler);
 					this.addEventListener('abort', revokeHandler);
 
-					openArgs[1] = url;
-					open.apply(this, openArgs);
+					open.call(this, _method, url, _async, _user, _password);
 					send.apply(this, sendArgs);
 				});
 		};
 	}
 
+}
+
+
+
+const currentOrigin = getOrigin(''); // Current Window Origin
+
+/**
+ * @param url: String
+ * @return Boolean
+ */
+function isSameOrigin(url) {
+	return getOrigin(url) === currentOrigin;
+}
+
+/**
+ * @param url: String
+ * @return String
+ */
+function getOrigin(url) {
+	const a = document.createElement('a');
+	a.href = url;
+	return a.origin;
+}
+
+/**
+ * @param url: String
+ * @return String
+ */
+function getPathname(url) {
+	const a = document.createElement('a');
+	a.href = url;
+	return a.pathname;
 }
 -->
     </script>
