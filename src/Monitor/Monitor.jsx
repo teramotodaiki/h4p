@@ -84,6 +84,7 @@ export default class Monitor extends PureComponent {
     height: 150,
     progress: 0,
     error: null,
+    port: null,
   };
 
   popoutOptions = {
@@ -94,6 +95,18 @@ export default class Monitor extends PureComponent {
   };
 
   popoutClosed = false;
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.files !== nextProps.files && this.state.port) {
+      const files = this.props.files
+        .map((item) => item.watchSerialize());
+
+      this.state.port.postMessage({
+        query: 'watch',
+        value: files,
+      });
+    }
+  }
 
   componentDidUpdate(prevProps, prevStates) {
     if (prevProps.reboot && !this.props.reboot) {
@@ -139,7 +152,7 @@ export default class Monitor extends PureComponent {
 
     await _prevent;
 
-    this.setState({ error: null });
+    this.setState({ error: null, port: null });
   }
 
   async startProcess() {
@@ -161,14 +174,14 @@ export default class Monitor extends PureComponent {
         return file.babel(babelrc)
           .then((es5) => indicate() || es5);
       });
-    const files = await Promise.all(buildProcess);
+    const processedFiles = await Promise.all(buildProcess);
 
     const htmlFile = this.props.findFile(this.href) || SourceFile.html();
 
     const html = await registerHTML(
       htmlFile.text,
       this.props.findFile,
-      files,
+      processedFiles,
       env
     );
 
@@ -189,13 +202,21 @@ export default class Monitor extends PureComponent {
       };
       this.handleMessage(event, reply);
     });
-    portRef(channel.port1);
-    channel.port1.start();
+    this.handlePort(channel.port1);
+
+    const files = this.props.files
+      .map((item) => item.watchSerialize());
 
     this.iframe.contentWindow.postMessage({
-      env,
+      files, env,
     }, '*', [channel.port2]);
 
+  }
+
+  handlePort(port) {
+    this.props.portRef(port);
+    port.start();
+    this.setState({ port });
   }
 
   handleMessage = ({ data }, reply) => {

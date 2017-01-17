@@ -18,6 +18,13 @@ export default class _File {
     'sign'
   ];
 
+  static watchProps = [
+    'name',
+    'moduleName',
+    'type',
+    'isTrashed'
+  ];
+
   constructor(props) {
     this.key = props.key || getUniqueId();
 
@@ -80,8 +87,12 @@ export default class _File {
     if (credit) {
       return credit;
     }
-    
+
     return this.sign || null;
+  }
+
+  get isTrashed() {
+    return !!this.options.isTrashed;
   }
 
   static _dataURLCache = new WeakMap();
@@ -154,6 +165,14 @@ export default class _File {
   serialize() {
     const obj = Object.create(null);
     this.constructor.visible.forEach((key) => {
+      obj[key] = this[key];
+    });
+    return obj;
+  }
+
+  watchSerialize() {
+    const obj = Object.create(null);
+    this.constructor.watchProps.forEach((key) => {
       obj[key] = this[key];
     });
     return obj;
