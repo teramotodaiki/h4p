@@ -45,6 +45,8 @@ export const MimeTypes = {
   'application/json': '.json',
   'text/html': '.html',
   'text/css': '.css',
+  'text/plane': '',
+  'text/x-glsl': '.sort',
 };
 
 export const FileEditorMap = new WeakMap();

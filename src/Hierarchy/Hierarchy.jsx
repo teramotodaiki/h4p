@@ -3,7 +3,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 
-import { makeFromFile, SourceFile } from '../File/';
+import { makeFromFile } from '../File/';
 import { SignDialog, AddDialog } from '../FileDialog/';
 import { Tab } from '../ChromeTab/';
 import Root from './Root';
@@ -131,10 +131,8 @@ export default class Hierarchy extends PureComponent {
   };
 
   handleAdd = () => {
-    const { openFileDialog, addFile } = this.props;
-    openFileDialog(AddDialog)
-      .then(seed => new SourceFile(seed))
-      .then(file => addFile(file))
+    this.props.openFileDialog(AddDialog)
+      .then(this.props.addFile)
       .catch(() => {});
   };
 

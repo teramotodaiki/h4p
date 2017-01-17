@@ -1,9 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
+import AutoComplete from 'material-ui/AutoComplete';
+import TextField from 'material-ui/TextField';
 
 
+import { SourceFile } from '../File/';
+import { MimeTypes } from '../EditorPane/';
 import { Confirm, Abort } from './Buttons';
-import FilenameInput from './FilenameInput';
 
 const getSeed = (type) => {
   if (type === 'application/json') {
@@ -20,12 +23,32 @@ export default class AddDialog extends Component {
     onRequestClose: PropTypes.func.isRequired
   };
 
-  handleAdd = () => {
-    const { resolve, onRequestClose } = this.props;
-    const { value, type } = this.input;
+  state = {
+    mimeTypes: Object.keys(MimeTypes),
+    type: '',
+    name: '',
+  };
 
-    resolve({ name: value, type, text: getSeed(type), options: { isOpened: true } });
-    onRequestClose();
+  handleAdd = () => {
+    const { name, type } = this.state;
+
+    this.props.resolve(
+      new SourceFile({
+        name,
+        type,
+        text: getSeed(type)
+      })
+    );
+
+    this.props.onRequestClose();
+  };
+
+  handleUpdateType = (type) => {
+    this.setState({ type });
+  };
+
+  handleUpdateName = (event, name) => {
+    this.setState({ name });
   };
 
   cancel = () => {
@@ -34,22 +57,37 @@ export default class AddDialog extends Component {
   };
 
   render() {
-    const { onRequestClose } = this.props;
+    const {
+      localization,
+    } = this.props;
 
     const actions = [
-      <Abort onTouchTap={this.cancel} />,
-      <Confirm label="Add" onTouchTap={this.handleAdd} />
+      <Abort label={localization.addDialog.cancel} onTouchTap={this.cancel} />,
+      <Confirm label={localization.addDialog.add} onTouchTap={this.handleAdd} />
     ];
 
     return (
       <Dialog
-        title="Add new file"
+        title={localization.addDialog.title}
         actions={actions}
         modal={false}
         open={true}
         onRequestClose={this.cancel}
       >
-        <FilenameInput ref={(input) => this.input = input} />
+        <AutoComplete fullWidth
+          searchText={this.state.type}
+          floatingLabelText={localization.addDialog.mimeType}
+          hintText="text/javascript"
+          dataSource={this.state.mimeTypes}
+          onUpdateInput={this.handleUpdateType}
+          onNewRequest={this.handleUpdateType}
+        />
+        <TextField fullWidth
+          value={this.state.name}
+          floatingLabelText={localization.addDialog.fileName}
+          hintText="main.js"
+          onChange={this.handleUpdateName}
+        />
       </Dialog>
     );
   }
