@@ -1,15 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import { Confirm, Abort } from './Buttons';
 
-export default class SignDialog extends Component {
+export default class SignDialog extends PureComponent {
 
   static propTypes = {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    content: PropTypes.any,
+    content: PropTypes.oneOfType([
+      PropTypes.array,
+      PropTypes.object
+    ]).isRequired,
     getFiles: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
