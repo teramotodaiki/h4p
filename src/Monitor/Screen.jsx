@@ -90,11 +90,13 @@ export default class Screen extends PureComponent {
     const errorStyle = {
       position: 'absolute',
       width: '100%',
+      maxHeight: '8rem',
       top: 0,
       marginTop: 0,
       paddingTop: '2rem',
       backgroundColor: 'red',
       color: 'white',
+      overflow: 'scroll',
       fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
     };
 
