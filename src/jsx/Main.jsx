@@ -119,7 +119,7 @@ class Main extends Component {
   findFile = (name, multiple = false) => {
     const { files } = this.state;
     if (typeof name === 'string') {
-      name = name.replace(/^[\.\/]*/, '');
+      name = name.replace(/^(\.\/|\/)*/, '');
     }
     const pred = typeof name === 'function' ? name :
       (file) => (
