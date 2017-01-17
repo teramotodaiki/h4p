@@ -25,7 +25,10 @@ export default class SignDialog extends PureComponent {
     completeUrls: [],
   };
 
-  componentDidMount() {
+  _completeLabels = [];
+  _completeUrls = [];
+
+  componentWillMount() {
     const credits = this.props.getFiles()
       .reduce((p, c) => p.concat(c.credits).concat(c.sign), [])
       .filter((item) => item);
@@ -37,7 +40,9 @@ export default class SignDialog extends PureComponent {
       .filter((item, i, array) => item && array.indexOf(item) === i);
 
     if (completeLabels.length > 0 || completeUrls.length > 0) {
-      this.setState({ completeLabels, completeUrls, });
+      this._completeLabels = completeLabels;
+      this._completeUrls = completeUrls;
+      this.setState({ completeLabels, completeUrls });
     }
   }
 
@@ -47,7 +52,19 @@ export default class SignDialog extends PureComponent {
     const files = this.state.files
       .map((item) => item === file ? item.set({ sign }) : item);
 
-    this.setState({ files });
+    const completeLabels = this._completeLabels.concat(
+      files.map((i) => i.sign && i.sign.label).filter((i) => i)
+    );
+
+    const completeUrls = this._completeUrls.concat(
+      files.map((i) => i.sign && i.sign.url).filter((i) => i)
+    );
+
+    this.setState({
+      files,
+      completeLabels,
+      completeUrls,
+    });
   };
 
   handleSign = () => {
