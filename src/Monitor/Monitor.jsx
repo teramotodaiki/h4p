@@ -96,6 +96,18 @@ export default class Monitor extends PureComponent {
 
   popoutClosed = false;
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.files !== nextProps.files && this.state.port) {
+      const files = this.props.files
+        .map((item) => item.watchSerialize());
+
+      this.state.port.postMessage({
+        query: 'watch',
+        value: files,
+      });
+    }
+  }
+
   componentDidUpdate(prevProps, prevStates) {
     if (prevProps.reboot && !this.props.reboot) {
       if (this.props.isPopout || this.popoutClosed) {
