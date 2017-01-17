@@ -150,9 +150,8 @@ export default class CloneDialog extends PureComponent {
       CORE_CDN_URL,
     });
 
-    const apps = [app].concat(
-      this.state.apps.filter((item) => item.htmlKey !== app.htmlKey)
-    );
+    const apps = this.state.apps
+      .map((item) => item.htmlKey === app.htmlKey ? app : item);
 
     return Promise.resolve()
       .then(() => localforage.setItem(app.htmlKey, html.blob))
