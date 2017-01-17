@@ -84,6 +84,7 @@ export default class Monitor extends PureComponent {
     height: 150,
     progress: 0,
     error: null,
+    port: null,
   };
 
   popoutOptions = {
@@ -139,7 +140,7 @@ export default class Monitor extends PureComponent {
 
     await _prevent;
 
-    this.setState({ error: null });
+    this.setState({ error: null, port: null });
   }
 
   async startProcess() {
@@ -189,13 +190,18 @@ export default class Monitor extends PureComponent {
       };
       this.handleMessage(event, reply);
     });
-    portRef(channel.port1);
-    channel.port1.start();
+    this.handlePort(channel.port1);
 
     this.iframe.contentWindow.postMessage({
       env,
     }, '*', [channel.port2]);
 
+  }
+
+  handlePort(port) {
+    this.props.portRef(port);
+    port.start();
+    this.setState({ port });
   }
 
   handleMessage = ({ data }, reply) => {
