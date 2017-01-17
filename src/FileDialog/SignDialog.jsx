@@ -1,27 +1,34 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import { Confirm, Abort } from './Buttons';
 
-export default class SignDialog extends Component {
+const arrayOf = (a) => a instanceof Array ? a : [a];
+
+export default class SignDialog extends PureComponent {
 
   static propTypes = {
     resolve: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    content: PropTypes.any,
+    content: PropTypes.oneOfType([
+      PropTypes.array,
+      PropTypes.object
+    ]).isRequired,
     getFiles: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
   state = {
-    label: this.props.content.sign ? this.props.content.sign.label : '',
-    url: this.props.content.sign ? this.props.content.sign.url : '',
+    files: arrayOf(this.props.content),
     completeLabels: [],
     completeUrls: [],
   };
 
-  componentDidMount() {
+  _completeLabels = [];
+  _completeUrls = [];
+
+  componentWillMount() {
     const credits = this.props.getFiles()
       .reduce((p, c) => p.concat(c.credits).concat(c.sign), [])
       .filter((item) => item);
@@ -33,37 +40,59 @@ export default class SignDialog extends Component {
       .filter((item, i, array) => item && array.indexOf(item) === i);
 
     if (completeLabels.length > 0 || completeUrls.length > 0) {
-      this.setState({ completeLabels, completeUrls, });
+      this._completeLabels = completeLabels;
+      this._completeUrls = completeUrls;
+      this.setState({ completeLabels, completeUrls });
     }
   }
 
-  handleUpdateLabel = (label) => {
-    this.setState({ label });
-  };
+  handleUpdate = (file, sign) => {
+    if (file.sign === sign) return;
 
-  handleUpdateUrl = (url) => {
-    this.setState({ url });
+    const files = this.state.files
+      .map((item) => item === file ? item.set({ sign }) : item);
+
+    const completeLabels = this._completeLabels.concat(
+      files.map((i) => i.sign && i.sign.label).filter((i) => i)
+    );
+
+    const completeUrls = this._completeUrls.concat(
+      files.map((i) => i.sign && i.sign.url).filter((i) => i)
+    );
+
+    this.setState({
+      files,
+      completeLabels,
+      completeUrls,
+    });
   };
 
   handleSign = () => {
-    this.props.resolve({
-      label: this.state.label,
-      url: this.state.url,
-    });
+    if (this.props.content instanceof Array) {
+      this.props.resolve(this.state.files);
+    } else {
+      this.props.resolve(this.state.files[0]);
+    }
+    this.props.onRequestClose();
+  };
+
+  cancel = () => {
+    this.props.resolve(this.props.content);
     this.props.onRequestClose();
   };
 
   render() {
     const {
-      open,
-      onRequestClose,
       content,
       localization,
     } = this.props;
 
     const actions = [
-      <Abort onTouchTap={onRequestClose} />,
-      <Confirm label="OK" onTouchTap={this.handleSign} />
+      <Abort onTouchTap={this.cancel} />,
+      <Confirm
+        label="OK"
+        onTouchTap={this.handleSign}
+      />
     ];
 
     return (
@@ -72,25 +101,89 @@ export default class SignDialog extends Component {
         actions={actions}
         modal={false}
         open={true}
-        onRequestClose={onRequestClose}
+        bodyStyle={{ overflow: 'scroll' }}
+        onRequestClose={this.cancel}
       >
+      {this.state.files.map((item) => (
+        <SignItem
+          key={item.key}
+          file={item}
+          completeLabels={this.state.completeLabels}
+          completeUrls={this.state.completeUrls}
+          localization={this.props.localization}
+          onUpdate={this.handleUpdate}
+        />
+      ))}
+      </Dialog>
+    );
+  }
+}
+
+export class SignItem extends PureComponent {
+
+  static propTypes = {
+    file: PropTypes.object.isRequired,
+    completeLabels: PropTypes.array.isRequired,
+    completeUrls: PropTypes.array.isRequired,
+    localization: PropTypes.object.isRequired,
+    onUpdate: PropTypes.func.isRequired,
+  };
+
+  get label() {
+    return (this.props.file.sign && this.props.file.sign.label) || '';
+  }
+
+  get url() {
+    return (this.props.file.sign && this.props.file.sign.url) || '';
+  }
+
+  handleUpdateLabel = (label) => {
+
+    const sign = label ? {
+      label,
+      url: this.url,
+    } : null;
+
+    this.props.onUpdate(this.props.file, sign);
+
+  };
+
+  handleUpdateUrl = (url) => {
+
+    const sign = this.label ? {
+      label: this.label,
+      url,
+    } : null;
+
+    this.props.onUpdate(this.props.file, sign);
+
+  }
+
+  render() {
+    const {
+      file,
+      localization,
+    } = this.props;
+
+    return (
+      <div style={{ marginBottom: 16 }}>
         <AutoComplete fullWidth
-          searchText={this.state.label}
-          floatingLabelText={localization.credit.whoMade(content.name)}
+          searchText={this.label}
+          floatingLabelText={localization.credit.whoMade(file.name)}
           hintText="(c) 2017 Teramoto Daiki"
-          dataSource={this.state.completeLabels}
+          dataSource={this.props.completeLabels}
           onUpdateInput={this.handleUpdateLabel}
           onNewRequest={this.handleUpdateLabel}
         />
         <AutoComplete fullWidth
-          searchText={this.state.url}
+          searchText={this.url}
           floatingLabelText={localization.credit.website}
           hintText="https://github.com/teramotodaiki/h4p"
-          dataSource={this.state.completeUrls}
+          dataSource={this.props.completeUrls}
           onUpdateInput={this.handleUpdateUrl}
           onNewRequest={this.handleUpdateUrl}
         />
-      </Dialog>
+      </div>
     );
   }
 }

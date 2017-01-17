@@ -74,22 +74,21 @@ export default class Hierarchy extends PureComponent {
 
   handleNativeDrop = (files, dir = null) => {
     const { addFile, selectTab, openFileDialog } = this.props;
-    const getFiles = () => this.props.files;
 
-    files.map(file => () => {
-      const content = { name: file.name };
-      return Promise.all([
-        makeFromFile(file),
-        openFileDialog(SignDialog, { content, getFiles })
-      ])
-      .then(([file, sign]) => file.set({ sign }))
-      .then(file => dir ? file.move(dir.path) : file)
-      .then(addFile)
-      .then(this.handleFileSelect);
-    })
-    .reduce((p, c) => {
-      return p.then(c);
-    }, Promise.resolve());
+    Promise.all(files.map(makeFromFile))
+      .then((files) => openFileDialog(SignDialog, {
+        content: files,
+        getFiles: () => this.props.files,
+      }))
+      .then((files) => {
+        files = files.map((file) => dir ? file.move(dir.path) : file);
+        return Promise.all(files.map(addFile));
+      })
+      .then((files) => {
+        files = files.slice(0, 5);
+        return Promise.all(files.map(this.handleFileSelect));
+      });
+
   };
 
   handleDirToggle = (dir) => {

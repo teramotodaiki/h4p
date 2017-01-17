@@ -62,7 +62,7 @@ export default class CreditBar extends PureComponent {
       getFiles: this.props.getFiles,
     };
     this.props.openFileDialog(SignDialog, dialogProps)
-      .then((sign) => this.props.putFile(file, file.set({ sign })));
+      .then((nextFile) => this.props.putFile(file, nextFile));
   };
 
   handleShowCredits = (event) => {
