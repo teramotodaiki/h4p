@@ -1,5 +1,6 @@
 import React, { PureComponent, PropTypes } from 'react';
 import transitions from 'material-ui/styles/transitions';
+import { emphasize } from 'material-ui/utils/colorManipulator';
 
 
 import MDReactComponent from '../../lib/MDReactComponent';
@@ -44,6 +45,11 @@ const mdStyle = (props, state, context) => {
       borderRight: tableBorder,
       borderBottom: tableBorder,
     },
+    code: {
+      backgroundColor: emphasize(palette.canvasColor, 0.07),
+      padding: '.2em',
+      borderRadius: 2,
+    },
   };
 };
 
@@ -72,7 +78,7 @@ export default class Readme extends PureComponent {
       completes,
     } = this.props;
 
-    if (['blockquote', 'table', 'th', 'td'].includes(tag)) {
+    if (['blockquote', 'table', 'th', 'td', 'code'].includes(tag)) {
       return React.createElement(tag, props, children);
     }
     if (tag === 'a') {

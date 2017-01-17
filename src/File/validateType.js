@@ -3,18 +3,21 @@ export default function validateType(name, mimeType) {
 };
 
 const mimes = new Map([
+  ['none', /^$/i],
   ['text', /^text\/plane$/i],
   ['html', /^text\/html/i],
   ['css', /^text\/css/i],
   ['javascript', /^(text|application)\/javascript$/i],
   ['json', /^(text|application)\/json$/i],
   ['markdown', /^text\/(x-)?markdown$/i],
+  ['glsl', /^text\/(x-)?glsl/i],
   ['image', /^image\/.*$/i],
   ['audio', /^audio\/.*$/i],
 ]);
 
 const metas = [
   ['text', [
+    mimes.get('none'),
     mimes.get('text'),
     mimes.get('html'),
     mimes.get('css'),

@@ -109,6 +109,18 @@ CodeMirror.hint.markdown = (instance, options) => {
 
 };
 
+CodeMirror.hint.glsl = (instance, options) => {
+
+    const { cursor, token, from, to, empty } = getTokenInfo(instance);
+
+    if (token.type === null) {
+      return empty;
+    }
+
+    return CodeMirror.hint.anyword(instance, options);
+
+};
+
 
 function getCompleteNames(files, from, prefix = '') {
   return files

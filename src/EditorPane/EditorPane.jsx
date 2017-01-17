@@ -7,6 +7,7 @@ import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 
+const MAX_TAB = 16;
 
 const getStyles = (props, context) => {
   const {
@@ -179,7 +180,7 @@ export default class EditorPane extends PureComponent {
       />
     )}
       <div style={prepareStyles(tabContainer)}>
-      {tabs.map((tab) => (
+      {tabs.slice(0, MAX_TAB).map((tab) => (
         <ChromeTab
           key={tab.key}
           tab={tab}

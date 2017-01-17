@@ -24,6 +24,13 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/dialog/dialog.css';
 
+import glslMode from 'glsl-editor/glsl';
+glslMode(CodeMirror);
+CodeMirror.modeInfo.push({
+  name: "glsl",
+  mime: "text/x-glsl",
+  mode: "glsl",
+});
 
 import './codemirror-hint-extension';
 import '../css/codemirror-extension.css';
