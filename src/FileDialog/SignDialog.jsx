@@ -46,24 +46,35 @@ export default class SignDialog extends Component {
   };
 
   handleSign = () => {
-    this.props.resolve({
-      label: this.state.label,
-      url: this.state.url,
+    const nextFile = this.props.content.set({
+      sign: {
+        label: this.state.label,
+        url: this.state.url,
+      },
     });
+    this.props.resolve(nextFile);
+    this.props.onRequestClose();
+  };
+
+  cancel = () => {
+    this.props.resolve(this.props.content);
     this.props.onRequestClose();
   };
 
   render() {
     const {
       open,
-      onRequestClose,
       content,
       localization,
     } = this.props;
 
     const actions = [
-      <Abort onTouchTap={onRequestClose} />,
-      <Confirm label="OK" onTouchTap={this.handleSign} />
+      <Abort onTouchTap={this.cancel} />,
+      <Confirm
+        label="OK"
+        disabled={!this.state.label}
+        onTouchTap={this.handleSign}
+      />
     ];
 
     return (
@@ -72,7 +83,7 @@ export default class SignDialog extends Component {
         actions={actions}
         modal={false}
         open={true}
-        onRequestClose={onRequestClose}
+        onRequestClose={this.cancel}
       >
         <AutoComplete fullWidth
           searchText={this.state.label}

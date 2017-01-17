@@ -76,17 +76,17 @@ export default class Hierarchy extends PureComponent {
     const { addFile, selectTab, openFileDialog } = this.props;
     const getFiles = () => this.props.files;
 
-    files.map(file => () => {
-      const content = { name: file.name };
-      return Promise.all([
-        makeFromFile(file),
-        openFileDialog(SignDialog, { content, getFiles })
-      ])
-      .then(([file, sign]) => file.set({ sign }))
-      .then(file => dir ? file.move(dir.path) : file)
-      .then(addFile)
-      .then(this.handleFileSelect);
-    })
+    files.map((nativeFile) =>
+      () => Promise.resolve()
+        .then(() => makeFromFile(nativeFile))
+        .then((file) => openFileDialog(SignDialog, {
+          content: file,
+          getFiles,
+        }))
+        .then((file) => dir ? file.move(dir.path) : file)
+        .then(addFile)
+        .then(this.handleFileSelect)
+    )
     .reduce((p, c) => {
       return p.then(c);
     }, Promise.resolve());
