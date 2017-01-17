@@ -50,6 +50,13 @@ export default {
     changeVersion: 'Change Version',
     change: 'Change',
   },
+  addDialog: {
+    title: 'Add new file',
+    mimeType: 'MIME Type',
+    fileName: 'File name',
+    add: 'Add',
+    cancel: 'Cancel',
+  },
   editorMenu: {
     lineWrapping: 'Line Wrapping',
     tabVisibility: 'Tab Visibility',

@@ -57,6 +57,13 @@ export default {
     darkness: 'ダークネス',
     indentUnit4: '４文字ずつそろえる',
   },
+  addDialog: {
+    title: 'ファイルを追加する',
+    mimeType: 'MIME タイプ',
+    fileName: 'ファイル名',
+    add: '作成',
+    cancel: 'キャンセル',
+  },
   readme: {
     subtitle: 'まずはこれを読んでください',
     text: `# はじめに
