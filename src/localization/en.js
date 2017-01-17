@@ -58,7 +58,6 @@ export default {
   },
   readme: {
     subtitle: 'Please read this first',
-    edit: 'Edit',
     text: `# Introduction
 This is an editor for making games and applications
 
@@ -115,6 +114,7 @@ Let's get started from there as there are various Feeles such as gaming Feeles
   common: {
     tapTwiceQuickly: 'Tap twice quickly',
     cannotBeUndone: 'This operation can not be undone',
+    editFile: 'Edit File',
   },
   editor: {
     undo: 'Undo',

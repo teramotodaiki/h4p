@@ -59,7 +59,6 @@ export default {
   },
   readme: {
     subtitle: 'まずはこれを読んでください',
-    edit: '書きかえる',
     text: `# はじめに
 これは、ゲームやアプリを作るためのエディタです
 
@@ -115,6 +114,7 @@ export default {
   common: {
     tapTwiceQuickly: 'すばやく２回クリック',
     cannotBeUndone: 'この操作は取り消せません',
+    editFile: '書きかえる',
   },
   editor: {
     undo: 'もどす',

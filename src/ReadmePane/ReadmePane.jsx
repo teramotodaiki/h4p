@@ -191,7 +191,7 @@ export default class ReadmePane extends PureComponent {
         <CardActions expandable >
         {this.renderDropDownMenu()}
           <FlatButton
-            label={localization.readme.edit}
+            label={localization.common.editFile}
             icon={<EditorModeEdit />}
             onTouchTap={this.handleEdit}
           />

@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 import IconButton from 'material-ui/IconButton';
-import ContentClear from 'material-ui/svg-icons/content/clear';
 
 
 import EditableLabel from '../jsx/EditableLabel';
@@ -42,11 +41,6 @@ export default class EnvItem extends Component {
     updateEnv({ [itemKey]: item });
   };
 
-  removeItem = () => {
-    const { itemKey, updateEnv } = this.props;
-    updateEnv({ [itemKey]: undefined });
-  };
-
   render() {
     const {
       itemKey,
@@ -76,9 +70,6 @@ export default class EnvItem extends Component {
         fontSize: '.8em',
         maxWidth: 140,
       },
-      remove: {
-        flex: '0 0 auto',
-      },
     };
 
     return (
@@ -104,13 +95,6 @@ export default class EnvItem extends Component {
           tapTwiceQuickly={localization.common.tapTwiceQuickly}
           onEditEnd={this.changeTooltip}
         />
-        <IconButton
-          tooltip={localization.env.remove}
-          style={styles.remove}
-          onTouchTap={this.removeItem}
-        >
-          <ContentClear />
-        </IconButton>
       </div>
     );
   }

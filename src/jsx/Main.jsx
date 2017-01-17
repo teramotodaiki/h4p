@@ -119,7 +119,7 @@ class Main extends Component {
   findFile = (name, multiple = false) => {
     const { files } = this.state;
     if (typeof name === 'string') {
-      name = name.replace(/^[\.\/]*/, '');
+      name = name.replace(/^(\.\/|\/)*/, '');
     }
     const pred = typeof name === 'function' ? name :
       (file) => (
@@ -453,6 +453,10 @@ class Main extends Component {
       tabs,
     };
 
+    const envProps = {
+      selectTab: this.selectTab,
+    };
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
@@ -462,7 +466,7 @@ class Main extends Component {
             <div style={scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
-              <EnvPane {...commonProps} />
+              <EnvPane {...commonProps} {...envProps} />
               <PalettePane {...commonProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
