@@ -30,6 +30,10 @@ export default class SourceFile extends _File {
     'isScript'
   );
 
+  static watchProps = _File.watchProps.concat(
+    'isScript'
+  );
+
   get text() {
     return this.props.text;
   }

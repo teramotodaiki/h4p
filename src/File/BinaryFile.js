@@ -26,6 +26,9 @@ export default class BinaryFile extends _File {
     'blobURL'
   );
 
+  static watchProps = _File.watchProps.concat(
+  );
+
   constructor(props) {
     if (props.blob && !props.blobURL) {
       const blobURL = URL.createObjectURL(props.blob);
