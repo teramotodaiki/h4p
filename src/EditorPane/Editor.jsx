@@ -20,11 +20,15 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/search/search';
 import 'codemirror/addon/search/searchcursor';
 import 'codemirror/addon/scroll/simplescrollbars';
+import 'codemirror/addon/fold/foldcode';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/keymap/sublime';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/dialog/dialog.css';
 import 'codemirror/addon/scroll/simplescrollbars.css';
+import 'codemirror/addon/fold/foldgutter.css';
 
 import glslMode from 'glsl-editor/glsl';
 glslMode(CodeMirror);
@@ -264,6 +268,14 @@ export default class Editor extends PureComponent {
         'Ctrl-Alt-B': this.beautify,
       },
       scrollbarStyle: 'simple',
+      foldGutter: true,
+      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+      foldOptions: {
+      rangeFinder: CodeMirror.fold.auto,
+        widget: "✧⟣❃⟢✧",
+        minFoldSize: 1,
+        scanUp: false,
+      },
     }, getConfig('options'));
 
     return (
