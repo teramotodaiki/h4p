@@ -10,6 +10,7 @@ const mimes = new Map([
   ['javascript', /^(text|application)\/javascript$/i],
   ['json', /^(text|application)\/json$/i],
   ['markdown', /^text\/(x-)?markdown$/i],
+  ['glsl', /^text\/(x-)?glsl/i],
   ['image', /^image\/.*$/i],
   ['audio', /^audio\/.*$/i],
 ]);
