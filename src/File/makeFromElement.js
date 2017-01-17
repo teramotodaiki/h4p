@@ -7,15 +7,9 @@ import {
   validateType
 } from './';
 
+export default async (script) => {
+  await 1; // Be asynchronus.
 
-/**
- * @param scripts An array of HTMLScriptElement (<script>)
- */
-export default function makeFromElements(scripts) {
-  return Promise.all(Array.from(scripts).map(makeFromElement));
-}
-
-function makeFromElement(script) {
   const name = script.getAttribute('name');
   const type = script.getAttribute('data-type');
   const options = {
@@ -44,8 +38,8 @@ function makeFromElement(script) {
   if (validateType('text', type)) {
     return new SourceFile({ type, name, text, options, credits });
   }
-  if (validateType('blob', type)) {
 
+  if (validateType('blob', type)) {
     const bin = atob(text);
     let byteArray = new Uint8Array(bin.length);
     for (let i = bin.length - 1; i >= 0; i--) {
@@ -57,5 +51,5 @@ function makeFromElement(script) {
     return new BinaryFile({ type, name, blob, options, credits, hash });
   }
 
-  return Promise.reject('Unknown File Type ' + type);
-}
+  throw 'Unknown File Type ' + type;
+};

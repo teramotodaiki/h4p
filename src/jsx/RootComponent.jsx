@@ -14,14 +14,69 @@ class RootComponent extends Component {
     inlineScriptId: PropTypes.string,
   };
 
+  state = {
+    files: [],
+  };
+
+  componentWillMount() {
+    (async () => {
+      for (const promise of this.props.files) {
+
+        const file = await promise;
+
+        this.setState({
+          files: this.state.files.concat(file),
+        });
+
+        await this.wait();
+
+      }
+    })();
+  }
+
+  async wait() {
+    if (Math.random() < 0.1) {
+      await new Promise((resolve, reject) => {
+        requestAnimationFrame(resolve);
+      });
+    }
+  }
+
+  renderLoading = () => {
+    const styles = {
+      root: {
+        display: 'flex',
+        width: '100%',
+        height: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    };
+
+    return (
+      <div style={styles.root}>
+        <h1>Feeles</h1>
+        <span>{this.state.files.length}/{this.props.files.length}</span>
+      </div>
+    );
+  };
+
   render() {
+    if (this.props.files.length > this.state.files.length) {
+      return this.renderLoading();
+    }
+
     const {
       rootElement,
     } = this.props;
 
-    const rootStyle = getComputedStyle(rootElement);
     return (
-      <Main {...this.props} rootStyle={rootStyle} />
+      <Main
+        files={this.state.files}
+        rootElement={rootElement}
+        rootStyle={getComputedStyle(rootElement)}
+      />
     );
   }
 }
