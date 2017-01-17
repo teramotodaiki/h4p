@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import TouchBackend from 'react-dnd-touch-backend';
 import { DragDropContext } from 'react-dnd';
+import { grey100, grey500 } from 'material-ui/styles/colors';
 
 
 import Main from './Main';
@@ -51,13 +52,23 @@ class RootComponent extends Component {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: grey100,
+        fontFamily: 'cursive',
+      },
+      header: {
+        fontWeight: 100,
+        color: 'white',
+      },
+      count: {
+        fontSize: '.5rem',
+        color: grey500,
       },
     };
 
     return (
       <div style={styles.root}>
-        <h1>Feeles</h1>
-        <span>{this.state.files.length}/{this.props.files.length}</span>
+        <h1 style={styles.header}>Feeles</h1>
+        <span style={styles.count}>{this.state.files.length}/{this.props.files.length}</span>
       </div>
     );
   };
