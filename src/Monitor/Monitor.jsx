@@ -162,14 +162,14 @@ export default class Monitor extends PureComponent {
         return file.babel(babelrc)
           .then((es5) => indicate() || es5);
       });
-    const files = await Promise.all(buildProcess);
+    const processedFiles = await Promise.all(buildProcess);
 
     const htmlFile = this.props.findFile(this.href) || SourceFile.html();
 
     const html = await registerHTML(
       htmlFile.text,
       this.props.findFile,
-      files,
+      processedFiles,
       env
     );
 
@@ -192,8 +192,11 @@ export default class Monitor extends PureComponent {
     });
     this.handlePort(channel.port1);
 
+    const files = this.props.files
+      .map((item) => item.watchSerialize());
+
     this.iframe.contentWindow.postMessage({
-      env,
+      files, env,
     }, '*', [channel.port2]);
 
   }
