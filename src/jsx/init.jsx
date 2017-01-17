@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 
 import RootComponent from './RootComponent';
-import { makeFromElements } from '../File/';
+import { makeFromElement } from '../File/';
 
 export default (props) => {
 
@@ -17,16 +17,15 @@ export default (props) => {
   return Array.from(
     document.querySelectorAll(`.${CSS_PREFIX}app`)
   ).map(appRoot => {
-    const scripts = document.querySelectorAll('script' + appRoot.getAttribute('data-target'));
 
-    return makeFromElements(scripts)
-      .then(files => {
+    const files = [
+      ...document.querySelectorAll('script' + appRoot.getAttribute('data-target'))
+    ].map(makeFromElement);
 
-        return ReactDOM.render(
-          <RootComponent files={files} rootElement={appRoot} {...props} />,
-          appRoot
-        );
-
-      });
+    return ReactDOM.render(
+      <RootComponent files={files} rootElement={appRoot} {...props} />,
+      appRoot
+    );
   });
-}
+
+};

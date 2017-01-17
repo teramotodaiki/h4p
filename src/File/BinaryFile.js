@@ -51,9 +51,6 @@ export default class BinaryFile extends _File {
   }
 
   set(change) {
-    if (change.blob && this.blobURL) {
-      URL.revokeObjectURL(this.blobURL);
-    }
     if (!change.blob && this.hash) {
       change.hash = this.hash;
     }
