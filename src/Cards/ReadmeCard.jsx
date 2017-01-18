@@ -1,15 +1,13 @@
 import React, { PureComponent, PropTypes } from 'react';
 import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
 import DropDownMenu from 'material-ui/DropDownMenu';
-import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
-import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 
 import ReadmePane from '../ReadmePane/';
 import { SourceFile } from '../File/';
-import { Tab } from '../ChromeTab/';
 import { commonRoot } from './commonStyles';
+import EditFile from './EditFile';
 
 export default class ReadmeCard extends PureComponent {
 
@@ -103,18 +101,6 @@ export default class ReadmeCard extends PureComponent {
     return this.props.findFile((item) => item.key === key);
   }
 
-  handleEdit = () => {
-    const {
-      selectedFile,
-    } = this.state;
-    const getFile = () => this.props.findFile((file) => (
-      file.key === selectedFile.key
-    ));
-    const tab = new Tab({ getFile });
-
-    this.props.selectTab(tab);
-  };
-
   renderDropDownMenu() {
     const {
       selectedFile,
@@ -188,13 +174,13 @@ export default class ReadmeCard extends PureComponent {
         </CardText>
         <CardActions expandable >
         {this.renderDropDownMenu()}
-          <FlatButton
-            label={localization.common.editFile}
-            icon={<EditorModeEdit />}
-            onTouchTap={this.handleEdit}
+          <EditFile
+            fileKey={selectedFile.key}
+            findFile={this.props.findFile}
+            selectTab={this.props.selectTab}
+            localization={localization}
           />
         </CardActions>
-
       </Card>
     );
   }

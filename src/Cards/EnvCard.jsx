@@ -1,13 +1,12 @@
 import React, { PureComponent, PropTypes } from 'react';
 import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 
 import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
 import EnvItem from './EnvItem';
 import { commonRoot } from './commonStyles';
+import EditFile from './EditFile';
 
 export default class EnvPane extends PureComponent {
 
@@ -23,17 +22,20 @@ export default class EnvPane extends PureComponent {
 
   state = {
     env: this.props.getConfig('env'),
+    fileKey: '',
   };
 
   componentWillReceiveProps(nextProps) {
     if (this.props.files !== nextProps.files) {
+      const envFile = this.props.findFile('.env');
       this.setState({
         env: this.props.getConfig('env'),
+        fileKey: envFile ? envFile.key : '',
       });
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const envFile = this.props.findFile('.env');
     if (!envFile) {
       const env = this.props.getConfig('env');
@@ -44,6 +46,10 @@ export default class EnvPane extends PureComponent {
           text: JSON.stringify(env, null, '\t'),
         })
       );
+    } else {
+      this.setState({
+        fileKey: envFile.key,
+      });
     }
   }
 
@@ -52,13 +58,6 @@ export default class EnvPane extends PureComponent {
     this.props.setConfig('env', env)
       .then((file) => file.json)
       .then((env) => this.setState({ env }));
-  };
-
-  handleEdit = () => {
-    const getFile = () => this.props.findFile('.env');
-    const tab = new Tab({ getFile });
-
-    this.props.selectTab(tab);
   };
 
   render() {
@@ -84,10 +83,11 @@ export default class EnvPane extends PureComponent {
         ))}
         </CardText>
         <CardActions expandable >
-          <FlatButton
-            label={localization.common.editFile}
-            icon={<EditorModeEdit />}
-            onTouchTap={this.handleEdit}
+          <EditFile
+            fileKey={this.state.fileKey}
+            findFile={this.props.findFile}
+            selectTab={this.props.selectTab}
+            localization={localization}
           />
         </CardActions>
       </Card>
