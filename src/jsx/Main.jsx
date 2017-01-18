@@ -24,13 +24,13 @@ import Menu from '../Menu/';
 import ReadmePane from '../ReadmePane/';
 import SnippetPane from '../SnippetPane/';
 import EnvPane from '../EnvPane/';
-import PalettePane from '../PalettePane/';
 import Sizer from './Sizer';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
 import {
   MonitorCard,
+  PaletteCard,
 } from '../Cards/';
 
 const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
@@ -496,7 +496,7 @@ class Main extends Component {
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
               <EnvPane {...commonProps} {...envProps} />
-              <PalettePane {...commonProps} />
+              <PaletteCard {...commonProps} />
               <MonitorCard {...commonProps} {...monitorCardProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
