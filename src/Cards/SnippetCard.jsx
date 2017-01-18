@@ -38,8 +38,9 @@ export default class SnippetCard extends PureComponent {
   componentWillReceiveProps(nextProps) {
     const selected = nextProps.tabs
       .find((item) => item.isSelected);
-    if (selected) {
-      const snippets = this.props.getConfig('snippets')(selected.file);
+    const snippets = selected && this.props.getConfig('snippets')(selected.file);
+
+    if (snippets && snippets.length) {
       const snippetFiles = this.findSnippetFiles(snippets);
 
       this.setState({
