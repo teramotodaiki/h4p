@@ -9,6 +9,7 @@ import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import ReadmePane from '../ReadmePane/';
 import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
+import { commonRoot } from './commonStyles';
 
 export default class ReadmeCard extends PureComponent {
 
@@ -158,16 +159,13 @@ export default class ReadmeCard extends PureComponent {
     }
 
     const styles = {
-      root: {
-        margin: 16,
-      },
       text: {
         paddingTop: 0,
       },
     };
     return (
       <Card initiallyExpanded
-        style={styles.root}
+        style={commonRoot}
       >
         <CardHeader showExpandableButton actAsExpander
           title={selectedFile.header}

@@ -7,6 +7,7 @@ import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
 import EnvItem from './EnvItem';
+import { commonRoot } from './commonStyles';
 
 export default class EnvPane extends PureComponent {
 
@@ -65,14 +66,8 @@ export default class EnvPane extends PureComponent {
       localization,
     } = this.props;
 
-    const styles = {
-      root: {
-        margin: 16,
-      },
-    };
-
     return (
-      <Card style={styles.root}>
+      <Card style={commonRoot}>
         <CardHeader showExpandableButton actAsExpander
           title={localization.env.title}
           subtitle={localization.env.subtitle}

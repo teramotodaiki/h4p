@@ -5,9 +5,10 @@ import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import transitions from 'material-ui/styles/transitions';
 import { fade } from 'material-ui/utils/colorManipulator';
 
+
 import SnippetPane from '../SnippetPane/';
 import { configs } from '../File/';
-
+import { commonRoot } from './commonStyles';
 
 export default class SnippetCard extends PureComponent {
 
@@ -98,22 +99,13 @@ export default class SnippetCard extends PureComponent {
       localization,
     } = this.props;
 
-    const styles = {
-      root: {
-        margin: 16,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-      },
-    };
-
     const subtitle = this.state.fileKey ?
       localization.snippet.subtitle :
       localization.snippet.fileNotSelected;
 
     return (
       <Card initiallyExpanded
-        style={styles.root}
+        style={commonRoot}
       >
         <CardHeader actAsExpander showExpandableButton
           title={localization.snippet.title}
