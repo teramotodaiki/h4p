@@ -9,6 +9,7 @@ import { ChromePicker, TwitterPicker } from 'react-color';
 
 
 import LayeredStyle from './LayeredStyle';
+import { commonRoot } from './commonStyles';
 
 
 const getStyles = (props, context) => {
@@ -21,9 +22,6 @@ const getStyles = (props, context) => {
   const boxSize = 60;
 
   return {
-    root: {
-      margin: 16,
-    },
     html: {
       display: 'flex',
       flexDirection: 'column',
@@ -163,7 +161,7 @@ export default class PalettePane extends PureComponent {
     styles.label = prepareStyles(styles.label);
 
     return (
-      <Card style={styles.root}>
+      <Card style={commonRoot}>
         <CardHeader showExpandableButton actAsExpander
           title={localization.palette.title}
           subtitle={localization.palette.subtitle}

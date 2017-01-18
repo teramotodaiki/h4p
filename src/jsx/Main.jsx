@@ -21,16 +21,16 @@ import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { MonitorTypes, maxByPriority } from '../Monitor/';
 import Menu from '../Menu/';
-import ReadmePane from '../ReadmePane/';
-import SnippetPane from '../SnippetPane/';
-import EnvPane from '../EnvPane/';
-import PalettePane from '../PalettePane/';
 import Sizer from './Sizer';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
 import {
+  ReadmeCard,
+  SnippetCard,
   MonitorCard,
+  PaletteCard,
+  EnvCard,
 } from '../Cards/';
 
 const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
@@ -493,10 +493,10 @@ class Main extends Component {
           <div style={styles.dropCover}></div>
           <div style={styles.left}>
             <div style={styles.scroll}>
-              <ReadmePane {...commonProps} {...readmeProps} />
-              <SnippetPane {...commonProps} {...snippetProps} />
-              <EnvPane {...commonProps} {...envProps} />
-              <PalettePane {...commonProps} />
+              <ReadmeCard {...commonProps} {...readmeProps} />
+              <SnippetCard {...commonProps} {...snippetProps} />
+              <EnvCard {...commonProps} {...envProps} />
+              <PaletteCard {...commonProps} />
               <MonitorCard {...commonProps} {...monitorCardProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>

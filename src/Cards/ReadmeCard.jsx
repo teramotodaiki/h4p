@@ -6,11 +6,12 @@ import MenuItem from 'material-ui/MenuItem';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 
-import Readme from './Readme';
+import ReadmePane from '../ReadmePane/';
 import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
+import { commonRoot } from './commonStyles';
 
-export default class ReadmePane extends PureComponent {
+export default class ReadmeCard extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
@@ -158,16 +159,13 @@ export default class ReadmePane extends PureComponent {
     }
 
     const styles = {
-      root: {
-        margin: 16,
-      },
       text: {
         paddingTop: 0,
       },
     };
     return (
       <Card initiallyExpanded
-        style={styles.root}
+        style={commonRoot}
       >
         <CardHeader showExpandableButton actAsExpander
           title={selectedFile.header}
@@ -177,7 +175,7 @@ export default class ReadmePane extends PureComponent {
           expandable
           style={styles.text}
         >
-          <Readme
+          <ReadmePane
             file={selectedFile}
             selectTab={this.props.selectTab}
             findFile={this.props.findFile}
