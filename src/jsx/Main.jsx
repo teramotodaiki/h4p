@@ -179,26 +179,34 @@ class Main extends Component {
     document.title = this.getConfig('env').TITLE[0];
   }
 
-  addFile = (file) => new Promise((resolve, reject) => {
-    const files = this.state.files.concat(file);
-    if (this.inspection(file)) {
-      resolve(file);
-      return;
-    }
-    this.setState({ files }, () => resolve(file));
-    this._configs.clear();
-  });
+  async setStatePromise(state) {
+    return new Promise((resolve, reject) => {
+      this.setState(state, resolve);
+    });
+  }
 
-  putFile = (prevFile, nextFile) => new Promise((resolve, reject) => {
-    if (this.inspection(nextFile)) {
-      resolve(prevFile);
-      return;
+  addFile = async (file) => {
+    if (this.inspection(file)) {
+      return file;
     }
+    this._configs.clear();
+    const files = this.state.files.concat(file);
+
+    await this.setStatePromise({ files });
+    return file;
+  };
+
+  putFile = async (prevFile, nextFile) => {
+    if (this.inspection(nextFile)) {
+      return prevFile;
+    }
+    this._configs.clear();
     const files = this.state.files
       .map((item) => item.key === prevFile.key ? nextFile : item);
-    this._configs.clear();
-    this.setState({ files }, () => resolve(nextFile));
-  });
+
+    await this.setStatePromise({ files });
+    return nextFile;
+  };
 
   deleteFile = (...targets) => new Promise((resolve, reject) => {
     const keys = targets.map((item) => item.key);
