@@ -37,8 +37,14 @@ const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string
 
 const getStyle = (props, state, palette) => {
   const { isResizing } = state;
+  const shrinkLeft = parseInt(props.rootStyle.width, 10) - state.monitorWidth < 200;
+  const shrinkRight = state.monitorWidth < 100;
 
   return {
+
+    shrinkLeft,
+    shrinkRight,
+
     root: {
       position: 'relative',
       width: '100%',
@@ -49,7 +55,7 @@ const getStyle = (props, state, palette) => {
       overflow: 'hidden',
     },
     left: {
-      flex: '1 1 auto',
+      flex: shrinkLeft ? '0 0 auto' : '1 1 auto',
       width: 0,
       display: 'flex',
       flexDirection: 'column',
@@ -61,7 +67,7 @@ const getStyle = (props, state, palette) => {
     right: {
       flex: '0 0 auto',
       boxSizing: 'border-box',
-      width: state.monitorWidth,
+      width: shrinkRight ? 0 : state.monitorWidth,
       height: '100%',
       paddingBottom: 4,
       display: 'flex',
@@ -388,13 +394,7 @@ class Main extends Component {
     } = this.state;
     const showMonitor = this.state.monitorType === MonitorTypes.Default;
 
-    const {
-      root,
-      left,
-      scroll,
-      dropCover,
-      right,
-    } = getStyle(this.props, this.state, this.getConfig('palette'));
+    const styles = getStyle(this.props, this.state, this.getConfig('palette'));
 
     const commonProps = {
       files,
@@ -489,10 +489,10 @@ class Main extends Component {
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
-        <div style={root}>
-          <div style={dropCover}></div>
-          <div style={left}>
-            <div style={scroll}>
+        <div style={styles.root}>
+          <div style={styles.dropCover}></div>
+          <div style={styles.left}>
+            <div style={styles.scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
               <EnvPane {...commonProps} {...envProps} />
@@ -507,7 +507,7 @@ class Main extends Component {
             onSizer={this.setResizing}
             showMonitor={showMonitor}
           />
-          <div style={right}>
+          <div style={styles.right}>
             <Monitor {...commonProps} {...monitorProps} />
             <EditorPane {...commonProps} {...editorPaneProps} />
             <Menu {...commonProps} {...menuProps} />
