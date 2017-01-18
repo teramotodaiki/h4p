@@ -9,12 +9,14 @@ import { fade } from 'material-ui/utils/colorManipulator';
 import SnippetPane from '../SnippetPane/';
 import { configs } from '../File/';
 import { commonRoot } from './commonStyles';
+import EditFile from './EditFile';
 
 export default class SnippetCard extends PureComponent {
 
   static propTypes = {
     tabs: PropTypes.array.isRequired,
     findFile: PropTypes.func.isRequired,
+    selectTab: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
   };
 
@@ -123,6 +125,14 @@ export default class SnippetCard extends PureComponent {
             localization={localization}
           />
         </CardText>
+        <CardActions expandable >
+          <EditFile
+            fileKey={this.state.fileKey}
+            findFile={this.props.findFile}
+            selectTab={this.props.selectTab}
+            localization={localization}
+          />
+        </CardActions>
       </Card>
     );
   }
