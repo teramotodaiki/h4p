@@ -21,13 +21,13 @@ import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { MonitorTypes, maxByPriority } from '../Monitor/';
 import Menu from '../Menu/';
-import SnippetPane from '../SnippetPane/';
 import Sizer from './Sizer';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
 import {
   ReadmeCard,
+  SnippetCard,
   MonitorCard,
   PaletteCard,
   EnvCard,
@@ -494,7 +494,7 @@ class Main extends Component {
           <div style={styles.left}>
             <div style={styles.scroll}>
               <ReadmeCard {...commonProps} {...readmeProps} />
-              <SnippetPane {...commonProps} {...snippetProps} />
+              <SnippetCard {...commonProps} {...snippetProps} />
               <EnvCard {...commonProps} {...envProps} />
               <PaletteCard {...commonProps} />
               <MonitorCard {...commonProps} {...monitorCardProps} />

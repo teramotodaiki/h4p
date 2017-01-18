@@ -6,11 +6,11 @@ import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import transitions from 'material-ui/styles/transitions';
 import { fade } from 'material-ui/utils/colorManipulator';
 
-import SnippetButton from './SnippetButton';
+import SnippetButton from '../SnippetPane/SnippetButton';
 import { configs } from '../File/';
 
 
-export default class SnippetPane extends PureComponent {
+export default class SnippetCard extends PureComponent {
 
   static propTypes = {
     tabs: PropTypes.array.isRequired,
