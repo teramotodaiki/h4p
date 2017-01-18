@@ -60,9 +60,12 @@ export default class Snippet {
     const length = text.split('\n').length + (self.asset ? -1 : 0);
     Array.from({ length }).forEach((v, i) => instance.indentLine(i + from.line));
 
+    const endLine = from.line + length - 1;
+    const endCh = instance.getLine(endLine).length;
+
     return {
       from,
-      to: new Pos(from.line + length - 1, 0),
+      to: new Pos(endLine, endCh),
     };
   }
 

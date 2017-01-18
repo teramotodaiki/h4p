@@ -247,6 +247,10 @@ class SourceEditor extends PureComponent {
 
     const { from, to } = snippet.hint(this.codemirror, self, snippet);
 
+    this.codemirror.markText(from, to, {
+      css: 'opacity: 0.5;',
+    });
+
     this.setState({
       previewFrom: from,
       previewTo: to,
