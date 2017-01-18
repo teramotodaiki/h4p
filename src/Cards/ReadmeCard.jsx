@@ -6,11 +6,11 @@ import MenuItem from 'material-ui/MenuItem';
 import EditorModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 
 
-import Readme from './Readme';
+import ReadmePane from '../ReadmePane/';
 import { SourceFile } from '../File/';
 import { Tab } from '../ChromeTab/';
 
-export default class ReadmePane extends PureComponent {
+export default class ReadmeCard extends PureComponent {
 
   static propTypes = {
     files: PropTypes.array.isRequired,
@@ -177,7 +177,7 @@ export default class ReadmePane extends PureComponent {
           expandable
           style={styles.text}
         >
-          <Readme
+          <ReadmePane
             file={selectedFile}
             selectTab={this.props.selectTab}
             findFile={this.props.findFile}

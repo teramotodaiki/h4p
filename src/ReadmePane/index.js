@@ -1,1 +1,1 @@
-export { default } from './ReadmePane'; 
+export { default } from './Readme'; 
