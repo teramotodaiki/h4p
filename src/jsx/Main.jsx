@@ -23,7 +23,6 @@ import Monitor, { MonitorTypes, maxByPriority } from '../Monitor/';
 import Menu from '../Menu/';
 import ReadmePane from '../ReadmePane/';
 import SnippetPane from '../SnippetPane/';
-import EnvPane from '../EnvPane/';
 import Sizer from './Sizer';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
@@ -31,6 +30,7 @@ import { Tab } from '../ChromeTab/';
 import {
   MonitorCard,
   PaletteCard,
+  EnvCard,
 } from '../Cards/';
 
 const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
@@ -495,7 +495,7 @@ class Main extends Component {
             <div style={styles.scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
-              <EnvPane {...commonProps} {...envProps} />
+              <EnvCard {...commonProps} {...envProps} />
               <PaletteCard {...commonProps} />
               <MonitorCard {...commonProps} {...monitorCardProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
