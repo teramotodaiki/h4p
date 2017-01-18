@@ -466,6 +466,7 @@ class Main extends Component {
 
     const snippetProps = {
       tabs,
+      selectTab: this.selectTab,
     };
 
     const envProps = {
