@@ -19,7 +19,7 @@ import getLocalization from '../localization/';
 import getCustomTheme from '../js/getCustomTheme';
 import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
-import Monitor from '../Monitor/';
+import Monitor, { MonitorTypes, maxByPriority } from '../Monitor/';
 import Menu from '../Menu/';
 import ReadmePane from '../ReadmePane/';
 import SnippetPane from '../SnippetPane/';
@@ -93,7 +93,6 @@ class Main extends Component {
     isResizing: false,
 
     files: this.props.files,
-    isPopout: false,
     reboot: false,
     href: '',
 
@@ -105,7 +104,7 @@ class Main extends Component {
     port: null,
     coreString: null,
 
-    showMonitor: true,
+    monitorType: MonitorTypes.Default,
   };
 
   get rootWidth() {
@@ -244,18 +243,21 @@ class Main extends Component {
       return item;
     });
 
+    const monitorType = this.state.monitorType === MonitorTypes.Default ?
+      MonitorTypes.None : this.state.monitorType;
+
     const found = tabs.find((item) => item.is(tab));
     if (found) {
       const replace = found.select(true);
       this.setState({
         tabs: tabs.map((item) => item === found ? replace : item),
-        showMonitor: false,
+        monitorType,
       }, () => resolve(replace));
     } else {
       if (!tab.isSelected) tab = tab.select(true);
       this.setState({
         tabs: tabs.concat(tab),
-        showMonitor: false,
+        monitorType,
       }, () => resolve(tab));
     }
   });
@@ -332,17 +334,18 @@ class Main extends Component {
   })();
 
   handleTogglePopout = () => {
+    const isPopout = this.state.monitorType === MonitorTypes.Popout;
     this.setState({
-      reboot: !this.state.isPopout,
-      isPopout: !this.state.isPopout,
-      showMonitor: false,
+      reboot: !isPopout,
+      monitorType: isPopout ?
+        MonitorTypes.None : MonitorTypes.Popout,
     });
   };
 
   setLocation = ({ href = '' }) => {
     this.setState({
       reboot: true,
-      showMonitor: !this.state.isPopout,
+      monitorType: maxByPriority(this.state.monitorType, MonitorTypes.Default),
       href,
     });
   };
@@ -367,11 +370,11 @@ class Main extends Component {
       files, tabs,
       dialogContent,
       monitorWidth, monitorHeight, isResizing,
-      isPopout,
       reboot,
       localization,
       port,
     } = this.state;
+    const showMonitor = this.state.monitorType === MonitorTypes.Default;
 
     const {
       root,
@@ -395,7 +398,7 @@ class Main extends Component {
     const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
-      showMonitor: this.state.showMonitor,
+      show: this.state.monitorType !== MonitorTypes.Default,
       tabs,
       selectTab: this.selectTab,
       closeTab: this.closeTab,
@@ -410,11 +413,11 @@ class Main extends Component {
     };
 
     const monitorProps = {
-      showMonitor: this.state.showMonitor,
+      show: showMonitor,
+      isPopout: this.state.monitorType === MonitorTypes.Popout,
       monitorWidth,
       monitorHeight: this.rootHeight,
       reboot,
-      isPopout,
       portRef: (port) => this.setState({ port }),
       togglePopout: this.handleTogglePopout,
       coreString: this.state.coreString,
@@ -436,12 +439,12 @@ class Main extends Component {
       togglePopout: this.handleTogglePopout,
       setLocalization: this.setLocalization,
       openFileDialog: this.openFileDialog,
-      isPopout,
+      isPopout: this.state.monitorType === MonitorTypes.Popout,
       monitorWidth,
       monitorHeight,
       coreString: this.state.coreString,
       saveAs: this.saveAs,
-      showMonitor: this.state.showMonitor,
+      showMonitor,
     };
 
     const readmeProps = {
@@ -475,20 +478,20 @@ class Main extends Component {
             monitorWidth={monitorWidth}
             monitorHeight={monitorHeight}
             onSizer={this.setResizing}
-            showMonitor={this.state.showMonitor}
+            showMonitor={showMonitor}
           />
           <div style={right}>
             <Monitor {...commonProps} {...monitorProps} />
             <EditorPane {...commonProps} {...editorPaneProps} />
             <Menu {...commonProps} {...menuProps} />
-          {this.state.showMonitor ? (
+          {showMonitor ? (
             <IconButton
               style={{
                 position: 'absolute',
                 right: 0,
                 zIndex: 1000
               }}
-              onTouchTap={() => this.setState({ showMonitor: false })}
+              onTouchTap={() => this.setState({ monitorType: MonitorTypes.None })}
             >
               <ActionSwapHoriz color="white" />
             </IconButton>
