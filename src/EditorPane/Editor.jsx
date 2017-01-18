@@ -276,6 +276,7 @@ export default class Editor extends PureComponent {
         minFoldSize: 1,
         scanUp: false,
       },
+      dragDrop: false,
     }, getConfig('options'));
 
     return (

@@ -6,6 +6,7 @@ import { red50, red500 } from 'material-ui/styles/colors';
 import HardwareKeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import ContentSave from 'material-ui/svg-icons/content/save';
 import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
+import { Pos } from 'codemirror';
 
 
 import DragTypes from '../utils/dragTypes';
@@ -89,12 +90,34 @@ class SourceEditor extends PureComponent {
     hasHistory: false,
     hasChanged: false,
     loading: false,
+
+    prevDoc: null,
+    previewFrom: null,
+    previewTo: null,
   };
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.reboot && nextProps.reboot) {
       if (this.state.hasChanged) {
         this.handleSave();
+      }
+    }
+
+    if (this.props.isOver !== nextProps.isOver && this.codemirror) {
+      if (nextProps.isOver) {
+        // enter
+        this.setState({
+          prevDoc: this.codemirror.getDoc().copy(true),
+          previewFrom: null,
+          previewTo: null,
+        });
+      } else {
+        // Leave
+        this.setState({
+          prevDoc: null,
+          previewFrom: null,
+          previewTo: null,
+        });
       }
     }
   }
@@ -172,6 +195,65 @@ class SourceEditor extends PureComponent {
     }
     this.codemirror = ref;
   };
+
+
+  _queue = null; // Single queue of async function to invoke later
+  _processing = false; // State of process
+  async handlePreview(...args) {
+    if (this._processing) {
+      this._queue = () => this.handlePreview(...args);
+      return;
+    }
+
+    this._processing = true;
+    await this.renderPreview(...args);
+    this._processing = false;
+
+    const next = this._queue;
+    this._queue = null;
+    if (next) next();
+
+  };
+
+  async renderPreview(snippet, pos) {
+    const {
+      prevDoc,
+      previewFrom,
+      previewTo,
+    } = this.state;
+
+    if (
+      previewFrom  && pos.line >= previewFrom.line - 1 &&
+      previewTo    && pos.line <= previewTo.line ||
+      !prevDoc || !this.codemirror
+    ) {
+
+      // Abort
+      return new Promise((resolve, reject) => {
+        requestAnimationFrame(resolve);
+      });
+
+    }
+
+    // Update
+    this.codemirror.setValue(prevDoc.getValue('\n'));
+
+    if (previewFrom && previewTo && pos.line >= previewTo.line) {
+      // Except preview area
+      pos.line -= previewTo.line - previewFrom.line + 1;
+    }
+
+    const self = { from: pos, to: pos, asset: true };
+
+    const { from, to } = snippet.hint(this.codemirror, self, snippet);
+
+    this.setState({
+      previewFrom: from,
+      previewTo: to,
+    });
+
+    await new Promise((resolve, reject) => setTimeout(resolve, 500));
+  }
 
   render() {
     const {
@@ -261,17 +343,27 @@ class SourceEditor extends PureComponent {
 }
 
 const spec = {
-  drop(props, monitor, component) {
-    if (monitor.getDropResult() || !component.codemirror) {
-      return;
-    }
-    const { snippet } = monitor.getItem();
+  hover(props, monitor, component) {
+    if (!component.codemirror) return;
+
     const { codemirror } = component;
+    const { snippet } = monitor.getItem();
 
     const { x, y } = monitor.getClientOffset();
-    const pos = codemirror.coordsChar({ left: x, top: y });
+    const { line, ch } = codemirror.coordsChar({ left: x, top: y + 10 });
 
-    snippet.hint(codemirror, { from: pos, to: pos }, snippet);
+    component.handlePreview(snippet, new Pos(line - 1, ch));
+  },
+  drop(props, monitor, component) {
+    if (monitor.getDropResult() || !component.codemirror) return;
+
+    const { snippet } = monitor.getItem();
+    const { codemirror, state } = component;
+
+    const pos = new Pos(state.previewFrom.line - 1, 0);
+
+    codemirror.swapDoc(state.prevDoc);
+    snippet.hint(codemirror, { from: pos, to: pos, asset: true }, snippet);
 
     return {};
   }

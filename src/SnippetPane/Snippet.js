@@ -51,7 +51,7 @@ export default class Snippet {
   }
 
   hint(instance, self, data) {
-    const from  = self.asset && self.from.ch ? new Pos(self.from.line + 1, 0) : self.from;
+    const from  = self.asset ? new Pos(self.from.line + 1, 0) : self.from;
     const to    = self.asset ? from : self.to;
     const text  = self.asset ? data.text + '\n' : data.text;
 
@@ -59,6 +59,11 @@ export default class Snippet {
 
     const length = text.split('\n').length + (self.asset ? -1 : 0);
     Array.from({ length }).forEach((v, i) => instance.indentLine(i + from.line));
+
+    return {
+      from,
+      to: new Pos(from.line + length - 1, 0),
+    };
   }
 
 }
