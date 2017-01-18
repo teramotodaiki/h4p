@@ -186,23 +186,28 @@ class Main extends Component {
   }
 
   addFile = async (file) => {
-    if (this.inspection(file)) {
+    const remove = this.inspection(file);
+    if (file === remove) {
       return file;
     }
     this._configs.clear();
-    const files = this.state.files.concat(file);
+    const files = this.state.files
+      .concat(file)
+      .filter((item) => item !== remove);
 
     await this.setStatePromise({ files });
     return file;
   };
 
   putFile = async (prevFile, nextFile) => {
-    if (this.inspection(nextFile)) {
+    const remove = this.inspection(nextFile);
+    if (remove === nextFile) {
       return prevFile;
     }
     this._configs.clear();
     const files = this.state.files
-      .map((item) => item.key === prevFile.key ? nextFile : item);
+      .filter((item) => item !== remove && item.key !== prevFile.key)
+      .concat(nextFile);
 
     await this.setStatePromise({ files });
     return nextFile;
@@ -313,24 +318,25 @@ class Main extends Component {
     }
   };
 
-  inspection = (newFile, reject) => {
-    const { files } = this.state;
-    if (files.some(file =>
-      !file.options.isTrashed &&
-      file.key !== newFile.key &&
-      file.name === newFile.name
-    )) {
-      // file.moduleName should be unique
-      return true;
+  inspection = (newFile) => {
+
+    const conflict = this.state.files
+      .find((file) => (
+        !file.options.isTrashed &&
+        file.key !== newFile.key &&
+        file.name === newFile.name
+      ));
+
+    if (conflict) {
+      // TODO: FileDialog instead of.
+      if (confirm('A file with the same name already exists. Do you want to overwrite it?')) {
+        return conflict;
+      } else {
+        return newFile;
+      }
     }
-    if (newFile.moduleName === 'env') {
-      // 'env' is reserved name
-      return true;
-    }
-    if (newFile.moduleName.indexOf('.') === 0) {
-      return true;
-    }
-    return false;
+
+    return null;
   };
 
   resize = ((waitFlag = false) =>
