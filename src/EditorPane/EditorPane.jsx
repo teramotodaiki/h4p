@@ -18,7 +18,7 @@ const getStyles = (props, context) => {
 
   return {
     root: {
-      flex: props.showMonitor ? '0 0 0' : '1 1 auto',
+      flex: props.show ? '1 1 auto' : '0 0 0',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
@@ -48,7 +48,7 @@ const getStyles = (props, context) => {
 export default class EditorPane extends PureComponent {
 
   static propTypes = {
-    showMonitor: PropTypes.bool.isRequired,
+    show: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     tabs: PropTypes.array.isRequired,
     putFile: PropTypes.func.isRequired,
@@ -73,7 +73,7 @@ export default class EditorPane extends PureComponent {
     if (nextProps.isResizing) {
       return false;
     }
-    if (this.props.showMonitor && nextProps.showMonitor) {
+    if (!this.props.show && !nextProps.show) {
       return false;
     }
     return true;
@@ -142,7 +142,7 @@ export default class EditorPane extends PureComponent {
   };
 
   render() {
-    if (!this.props.tabs.length && !this.props.showMonitor) {
+    if (!this.props.tabs.length && this.props.show) {
       return this.renderBackground();
     }
 
@@ -171,14 +171,14 @@ export default class EditorPane extends PureComponent {
 
     return (
     <div style={prepareStyles(root)}>
-    {this.props.showMonitor ? null : (
+    {this.props.show ? (
       <EditorMenu
         files={files}
         localization={localization}
         getConfig={getConfig}
         setConfig={setConfig}
       />
-    )}
+    ) : null}
       <div style={prepareStyles(tabContainer)}>
       {tabs.slice(0, MAX_TAB).map((tab) => (
         <ChromeTab

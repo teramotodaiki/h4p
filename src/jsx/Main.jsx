@@ -19,7 +19,7 @@ import getLocalization from '../localization/';
 import getCustomTheme from '../js/getCustomTheme';
 import EditorPane, { Readme } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
-import Monitor from '../Monitor/';
+import Monitor, { MonitorTypes, maxByPriority } from '../Monitor/';
 import Menu from '../Menu/';
 import ReadmePane from '../ReadmePane/';
 import SnippetPane from '../SnippetPane/';
@@ -29,13 +29,22 @@ import Sizer from './Sizer';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
+import {
+  MonitorCard,
+} from '../Cards/';
 
 const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
 
 const getStyle = (props, state, palette) => {
   const { isResizing } = state;
+  const shrinkLeft = parseInt(props.rootStyle.width, 10) - state.monitorWidth < 200;
+  const shrinkRight = state.monitorWidth < 100;
 
   return {
+
+    shrinkLeft,
+    shrinkRight,
+
     root: {
       position: 'relative',
       width: '100%',
@@ -46,7 +55,7 @@ const getStyle = (props, state, palette) => {
       overflow: 'hidden',
     },
     left: {
-      flex: '1 1 auto',
+      flex: shrinkLeft ? '0 0 auto' : '1 1 auto',
       width: 0,
       display: 'flex',
       flexDirection: 'column',
@@ -58,7 +67,7 @@ const getStyle = (props, state, palette) => {
     right: {
       flex: '0 0 auto',
       boxSizing: 'border-box',
-      width: state.monitorWidth,
+      width: shrinkRight ? 0 : state.monitorWidth,
       height: '100%',
       paddingBottom: 4,
       display: 'flex',
@@ -93,7 +102,6 @@ class Main extends Component {
     isResizing: false,
 
     files: this.props.files,
-    isPopout: false,
     reboot: false,
     href: '',
 
@@ -105,7 +113,7 @@ class Main extends Component {
     port: null,
     coreString: null,
 
-    showMonitor: true,
+    monitorType: MonitorTypes.Default,
   };
 
   get rootWidth() {
@@ -244,18 +252,21 @@ class Main extends Component {
       return item;
     });
 
+    const monitorType = this.state.monitorType === MonitorTypes.Default ?
+      MonitorTypes.None : this.state.monitorType;
+
     const found = tabs.find((item) => item.is(tab));
     if (found) {
       const replace = found.select(true);
       this.setState({
         tabs: tabs.map((item) => item === found ? replace : item),
-        showMonitor: false,
+        monitorType,
       }, () => resolve(replace));
     } else {
       if (!tab.isSelected) tab = tab.select(true);
       this.setState({
         tabs: tabs.concat(tab),
-        showMonitor: false,
+        monitorType,
       }, () => resolve(tab));
     }
   });
@@ -332,17 +343,27 @@ class Main extends Component {
   })();
 
   handleTogglePopout = () => {
+    const isPopout = this.state.monitorType === MonitorTypes.Popout;
     this.setState({
-      reboot: !this.state.isPopout,
-      isPopout: !this.state.isPopout,
-      showMonitor: false,
+      reboot: !isPopout,
+      monitorType: isPopout ?
+        MonitorTypes.None : MonitorTypes.Popout,
+    });
+  };
+
+  handleToggleTinyScreen = () => {
+    const isCard = this.state.monitorType === MonitorTypes.Card;
+    this.setState({
+      reboot: true,
+      monitorType: isCard ?
+        MonitorTypes.Default : MonitorTypes.Card,
     });
   };
 
   setLocation = ({ href = '' }) => {
     this.setState({
       reboot: true,
-      showMonitor: !this.state.isPopout,
+      monitorType: maxByPriority(this.state.monitorType, MonitorTypes.Default),
       href,
     });
   };
@@ -367,19 +388,13 @@ class Main extends Component {
       files, tabs,
       dialogContent,
       monitorWidth, monitorHeight, isResizing,
-      isPopout,
       reboot,
       localization,
       port,
     } = this.state;
+    const showMonitor = this.state.monitorType === MonitorTypes.Default;
 
-    const {
-      root,
-      left,
-      scroll,
-      dropCover,
-      right,
-    } = getStyle(this.props, this.state, this.getConfig('palette'));
+    const styles = getStyle(this.props, this.state, this.getConfig('palette'));
 
     const commonProps = {
       files,
@@ -395,7 +410,7 @@ class Main extends Component {
     const isShrinked = (width, height) => width < 200 || height < 40;
 
     const editorPaneProps = {
-      showMonitor: this.state.showMonitor,
+      show: this.state.monitorType !== MonitorTypes.Default,
       tabs,
       selectTab: this.selectTab,
       closeTab: this.closeTab,
@@ -410,11 +425,11 @@ class Main extends Component {
     };
 
     const monitorProps = {
-      showMonitor: this.state.showMonitor,
+      show: showMonitor,
+      isPopout: this.state.monitorType === MonitorTypes.Popout,
       monitorWidth,
       monitorHeight: this.rootHeight,
       reboot,
-      isPopout,
       portRef: (port) => this.setState({ port }),
       togglePopout: this.handleTogglePopout,
       coreString: this.state.coreString,
@@ -436,12 +451,12 @@ class Main extends Component {
       togglePopout: this.handleTogglePopout,
       setLocalization: this.setLocalization,
       openFileDialog: this.openFileDialog,
-      isPopout,
+      isPopout: this.state.monitorType === MonitorTypes.Popout,
       monitorWidth,
       monitorHeight,
       coreString: this.state.coreString,
       saveAs: this.saveAs,
-      showMonitor: this.state.showMonitor,
+      showMonitor,
     };
 
     const readmeProps = {
@@ -457,17 +472,32 @@ class Main extends Component {
       selectTab: this.selectTab,
     };
 
+    const monitorCardProps = {
+      rootWidth: this.rootWidth,
+      monitorWidth,
+      toggleTinyScreen: this.handleToggleTinyScreen,
+      show: this.state.monitorType === MonitorTypes.Card,
+      isPopout: false,
+      reboot,
+      portRef: (port) => this.setState({ port }),
+      coreString: this.state.coreString,
+      saveAs: this.saveAs,
+      href: this.state.href,
+      setLocation: this.setLocation,
+    };
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
-        <div style={root}>
-          <div style={dropCover}></div>
-          <div style={left}>
-            <div style={scroll}>
+        <div style={styles.root}>
+          <div style={styles.dropCover}></div>
+          <div style={styles.left}>
+            <div style={styles.scroll}>
               <ReadmePane {...commonProps} {...readmeProps} />
               <SnippetPane {...commonProps} {...snippetProps} />
               <EnvPane {...commonProps} {...envProps} />
               <PalettePane {...commonProps} />
+              <MonitorCard {...commonProps} {...monitorCardProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
           </div>
@@ -475,20 +505,20 @@ class Main extends Component {
             monitorWidth={monitorWidth}
             monitorHeight={monitorHeight}
             onSizer={this.setResizing}
-            showMonitor={this.state.showMonitor}
+            showMonitor={showMonitor}
           />
-          <div style={right}>
+          <div style={styles.right}>
             <Monitor {...commonProps} {...monitorProps} />
             <EditorPane {...commonProps} {...editorPaneProps} />
             <Menu {...commonProps} {...menuProps} />
-          {this.state.showMonitor ? (
+          {showMonitor ? (
             <IconButton
               style={{
                 position: 'absolute',
                 right: 0,
                 zIndex: 1000
               }}
-              onTouchTap={() => this.setState({ showMonitor: false })}
+              onTouchTap={() => this.setState({ monitorType: MonitorTypes.None })}
             >
               <ActionSwapHoriz color="white" />
             </IconButton>

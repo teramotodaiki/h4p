@@ -29,6 +29,8 @@ const getStyle = (props, context, state) => {
   return {
     root: {
       flex: '1 1 auto',
+      minWidth: 0,
+      minHeight: 0,
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
@@ -47,7 +49,7 @@ const getStyle = (props, context, state) => {
       borderRadius: 0,
       opacity: state.progress < 1 ? 1 : 0,
     },
-    progressColor: props.showMonitor ?
+    progressColor: props.show ?
        palette.accent1Color : palette.primary1Color,
   };
 };
@@ -55,7 +57,7 @@ const getStyle = (props, context, state) => {
 export default class Monitor extends PureComponent {
 
   static propTypes = {
-    showMonitor: PropTypes.bool.isRequired,
+    show: PropTypes.bool.isRequired,
     monitorWidth: PropTypes.number.isRequired,
     monitorHeight: PropTypes.number.isRequired,
     isResizing: PropTypes.bool.isRequired,
@@ -338,7 +340,7 @@ export default class Monitor extends PureComponent {
   handleFrame = (ref) => {
     if (!ref) return;
 
-    if (this.props.showMonitor) {
+    if (this.props.show) {
       this.inlineFrame = ref;
     } else {
       this.popoutFrame = ref;
@@ -357,12 +359,12 @@ export default class Monitor extends PureComponent {
       error,
     } = this.state;
     const {
-      showMonitor,
+      show,
       isPopout,
       reboot,
     } = this.props;
 
-    if (!showMonitor) {
+    if (!show) {
       return isPopout && !reboot ? (
         <Popout
           url={popoutURL}
