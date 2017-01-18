@@ -29,6 +29,9 @@ import Sizer from './Sizer';
 import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialog/';
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
+import {
+  MonitorCard,
+} from '../Cards/';
 
 const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
 
@@ -342,6 +345,15 @@ class Main extends Component {
     });
   };
 
+  handleToggleTinyScreen = () => {
+    const isCard = this.state.monitorType === MonitorTypes.Card;
+    this.setState({
+      reboot: true,
+      monitorType: isCard ?
+        MonitorTypes.Default : MonitorTypes.Card,
+    });
+  };
+
   setLocation = ({ href = '' }) => {
     this.setState({
       reboot: true,
@@ -460,6 +472,20 @@ class Main extends Component {
       selectTab: this.selectTab,
     };
 
+    const monitorCardProps = {
+      rootWidth: this.rootWidth,
+      monitorWidth,
+      toggleTinyScreen: this.handleToggleTinyScreen,
+      show: this.state.monitorType === MonitorTypes.Card,
+      isPopout: false,
+      reboot,
+      portRef: (port) => this.setState({ port }),
+      coreString: this.state.coreString,
+      saveAs: this.saveAs,
+      href: this.state.href,
+      setLocation: this.setLocation,
+    };
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
@@ -471,6 +497,7 @@ class Main extends Component {
               <SnippetPane {...commonProps} {...snippetProps} />
               <EnvPane {...commonProps} {...envProps} />
               <PalettePane {...commonProps} />
+              <MonitorCard {...commonProps} {...monitorCardProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
           </div>

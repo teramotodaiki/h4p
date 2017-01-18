@@ -29,6 +29,8 @@ const getStyle = (props, context, state) => {
   return {
     root: {
       flex: '1 1 auto',
+      minWidth: 0,
+      minHeight: 0,
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
