@@ -1,12 +1,11 @@
 import React, { PureComponent, PropTypes } from 'react';
 import IconButton from 'material-ui/IconButton';
-import Popover from 'material-ui/Popover';
 import Chip from 'material-ui/Chip';
 import { Card, CardHeader, CardActions, CardText } from 'material-ui/Card';
 import transitions from 'material-ui/styles/transitions';
 import { fade } from 'material-ui/utils/colorManipulator';
 
-import SnippetButton from '../SnippetPane/SnippetButton';
+import SnippetPane from '../SnippetPane/';
 import { configs } from '../File/';
 
 
@@ -26,9 +25,6 @@ export default class SnippetCard extends PureComponent {
     snippets: [],
     snippetFiles: [],
     fileKey: '',
-    open: false,
-    anchorEl: null,
-    shownNode: null,
   };
 
   componentDidMount() {
@@ -66,14 +62,6 @@ export default class SnippetCard extends PureComponent {
       .map((item) => this.props.findFile((file) => file.key === item));
   }
 
-  handleSelectSnippet = (event, node) => {
-    this.setState({
-      open: true,
-      anchorEl: event.currentTarget,
-      shownNode: node,
-    });
-  };
-
   renderChips() {
     const {
       palette,
@@ -107,14 +95,9 @@ export default class SnippetCard extends PureComponent {
 
   render() {
     const {
-      findFile,
       localization,
     } = this.props;
-    const {
-      snippets,
-      fileKey,
-      snippetFiles,
-    } = this.state;
+
     const styles = {
       root: {
         margin: 16,
@@ -122,20 +105,8 @@ export default class SnippetCard extends PureComponent {
         flexDirection: 'column',
         alignItems: 'stretch',
       },
-      container: {
-        maxHeight: '100%',
-        display: 'flex',
-        flexWrap: 'wrap',
-        boxSizing: 'border-box',
-        justifyContent: 'flex-start',
-      },
-      popover: {
-        width: 400,
-        height: 200,
-      },
     };
 
-    const HasSnippets = snippets.length > 0;
     const subtitle = this.state.fileKey ?
       localization.snippet.subtitle :
       localization.snippet.fileNotSelected;
@@ -151,28 +122,14 @@ export default class SnippetCard extends PureComponent {
         <CardActions expandable >
         {this.renderChips()}
         </CardActions>
-        <CardText expandable
-          style={styles.container}
-        >
-        {snippets
-          .filter((snippet) => snippet.fileKey === fileKey)
-          .map((snippet) => (
-            <SnippetButton
-              key={snippet.key}
-              snippet={snippet}
-              findFile={findFile}
-              onSelect={this.handleSelectSnippet}
-              localization={localization}
-            />
-          )
-        )}
+        <CardText expandable >
+          <SnippetPane
+            snippets={this.state.snippets}
+            fileKey={this.state.fileKey}
+            findFile={this.props.findFile}
+            localization={localization}
+          />
         </CardText>
-        <Popover
-          open={this.state.open}
-          anchorEl={this.state.anchorEl}
-          onRequestClose={() => this.setState({ open: false })}
-          style={styles.popover}
-        >{this.state.shownNode}</Popover>
       </Card>
     );
   }
