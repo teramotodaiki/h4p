@@ -123,6 +123,7 @@ Let's get started from there as there are various Feeles such as gaming Feeles
     tapTwiceQuickly: 'Tap twice quickly',
     cannotBeUndone: 'This operation can not be undone',
     editFile: 'Edit File',
+    conflict: 'A file with the same name already exists. Do you want to overwrite it?',
   },
   editor: {
     undo: 'Undo',

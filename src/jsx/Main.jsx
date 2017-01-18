@@ -329,7 +329,7 @@ class Main extends Component {
 
     if (conflict) {
       // TODO: FileDialog instead of.
-      if (confirm('A file with the same name already exists. Do you want to overwrite it?')) {
+      if (confirm(this.state.localization.common.conflict)) {
         return conflict;
       } else {
         return newFile;

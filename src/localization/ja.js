@@ -123,6 +123,7 @@ export default {
     tapTwiceQuickly: 'すばやく２回クリック',
     cannotBeUndone: 'この操作は取り消せません',
     editFile: '書きかえる',
+    conflict: '同じ名前のファイルがすでに存在します。上書きしますか？',
   },
   editor: {
     undo: 'もどす',
