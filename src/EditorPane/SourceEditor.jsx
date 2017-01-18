@@ -369,6 +369,8 @@ const spec = {
     codemirror.swapDoc(state.prevDoc);
     snippet.hint(codemirror, { from: pos, to: pos, asset: true }, snippet);
 
+    component.handleSave();
+
     return {};
   }
 };
