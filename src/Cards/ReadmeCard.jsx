@@ -103,6 +103,9 @@ export default class ReadmeCard extends PureComponent {
 
   renderDropDownMenu() {
     const {
+      localization,
+    } = this.props;
+    const {
       selectedFile,
     } = this.state;
 
@@ -110,13 +113,21 @@ export default class ReadmeCard extends PureComponent {
       .filter((item) => item.is('markdown'));
 
     const styles = {
+      index: {
+        marginLeft: 16,
+        marginRight: -8,
+        fontSize: '.5rem',
+      },
       underline: {
         display: 'none',
       },
     };
 
-    return (
-      <DropDownMenu
+    return [
+      <span key="index" style={styles.index}>
+      {localization.readme.index}
+      </span>,
+      <DropDownMenu key="dropDown"
         value={selectedFile.key}
         underlineStyle={styles.underline}
         onChange={this.handleSelect}
@@ -129,7 +140,7 @@ export default class ReadmeCard extends PureComponent {
         />
       ))}
       </DropDownMenu>
-    );
+    ];
   }
 
   render() {

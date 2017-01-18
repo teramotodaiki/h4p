@@ -65,6 +65,7 @@ export default {
   },
   readme: {
     subtitle: 'Please read this first',
+    index: 'Index',
     text: `# Introduction
 This is an editor for making games and applications
 

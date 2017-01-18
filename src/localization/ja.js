@@ -66,6 +66,7 @@ export default {
   },
   readme: {
     subtitle: 'まずはこれを読んでください',
+    index: '目次',
     text: `# はじめに
 これは、ゲームやアプリを作るためのエディタです
 
