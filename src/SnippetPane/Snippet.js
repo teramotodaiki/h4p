@@ -1,4 +1,5 @@
 import React from 'react';
+import { Pos } from 'codemirror';
 
 
 import { separate } from '../File/';
@@ -50,11 +51,14 @@ export default class Snippet {
   }
 
   hint(instance, self, data) {
-    const { from, to } = self;
-    instance.replaceRange(data.text, from, to, 'complete');
+    const from  = self.asset && self.from.ch ? new Pos(self.from.line + 1, 0) : self.from;
+    const to    = self.asset ? from : self.to;
+    const text  = self.asset ? data.text + '\n' : data.text;
 
-    const length = data.text.split('\n').length;
-    Array.from({ length }).forEach((v, i) => instance.indentLine(i + self.from.line));
+    instance.replaceRange(text, from, to, 'complete');
+
+    const length = text.split('\n').length + (self.asset ? -1 : 0);
+    Array.from({ length }).forEach((v, i) => instance.indentLine(i + from.line));
   }
 
 }
