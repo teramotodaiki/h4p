@@ -75,10 +75,12 @@ export default class SnippetCard extends PureComponent {
         display: 'flex',
         flexWrap: 'wrap',
       },
+      chip: {
+        marginRight: 4,
+      },
       label: {
         fontSize: '.8rem',
         lineHeight: '1.4rem',
-        marginLeft: 4,
       },
       activeColor: fade(palette.primary1Color, 0.3),
     };
@@ -89,6 +91,7 @@ export default class SnippetCard extends PureComponent {
         <Chip
           key={file.key}
           backgroundColor={file.key === this.state.fileKey ? styles.activeColor : null}
+          style={styles.chip}
           labelStyle={styles.label}
           onTouchTap={() => this.setState({ fileKey: file.key })}
         >{file.plane}</Chip>
