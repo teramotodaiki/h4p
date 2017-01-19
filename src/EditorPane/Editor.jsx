@@ -195,7 +195,6 @@ export default class Editor extends PureComponent {
       if (change.origin === 'setValue' || change.origin === 'complete') return;
       const cursor = cm.getCursor();
       cm.scrollIntoView(cursor);
-      const token = cm.getTokenAt(cursor);
       cm.showHint({
         completeSingle: false,
         files: getFiles(),
