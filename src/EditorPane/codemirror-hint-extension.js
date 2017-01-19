@@ -4,7 +4,7 @@ import 'codemirror/addon/hint/anyword-hint';
 const anywordHint = CodeMirror.hint.anyword;
 
 CodeMirror.hint.javascript = (instance, options) => {
-  
+
   const { cursor, token, from, to, empty } = getTokenInfo(instance);
 
   if (!/[A-Za-z\.\'\"\`]$/.test(token.string)) {
@@ -14,7 +14,7 @@ CodeMirror.hint.javascript = (instance, options) => {
   const result = anywordHint(instance, options) || empty;
 
   result.list = options.snippets
-    .filter((snippet) => startWith(snippet.prefix, token.string))
+    .filter((snippet) => startWith(snippet.prefix || snippet, token.string))
     .concat(result.list);
 
   if (token.type === 'string') {
@@ -25,10 +25,6 @@ CodeMirror.hint.javascript = (instance, options) => {
     result.list = getCompleteNames(options.files, start, prefix)
       .concat(result.list);
   }
-
-  result.list = options.completes
-    .filter((complete) => startWith(complete, token.string))
-    .concat(result.list);
 
   return result;
 

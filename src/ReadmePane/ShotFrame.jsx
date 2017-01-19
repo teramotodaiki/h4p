@@ -226,7 +226,7 @@ export default class ShotFrame extends PureComponent {
             onChange={this.handleChange}
             getConfig={getConfig}
             codemirrorRef={this.handleCodemirror}
-            completes={completes}
+            snippets={completes}
           />
         </div>
         <div style={menu}>

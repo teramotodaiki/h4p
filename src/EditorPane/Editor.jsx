@@ -137,7 +137,7 @@ export default class Editor extends PureComponent {
     isCared: PropTypes.bool.isRequired,
     getConfig: PropTypes.func.isRequired,
     codemirrorRef: PropTypes.func.isRequired,
-    completes: PropTypes.array.isRequired,
+    snippets: PropTypes.array.isRequired,
     showHint: PropTypes.bool.isRequired,
   };
 
@@ -148,7 +148,7 @@ export default class Editor extends PureComponent {
     closeSelectedTab: () => {},
     isCared: false,
     codemirrorRef: () => {},
-    completes: [],
+    snippets: [],
     showHint: true,
   };
 
@@ -196,12 +196,10 @@ export default class Editor extends PureComponent {
       const cursor = cm.getCursor();
       cm.scrollIntoView(cursor);
       const token = cm.getTokenAt(cursor);
-      const snippets = getConfig('snippets')(this.props.file);
       cm.showHint({
         completeSingle: false,
         files: getFiles(),
-        snippets,
-        completes: this.props.completes,
+        snippets: this.props.snippets,
       });
     });
 
