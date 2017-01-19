@@ -59,19 +59,28 @@ export default class ReadmeCard extends PureComponent {
     }
 
     if (this.props.port !== nextProps.port) {
-      nextProps.port.addEventListener('message', (event) => {
-        const { query, value } = event.data;
-        if (
-          query === 'complete' &&
-          !shallowEqual(value, this.state.completes)
-        ) {
-          this.setState({
-            completes: value,
-          });
-        }
-      });
+      if (this.props.port) {
+        this.props.port.removeEventListener('message', this.handleMessage);
+      }
+      if (nextProps.port) {
+        nextProps.port.addEventListener('message', this.handleMessage);
+      }
     }
   }
+
+  handleMessage = (event) => {
+    if (!event.data || !event.data.query) return;
+    const { query, value } = event.data;
+
+    // Completes
+    if (query === 'complete') {
+      if (!shallowEqual(value, this.state.completes)) {
+        this.setState({
+          completes: value,
+        });
+      }
+    }
+  };
 
   handleShot = (text) => {
     if (this.props.port) {
