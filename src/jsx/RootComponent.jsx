@@ -19,6 +19,10 @@ class RootComponent extends Component {
     files: [],
   };
 
+  get last() {
+    return this.props.files.length - this.state.files.length;
+  }
+
   componentWillMount() {
     (async () => {
       for (const promise of this.props.files) {
@@ -36,7 +40,7 @@ class RootComponent extends Component {
   }
 
   async wait() {
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.1 || this.last === 1) {
       await new Promise((resolve, reject) => {
         requestAnimationFrame(resolve);
       });
@@ -68,7 +72,7 @@ class RootComponent extends Component {
     return (
       <div style={styles.root}>
         <h1 style={styles.header}>Feeles</h1>
-        <span style={styles.count}>{this.state.files.length}/{this.props.files.length}</span>
+        <span style={styles.count}>{this.state.files.length + 1}/{this.props.files.length}</span>
       </div>
     );
   };
