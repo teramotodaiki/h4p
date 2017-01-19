@@ -90,11 +90,18 @@ class SourceEditor extends PureComponent {
     hasHistory: false,
     hasChanged: false,
     loading: false,
+    snippets: [],
 
     prevDoc: null,
     previewFrom: null,
     previewTo: null,
   };
+
+  componentWillMount() {
+    this.setState({
+      snippets: this.props.getConfig('snippets')(this.props.file),
+    });
+  }
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.reboot && nextProps.reboot) {
@@ -120,6 +127,10 @@ class SourceEditor extends PureComponent {
         });
       }
     }
+
+    this.setState({
+      snippets: nextProps.getConfig('snippets')(nextProps.file),
+    });
   }
 
   componentDidMount() {
@@ -331,7 +342,10 @@ class SourceEditor extends PureComponent {
       ) : null}
       {connectDropTarget(
         <div style={editorContainer}>
-          <Editor {...props} />
+          <Editor
+            {...props}
+            snippets={this.state.snippets}
+          />
         </div>
       )}
         <CreditBar
