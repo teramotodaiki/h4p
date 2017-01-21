@@ -46,6 +46,10 @@ const getStyles = (props, context) => {
       flex: '1 1 auto',
       position: 'relative',
     },
+    swap: {
+      position: 'absolute',
+      right: 0,
+    },
   };
 };
 
@@ -162,30 +166,20 @@ export default class EditorPane extends PureComponent {
       palette,
     } = this.context.muiTheme;
 
-    const {
-      root,
-      tabContainer,
-      tabContentContainer,
-      button,
-    } = getStyles(this.props, this.context);
-
-    const styleSwap = {
-      position: 'absolute',
-      right: 0,
-    };
+    const styles = getStyles(this.props, this.context);
 
     const userStyle = findFile('feeles/codemirror.css');
 
     return (
-    <div style={prepareStyles(root)}>
+    <div style={styles.root}>
       <style>{codemirrorStyle(this.context.muiTheme.palette)}</style>
     {userStyle ? (
       <style>{userStyle.text}</style>
     ) : null}
-      <IconButton style={styleSwap} onTouchTap={this.props.toggleMonitor}>
+      <IconButton style={styles.swap} onTouchTap={this.props.toggleMonitor}>
         <ActionSwapVert />
       </IconButton>
-      <div style={prepareStyles(tabContainer)}>
+      <div style={styles.tabContainer}>
       {tabs.slice(0, MAX_TAB).map((tab) => (
         <ChromeTab
           key={tab.key}
@@ -199,7 +193,7 @@ export default class EditorPane extends PureComponent {
         />
       ))}
       </div>
-      <div style={tabContentContainer}>
+      <div style={styles.tabContentContainer}>
       {tabs.map((tab) => (
         <ChromeTabContent key={tab.key} show={tab.isSelected}>
         {tab.renderContent({
