@@ -8,6 +8,7 @@ import transitions from 'material-ui/styles/transitions';
 import { SourceFile } from '../File/';
 import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
+import codemirrorStyle from './codemirror-style';
 
 const MAX_TAB = 16;
 
@@ -174,12 +175,13 @@ export default class EditorPane extends PureComponent {
       right: 0,
     };
 
-    const codemirrorStyle = findFile('codemirror/style.css');
+    const userStyle = findFile('codemirror/style.css');
 
     return (
     <div style={prepareStyles(root)}>
-    {codemirrorStyle ? (
-      <style>{codemirrorStyle.text}</style>
+      <style>{codemirrorStyle(this.context.muiTheme.palette)}</style>
+    {userStyle ? (
+      <style>{userStyle.text}</style>
     ) : null}
       <IconButton style={styleSwap} onTouchTap={this.props.toggleMonitor}>
         <ActionSwapVert />
