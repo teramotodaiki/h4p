@@ -24,43 +24,52 @@ export default class EditorCard extends PureComponent {
   };
 
   componentWillMount() {
-    const {
-      findFile,
-      getConfig,
-      selectTab,
-      addFile,
-    } = this.props;
 
-    const editorFile = findFile('feeles/codemirror.json');
-    if (!editorFile) {
-      const editor = getConfig('codemirror');
-      addFile(
-        new SourceFile({
-          type: 'application/json',
-          name: 'feeles/codemirror.json',
-          text: JSON.stringify(editor, null, '\t'),
-        })
+    (async() => {
+
+      const editorFileKey = await this.addFileIfNotExist(
+        'feeles/codemirror.json',
+        () => {
+          const editor = this.props.getConfig('codemirror');
+          return new SourceFile({
+            type: 'application/json',
+            name: 'feeles/codemirror.json',
+            text: JSON.stringify(editor, null, '\t'),
+          });
+        }
       );
-    } else {
+
+      const cssFileKey = await this.addFileIfNotExist(
+        'feeles/codemirror.css',
+        () => {
+          new SourceFile({
+            type: 'text/css',
+            name: 'feeles/codemirror.css',
+            text: '',
+          })
+        }
+      );
+
       this.setState({
-        editorFileKey: editorFile.key,
+        editorFileKey,
+        cssFileKey,
       });
+
+    })();
+
+  }
+
+  async addFileIfNotExist(name, getFile) {
+
+    const file = this.props.findFile(name);
+
+    if (!file) {
+      const nextFile = await this.props.addFile(getFile());
+      return nextFile.key;
     }
 
-    const cssFile = findFile('feeles/codemirror.css');
-    if (!cssFile) {
-      addFile(
-        new SourceFile({
-          type: 'text/css',
-          name: 'feeles/codemirror.css',
-          text: '',
-        })
-      );
-    } else {
-      this.setState({
-        cssFileKey: cssFile.key,
-      });
-    }
+    return file.key;
+
   }
 
   componentWillReceiveProps(nextProps) {
