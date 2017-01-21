@@ -174,8 +174,13 @@ export default class EditorPane extends PureComponent {
       right: 0,
     };
 
+    const codemirrorStyle = findFile('codemirror/style.css');
+
     return (
     <div style={prepareStyles(root)}>
+    {codemirrorStyle ? (
+      <style>{codemirrorStyle.text}</style>
+    ) : null}
       <IconButton style={styleSwap} onTouchTap={this.props.toggleMonitor}>
         <ActionSwapVert />
       </IconButton>

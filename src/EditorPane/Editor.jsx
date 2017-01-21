@@ -62,7 +62,6 @@ const getStyles = (props, context, state) => {
   } = props;
   const {
     tabVisibility,
-    darkness,
   } = props.getConfig('options');
   const {
     palette,
@@ -78,48 +77,16 @@ const getStyles = (props, context, state) => {
         position: absolute;
         width: 100%;
         height: 100%;
-        filter:
-          invert(${darkness ? 100 : 0}%);
-        background-color: ${grey100};
         transition: ${transitions.easeOut()};
       }
       #${CssScopeId} .CodeMirror {
         font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
         width: 100%;
         height: 100%;
-        background-color: ${transparent};
-      }
-      #${CssScopeId} .CodeMirror-line {
-        filter:
-          contrast(${darkness ? 20 : 100}%)
-          saturate(${darkness ? 200 : 100}%);
-      }
-      #${CssScopeId} .CodeMirror-linenumber {
-        color: ${palette.secondaryTextColor};
-        filter: invert(${darkness ? 100 : 0}%);
+        background-color: ${grey100};
       }
       #${CssScopeId} .CodeMirror-gutters {
         border-color: ${palette.primary1Color};
-        background-color: ${palette.canvasColor};
-        filter: invert(${darkness ? 100 : 0}%);
-      }
-      #${CssScopeId} .CodeMirror-gutter:first-child {
-      }
-      #${CssScopeId} .CodeMirror-matchingbracket {
-        color: ${palette.primary1Color};
-        border-bottom: 1px solid ${palette.primary1Color};
-      }
-      #${CssScopeId} .cm-tab:before {
-        content: '••••';
-        position: absolute;
-        color: ${palette.primary3Color};
-        border-left: 1px solid ${palette.primary3Color};
-        visibility: ${
-          tabVisibility ? 'visible' : 'hidden'
-        };
-      }
-      #${CssScopeId} .CodeMirror-dialog {
-        background-color: ${palette.canvasColor};
       }
     `,
   }
