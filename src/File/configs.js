@@ -3,16 +3,25 @@ import { Snippet } from '../SnippetPane/';
 
 
 export default new Map([
-  ['options', {
-    test: /^\.options$/i,
+  ['codemirror', {
+    test: /^feeles\/codemirror\.json$/i,
     multiple: false,
     defaultValue: {
-      tabVisibility: false,
-      darkness: false,
-      lineWrapping: false,
-      indentUnit4: true,
+    	lineNumbers: true,
+    	indentUnit: 4,
+    	indentWithTabs: true,
+    	matchBrackets: true,
+    	autoCloseBrackets: true,
+    	keyMap: 'sublime',
+    	scrollbarStyle: 'simple',
+    	foldGutter: true,
+    	foldOptions: {
+    		widget: '✧⟣❃⟢✧',
+    		minFoldSize: 1,
+    		scanUp: false
+    	},
     },
-    defaultName: '.options',
+    defaultName: 'feeles/codemirror.json',
   }],
   ['palette', {
     test: /^\.palette$/i,

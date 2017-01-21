@@ -164,14 +164,23 @@ export default class Editor extends PureComponent {
 
     const meta = CodeMirror.findModeByMIME(file.type);
 
-    const options = Object.assign({
+    const options = {
       lineNumbers: true,
       mode: meta && meta.mode,
-      indentUnit: getConfig('options').indentUnit4 ? 4 : 2,
+      indentUnit: 4,
       indentWithTabs: true,
       matchBrackets: true,
       autoCloseBrackets: true,
       keyMap: 'sublime',
+      scrollbarStyle: 'simple',
+      foldGutter: true,
+      foldOptions: {
+        widget: "✧⟣❃⟢✧",
+        minFoldSize: 1,
+        scanUp: false,
+      },
+      dragDrop: false,
+      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       readOnly: file.options.isReadOnly,
       extraKeys: {
         'Ctrl-Enter': handleRun,
@@ -180,17 +189,8 @@ export default class Editor extends PureComponent {
         'Cmd-W': closeSelectedTab,
         'Ctrl-Alt-B': this.beautify,
       },
-      scrollbarStyle: 'simple',
-      foldGutter: true,
-      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-      foldOptions: {
-      rangeFinder: CodeMirror.fold.auto,
-        widget: "✧⟣❃⟢✧",
-        minFoldSize: 1,
-        scanUp: false,
-      },
-      dragDrop: false,
-    }, getConfig('options'));
+      ...getConfig('codemirror'),
+    };
 
     return (
       <ReactCodeMirror preserveScrollPosition
