@@ -5,13 +5,13 @@ import LinearProgress from 'material-ui/LinearProgress';
 import { red50, red500 } from 'material-ui/styles/colors';
 import HardwareKeyboardBackspace from 'material-ui/svg-icons/hardware/keyboard-backspace';
 import ContentSave from 'material-ui/svg-icons/content/save';
-import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
 import { Pos } from 'codemirror';
 
 
 import DragTypes from '../utils/dragTypes';
 import Editor from './Editor';
 import CreditBar from './CreditBar';
+import PlayMenu from './PlayMenu';
 
 
 const getStyle = (props, context) => {
@@ -67,7 +67,8 @@ class SourceEditor extends PureComponent {
   static propTypes = {
     file: PropTypes.object.isRequired,
     getFiles: PropTypes.func.isRequired,
-    handleRun: PropTypes.func.isRequired,
+    setLocation: PropTypes.func.isRequired,
+    href: PropTypes.string.isRequired,
     getConfig: PropTypes.func.isRequired,
     findFile: PropTypes.func.isRequired,
     reboot: PropTypes.bool.isRequired,
@@ -196,8 +197,14 @@ class SourceEditor extends PureComponent {
   handlePlay = () => {
     Promise.resolve()
       .then(() => this.handleSave())
-      .then(() => this.props.handleRun())
+      .then(() => this.props.setLocation())
       .catch(() => {});
+  };
+
+  handleReload = () => {
+    this.props.setLocation({
+      href: this.props.href,
+    });
   };
 
   handleCodemirror = (ref) => {
@@ -276,6 +283,7 @@ class SourceEditor extends PureComponent {
       getConfig,
       findFile,
       localization,
+      href,
 
       connectDropTarget,
     } = this.props;
@@ -299,7 +307,7 @@ class SourceEditor extends PureComponent {
     const props = Object.assign({}, this.props, {
       codemirrorRef: this.handleCodemirror,
       onChange: undefined,
-      handleRun: this.handlePlay,
+      handleRun: this.handleReload,
       showHint,
     });
 
@@ -326,12 +334,11 @@ class SourceEditor extends PureComponent {
             onTouchTap={this.handleSave}
           />
           <div style={{ flex: '1 1 auto' }}></div>
-          <FlatButton
-            label={localization.editor.play}
-            style={barButton}
-            labelStyle={barButtonLabel}
-            icon={<AVPlayCircleOutline />}
-            onTouchTap={this.handlePlay}
+          <PlayMenu
+            getFiles={this.props.getFiles}
+            setLocation={this.props.setLocation}
+            href={this.props.href}
+            localization={this.props.localization}
           />
         </div>
       {this.state.loading ? (

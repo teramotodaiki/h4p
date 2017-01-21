@@ -115,7 +115,7 @@ export default class EditorPane extends PureComponent {
         <IconButton
           iconStyle={styles.largeIcon}
           style={styles.large}
-          onTouchTap={this.handleRun}
+          onTouchTap={this.props.setLocation}
         >
           <AVPlayCircleOutline color={palette.alternateTextColor} />
         </IconButton>
@@ -137,10 +137,6 @@ export default class EditorPane extends PureComponent {
       .forEach((item) => this.props.selectTab(item));
   };
 
-  handleRun = () => {
-    this.props.setLocation({});
-  };
-
   render() {
     if (!this.props.tabs.length && this.props.show) {
       return this.renderBackground();
@@ -149,7 +145,6 @@ export default class EditorPane extends PureComponent {
     const {
       files, tabs,
       putFile, selectTab, closeTab,
-      handleRun,
       openFileDialog,
       localization,
       findFile,
@@ -198,9 +193,10 @@ export default class EditorPane extends PureComponent {
         <ChromeTabContent key={tab.key} show={tab.isSelected}>
         {tab.renderContent({
           getFiles: this.getFiles,
-          handleRun: this.handleRun,
           closeSelectedTab: this.handleCloseSelectedTab,
           selectTabFromFile: this.handleSelectTabFromFile,
+          setLocation: this.props.setLocation,
+          href: this.props.href,
           getConfig,
           findFile,
           localization,
