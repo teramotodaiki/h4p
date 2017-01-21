@@ -195,9 +195,15 @@ class SourceEditor extends PureComponent {
   };
 
   handleReload = () => {
-    this.props.setLocation({
+    this.setLocation({
       href: this.props.href,
     });
+  };
+
+  setLocation = (...args) => {
+    Promise.resolve()
+      .then(() => this.handleSave())
+      .then(() => this.props.setLocation(...args));
   };
 
   handleCodemirror = (ref) => {
@@ -329,7 +335,7 @@ class SourceEditor extends PureComponent {
           <div style={{ flex: '1 1 auto' }}></div>
           <PlayMenu
             getFiles={this.props.getFiles}
-            setLocation={this.props.setLocation}
+            setLocation={this.setLocation}
             href={this.props.href}
             localization={this.props.localization}
           />
