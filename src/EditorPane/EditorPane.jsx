@@ -166,14 +166,6 @@ export default class EditorPane extends PureComponent {
 
     return (
     <div style={prepareStyles(root)}>
-    {this.props.show ? (
-      <EditorMenu
-        files={files}
-        localization={localization}
-        getConfig={getConfig}
-        setConfig={setConfig}
-      />
-    ) : null}
       <div style={prepareStyles(tabContainer)}>
       {tabs.slice(0, MAX_TAB).map((tab) => (
         <ChromeTab
