@@ -175,7 +175,7 @@ export default class EditorPane extends PureComponent {
       right: 0,
     };
 
-    const userStyle = findFile('codemirror/style.css');
+    const userStyle = findFile('.editor/codemirror.css');
 
     return (
     <div style={prepareStyles(root)}>
