@@ -29,6 +29,7 @@ const getStyle = (props, context, state) => {
   return {
     root: {
       flex: props.show ? '1 1 auto' : '0 0 0',
+      opacity: props.show ? 1 : 0,
       minWidth: 0,
       minHeight: 0,
       position: 'relative',

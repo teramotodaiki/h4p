@@ -20,6 +20,7 @@ const getStyles = (props, context) => {
   return {
     root: {
       flex: props.show ? '1 1 auto' : '0 0 0',
+      opacity: props.show ? 1 : 0,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { DropTarget } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import IconButton from 'material-ui/IconButton';
-import ActionSwapHoriz from 'material-ui/svg-icons/action/swap-horiz';
+import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
 import { faintBlack } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -559,7 +559,7 @@ class Main extends Component {
               }}
               onTouchTap={this.handleToggleMonitorScreen}
             >
-              <ActionSwapHoriz color="white" />
+              <ActionSwapVert color="white" />
             </IconButton>
           </div>
           <FileDialog
