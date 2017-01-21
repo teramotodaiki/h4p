@@ -6,7 +6,6 @@ import transitions from 'material-ui/styles/transitions';
 
 
 import { SourceFile } from '../File/';
-import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import codemirrorStyle from './codemirror-style';
 
