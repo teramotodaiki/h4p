@@ -46,7 +46,8 @@ export default class PlayMenu extends PureComponent {
           title: title || file.name,
           href: file.name,
         };
-      });
+      })
+      .sort((a, b) => a.title > b.title ? 1 : -1);
 
     this.setState({
       open: true,
