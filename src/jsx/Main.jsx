@@ -509,7 +509,7 @@ class Main extends Component {
       selectTab: this.selectTab,
     };
 
-    const envProps = {
+    const envCardProps = {
       selectTab: this.selectTab,
     };
 
@@ -540,8 +540,8 @@ class Main extends Component {
             <div style={styles.scroll}>
               <ReadmeCard {...commonProps} {...readmeProps} />
               <SnippetCard {...commonProps} {...snippetProps} />
-              <EnvCard {...commonProps} {...envProps} />
               <PaletteCard {...commonProps} />
+              <EnvCard {...commonProps} {...envCardProps} />
               <EditorCard {...commonProps} {...editorCardProps} />
               <MonitorCard {...commonProps} {...monitorCardProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
