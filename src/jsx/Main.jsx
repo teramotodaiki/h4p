@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 
 import { DropTarget } from 'react-dnd';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import IconButton from 'material-ui/IconButton';
-import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
 import { faintBlack } from 'material-ui/styles/colors';
 import transitions from 'material-ui/styles/transitions';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -461,6 +459,7 @@ class Main extends Component {
         this.rootHeight
       ),
       href: this.state.href,
+      toggleMonitor: this.handleToggleMonitorScreen,
     };
 
     const monitorProps = {
@@ -471,6 +470,7 @@ class Main extends Component {
       reboot,
       portRef: (port) => this.setState({ port }),
       togglePopout: this.handleTogglePopout,
+      toggleMonitor: this.handleToggleMonitorScreen,
       coreString: this.state.coreString,
       saveAs: this.saveAs,
       href: this.state.href,
@@ -551,16 +551,6 @@ class Main extends Component {
             <EditorPane {...commonProps} {...editorPaneProps} />
             <Monitor {...commonProps} {...monitorProps} />
             <Menu {...commonProps} {...menuProps} />
-            <IconButton
-              style={{
-                position: 'absolute',
-                right: 0,
-                zIndex: 1000
-              }}
-              onTouchTap={this.handleToggleMonitorScreen}
-            >
-              <ActionSwapVert color="white" />
-            </IconButton>
           </div>
           <FileDialog
             ref={this.handleFileDialog}

@@ -4,6 +4,8 @@ import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
 import transitions from 'material-ui/styles/transitions';
+import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
+import { fullWhite } from 'material-ui/styles/colors';
 
 
 import { BinaryFile, SourceFile, makeFromFile} from '../File/';
@@ -40,6 +42,10 @@ const getStyle = (props, context, state) => {
       zIndex: 300,
       transition: transitions.easeOut(),
     },
+    swap: {
+      position: 'absolute',
+      right: 0,
+    },
     linear1: {
       position: 'absolute',
       bottom: 0,
@@ -69,6 +75,7 @@ export default class Monitor extends PureComponent {
     reboot: PropTypes.bool.isRequired,
     href: PropTypes.string.isRequired,
     togglePopout: PropTypes.func.isRequired,
+    toggleMonitor: PropTypes.func,
     portRef: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     getConfig: PropTypes.func.isRequired,
@@ -393,6 +400,11 @@ export default class Monitor extends PureComponent {
     return (
       <div style={styles.root}>
       {popout}
+      {this.props.toggleMonitor ? (
+        <IconButton style={styles.swap} onTouchTap={this.props.toggleMonitor}>
+          <ActionSwapVert color={fullWhite} />
+        </IconButton>
+      ) : null}
         <Screen animation
           display={!isPopout}
           frameRef={this.handleFrame}

@@ -48,7 +48,6 @@ export default class ErrorMessage extends PureComponent {
         zIndex: 3000,
       },
       button: {
-        marginRight: 48,
         alignSelf: 'flex-end',
       },
       pre: {
