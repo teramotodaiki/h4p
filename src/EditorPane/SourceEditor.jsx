@@ -194,13 +194,6 @@ class SourceEditor extends PureComponent {
     });
   };
 
-  handlePlay = () => {
-    Promise.resolve()
-      .then(() => this.handleSave())
-      .then(() => this.props.setLocation())
-      .catch(() => {});
-  };
-
   handleReload = () => {
     this.props.setLocation({
       href: this.props.href,
