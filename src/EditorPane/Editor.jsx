@@ -140,6 +140,7 @@ export default class Editor extends PureComponent {
     } else if (file.is('html')) {
       cm.setValue(
         beautify.html(cm.getValue(), {
+          "indent_with_tabs": true,
           "indent_inner_html": true,
           "extra_liners": [],
         })
@@ -147,7 +148,7 @@ export default class Editor extends PureComponent {
     } else if (file.is('css')) {
       cm.setValue(
         beautify.css(cm.getValue(), {
-
+          "indent_with_tabs": true,
         })
       );
     }
