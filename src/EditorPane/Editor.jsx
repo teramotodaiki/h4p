@@ -37,7 +37,6 @@ CodeMirror.modeInfo.push({
 });
 
 import './codemirror-hint-extension';
-import '../css/codemirror-extension.css';
 
 import excessiveCare from './excessiveCare';
 

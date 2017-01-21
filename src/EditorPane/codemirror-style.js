@@ -20,4 +20,7 @@ textarea {
 }
 .CodeMirror-gutters {
   border-color: ${palette.primary1Color} !important;
+}
+.CodeMirror-hints {
+  z-index: 1000;
 }`;
