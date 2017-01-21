@@ -135,7 +135,7 @@ class SourceEditor extends PureComponent {
     }
   }
 
-  handleSave = () => {
+  handleSave = async () => {
     if (!this.codemirror) {
       return;
     }
@@ -143,29 +143,31 @@ class SourceEditor extends PureComponent {
     const babelrc = this.props.getConfig('babelrc');
 
     if (text === this.props.file.text) {
-      return Promise.resolve();
+      return;
     }
 
-    return Promise.resolve()
-      .then(() => this.setState({
-        hasChanged: false,
-        loading: true,
-      }))
-      .then(() => this.props.putFile(
-        this.props.file,
-        this.props.file.set({ text })
-      ))
-      .then((file) => file.babel(babelrc))
-      .then(() => this.setState({
+    this.setState({
+      hasChanged: false,
+      loading: true,
+    });
+
+    const file = await this.props.putFile(
+      this.props.file,
+      this.props.file.set({ text })
+    );
+
+    try {
+      await file.babel(babelrc);
+    } catch (e) {
+      console.log('select', file);
+      await this.props.selectTabFromFile(file);
+      throw e;
+    } finally {
+      this.setState({
         loading: false,
-      }))
-      .catch((error) => {
-        this.props.selectTabFromFile(this.props.file);
-        this.setState({
-          loading: false,
-        });
-        throw error;
       });
+    }
+
   };
 
   handleUndo = () => {
@@ -194,10 +196,12 @@ class SourceEditor extends PureComponent {
     });
   };
 
-  setLocation = (...args) => {
-    Promise.resolve()
-      .then(() => this.handleSave())
-      .then(() => this.props.setLocation(...args));
+  setLocation = async (...args) => {
+
+    await this.handleSave();
+
+    return this.props.setLocation(...args);
+
   };
 
   handleCodemirror = (ref) => {
