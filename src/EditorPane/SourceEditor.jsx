@@ -105,12 +105,6 @@ class SourceEditor extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.reboot && nextProps.reboot) {
-      if (this.state.hasChanged) {
-        this.handleSave();
-      }
-    }
-
     if (this.props.isOver !== nextProps.isOver && this.codemirror) {
       if (nextProps.isOver) {
         // enter
