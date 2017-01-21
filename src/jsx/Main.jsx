@@ -374,7 +374,7 @@ class Main extends Component {
     });
   };
 
-  setLocation = ({ href = '' }) => {
+  setLocation = ({ href = '' } = { href: '' }) => {
     this.setState({
       reboot: true,
       monitorType: maxByPriority(this.state.monitorType, MonitorTypes.Default),
@@ -436,6 +436,7 @@ class Main extends Component {
         this.rootWidth - monitorWidth,
         this.rootHeight
       ),
+      href: this.state.href,
     };
 
     const monitorProps = {
