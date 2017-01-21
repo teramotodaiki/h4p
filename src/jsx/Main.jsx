@@ -15,7 +15,7 @@ injectTapEventPlugin();
 import { BinaryFile, SourceFile, configs } from '../File/';
 import getLocalization from '../localization/';
 import getCustomTheme from '../js/getCustomTheme';
-import EditorPane, { Readme } from '../EditorPane/';
+import EditorPane, { codemirrorStyle } from '../EditorPane/';
 import Hierarchy from '../Hierarchy/';
 import Monitor, { MonitorTypes, maxByPriority } from '../Monitor/';
 import Menu from '../Menu/';
@@ -531,6 +531,8 @@ class Main extends Component {
       setLocation: this.setLocation,
     };
 
+    const userStyle = this.findFile('feeles/codemirror.css');
+
     return (
       <MuiThemeProvider muiTheme={getCustomTheme({ palette: this.getConfig('palette') })}>
       {connectDropTarget(
@@ -564,6 +566,10 @@ class Main extends Component {
             getConfig={this.getConfig}
             setConfig={this.setConfig}
           />
+            <style>{codemirrorStyle(this.getConfig('palette'))}</style>
+          {userStyle ? (
+            <style>{userStyle.text}</style>
+          ) : null}
         </div>
       )}
       </MuiThemeProvider>
