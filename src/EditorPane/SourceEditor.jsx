@@ -196,11 +196,11 @@ class SourceEditor extends PureComponent {
     });
   };
 
-  setLocation = async (...args) => {
+  setLocation = async ({ href }) => {
 
     await this.handleSave();
 
-    return this.props.setLocation(...args);
+    return this.props.setLocation({ href });
 
   };
 
