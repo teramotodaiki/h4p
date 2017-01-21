@@ -112,7 +112,7 @@ export default class Readme extends PureComponent {
       return (
         <ShotFrame
           key={props.key}
-          text={children[0].props.children[0]}
+          text={children[0].props.children[0] || ''}
           onShot={this.props.onShot}
           localization={localization}
           getConfig={getConfig}
