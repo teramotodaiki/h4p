@@ -1,6 +1,7 @@
 import React, { PropTypes, PureComponent } from 'react';
 import IconButton from 'material-ui/IconButton';
 import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
+import transitions from 'material-ui/styles/transitions';
 
 
 import { SourceFile } from '../File/';
@@ -24,6 +25,7 @@ const getStyles = (props, context) => {
       alignItems: 'stretch',
       overflow: 'hidden',
       fontFamily,
+      transition: transitions.easeOut(),
     },
     tabContainer: {
       display: 'flex',

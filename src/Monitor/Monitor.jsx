@@ -28,14 +28,16 @@ const getStyle = (props, context, state) => {
 
   return {
     root: {
-      flex: '1 1 auto',
+      flex: props.show ? '1 1 auto' : '0 0 0',
       minWidth: 0,
       minHeight: 0,
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
+      overflow: 'hidden',
       zIndex: 300,
+      transition: transitions.easeOut(),
     },
     linear1: {
       position: 'absolute',
@@ -364,33 +366,32 @@ export default class Monitor extends PureComponent {
       reboot,
     } = this.props;
 
-    if (!show) {
-      return isPopout && !reboot ? (
-        <Popout
-          url={popoutURL}
-          title='app'
-          options={this.popoutOptions}
-          window={{
-            open: this.handlePopoutOpen,
-            addEventListener: window.addEventListener.bind(window),
-            removeEventListener: window.removeEventListener.bind(window),
-          }}
-          onClosing={this.handlePopoutClose}
-        >
-          <Screen display
-            frameRef={this.handleFrame}
-            handleReload={this.handleReload}
-            reboot={reboot}
-            error={error}
-          />
-        </Popout>
-      ) : null;
-    }
+    const popout = isPopout && !reboot ? (
+      <Popout
+        url={popoutURL}
+        title='app'
+        options={this.popoutOptions}
+        window={{
+          open: this.handlePopoutOpen,
+          addEventListener: window.addEventListener.bind(window),
+          removeEventListener: window.removeEventListener.bind(window),
+        }}
+        onClosing={this.handlePopoutClose}
+      >
+        <Screen display
+          frameRef={this.handleFrame}
+          handleReload={this.handleReload}
+          reboot={reboot}
+          error={error}
+        />
+      </Popout>
+    ) : null;
 
     const styles = getStyle(this.props, this.context, this.state);
 
     return (
       <div style={styles.root}>
+      {popout}
         <Screen animation
           display={!isPopout}
           frameRef={this.handleFrame}

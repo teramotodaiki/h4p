@@ -374,6 +374,30 @@ class Main extends Component {
     });
   };
 
+  handleToggleMonitorScreen = () => {
+    switch (this.state.monitorType) {
+      case MonitorTypes.Popout:
+      case MonitorTypes.Card:
+        this.setState({
+          reboot: true,
+          monitorType: MonitorTypes.Default,
+        });
+        break;
+      case MonitorTypes.Default:
+        this.setState({
+          reboot: false,
+          monitorType: MonitorTypes.None,
+        });
+        break;
+      case MonitorTypes.None:
+        this.setState({
+          reboot: false,
+          monitorType: MonitorTypes.Default,
+        });
+        break;
+    }
+  };
+
   setLocation = ({ href = '' } = { href: '' }) => {
     this.setState({
       reboot: true,
@@ -524,21 +548,19 @@ class Main extends Component {
             showMonitor={showMonitor}
           />
           <div style={styles.right}>
-            <Monitor {...commonProps} {...monitorProps} />
             <EditorPane {...commonProps} {...editorPaneProps} />
+            <Monitor {...commonProps} {...monitorProps} />
             <Menu {...commonProps} {...menuProps} />
-          {showMonitor ? (
             <IconButton
               style={{
                 position: 'absolute',
                 right: 0,
                 zIndex: 1000
               }}
-              onTouchTap={() => this.setState({ monitorType: MonitorTypes.None })}
+              onTouchTap={this.handleToggleMonitorScreen}
             >
               <ActionSwapHoriz color="white" />
             </IconButton>
-          ) : null}
           </div>
           <FileDialog
             ref={this.handleFileDialog}
