@@ -127,7 +127,8 @@ export default class ReadmeCard extends PureComponent {
     } = this.state;
 
     const markdowns = this.props.files
-      .filter((item) => item.is('markdown'));
+      .filter((item) => item.is('markdown'))
+      .sort((a, b) => a.header > b.header ? 1 : -1);
 
     const styles = {
       index: {
