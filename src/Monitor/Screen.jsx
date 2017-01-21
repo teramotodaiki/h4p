@@ -4,6 +4,7 @@ import transitions from 'material-ui/styles/transitions';
 
 
 import { SrcDocEnabled } from './setSrcDoc';
+import ErrorMessage from './ErrorMessage';
 
 export default class Screen extends PureComponent {
 
@@ -46,7 +47,6 @@ export default class Screen extends PureComponent {
     const {
       display,
       frameRef,
-      error,
     } = this.props;
 
     const {
@@ -87,25 +87,15 @@ export default class Screen extends PureComponent {
       height: 24,
     };
 
-    const errorStyle = {
-      position: 'absolute',
-      width: '100%',
-      maxHeight: '8rem',
-      top: 0,
-      marginTop: 0,
-      paddingTop: '2rem',
-      backgroundColor: 'red',
-      color: 'white',
-      overflow: 'scroll',
-      fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
-    };
-
     const sandbox = SrcDocEnabled ?
       "allow-scripts allow-modals allow-popups" :
       "allow-scripts allow-modals allow-popups allow-same-origin";
 
     return (
       <div style={style}>
+        <ErrorMessage
+          error={this.props.error}
+        />
         <button
           style={buttonStyle}
           onTouchTap={this.handleTap}
@@ -125,9 +115,6 @@ export default class Screen extends PureComponent {
             ref={frameRef}
           ></iframe>
         )}
-        {error ? (
-          <pre style={errorStyle}>{error.message}</pre>
-        ) : null}
       </div>
     );
   }
