@@ -6,7 +6,6 @@ import transitions from 'material-ui/styles/transitions';
 
 
 import { SourceFile } from '../File/';
-import EditorMenu from './EditorMenu';
 import ChromeTab, { ChromeTabContent } from '../ChromeTab/';
 import codemirrorStyle from './codemirror-style';
 
@@ -46,6 +45,10 @@ const getStyles = (props, context) => {
     tabContentContainer: {
       flex: '1 1 auto',
       position: 'relative',
+    },
+    swap: {
+      position: 'absolute',
+      right: 0,
     },
   };
 };
@@ -163,30 +166,20 @@ export default class EditorPane extends PureComponent {
       palette,
     } = this.context.muiTheme;
 
-    const {
-      root,
-      tabContainer,
-      tabContentContainer,
-      button,
-    } = getStyles(this.props, this.context);
+    const styles = getStyles(this.props, this.context);
 
-    const styleSwap = {
-      position: 'absolute',
-      right: 0,
-    };
-
-    const userStyle = findFile('.editor/codemirror.css');
+    const userStyle = findFile('feeles/codemirror.css');
 
     return (
-    <div style={prepareStyles(root)}>
+    <div style={styles.root}>
       <style>{codemirrorStyle(this.context.muiTheme.palette)}</style>
     {userStyle ? (
       <style>{userStyle.text}</style>
     ) : null}
-      <IconButton style={styleSwap} onTouchTap={this.props.toggleMonitor}>
+      <IconButton style={styles.swap} onTouchTap={this.props.toggleMonitor}>
         <ActionSwapVert />
       </IconButton>
-      <div style={prepareStyles(tabContainer)}>
+      <div style={styles.tabContainer}>
       {tabs.slice(0, MAX_TAB).map((tab) => (
         <ChromeTab
           key={tab.key}
@@ -200,7 +193,7 @@ export default class EditorPane extends PureComponent {
         />
       ))}
       </div>
-      <div style={tabContentContainer}>
+      <div style={styles.tabContentContainer}>
       {tabs.map((tab) => (
         <ChromeTabContent key={tab.key} show={tab.isSelected}>
         {tab.renderContent({

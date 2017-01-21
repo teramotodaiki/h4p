@@ -29,6 +29,7 @@ import {
   MonitorCard,
   PaletteCard,
   EnvCard,
+  EditorCard,
 } from '../Cards/';
 
 const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
@@ -508,7 +509,11 @@ class Main extends Component {
       selectTab: this.selectTab,
     };
 
-    const envProps = {
+    const envCardProps = {
+      selectTab: this.selectTab,
+    };
+
+    const editorCardProps = {
       selectTab: this.selectTab,
     };
 
@@ -535,8 +540,9 @@ class Main extends Component {
             <div style={styles.scroll}>
               <ReadmeCard {...commonProps} {...readmeProps} />
               <SnippetCard {...commonProps} {...snippetProps} />
-              <EnvCard {...commonProps} {...envProps} />
               <PaletteCard {...commonProps} />
+              <EnvCard {...commonProps} {...envCardProps} />
+              <EditorCard {...commonProps} {...editorCardProps} />
               <MonitorCard {...commonProps} {...monitorCardProps} />
               <Hierarchy {...commonProps} {...hierarchyProps} />
             </div>
