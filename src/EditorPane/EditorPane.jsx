@@ -1,6 +1,8 @@
 import React, { PropTypes, PureComponent } from 'react';
 import IconButton from 'material-ui/IconButton';
 import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
+import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
+import transitions from 'material-ui/styles/transitions';
 
 
 import { SourceFile } from '../File/';
@@ -19,11 +21,13 @@ const getStyles = (props, context) => {
   return {
     root: {
       flex: props.show ? '1 1 auto' : '0 0 0',
+      opacity: props.show ? 1 : 0,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
       overflow: 'hidden',
       fontFamily,
+      transition: transitions.easeOut(),
     },
     tabContainer: {
       display: 'flex',
@@ -63,6 +67,7 @@ export default class EditorPane extends PureComponent {
     setConfig: PropTypes.func.isRequired,
     port: PropTypes.object,
     reboot: PropTypes.bool.isRequired,
+    toggleMonitor: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -164,16 +169,16 @@ export default class EditorPane extends PureComponent {
       button,
     } = getStyles(this.props, this.context);
 
+    const styleSwap = {
+      position: 'absolute',
+      right: 0,
+    };
+
     return (
     <div style={prepareStyles(root)}>
-    {this.props.show ? (
-      <EditorMenu
-        files={files}
-        localization={localization}
-        getConfig={getConfig}
-        setConfig={setConfig}
-      />
-    ) : null}
+      <IconButton style={styleSwap} onTouchTap={this.props.toggleMonitor}>
+        <ActionSwapVert />
+      </IconButton>
       <div style={prepareStyles(tabContainer)}>
       {tabs.slice(0, MAX_TAB).map((tab) => (
         <ChromeTab

@@ -4,6 +4,8 @@ import IconButton from 'material-ui/IconButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import NavigationRefreh from 'material-ui/svg-icons/navigation/refresh';
 import transitions from 'material-ui/styles/transitions';
+import ActionSwapVert from 'material-ui/svg-icons/action/swap-vert';
+import { fullWhite } from 'material-ui/styles/colors';
 
 
 import { BinaryFile, SourceFile, makeFromFile} from '../File/';
@@ -28,14 +30,21 @@ const getStyle = (props, context, state) => {
 
   return {
     root: {
-      flex: '1 1 auto',
+      flex: props.show ? '1 1 auto' : '0 0 0',
+      opacity: props.show ? 1 : 0,
       minWidth: 0,
       minHeight: 0,
       position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
+      overflow: 'hidden',
       zIndex: 300,
+      transition: transitions.easeOut(),
+    },
+    swap: {
+      position: 'absolute',
+      right: 0,
     },
     linear1: {
       position: 'absolute',
@@ -66,6 +75,7 @@ export default class Monitor extends PureComponent {
     reboot: PropTypes.bool.isRequired,
     href: PropTypes.string.isRequired,
     togglePopout: PropTypes.func.isRequired,
+    toggleMonitor: PropTypes.func,
     portRef: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     getConfig: PropTypes.func.isRequired,
@@ -364,33 +374,37 @@ export default class Monitor extends PureComponent {
       reboot,
     } = this.props;
 
-    if (!show) {
-      return isPopout && !reboot ? (
-        <Popout
-          url={popoutURL}
-          title='app'
-          options={this.popoutOptions}
-          window={{
-            open: this.handlePopoutOpen,
-            addEventListener: window.addEventListener.bind(window),
-            removeEventListener: window.removeEventListener.bind(window),
-          }}
-          onClosing={this.handlePopoutClose}
-        >
-          <Screen display
-            frameRef={this.handleFrame}
-            handleReload={this.handleReload}
-            reboot={reboot}
-            error={error}
-          />
-        </Popout>
-      ) : null;
-    }
+    const popout = isPopout && !reboot ? (
+      <Popout
+        url={popoutURL}
+        title='app'
+        options={this.popoutOptions}
+        window={{
+          open: this.handlePopoutOpen,
+          addEventListener: window.addEventListener.bind(window),
+          removeEventListener: window.removeEventListener.bind(window),
+        }}
+        onClosing={this.handlePopoutClose}
+      >
+        <Screen display
+          frameRef={this.handleFrame}
+          handleReload={this.handleReload}
+          reboot={reboot}
+          error={error}
+        />
+      </Popout>
+    ) : null;
 
     const styles = getStyle(this.props, this.context, this.state);
 
     return (
       <div style={styles.root}>
+      {popout}
+      {this.props.toggleMonitor ? (
+        <IconButton style={styles.swap} onTouchTap={this.props.toggleMonitor}>
+          <ActionSwapVert color={fullWhite} />
+        </IconButton>
+      ) : null}
         <Screen animation
           display={!isPopout}
           frameRef={this.handleFrame}
