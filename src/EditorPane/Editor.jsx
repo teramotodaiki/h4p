@@ -1,7 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
 import ReactCodeMirror from 'react-codemirror';
-import { transparent, grey100 } from 'material-ui/styles/colors';
-import transitions from 'material-ui/styles/transitions';
 import beautify from 'js-beautify';
 
 import CodeMirror from 'codemirror';
@@ -57,75 +55,6 @@ export const MimeTypes = {
 
 export const FileEditorMap = new WeakMap();
 
-const getStyles = (props, context, state) => {
-  const {
-  } = props;
-  const {
-    tabVisibility,
-    darkness,
-  } = props.getConfig('options');
-  const {
-    palette,
-  } = context.muiTheme;
-  const { CssScopeId } = state;
-
-  return {
-    codemirror: `
-      #${CssScopeId} textarea {
-        font-size: 16px; // In smartphone, will not scale automatically
-      }
-      #${CssScopeId} .ReactCodeMirror {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        filter:
-          invert(${darkness ? 100 : 0}%);
-        background-color: ${grey100};
-        transition: ${transitions.easeOut()};
-      }
-      #${CssScopeId} .CodeMirror {
-        font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-        width: 100%;
-        height: 100%;
-        background-color: ${transparent};
-      }
-      #${CssScopeId} .CodeMirror-line {
-        filter:
-          contrast(${darkness ? 20 : 100}%)
-          saturate(${darkness ? 200 : 100}%);
-      }
-      #${CssScopeId} .CodeMirror-linenumber {
-        color: ${palette.secondaryTextColor};
-        filter: invert(${darkness ? 100 : 0}%);
-      }
-      #${CssScopeId} .CodeMirror-gutters {
-        border-color: ${palette.primary1Color};
-        background-color: ${palette.canvasColor};
-        filter: invert(${darkness ? 100 : 0}%);
-      }
-      #${CssScopeId} .CodeMirror-gutter:first-child {
-      }
-      #${CssScopeId} .CodeMirror-matchingbracket {
-        color: ${palette.primary1Color};
-        border-bottom: 1px solid ${palette.primary1Color};
-      }
-      #${CssScopeId} .cm-tab:before {
-        content: '••••';
-        position: absolute;
-        color: ${palette.primary3Color};
-        border-left: 1px solid ${palette.primary3Color};
-        visibility: ${
-          tabVisibility ? 'visible' : 'hidden'
-        };
-      }
-      #${CssScopeId} .CodeMirror-dialog {
-        background-color: ${palette.canvasColor};
-      }
-    `,
-  }
-};
-
-
 export default class Editor extends PureComponent {
 
   static propTypes = {
@@ -150,14 +79,6 @@ export default class Editor extends PureComponent {
     codemirrorRef: () => {},
     snippets: [],
     showHint: true,
-  };
-
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
-
-  state = {
-    CssScopeId: ('just-a-scope-' + Math.random()).replace('.', '')
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -219,6 +140,7 @@ export default class Editor extends PureComponent {
     } else if (file.is('html')) {
       cm.setValue(
         beautify.html(cm.getValue(), {
+          "indent_with_tabs": true,
           "indent_inner_html": true,
           "extra_liners": [],
         })
@@ -226,7 +148,7 @@ export default class Editor extends PureComponent {
     } else if (file.is('css')) {
       cm.setValue(
         beautify.css(cm.getValue(), {
-
+          "indent_with_tabs": true,
         })
       );
     }
@@ -240,11 +162,6 @@ export default class Editor extends PureComponent {
       closeSelectedTab,
       getConfig,
     } = this.props;
-    const { CssScopeId } = this.state;
-
-    const {
-      codemirror,
-    } = getStyles(this.props, this.context, this.state);
 
     const meta = CodeMirror.findModeByMIME(file.type);
 
@@ -277,15 +194,12 @@ export default class Editor extends PureComponent {
     }, getConfig('options'));
 
     return (
-      <div id={CssScopeId}>
-        <style>{codemirror}</style>
-        <ReactCodeMirror preserveScrollPosition
-          ref={this.handleCodemirror}
-          value={file.text}
-          onChange={onChange}
-          options={options}
-        />
-      </div>
+      <ReactCodeMirror preserveScrollPosition
+        ref={this.handleCodemirror}
+        value={file.text}
+        onChange={onChange}
+        options={options}
+      />
     );
   }
 }
