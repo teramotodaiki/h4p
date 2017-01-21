@@ -76,7 +76,8 @@ export default class SnippetCard extends PureComponent {
         flexWrap: 'wrap',
       },
       chip: {
-        marginRight: 4,
+        marginRight: 2,
+        marginBottom: 4,
       },
       label: {
         fontSize: '.8rem',
