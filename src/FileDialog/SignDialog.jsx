@@ -4,8 +4,6 @@ import AutoComplete from 'material-ui/AutoComplete';
 
 import { Confirm, Abort } from './Buttons';
 
-const arrayOf = (a) => a instanceof Array ? a : [a];
-
 export default class SignDialog extends PureComponent {
 
   static propTypes = {
@@ -20,7 +18,7 @@ export default class SignDialog extends PureComponent {
   };
 
   state = {
-    files: arrayOf(this.props.content),
+    files: [].concat(this.props.content),
     completeLabels: [],
     completeUrls: [],
   };
