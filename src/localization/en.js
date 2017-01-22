@@ -151,5 +151,9 @@ Let's get started from there as there are various Feeles such as gaming Feeles
     editor: `Tabs and line wrapping ...etc`,
     style: `Color of text and background ...etc`,
   },
+  creditsCard: {
+    title: 'Contributors',
+    subtitle: `Everyone who contributed to these codes`,
+  },
 
 };

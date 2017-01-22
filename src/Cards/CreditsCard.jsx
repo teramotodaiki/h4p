@@ -49,11 +49,15 @@ export default class CreditsCard extends PureComponent {
   }
 
   render() {
+    const {
+      localization,
+    } = this.props;
+    
     return (
       <Card style={commonRoot}>
         <CardHeader showExpandableButton actAsExpander
-          title={"Credits"}
-          subtitle={"Credits of these files"}
+          title={localization.creditsCard.title}
+          subtitle={localization.creditsCard.subtitle}
         />
         <CardText expandable
         >
