@@ -50,20 +50,12 @@ export default class CloneDialog extends PureComponent {
 
   state = {
     bundleType: BundleTypes[0],
-    composedFiles: null,
     error: null,
     apps: null,
     processing: false,
   };
 
-  get title() {
-    return (this.props.getConfig('env').TITLE || [''])[0];
-  }
-
   componentDidMount() {
-
-    Promise.all(this.props.files.map((file) => file.compose()))
-      .then((composedFiles) => this.setState({ composedFiles }));
 
     localforage.getItem(KEY_APPS)
       .then((apps) => apps || [])
@@ -71,29 +63,40 @@ export default class CloneDialog extends PureComponent {
 
   }
 
-  handleClone = () => {
+  handleClone = async () => {
     switch (this.state.bundleType) {
       case 'embed':
-        this.props.saveAs(SourceFile.embed({
-          TITLE: this.title,
-          files: this.state.composedFiles,
+
+      await this.props.saveAs(
+        await SourceFile.embed({
+          getConfig: this.props.getConfig,
+          files: this.props.files,
           coreString: this.props.coreString,
-        }))
-          .then(() => this.props.onRequestClose());
-        break;
+        })
+      );
+      this.props.onRequestClose();
+      break;
+
       case 'divide':
-        this.props.saveAs(SourceFile.divide({
-          TITLE: this.title,
-          files: this.state.composedFiles,
-        }));
-        break;
+
+      await this.props.saveAs(
+        await SourceFile.divide({
+          getConfig: this.props.getConfig,
+          files: this.props.files,
+        })
+      );
+      break;
+
       case 'cdn':
-        this.props.saveAs(SourceFile.cdn({
-          TITLE: this.title,
-          files: this.state.composedFiles,
-        }))
-          .then(() => this.props.onRequestClose());
-        break;
+
+      await this.props.saveAs(
+        await SourceFile.cdn({
+          getConfig: this.props.getConfig,
+          files: this.props.files,
+        })
+      );
+      this.props.onRequestClose();
+      break;
     }
   };
 
@@ -103,18 +106,18 @@ export default class CloneDialog extends PureComponent {
     }));
   };
 
-  handleCloneAll = () => {
-    Promise.resolve()
-      .then(() => this.props.saveAs(
-        SourceFile.library({
-          coreString: this.props.coreString,
-        }),
-        SourceFile.divide({
-          TITLE: this.title,
-          files: this.state.composedFiles,
-        })
-      ))
-      .then(() => this.props.onRequestClose());
+  handleCloneAll = async () => {
+    const divide = await SourceFile.divide({
+      getConfig: this.props.getConfig,
+      files: this.props.files,
+    });
+    const library = await SourceFile.library({
+      coreString: this.props.coreString,
+    });
+
+    await this.props.saveAs(divide, library);
+
+    this.props.onRequestClose();
   };
 
   handleBundleTypeChange = (event, bundleType) => {
@@ -134,12 +137,12 @@ export default class CloneDialog extends PureComponent {
 
   };
 
-  handleSave = (app) => {
+  handleSave = async (app) => {
     this.setState({ processing: true });
 
-    const html = SourceFile.embed({
-      TITLE: this.title,
-      files: this.state.composedFiles,
+    const html = await SourceFile.embed({
+      getConfig: this.props.getConfig,
+      files: this.props.files,
       coreString: this.props.coreString,
     });
 
@@ -155,22 +158,26 @@ export default class CloneDialog extends PureComponent {
       this.state.apps.map((item) => item === previous ? app : item) :
       [app].concat(this.state.apps);
 
-    return Promise.resolve()
-      .then(() => localforage.setItem(app.htmlKey, html.blob))
-      .then(() => localforage.setItem(KEY_APPS, apps))
-      .then(() => this.setState({
+    try {
+
+      await localforage.setItem(app.htmlKey, html.blob);
+      await localforage.setItem(KEY_APPS, apps);
+
+      this.setState({
         apps,
         processing: false,
-      }))
-      .catch((err) => {
-        localforage.removeItem(htmlKey);
-        throw err;
-      })
-      .catch((err) => {
-        alert(this.props.localization.cloneDialog.failedToSave);
-        this.setState({ processing: false });
-        throw err;
       });
+
+    } catch (e) {
+
+      await localforage.removeItem(htmlKey);
+
+      alert(this.props.localization.cloneDialog.failedToSave);
+      this.setState({
+        processing: false,
+      });
+
+    }
 
   };
 
@@ -251,7 +258,6 @@ export default class CloneDialog extends PureComponent {
   renderAppCards(isSave) {
     if (
       !this.state.apps ||
-      !this.state.composedFiles ||
       !this.props.coreString
     ) {
       return (
@@ -375,7 +381,7 @@ export default class CloneDialog extends PureComponent {
       localization,
       coreString,
     } = this.props;
-    const { bundleType, composedFiles } = this.state;
+    const { bundleType } = this.state;
 
     const styles = {
       body: {
@@ -443,7 +449,6 @@ export default class CloneDialog extends PureComponent {
             <div style={styles.center}>
               <RaisedButton primary
                 label={localization.cloneDialog.saveHTML}
-                disabled={!composedFiles}
                 style={styles.button}
                 onTouchTap={this.handleClone}
               />
@@ -463,7 +468,7 @@ export default class CloneDialog extends PureComponent {
           ) : (
             <RaisedButton primary
               label={localization.cloneDialog.save}
-              disabled={!composedFiles || !coreString}
+              disabled={!coreString}
               style={styles.button}
               onTouchTap={this.handleClone}
             />

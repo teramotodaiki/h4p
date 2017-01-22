@@ -29,30 +29,22 @@ export default class AboutDialog extends PureComponent {
     inputCoreVersion: null,
   };
 
-  get title() {
-    return (this.props.getConfig('env').TITLE || [''])[0];
-  }
-
   handleCoreVersionInput = (event) => {
     const inputCoreVersion = event.target.value;
     this.setState({ inputCoreVersion });
   };
 
-  handleChangeVersion = () => {
+  handleChangeVersion = async () => {
 
-    Promise.all(this.props.files.map((file) => file.compose()))
-      .then((files) => {
+    const file = await SourceFile.cdn({
+      getConfig: this.props.getConfig,
+      files: this.props.files,
+      src: CORE_CDN_PREFIX + this.state.inputCoreVersion + '.js',
+    });
 
-        const file = SourceFile.cdn({
-          files,
-          TITLE: this.title,
-          src: CORE_CDN_PREFIX + this.state.inputCoreVersion + '.js',
-        });
+    const url = URL.createObjectURL(file.blob);
+    location.assign(url);
 
-        const url = URL.createObjectURL(file.blob);
-        location.assign(url);
-
-      });
   };
 
   render() {

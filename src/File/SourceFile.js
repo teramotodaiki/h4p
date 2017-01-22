@@ -7,7 +7,7 @@ import _File from './_File';
 import configs from './configs';
 import { SourceEditor } from '../EditorPane/';
 import download from '../html/download';
-
+import composeOgp from './composeOgp';
 
 export default class SourceFile extends _File {
 
@@ -130,7 +130,7 @@ export default class SourceFile extends _File {
   static inlineScriptId = `feeles-inline-${CORE_VERSION}`;
   static coreLibFilename = `feeles-${CORE_VERSION}.js`;
 
-  static embed({ TITLE, files, coreString }) {
+  static async embed({ files, coreString, getConfig }) {
     const body = `
     <script type="text/javascript" id="${SourceFile.inlineScriptId}">
     ${coreString.replace(/\<\//g, '<\\/')}
@@ -140,50 +140,53 @@ export default class SourceFile extends _File {
     </script>
 `;
     return new SourceFile({
-      name: TITLE + '.html',
+      name: getConfig('ogp')['og:title'] + '.html',
       type: 'text/html',
       text: download({
         CSS_PREFIX,
-        TITLE,
-        files,
+        title: getConfig('ogp')['og:title'],
+        files: await Promise.all( files.map((file) => file.compose()) ),
+        ogp: composeOgp(getConfig),
         body,
       }),
     });
   }
 
-  static divide({ TITLE, files }) {
+  static async divide({ files, getConfig }) {
     const head = `
     <script async src="${SourceFile.coreLibFilename}"></script>
 `;
     return new SourceFile({
-      name: TITLE + '.html',
+      name: getConfig('ogp')['og:title'] + '.html',
       type: 'text/html',
       text: download({
         CSS_PREFIX,
-        TITLE,
-        files,
+        title: getConfig('ogp')['og:title'],
+        files: await Promise.all( files.map((file) => file.compose()) ),
+        ogp: composeOgp(getConfig),
         head,
       }),
     });
   }
 
-  static cdn({ TITLE, files, src = CORE_CDN_URL }) {
+  static async cdn({ files, src = CORE_CDN_URL, getConfig }) {
     const head = `
     <script async src="${src}" onload="${EXPORT_VAR_NAME}()"></script>
 `;
     return new SourceFile({
-      name: TITLE + '.html',
+      name: getConfig('ogp')['og:title'] + '.html',
       type: 'text/html',
       text: download({
         CSS_PREFIX,
-        TITLE,
-        files,
+        title: getConfig('ogp')['og:title'],
+        files: await Promise.all( files.map((file) => file.compose()) ),
+        ogp: composeOgp(getConfig),
         head,
       }),
     });
   }
 
-  static library({ coreString }) {
+  static async library({ coreString }) {
     const text = `(function() {
   var e = document.createElement('script');
   e.id = "${SourceFile.inlineScriptId}";

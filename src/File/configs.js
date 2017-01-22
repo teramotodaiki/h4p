@@ -33,7 +33,6 @@ export default new Map([
     test: /^\.env$/i,
     multiple: false,
     defaultValue: {
-      TITLE: ['My App', 'string', 'A name of this app'],
       MODULE: [true, 'boolean', 'A flag to use module bundler'],
     },
     defaultName: '.env',
@@ -53,6 +52,14 @@ export default new Map([
       publishUrl: '',
     },
     defaultName: '.provider',
+  }],
+  ['ogp', {
+    test: /^feeles\/ogp\.json$/i,
+    multiple: false,
+    defaultValue: {
+      'og:title': 'My App',
+    },
+    defaultName: 'feeles/ogp.json',
   }],
   ['snippets', {
     test: /^snippets\/.*\.json$/i,
