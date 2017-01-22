@@ -151,5 +151,9 @@ export default {
     editor: `タブや行の折り返しなど`,
     style: `文字の色や背景色など`,
   },
+  creditsCard: {
+    title: '功労者',
+    subtitle: `これらのコードにかかわってきた全ての人々`,
+  },
 
 };
