@@ -8,6 +8,7 @@ import ReadmePane from '../ReadmePane/';
 import { SourceFile } from '../File/';
 import { commonRoot } from './commonStyles';
 import EditFile from './EditFile';
+import shallowEqual from '../utils/shallowEqual';
 
 export default class ReadmeCard extends PureComponent {
 
@@ -213,16 +214,4 @@ export default class ReadmeCard extends PureComponent {
       </Card>
     );
   }
-}
-
-function shallowEqual(a, b) {
-  if (a.length !== b.length) {
-    return false;
-  }
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return false;
-    }
-  }
-  return true;
 }
