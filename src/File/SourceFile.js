@@ -145,7 +145,7 @@ export default class SourceFile extends _File {
       text: download({
         CSS_PREFIX,
         TITLE,
-        files,
+        files: await Promise.all( files.map((file) => file.compose()) ),
         body,
       }),
     });
@@ -161,7 +161,7 @@ export default class SourceFile extends _File {
       text: download({
         CSS_PREFIX,
         TITLE,
-        files,
+        files: await Promise.all( files.map((file) => file.compose()) ),
         head,
       }),
     });
@@ -177,7 +177,7 @@ export default class SourceFile extends _File {
       text: download({
         CSS_PREFIX,
         TITLE,
-        files,
+        files: await Promise.all( files.map((file) => file.compose()) ),
         head,
       }),
     });

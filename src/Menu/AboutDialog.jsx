@@ -41,7 +41,7 @@ export default class AboutDialog extends PureComponent {
   handleChangeVersion = async () => {
 
     const file = await SourceFile.cdn({
-      files: await Promise.all( this.props.files.map((file) => file.compose()) ),
+      files: this.props.files,
       TITLE: this.title,
       src: CORE_CDN_PREFIX + this.state.inputCoreVersion + '.js',
     });

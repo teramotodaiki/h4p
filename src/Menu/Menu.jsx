@@ -95,7 +95,7 @@ export default class Menu extends PureComponent {
         await this.props.setConfig('provider', JSON.parse(provider));
 
         const html = await SourceFile.embed({
-          files: await Promise.all( this.props.files.map((file) => file.compose()) ),
+          files: this.props.files,
           TITLE: this.title,
           coreString: this.props.coreString,
         });

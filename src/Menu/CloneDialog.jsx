@@ -50,7 +50,6 @@ export default class CloneDialog extends PureComponent {
 
   state = {
     bundleType: BundleTypes[0],
-    composedFiles: null,
     error: null,
     apps: null,
     processing: false,
@@ -61,9 +60,6 @@ export default class CloneDialog extends PureComponent {
   }
 
   componentDidMount() {
-
-    Promise.all(this.props.files.map((file) => file.compose()))
-      .then((composedFiles) => this.setState({ composedFiles }));
 
     localforage.getItem(KEY_APPS)
       .then((apps) => apps || [])
@@ -78,7 +74,7 @@ export default class CloneDialog extends PureComponent {
       await this.props.saveAs(
         await SourceFile.embed({
           TITLE: this.title,
-          files: this.state.composedFiles,
+          files: this.props.files,
           coreString: this.props.coreString,
         })
       );
@@ -90,7 +86,7 @@ export default class CloneDialog extends PureComponent {
       await this.props.saveAs(
         await SourceFile.divide({
           TITLE: this.title,
-          files: this.state.composedFiles,
+          files: this.props.files,
         })
       );
       break;
@@ -100,7 +96,7 @@ export default class CloneDialog extends PureComponent {
       await this.props.saveAs(
         await SourceFile.cdn({
           TITLE: this.title,
-          files: this.state.composedFiles,
+          files: this.props.files,
         })
       );
       this.props.onRequestClose();
@@ -117,7 +113,7 @@ export default class CloneDialog extends PureComponent {
   handleCloneAll = async () => {
     const divide = await SourceFile.divide({
       TITLE: this.title,
-      files: this.state.composedFiles,
+      files: this.props.files,
     });
     const library = await SourceFile.library({
       coreString: this.props.coreString,
@@ -150,7 +146,7 @@ export default class CloneDialog extends PureComponent {
 
     const html = await SourceFile.embed({
       TITLE: this.title,
-      files: this.state.composedFiles,
+      files: this.props.files,
       coreString: this.props.coreString,
     });
 
@@ -266,7 +262,6 @@ export default class CloneDialog extends PureComponent {
   renderAppCards(isSave) {
     if (
       !this.state.apps ||
-      !this.state.composedFiles ||
       !this.props.coreString
     ) {
       return (
@@ -390,7 +385,7 @@ export default class CloneDialog extends PureComponent {
       localization,
       coreString,
     } = this.props;
-    const { bundleType, composedFiles } = this.state;
+    const { bundleType } = this.state;
 
     const styles = {
       body: {
@@ -458,7 +453,6 @@ export default class CloneDialog extends PureComponent {
             <div style={styles.center}>
               <RaisedButton primary
                 label={localization.cloneDialog.saveHTML}
-                disabled={!composedFiles}
                 style={styles.button}
                 onTouchTap={this.handleClone}
               />
@@ -478,7 +472,7 @@ export default class CloneDialog extends PureComponent {
           ) : (
             <RaisedButton primary
               label={localization.cloneDialog.save}
-              disabled={!composedFiles || !coreString}
+              disabled={!coreString}
               style={styles.button}
               onTouchTap={this.handleClone}
             />
