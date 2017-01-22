@@ -55,10 +55,6 @@ export default class CloneDialog extends PureComponent {
     processing: false,
   };
 
-  get title() {
-    return (this.props.getConfig('env').TITLE || [''])[0];
-  }
-
   componentDidMount() {
 
     localforage.getItem(KEY_APPS)
@@ -73,7 +69,7 @@ export default class CloneDialog extends PureComponent {
 
       await this.props.saveAs(
         await SourceFile.embed({
-          TITLE: this.title,
+          getConfig: this.props.getConfig,
           files: this.props.files,
           coreString: this.props.coreString,
         })
@@ -85,7 +81,7 @@ export default class CloneDialog extends PureComponent {
 
       await this.props.saveAs(
         await SourceFile.divide({
-          TITLE: this.title,
+          getConfig: this.props.getConfig,
           files: this.props.files,
         })
       );
@@ -95,7 +91,7 @@ export default class CloneDialog extends PureComponent {
 
       await this.props.saveAs(
         await SourceFile.cdn({
-          TITLE: this.title,
+          getConfig: this.props.getConfig,
           files: this.props.files,
         })
       );
@@ -112,7 +108,7 @@ export default class CloneDialog extends PureComponent {
 
   handleCloneAll = async () => {
     const divide = await SourceFile.divide({
-      TITLE: this.title,
+      getConfig: this.props.getConfig,
       files: this.props.files,
     });
     const library = await SourceFile.library({
@@ -145,7 +141,7 @@ export default class CloneDialog extends PureComponent {
     this.setState({ processing: true });
 
     const html = await SourceFile.embed({
-      TITLE: this.title,
+      getConfig: this.props.getConfig,
       files: this.props.files,
       coreString: this.props.coreString,
     });

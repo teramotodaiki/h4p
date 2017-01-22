@@ -67,10 +67,6 @@ export default class Menu extends PureComponent {
     muiTheme: PropTypes.object.isRequired,
   };
 
-  get title() {
-    return (this.props.getConfig('env').TITLE || [''])[0];
-  }
-
   handleClone = () => {
     this.props.openFileDialog(CloneDialog, {
       coreString: this.props.coreString,
@@ -95,8 +91,8 @@ export default class Menu extends PureComponent {
         await this.props.setConfig('provider', JSON.parse(provider));
 
         const html = await SourceFile.embed({
+          getConfig: this.props.getConfig,
           files: this.props.files,
-          TITLE: this.title,
           coreString: this.props.coreString,
         });
 

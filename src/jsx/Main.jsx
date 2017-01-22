@@ -144,9 +144,7 @@ class Main extends Component {
     } = this.props;
     const { localization } = this.state;
 
-
-
-    document.title = this.getConfig('env').TITLE[0];
+    document.title = this.getConfig('ogp')['og:title'];
 
     if (inlineScriptId) {
       const inlineLib = document.getElementById(inlineScriptId);
@@ -176,7 +174,7 @@ class Main extends Component {
       this.setState({ reboot: false });
     }
 
-    document.title = this.getConfig('env').TITLE[0];
+    document.title = this.getConfig('ogp')['og:title'];
   }
 
   async setStatePromise(state) {

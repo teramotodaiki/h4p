@@ -29,10 +29,6 @@ export default class AboutDialog extends PureComponent {
     inputCoreVersion: null,
   };
 
-  get title() {
-    return (this.props.getConfig('env').TITLE || [''])[0];
-  }
-
   handleCoreVersionInput = (event) => {
     const inputCoreVersion = event.target.value;
     this.setState({ inputCoreVersion });
@@ -41,8 +37,8 @@ export default class AboutDialog extends PureComponent {
   handleChangeVersion = async () => {
 
     const file = await SourceFile.cdn({
+      getConfig: this.props.getConfig,
       files: this.props.files,
-      TITLE: this.title,
       src: CORE_CDN_PREFIX + this.state.inputCoreVersion + '.js',
     });
 
