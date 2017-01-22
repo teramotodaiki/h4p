@@ -7,7 +7,7 @@ import _File from './_File';
 import configs from './configs';
 import { SourceEditor } from '../EditorPane/';
 import download from '../html/download';
-
+import composeOgp from './composeOgp';
 
 export default class SourceFile extends _File {
 
@@ -146,6 +146,7 @@ export default class SourceFile extends _File {
         CSS_PREFIX,
         title: getConfig('ogp')['og:title'],
         files: await Promise.all( files.map((file) => file.compose()) ),
+        ogp: composeOgp(getConfig),
         body,
       }),
     });
@@ -162,6 +163,7 @@ export default class SourceFile extends _File {
         CSS_PREFIX,
         title: getConfig('ogp')['og:title'],
         files: await Promise.all( files.map((file) => file.compose()) ),
+        ogp: composeOgp(getConfig),
         head,
       }),
     });
@@ -178,6 +180,7 @@ export default class SourceFile extends _File {
         CSS_PREFIX,
         title: getConfig('ogp')['og:title'],
         files: await Promise.all( files.map((file) => file.compose()) ),
+        ogp: composeOgp(getConfig),
         head,
       }),
     });
