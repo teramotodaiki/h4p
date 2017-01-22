@@ -130,7 +130,7 @@ export default class SourceFile extends _File {
   static inlineScriptId = `feeles-inline-${CORE_VERSION}`;
   static coreLibFilename = `feeles-${CORE_VERSION}.js`;
 
-  static embed({ TITLE, files, coreString }) {
+  static async embed({ TITLE, files, coreString }) {
     const body = `
     <script type="text/javascript" id="${SourceFile.inlineScriptId}">
     ${coreString.replace(/\<\//g, '<\\/')}
@@ -151,7 +151,7 @@ export default class SourceFile extends _File {
     });
   }
 
-  static divide({ TITLE, files }) {
+  static async divide({ TITLE, files }) {
     const head = `
     <script async src="${SourceFile.coreLibFilename}"></script>
 `;
@@ -167,7 +167,7 @@ export default class SourceFile extends _File {
     });
   }
 
-  static cdn({ TITLE, files, src = CORE_CDN_URL }) {
+  static async cdn({ TITLE, files, src = CORE_CDN_URL }) {
     const head = `
     <script async src="${src}" onload="${EXPORT_VAR_NAME}()"></script>
 `;
@@ -183,7 +183,7 @@ export default class SourceFile extends _File {
     });
   }
 
-  static library({ coreString }) {
+  static async library({ coreString }) {
     const text = `(function() {
   var e = document.createElement('script');
   e.id = "${SourceFile.inlineScriptId}";

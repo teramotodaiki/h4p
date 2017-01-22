@@ -86,20 +86,21 @@ export default class Menu extends PureComponent {
   };
 
   handleDeploy = () => {
-    const task = (event) => {
+    const task = async (event) => {
       if (event.source === popout) {
         window.removeEventListener('message', task);
         const [port] = event.ports;
         const provider = event.data;
 
-        this.props.setConfig('provider', JSON.parse(provider))
-          .then(() => Promise.all( this.props.files.map((file) => file.compose()) ))
-          .then((files) => SourceFile.embed({
-            files,
-            TITLE: this.title,
-            coreString: this.props.coreString,
-          }))
-          .then((html) => port.postMessage(html.text));
+        await this.props.setConfig('provider', JSON.parse(provider));
+
+        const html = await SourceFile.embed({
+          files: await Promise.all( this.props.files.map((file) => file.compose()) ),
+          TITLE: this.title,
+          coreString: this.props.coreString,
+        });
+
+        port.postMessage(html.text);
       }
     };
 

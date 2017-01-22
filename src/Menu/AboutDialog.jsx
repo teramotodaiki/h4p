@@ -38,21 +38,17 @@ export default class AboutDialog extends PureComponent {
     this.setState({ inputCoreVersion });
   };
 
-  handleChangeVersion = () => {
+  handleChangeVersion = async () => {
 
-    Promise.all(this.props.files.map((file) => file.compose()))
-      .then((files) => {
+    const file = await SourceFile.cdn({
+      files: await Promise.all( this.props.files.map((file) => file.compose()) ),
+      TITLE: this.title,
+      src: CORE_CDN_PREFIX + this.state.inputCoreVersion + '.js',
+    });
 
-        const file = SourceFile.cdn({
-          files,
-          TITLE: this.title,
-          src: CORE_CDN_PREFIX + this.state.inputCoreVersion + '.js',
-        });
+    const url = URL.createObjectURL(file.blob);
+    location.assign(url);
 
-        const url = URL.createObjectURL(file.blob);
-        location.assign(url);
-
-      });
   };
 
   render() {
