@@ -30,6 +30,7 @@ import {
   PaletteCard,
   EnvCard,
   EditorCard,
+  CreditsCard,
 } from '../Cards/';
 
 const DOWNLOAD_ENABLED = typeof document.createElement('a').download === 'string';
@@ -543,6 +544,7 @@ class Main extends Component {
               <ReadmeCard {...commonProps} {...readmeProps} />
               <SnippetCard {...commonProps} {...snippetProps} />
               <PaletteCard {...commonProps} />
+              <CreditsCard {...commonProps} />
               <EnvCard {...commonProps} {...envCardProps} />
               <EditorCard {...commonProps} {...editorCardProps} />
               <MonitorCard {...commonProps} {...monitorCardProps} />
