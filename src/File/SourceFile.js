@@ -8,6 +8,7 @@ import configs from './configs';
 import { SourceEditor } from '../EditorPane/';
 import download from '../html/download';
 import composeOgp from './composeOgp';
+import { encode } from './sanitizeHTML';
 
 export default class SourceFile extends _File {
 
@@ -87,7 +88,7 @@ export default class SourceFile extends _File {
 
   compose() {
     const serialized = this.serialize();
-    serialized.composed = this.text;
+    serialized.composed = encode(this.text);
     if (this.sign && this.sign === this.credit) {
       const sign = Object.assign({}, this.sign, {
         timestamp: new Date().getTime(),

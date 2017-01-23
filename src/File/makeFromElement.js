@@ -6,6 +6,7 @@ import {
   SourceFile,
   validateType
 } from './';
+import { decode } from './sanitizeHTML';
 
 export default async (script) => {
   await 1; // Be asynchronus.
@@ -20,20 +21,7 @@ export default async (script) => {
   const credits = script.hasAttribute('data-credits') ?
     JSON.parse(script.getAttribute('data-credits')) : [];
 
-  const text = (code => {
-    // Indent
-    code = code
-      .replace(/^\s*\<\!\-\-\n*/m, '')
-      .replace(/\-\-\>\s*$/m, '');
-    const spaces = /^\s*/.exec(code)[0];
-    if (spaces) {
-      code = code
-        .split('\n')
-        .map(s => s.indexOf(spaces) ? s :  s.substr(spaces.length))
-        .join('\n');
-    }
-    return code;
-  })(script.textContent);
+  const text = decode(script.textContent);
 
   if (validateType('text', type)) {
     return new SourceFile({ type, name, text, options, credits });

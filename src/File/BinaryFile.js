@@ -4,7 +4,7 @@ import md5 from 'md5';
 
 import _File from './_File';
 import { Preview } from '../EditorPane/';
-
+import { encode } from './sanitizeHTML';
 
 export default class BinaryFile extends _File {
 
@@ -73,7 +73,8 @@ export default class BinaryFile extends _File {
       serialized.credits = JSON.stringify(this.credits);
     }
     const dataURL = await this.toDataURL();
-    serialized.composed = dataURL.substr(dataURL.indexOf(',') + 1);
+    const base64 = dataURL.substr(dataURL.indexOf(',') + 1);
+    serialized.composed = encode(base64);
 
     return serialized;
   }
