@@ -1,4 +1,4 @@
-import CodeMirror from 'codemirror';
+import CodeMirror, { Pos } from 'codemirror';
 import 'codemirror/addon/hint/anyword-hint';
 
 const anywordHint = CodeMirror.hint.anyword;
@@ -69,6 +69,12 @@ CodeMirror.hint.css = (instance, options) => {
   }
 
   const result = cssHint(instance, options) || empty;
+
+  if (token.type === 'string') {
+    const start = new Pos(cursor.line, token.start);
+    result.list = getCompleteNames(options.files, start, token.string)
+      .concat(result.list);
+  }
 
   return result;
 
