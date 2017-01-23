@@ -53,8 +53,14 @@ export default async (html, findFile, scriptFiles, env) => {
     const file = findFile(node.getAttribute('href'));
     if (!file) continue;
 
-    const dataURL = await file.toDataURL();
-    node.setAttribute('href', dataURL);
+    if (file.is('css') && file.text.indexOf('url') >= 0) {
+      const replaced = file.set({
+        text: await replaceUrls(file.text, findFile),
+      });
+      node.setAttribute('href', await replaced.toDataURL());
+    } else {
+      node.setAttribute('href', await file.toDataURL());
+    }
   }
 
   // 3. screenJs のすぐ下で、全てのスクリプトを define する
@@ -107,3 +113,20 @@ const requireTemplate = (src, scriptFiles) =>
 }, ['${src}'], function () {})`;
 
 const nameToModuleName = (file) => `"${file.name}":"${file.moduleName}"`;
+
+const replaceUrls = async (text, findFile) => {
+  const regExp = /url\(([\w\/\.]*)\)/g;
+  const matches = text.match(regExp);
+  if (!matches) return text;
+
+  for (const token of matches) {
+    const path = token.substr(4, token.length - 5);
+    const file = findFile(path);
+    if (file) {
+      const dataURL = await file.toDataURL();
+      text = text.replace(token, `url(${dataURL})`);
+    }
+  }
+
+  return text;
+}
