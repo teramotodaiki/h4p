@@ -1,6 +1,8 @@
 # HackforPlay Open Source 🏫  
 
 
+> Original (日本語) <https://github.com/teramotodaiki/h4p/blob/master/README-ja.md>
+
 In the world, there are people who educate with various purposes.  
 However, there are not so many people who can make teaching materials by themselves.  
 Many educators are drawing correct image of education in their minds.  
