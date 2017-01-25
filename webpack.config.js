@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const exportVarName = process.env.EXPORT_VAR_NAME || "h4p";
 const cssPrefix = process.env.CSS_PREFIX || (exportVarName + "__");
 
-const CORE_VERSION = 'alpha-45b';
+const CORE_VERSION = 'alpha-45c';
 const corePrefix = 'h4p-';
 const CORE_NAME = corePrefix + CORE_VERSION;
 const CORE_CDN_PREFIX = 'https://embed.hackforplay.xyz/open-source/core/' + corePrefix;
