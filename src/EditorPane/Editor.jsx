@@ -40,7 +40,12 @@ import './codemirror-hint-extension';
 
 import excessiveCare from './excessiveCare';
 
-const AlreadySetSymbol = Symbol('AlreadySetSymbol');
+/*
+// const AlreadySetSymbol = Symbol('AlreadySetSymbol');
+https://github.com/teramotodaiki/h4p/issues/382
+Symbol polyfill can not be property key
+*/
+const AlreadySetSymbol = 'AlreadySetSymbol';
 
 export const MimeTypes = {
   'text/javascript': '.js',
