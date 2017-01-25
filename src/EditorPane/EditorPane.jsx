@@ -27,6 +27,8 @@ const getStyles = (props, context) => {
       overflow: 'hidden',
       fontFamily,
       transition: transitions.easeOut(),
+      // for IE11
+      height: props.show ? '100%' : 0,
     },
     tabContainer: {
       display: 'flex',

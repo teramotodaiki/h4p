@@ -41,6 +41,8 @@ const getStyle = (props, context, state) => {
       overflow: 'hidden',
       zIndex: 300,
       transition: transitions.easeOut(),
+      // for IE11
+      height: props.show ? '100%' : 0,
     },
     swap: {
       position: 'absolute',
