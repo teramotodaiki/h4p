@@ -11,7 +11,12 @@ Copyright (c) 2015 Jake Ginnivan
 
 import React        from 'react';
 import ReactDOM     from 'react-dom';
-const _CONTAINER_ID = Symbol('container_id');
+/*
+// const _CONTAINER_ID = Symbol('container_id');
+https://github.com/teramotodaiki/h4p/issues/382
+Symbol polyfill can not be property key
+*/
+const _CONTAINER_ID = 'container_id';
 
 /**
  * @class PopoutWindow
