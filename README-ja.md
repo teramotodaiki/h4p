@@ -27,7 +27,7 @@ Try it out!
 
 
 できること
-- ブラウザ (Chrome/FireFox/Safari/Opera/IE11) で動きます 💻
+- ブラウザ (Chrome/FireFox/Safari/Opera/~~IE11~~) で動きます 💻
   - **スタンドアロン** で動作します。HTML ファイルを開くだけ。
   - IDE の中にファイルを入れると、 Web サーバーのようにふるまいます 🎩
 - クローンしてシェアできます
