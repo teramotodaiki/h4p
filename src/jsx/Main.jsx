@@ -62,7 +62,8 @@ const getStyle = (props, state, palette) => {
       alignItems: 'stretch',
     },
     scroll: {
-      overflow: 'scroll',
+      overflowX: 'visible',
+      overflowY: 'scroll',
     },
     right: {
       flex: '0 0 auto',
