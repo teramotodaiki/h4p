@@ -273,7 +273,7 @@ const baseURL = (() => {
  * @return String
  */
 function getFeelesName(url) {
-	if (baseURL) {
+	if (baseURL && typeof URL === 'function') {
 		const fullPath = new URL(url, baseURL).href;
 		return fullPath.substr(baseURL.length);
 	}

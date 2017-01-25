@@ -6,6 +6,7 @@ import { Card, CardHeader, CardText, CardActions } from 'material-ui/Card';
 import { SourceFile } from '../File/';
 import { commonRoot } from './commonStyles';
 import EditFile from './EditFile';
+import resolveOrigin from '../utils/resolveOrigin';
 
 export default class EditorCard extends PureComponent {
 
@@ -88,7 +89,7 @@ export default class EditorCard extends PureComponent {
 
     const subtitle = [
       <span key={1}>{title + ' - '}</span>,
-      <a key={2} href={href} target="blank">{new URL(href).origin}</a>
+      <a key={2} href={href} target="blank">{resolveOrigin(href)}</a>
     ];
 
     const styles = {
