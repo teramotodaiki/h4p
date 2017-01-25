@@ -94,8 +94,11 @@ export default class Readme extends PureComponent {
             }
           },
         });
+      } else {
+        props = {...props, target: '_blank'};
       }
-      return <a {...props} target="_blank">{children}</a>;
+      
+      return <a {...props}>{children}</a>;
     }
     if (tag === 'img') {
       if (!isValidURL(props.src)) {
