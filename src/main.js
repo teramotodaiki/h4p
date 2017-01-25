@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-import 'whatwg-fetch';
 import localforage from 'localforage';
 
 localforage.config({

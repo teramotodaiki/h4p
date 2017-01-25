@@ -12,7 +12,11 @@ const CORE_CDN_PREFIX = 'https://embed.hackforplay.xyz/open-source/core/' + core
 
 const config = {
   entry: {
-    h4p: './src/main', // for npm
+    h4p: [
+      'babel-polyfill',
+      'whatwg-fetch',
+      './src/main'
+    ],
   },
   output: {
     path: __dirname + '/dist/',
