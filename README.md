@@ -29,7 +29,7 @@ Try it out!
 
 
 Features
-- Work on browser (Chrome/FireFox/Safari/Opera/IE11) 💻
+- Work on browser (Chrome/FireFox/Safari/Opera/~~IE11~~) 💻
   - **Standalone**. Just open HTML and it works.
   - If you put the file inside, it behaves like a web server. 🎩
 - Clone itself to share it 💌
