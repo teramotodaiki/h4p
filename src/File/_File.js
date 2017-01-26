@@ -67,8 +67,13 @@ export default class _File {
 
   get header() {
     if (this.is('markdown')) {
-      return this.text.replace(/^[\#\s]*/, '')
-        .split('\n')[0] || '';
+      return this.text
+        .trim() // 前後の空白を削除
+        .replace(/\n[^]*$/, '') // 改行以降を削除
+        .trim() // 前後の空白を削除
+        .replace(/^[\#\-]*\s*/, '') // 行頭の # - を削除
+        .replace(/[\*\~\_\[\]\(\)\`]/g, '') // * ~ _ [] () `` を削除
+        ;
     }
     return this.plane + this.ext;
   }
