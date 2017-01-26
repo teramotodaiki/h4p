@@ -134,7 +134,7 @@ export default class Editor extends PureComponent {
 
   beautify = (cm) => {
     const { file } = this.props;
-    if (file.is('javascript')) {
+    if (file.is('javascript') || file.is('json')) {
       cm.setValue(
         beautify(cm.getValue(), {
           "indent_with_tabs": true,
