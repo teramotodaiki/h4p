@@ -18,5 +18,5 @@ export default function makeFromFile(file) {
     return BinaryFile.load(file);
   }
 
-  return Promise.reject('Unknown File Type' . file.type);
+  return Promise.reject(`Unknown File Type ${file.type}`);
 }
