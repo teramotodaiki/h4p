@@ -22,7 +22,7 @@ ES: ECMA Script, 規格化されたモダンな JavaScript , その総称
 Try it out!
 - [空の Feeles](http://teramotodaiki.github.io/h4p/dist/)
 (日本語/英語対応 🍔)
-- [HackforPlay on Feeles](https://assets.feeles.com/hackit/content/caef217340e05887fd1d7ba0520a7fde.html)
+- [HackforPlay on Feeles](https://teramotodaiki.github.io/hackforplay-on-feeles/)
 (日本語のみ 🍣)
 
 
@@ -54,4 +54,3 @@ Try it out!
 
 > この文章（日本語）が原文です  
 English: <https://github.com/teramotodaiki/h4p/blob/master/README.md>
- 

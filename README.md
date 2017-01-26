@@ -24,7 +24,7 @@ ES: ECMA Script, The standardized modern javascript
 Try it out!
 - [Empty Feeles](http://teramotodaiki.github.io/h4p/dist/)
 (English or Japanese 🍔)
-- [HackforPlay on Feeles](https://assets.feeles.com/hackit/content/caef217340e05887fd1d7ba0520a7fde.html)
+- [HackforPlay on Feeles](https://teramotodaiki.github.io/hackforplay-on-feeles/)
 (Japanese only 🍣)
 
 
@@ -37,7 +37,7 @@ Features
   - I say it again, Just open HTML and it works! 😆
 - Modern syntax 💄
   - You can write ES6 and use import/export by default.
-  - Inside `Babel` and `require.js` are included. 👀 
+  - Inside `Babel` and `require.js` are included. 👀
 - Record what someone wrote (Respect the original author!)
 - Save and load in your browser's `IndexedDB`
 - Markdown file can be displayed as README
