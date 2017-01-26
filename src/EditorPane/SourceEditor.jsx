@@ -115,6 +115,9 @@ class SourceEditor extends PureComponent {
         });
       } else {
         // Leave
+        this.codemirror.setValue(
+          this.state.prevDoc.getValue('\n')
+        );
         this.setState({
           prevDoc: null,
           previewFrom: null,
@@ -159,7 +162,6 @@ class SourceEditor extends PureComponent {
     try {
       await file.babel(babelrc);
     } catch (e) {
-      console.log('select', file);
       await this.props.selectTabFromFile(file);
       throw e;
     } finally {
