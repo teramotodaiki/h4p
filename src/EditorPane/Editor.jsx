@@ -186,7 +186,6 @@ export default class Editor extends PureComponent {
       },
       dragDrop: false,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-      readOnly: file.options.isReadOnly,
       extraKeys: {
         'Ctrl-Enter': handleRun,
         'Cmd-Enter': handleRun,
