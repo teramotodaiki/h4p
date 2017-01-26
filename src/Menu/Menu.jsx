@@ -21,7 +21,8 @@ const getStyles = (props, context) => {
 
   const {
     isPopout,
-    showMonitor
+    showMonitor,
+    monitorWidth,
   } = props;
   const { palette } = context.muiTheme;
 
@@ -33,6 +34,7 @@ const getStyles = (props, context) => {
       flexWrap: 'wrap',
       alignItems: 'center',
       zIndex: 400,
+      overflow: monitorWidth < 100 ? 'hidden' : 'visible',
       backgroundColor: showMonitor ?
          palette.accent1Color : palette.primary1Color,
     },
@@ -121,11 +123,7 @@ export default class Menu extends PureComponent {
       getConfig,
     } = this.props;
 
-    const {
-      root,
-      button,
-      popoutIcon,
-    } = getStyles(this.props, this.context);
+    const styles = getStyles(this.props, this.context);
 
     const {
       prepareStyles,
@@ -135,7 +133,7 @@ export default class Menu extends PureComponent {
     const canDeploy = !!getConfig('provider').publishUrl;
 
     return (
-      <div style={root}>
+      <div style={styles.root}>
         <IconMenu
           iconButtonElement={(
             <IconButton
@@ -147,7 +145,7 @@ export default class Menu extends PureComponent {
           )}
           anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
           targetOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          style={button}
+          style={styles.button}
         >
         {acceptedLanguages.map(lang => (
           <MenuItem
@@ -163,8 +161,8 @@ export default class Menu extends PureComponent {
           tooltipPosition="top-center"
           tooltip={menu.popout}
           onTouchTap={togglePopout}
-          style={button}
-          iconStyle={popoutIcon}
+          style={styles.button}
+          iconStyle={styles.popoutIcon}
         >
           <OpenInBrowser color={alternateTextColor} />
         </IconButton>
@@ -173,7 +171,7 @@ export default class Menu extends PureComponent {
           tooltip={menu.clone}
           disabled={!this.props.coreString}
           onTouchTap={this.handleClone}
-          style={button}
+          style={styles.button}
         >
           <FileDownload color={alternateTextColor} />
         </IconButton>
@@ -181,7 +179,7 @@ export default class Menu extends PureComponent {
           tooltipPosition="top-center"
           tooltip={menu.aboutFeeles}
           onTouchTap={this.handleAbout}
-          style={button}
+          style={styles.button}
         >
           <ActionAssignment color={alternateTextColor} />
         </IconButton>
@@ -190,7 +188,7 @@ export default class Menu extends PureComponent {
           tooltip={menu.deploy}
           disabled={!canDeploy || !this.props.coreString}
           onTouchTap={this.handleDeploy}
-          style={button}
+          style={styles.button}
         >
           <FileCloudUpload color={alternateTextColor} />
         </IconButton>

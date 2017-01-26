@@ -66,7 +66,7 @@ const getStyle = (props, state, palette) => {
       overflowY: 'scroll',
     },
     right: {
-      flex: '0 0 auto',
+      flex: shrinkLeft ? '1 1 auto' : '0 0 auto',
       boxSizing: 'border-box',
       width: shrinkRight ? 0 : state.monitorWidth,
       height: '100%',
@@ -466,8 +466,6 @@ class Main extends Component {
     const monitorProps = {
       show: showMonitor,
       isPopout: this.state.monitorType === MonitorTypes.Popout,
-      monitorWidth,
-      monitorHeight: this.rootHeight,
       reboot,
       portRef: (port) => this.setState({ port }),
       togglePopout: this.handleTogglePopout,

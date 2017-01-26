@@ -71,6 +71,24 @@ export default class PlayMenu extends PureComponent {
     });
   };
 
+  renderMenu = (entry) => {
+    const hrefStyle = {
+      marginLeft: 8,
+      fontSize: '.8rem',
+      opacity: .6,
+    };
+
+    return (
+      <MenuItem
+        key={entry.href}
+        value={entry.href}
+      >
+        <span>{entry.title}</span>
+        <span style={hrefStyle}>{entry.href}</span>
+      </MenuItem>
+    );
+  };
+
   render() {
     const {
       localization,
@@ -107,13 +125,7 @@ export default class PlayMenu extends PureComponent {
             value={this.state.href}
             onItemTouchTap={this.handleItemTouchTap}
           >
-          {this.state.entries.map((item) => (
-            <MenuItem
-              key={item.href}
-              primaryText={item.title}
-              value={item.href}
-            />
-          ))}
+          {this.state.entries.map(this.renderMenu)}
           </Menu>
         </Popover>
       </div>

@@ -23,46 +23,57 @@ export default class SignDialog extends PureComponent {
     completeUrls: [],
   };
 
-  _completeLabels = [];
-  _completeUrls = [];
+  _completeLabels = new Set();
+  _completeUrls = new Set();
 
   componentWillMount() {
-    const credits = this.props.getFiles()
-      .reduce((p, c) => p.concat(c.credits).concat(c.sign), [])
-      .filter((item) => item);
-    const completeLabels = credits
-      .map((item) => item.label)
-      .filter((item, i, array) => item && array.indexOf(item) === i);
-    const completeUrls = credits
-      .map((item) => item.url)
-      .filter((item, i, array) => item && array.indexOf(item) === i);
+    for (const file of this.props.getFiles()) {
+      for (const item of file.credits) {
+        this._completeLabels.add(item.label);
+        this._completeUrls.add(item.url);
+      }
+      if (file.sign) {
+        this._completeLabels.add(file.sign.label);
+        this._completeUrls.add(file.sign.url);
+      }
+    }
 
-    if (completeLabels.length > 0 || completeUrls.length > 0) {
-      this._completeLabels = completeLabels;
-      this._completeUrls = completeUrls;
-      this.setState({ completeLabels, completeUrls });
+    if (this._completeLabels.size > 0) {
+      this.setState({
+        completeLabels: [...this._completeLabels],
+      });
+    }
+    if (this._completeUrls.size > 0) {
+      this.setState({
+        completeUrls: [...this._completeUrls],
+      });
     }
   }
 
   handleUpdate = (file, sign) => {
     if (file.sign === sign) return;
 
-    const files = this.state.files
-      .map((item) => item === file ? item.set({ sign }) : item);
-
-    const completeLabels = this._completeLabels.concat(
-      files.map((i) => i.sign && i.sign.label).filter((i) => i)
-    );
-
-    const completeUrls = this._completeUrls.concat(
-      files.map((i) => i.sign && i.sign.url).filter((i) => i)
-    );
-
     this.setState({
-      files,
-      completeLabels,
-      completeUrls,
+      files: this.state.files
+        .map((item) => item === file ? item.set({ sign }) : item),
     });
+  };
+
+  handleComplete = (sign) => {
+    if (!sign) return;
+
+    if (sign.label) {
+      this._completeLabels.add(sign.label);
+      this.setState({
+        completeLabels: [...this._completeLabels],
+      });
+    }
+    if (sign.url) {
+      this._completeUrls.add(sign.url);
+      this.setState({
+        completeUrls: [...this._completeUrls],
+      });
+    }
   };
 
   handleSign = () => {
@@ -110,6 +121,7 @@ export default class SignDialog extends PureComponent {
           completeUrls={this.state.completeUrls}
           localization={this.props.localization}
           onUpdate={this.handleUpdate}
+          onComplete={this.handleComplete}
         />
       ))}
       </Dialog>
@@ -144,6 +156,7 @@ export class SignItem extends PureComponent {
 
     this.props.onUpdate(this.props.file, sign);
 
+    return sign;
   };
 
   handleUpdateUrl = (url) => {
@@ -155,7 +168,18 @@ export class SignItem extends PureComponent {
 
     this.props.onUpdate(this.props.file, sign);
 
-  }
+    return sign;
+  };
+
+  handleCompleteLabel = (label) => {
+    const sign = this.handleUpdateLabel(label);
+    this.props.onComplete(sign);
+  };
+
+  handleCompleteUrl = (url) => {
+    const sign = this.handleUpdateUrl(url);
+    this.props.onComplete(sign);
+  };
 
   render() {
     const {
@@ -171,7 +195,7 @@ export class SignItem extends PureComponent {
           hintText="(c) 2017 Teramoto Daiki"
           dataSource={this.props.completeLabels}
           onUpdateInput={this.handleUpdateLabel}
-          onNewRequest={this.handleUpdateLabel}
+          onNewRequest={this.handleCompleteLabel}
         />
         <AutoComplete fullWidth
           searchText={this.url}
@@ -179,7 +203,7 @@ export class SignItem extends PureComponent {
           hintText="https://github.com/teramotodaiki/h4p"
           dataSource={this.props.completeUrls}
           onUpdateInput={this.handleUpdateUrl}
-          onNewRequest={this.handleUpdateUrl}
+          onNewRequest={this.handleCompleteUrl}
         />
       </div>
     );

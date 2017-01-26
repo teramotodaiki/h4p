@@ -49,14 +49,13 @@ const getStyle = (props, context, state) => {
       right: 0,
     },
     linear1: {
-      position: 'absolute',
-      bottom: 0,
+      flex: '0 0 auto',
       borderRadius: 0,
       height: 8,
     },
     linear2: {
-      position: 'absolute',
-      bottom: 0,
+      flex: '0 0 auto',
+      marginTop: -4,
       borderRadius: 0,
       opacity: state.progress < 1 ? 1 : 0,
     },
@@ -69,8 +68,6 @@ export default class Monitor extends PureComponent {
 
   static propTypes = {
     show: PropTypes.bool.isRequired,
-    monitorWidth: PropTypes.number.isRequired,
-    monitorHeight: PropTypes.number.isRequired,
     isResizing: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
@@ -324,8 +321,6 @@ export default class Monitor extends PureComponent {
     const {
       isPopout,
       isResizing,
-      monitorWidth,
-      monitorHeight,
     } = this.props;
 
     if (!this.iframe ||
@@ -335,9 +330,12 @@ export default class Monitor extends PureComponent {
     ) {
       return;
     }
-    const screenRect = this.props.isPopout ?
-      { width: this.parent.innerWidth, height: this.parent.innerHeight } :
-      { width: monitorWidth - FramePadding * 2, height: monitorHeight - FramePadding * 2 };
+
+    const rect = this.iframe.parentNode.parentNode.getBoundingClientRect();
+    const screenRect = {
+      width: rect.width - FramePadding * 2,
+      height: rect.height - FramePadding * 2,
+    };
 
     this.iframe.width = width + 'px';
     this.iframe.height = height + 'px';
