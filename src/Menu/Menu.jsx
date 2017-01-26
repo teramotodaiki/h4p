@@ -21,7 +21,8 @@ const getStyles = (props, context) => {
 
   const {
     isPopout,
-    showMonitor
+    showMonitor,
+    monitorWidth,
   } = props;
   const { palette } = context.muiTheme;
 
@@ -33,7 +34,7 @@ const getStyles = (props, context) => {
       flexWrap: 'wrap',
       alignItems: 'center',
       zIndex: 400,
-      overflow: 'hidden',
+      overflow: monitorWidth < 100 ? 'hidden' : 'visible',
       backgroundColor: showMonitor ?
          palette.accent1Color : palette.primary1Color,
     },
