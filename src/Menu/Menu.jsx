@@ -33,6 +33,7 @@ const getStyles = (props, context) => {
       flexWrap: 'wrap',
       alignItems: 'center',
       zIndex: 400,
+      overflow: 'hidden',
       backgroundColor: showMonitor ?
          palette.accent1Color : palette.primary1Color,
     },
