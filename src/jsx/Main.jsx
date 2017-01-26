@@ -185,6 +185,7 @@ class Main extends Component {
   }
 
   addFile = async (file) => {
+    await 1; // Be async
     const remove = this.inspection(file);
     if (file === remove) {
       return file;
@@ -199,6 +200,7 @@ class Main extends Component {
   };
 
   putFile = async (prevFile, nextFile) => {
+    await 1; // Be async
     const remove = this.inspection(nextFile);
     if (remove === nextFile) {
       return prevFile;

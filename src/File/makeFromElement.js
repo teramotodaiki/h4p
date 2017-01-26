@@ -14,7 +14,6 @@ export default async (script) => {
   const name = script.getAttribute('name');
   const type = script.getAttribute('data-type');
   const options = {
-    isReadOnly: script.hasAttribute('is-read-only'),
     isTrashed: script.hasAttribute('is-trashed'),
     noBabel: script.hasAttribute('no-babel'),
   };
