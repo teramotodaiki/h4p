@@ -466,8 +466,6 @@ class Main extends Component {
     const monitorProps = {
       show: showMonitor,
       isPopout: this.state.monitorType === MonitorTypes.Popout,
-      monitorWidth,
-      monitorHeight: this.rootHeight,
       reboot,
       portRef: (port) => this.setState({ port }),
       togglePopout: this.handleTogglePopout,

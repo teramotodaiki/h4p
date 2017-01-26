@@ -68,8 +68,6 @@ export default class Monitor extends PureComponent {
 
   static propTypes = {
     show: PropTypes.bool.isRequired,
-    monitorWidth: PropTypes.number.isRequired,
-    monitorHeight: PropTypes.number.isRequired,
     isResizing: PropTypes.bool.isRequired,
     files: PropTypes.array.isRequired,
     isPopout: PropTypes.bool.isRequired,
@@ -323,8 +321,6 @@ export default class Monitor extends PureComponent {
     const {
       isPopout,
       isResizing,
-      monitorWidth,
-      monitorHeight,
     } = this.props;
 
     if (!this.iframe ||
