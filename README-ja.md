@@ -24,6 +24,8 @@ Try it out!
 (日本語/英語対応 🍔)
 - [HackforPlay on Feeles](https://teramotodaiki.github.io/hackforplay-on-feeles/)
 (日本語のみ 🍣)
+- [Pixi.js (制作中)](https://tenonno.github.io/RPG-2/)
+(日本語のみ 🍣)
 
 
 できること

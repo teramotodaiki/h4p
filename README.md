@@ -26,7 +26,8 @@ Try it out!
 (English or Japanese 🍔)
 - [HackforPlay on Feeles](https://teramotodaiki.github.io/hackforplay-on-feeles/)
 (Japanese only 🍣)
-
+- [Pixi.js (in development)](https://tenonno.github.io/RPG-2/)
+(Japanese only 🍣)
 
 Features
 - Work on browser (Chrome/FireFox/Safari/Opera/~~IE11~~) 💻
