@@ -502,6 +502,7 @@ class Main extends Component {
     const readmeProps = {
       selectTab: this.selectTab,
       port: this.state.port,
+      setLocation: this.setLocation,
     };
 
     const snippetProps = {

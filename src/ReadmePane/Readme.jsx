@@ -63,6 +63,7 @@ export default class Readme extends PureComponent {
     getConfig: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     completes: PropTypes.array.isRequired,
+    setLocation: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -97,16 +98,31 @@ export default class Readme extends PureComponent {
       } else {
         props = {...props, target: '_blank'};
       }
-      
+
       return <a {...props}>{children}</a>;
     }
     if (tag === 'img') {
       if (!isValidURL(props.src)) {
         const file = findFile(decodeURIComponent(props.src));
-        if (file) {
-          props = Object.assign({}, props, {
-            src: file.blobURL,
-          });
+        if (!file) {
+          return <span {...props}>{props.alt}</span>
+        }
+        if (file.is('image')) {
+          return <img {...props} src={file.blobURL} />
+        }
+        if (file.is('html')) {
+          const onTouchTap = (event) => {
+            event.stopPropagation();
+            this.props.setLocation({
+              href: file.name,
+            });
+          };
+          return (
+            <a key={props.key}
+              href="javascript: void(0)"
+              onTouchTap={onTouchTap}
+            >{props.alt}</a>
+          );
         }
       }
       return <img {...props} />

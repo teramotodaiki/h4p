@@ -20,6 +20,7 @@ export default class ReadmeCard extends PureComponent {
     getConfig: PropTypes.func.isRequired,
     localization: PropTypes.object.isRequired,
     port: PropTypes.object,
+    setLocation: PropTypes.func.isRequired,
   };
 
   state = {
@@ -200,6 +201,7 @@ export default class ReadmeCard extends PureComponent {
             localization={this.props.localization}
             completes={this.state.completes}
             onShot={this.handleShot}
+            setLocation={this.props.setLocation}
           />
         </CardText>
         <CardActions expandable >
