@@ -53,7 +53,7 @@ export const MimeTypes = {
   'application/json': '.json',
   'text/html': '.html',
   'text/css': '.css',
-  'text/plane': '',
+  'text/plain': '',
   'text/x-glsl': '.sort',
 };
 

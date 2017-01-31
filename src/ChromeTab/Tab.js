@@ -14,7 +14,7 @@ export default class Tab {
   get file() {
     return this.props.getFile() || new SourceFile({
       name: 'Not Found',
-      type: 'text/plane',
+      type: 'text/plain',
       text: 'File Not Found :-/',
     });
   }
