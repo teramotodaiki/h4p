@@ -47,6 +47,7 @@ const getStyle = (props, context, state) => {
     swap: {
       position: 'absolute',
       right: 0,
+      zIndex: 2,
     },
     linear1: {
       flex: '0 0 auto',
