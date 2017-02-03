@@ -43,7 +43,7 @@ export default class EditorCard extends PureComponent {
       const cssFileKey = await this.addFileIfNotExist(
         'feeles/codemirror.css',
         () => {
-          new SourceFile({
+          return new SourceFile({
             type: 'text/css',
             name: 'feeles/codemirror.css',
             text: '',
