@@ -170,7 +170,7 @@ export default class CloneDialog extends PureComponent {
 
     } catch (e) {
 
-      await localforage.removeItem(htmlKey);
+      await localforage.removeItem(app.htmlKey);
 
       alert(this.props.localization.cloneDialog.failedToSave);
       this.setState({
