@@ -27,6 +27,9 @@ export default class PlayMenu extends PureComponent {
       .filter((file) => file.is('html'));
 
     if (files.length === 0) {
+      this.props.setLocation({
+        href: '',
+      });
       return;
     }
     if (files.length === 1) {
