@@ -1,3 +1,4 @@
+export { default as MediaCard } from './MediaCard';
 export { default as MonitorCard } from './MonitorCard';
 export { default as PaletteCard } from './PaletteCard';
 export { default as EnvCard } from './EnvCard';

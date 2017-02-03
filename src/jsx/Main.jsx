@@ -24,6 +24,7 @@ import FileDialog, { SaveDialog, RenameDialog, DeleteDialog } from '../FileDialo
 import DragTypes from '../utils/dragTypes';
 import { Tab } from '../ChromeTab/';
 import {
+  MediaCard,
   ReadmeCard,
   SnippetCard,
   MonitorCard,
@@ -499,6 +500,10 @@ class Main extends Component {
       showMonitor,
     };
 
+    const mediaProps = {
+      port: this.state.port,
+    };
+
     const readmeProps = {
       selectTab: this.selectTab,
       port: this.state.port,
@@ -541,6 +546,7 @@ class Main extends Component {
           <div style={styles.dropCover}></div>
           <div style={styles.left}>
             <div style={styles.scroll}>
+              <MediaCard {...commonProps} {...mediaProps} />
               <ReadmeCard {...commonProps} {...readmeProps} />
               <SnippetCard {...commonProps} {...snippetProps} />
               <PaletteCard {...commonProps} />
