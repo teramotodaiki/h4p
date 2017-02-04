@@ -103,20 +103,19 @@ export default class PlayMenu extends PureComponent {
     const {
       localization,
     } = this.props;
+    const {
+      palette,
+    } = this.context.muiTheme;
 
     const styles = {
       button: {
         padding: 0,
         lineHeight: 2,
-      },
-      label: {
-        fontSize: '.5rem',
+        borderLeft: `1px solid ${palette.primary1Color}`,
+        borderRadius: 0,
       },
       current: {
-        backgroundColor: fade(
-          this.context.muiTheme.palette.primary1Color,
-          0.1
-        ),
+        backgroundColor: fade(palette.primary1Color, 0.1),
         marginTop: -8,
         marginBottom: -8,
       },
@@ -132,7 +131,7 @@ export default class PlayMenu extends PureComponent {
 
     return (
       <div>
-        <FlatButton secondary
+        <FlatButton primary
           label={localization.editor.play}
           style={styles.button}
           icon={<AVPlayCircleOutline />}
