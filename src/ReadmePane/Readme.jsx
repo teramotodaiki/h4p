@@ -50,6 +50,12 @@ const mdStyle = (props, state, context) => {
       padding: '.2em',
       borderRadius: 2,
     },
+    a: {
+      backgroundColor: palette.primary1Color,
+      color: palette.alternateTextColor,
+      borderRadius: 2,
+      textDecoration: 'none',
+    },
   };
 };
 
