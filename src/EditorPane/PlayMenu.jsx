@@ -111,7 +111,8 @@ export default class PlayMenu extends PureComponent {
       button: {
         padding: 0,
         lineHeight: 2,
-        borderLeft: `1px solid ${palette.primary1Color}`,
+        color: palette.alternateTextColor,
+        backgroundColor: palette.primary1Color,
         borderRadius: 0,
       },
       current: {
@@ -134,6 +135,7 @@ export default class PlayMenu extends PureComponent {
         <FlatButton primary
           label={localization.editor.play}
           style={styles.button}
+          labelStyle={styles.label}
           icon={<AVPlayCircleOutline />}
           onTouchTap={this.handlePlay}
         />
