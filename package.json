@@ -47,6 +47,7 @@
     "js-beautify": "^1.6.4",
     "localforage": "^1.4.3",
     "markdown-it": "^8.1.0",
+    "markdown-it-container": "^2.0.0",
     "material-ui": "^0.16.1",
     "md5": "^2.2.1",
     "react": "^15.3.2",
