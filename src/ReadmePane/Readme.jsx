@@ -55,6 +55,8 @@ const mdStyle = (props, state, context) => {
       color: palette.alternateTextColor,
       borderRadius: 2,
       textDecoration: 'none',
+      padding: '.4em',
+      lineHeight: 2,
     },
   };
 };
