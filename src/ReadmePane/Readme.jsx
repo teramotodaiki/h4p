@@ -1,6 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
 import transitions from 'material-ui/styles/transitions';
 import { emphasize } from 'material-ui/utils/colorManipulator';
+import markdownItContainer from 'markdown-it-container';
 
 
 import MDReactComponent from '../../lib/MDReactComponent';
@@ -9,7 +10,6 @@ import { Editor } from '../EditorPane/';
 import ShotFrame from './ShotFrame';
 
 const BarHeight = 36;
-
 
 const mdStyle = (props, state, context) => {
   const {
@@ -52,6 +52,28 @@ const mdStyle = (props, state, context) => {
     },
   };
 };
+
+const customContainers = {
+  color(param) {
+    return {
+      style: {
+        color: param,
+      },
+    };
+  },
+};
+
+const plugins = [
+  {
+    plugin: markdownItContainer,
+    args: [null, {
+      validate(param) {
+        const [marker] = param.split(':');
+        return Object.keys(customContainers).includes(marker.trim());
+      },
+    }],
+  }
+];
 
 export default class Readme extends PureComponent {
 
@@ -139,6 +161,14 @@ export default class Readme extends PureComponent {
         />
       );
     }
+    if ('data-info' in props) {
+      const [marker,param] = props['data-info'].split(':').map(s => s.trim());
+      return (
+        <span {...props} {...customContainers[marker.trim()](param)}>
+        {children}
+        </span>
+      );
+    }
 
     return null;
 
@@ -177,6 +207,7 @@ export default class Readme extends PureComponent {
         text={file.text}
         style={styles.root}
         onIterate={onIterate}
+        plugins={plugins}
       />
     );
   }
