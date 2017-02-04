@@ -107,8 +107,7 @@ export default class PlayMenu extends PureComponent {
     const styles = {
       button: {
         padding: 0,
-        height: '1.6rem',
-        lineHeight: '1.6rem',
+        lineHeight: 2,
       },
       label: {
         fontSize: '.5rem',
@@ -133,10 +132,9 @@ export default class PlayMenu extends PureComponent {
 
     return (
       <div>
-        <FlatButton
+        <FlatButton secondary
           label={localization.editor.play}
           style={styles.button}
-          labelStyle={styles.label}
           icon={<AVPlayCircleOutline />}
           onTouchTap={this.handlePlay}
         />
