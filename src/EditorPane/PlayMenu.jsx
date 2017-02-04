@@ -3,7 +3,10 @@ import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider';
 import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import { fade } from 'material-ui/utils/colorManipulator';
 
 
 export default class PlayMenu extends PureComponent {
@@ -13,6 +16,10 @@ export default class PlayMenu extends PureComponent {
     setLocation: PropTypes.func.isRequired,
     href: PropTypes.string.isRequired,
     localization: PropTypes.object.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   state = {
@@ -106,7 +113,23 @@ export default class PlayMenu extends PureComponent {
       label: {
         fontSize: '.5rem',
       },
+      current: {
+        backgroundColor: fade(
+          this.context.muiTheme.palette.primary1Color,
+          0.1
+        ),
+        marginTop: -8,
+        marginBottom: -8,
+      },
+      currentSecondaryText: {
+        marginLeft: 8,
+        fontSize: '.8rem',
+        opacity: .6,
+      },
     };
+
+    const current = this.state.entries
+      .find((item) => item.href === this.props.href);
 
     return (
       <div>
@@ -128,6 +151,17 @@ export default class PlayMenu extends PureComponent {
             value={this.state.href}
             onItemTouchTap={this.handleItemTouchTap}
           >
+          {current && [
+            <MenuItem
+              key="current"
+              value={current.href}
+              innerDivStyle={styles.current}
+              leftIcon={<NavigationRefresh />}
+              primaryText={current.title}
+              secondaryText={<span style={styles.currentSecondaryText}>Ctrl + Space</span>}
+            />,
+            <Divider key="divider" />
+          ]}
           {this.state.entries.map(this.renderMenu)}
           </Menu>
         </Popover>
