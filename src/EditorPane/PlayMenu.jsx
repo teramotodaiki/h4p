@@ -3,7 +3,10 @@ import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider';
 import AVPlayCircleOutline from 'material-ui/svg-icons/av/play-circle-outline';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import { fade } from 'material-ui/utils/colorManipulator';
 
 
 export default class PlayMenu extends PureComponent {
@@ -13,6 +16,10 @@ export default class PlayMenu extends PureComponent {
     setLocation: PropTypes.func.isRequired,
     href: PropTypes.string.isRequired,
     localization: PropTypes.object.isRequired,
+  };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
   };
 
   state = {
@@ -96,24 +103,37 @@ export default class PlayMenu extends PureComponent {
     const {
       localization,
     } = this.props;
+    const {
+      palette,
+    } = this.context.muiTheme;
 
     const styles = {
       button: {
         padding: 0,
-        height: '1.6rem',
-        lineHeight: '1.6rem',
+        lineHeight: 2,
+        borderLeft: `1px solid ${palette.primary1Color}`,
+        borderRadius: 0,
       },
-      label: {
-        fontSize: '.5rem',
+      current: {
+        backgroundColor: fade(palette.primary1Color, 0.1),
+        marginTop: -8,
+        marginBottom: -8,
+      },
+      currentSecondaryText: {
+        marginLeft: 8,
+        fontSize: '.8rem',
+        opacity: .6,
       },
     };
 
+    const current = this.state.entries
+      .find((item) => item.href === this.props.href);
+
     return (
       <div>
-        <FlatButton
+        <FlatButton primary
           label={localization.editor.play}
           style={styles.button}
-          labelStyle={styles.label}
           icon={<AVPlayCircleOutline />}
           onTouchTap={this.handlePlay}
         />
@@ -128,6 +148,17 @@ export default class PlayMenu extends PureComponent {
             value={this.state.href}
             onItemTouchTap={this.handleItemTouchTap}
           >
+          {current && [
+            <MenuItem
+              key="current"
+              value={current.href}
+              innerDivStyle={styles.current}
+              leftIcon={<NavigationRefresh />}
+              primaryText={current.title}
+              secondaryText={<span style={styles.currentSecondaryText}>Ctrl + Space</span>}
+            />,
+            <Divider key="divider" />
+          ]}
           {this.state.entries.map(this.renderMenu)}
           </Menu>
         </Popover>

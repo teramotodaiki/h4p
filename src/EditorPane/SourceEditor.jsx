@@ -49,8 +49,7 @@ const getStyle = (props, context) => {
     },
     barButton: {
       padding: 0,
-      height: '1.6rem',
-      lineHeight: '1.6rem',
+      lineHeight: 2,
     },
     barButtonLabel: {
       fontSize: '.5rem',
