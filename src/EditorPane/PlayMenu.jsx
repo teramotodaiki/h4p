@@ -66,9 +66,9 @@ export default class PlayMenu extends PureComponent {
     });
   };
 
-  handleItemTouchTap = (event, menuItem, index) => {
+  handleItemTouchTap = (event, menuItem) => {
     this.props.setLocation({
-      href: this.state.entries[index].href,
+      href: menuItem.props.value,
     });
     this.setState({
       open: false,
